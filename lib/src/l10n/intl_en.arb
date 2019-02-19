@@ -1,0 +1,83 @@
+{
+  "@@last_modified": "2019-02-19T17:44:17.370113",
+  "stepperOf": "of",
+  "@stepperOf": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "stepperStep": "Step",
+  "@stepperStep": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "welcomeTitle": "WELCOME",
+  "@welcomeTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "welcomeContent": "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician. \nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.\n",
+  "@welcomeContent": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "batteryTitle": "INSERT BATTERY",
+  "@batteryTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "batteryContent_1": "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.\n",
+  "@batteryContent_1": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "batteryContent_2": "The flat side of the battery  goes to where the MINUS sign is depicted.\n",
+  "@batteryContent_2": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnCloseApp": "CLOSE APP",
+  "@btnCloseApp": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnEndRecording": "END RECORDING",
+  "@btnEndRecording": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnEnter": "ENTER",
+  "@btnEnter": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnMore": "MORE",
+  "@btnMore": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnNext": "NEXT",
+  "@btnNext": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnPreview": "PREVIEW",
+  "@btnPreview": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnReady": "READY",
+  "@btnReady": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnReturnToApp": "RETURN TO APP",
+  "@btnReturnToApp": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "btnStartRecording": "START RECORDING",
+  "@btnStartRecording": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

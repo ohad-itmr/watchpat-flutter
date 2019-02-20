@@ -24,16 +24,35 @@ class BodyTemplate extends StatelessWidget {
       padding: EdgeInsets.only(left: 30.0, right: 30.0),
       child: Column(
         children: <Widget>[
-          topBlock,
-          Expanded(
-            child: bottomBlock,
+          Flexible(
+            flex: 14,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                  flex: 4,
+                  child: topBlock,
+                ),
+                Flexible(
+                  flex: 4,
+                  child: bottomBlock,
+                ),
+              ],
+            ),
           ),
-          buttons,
-          Steps(
-            current: current,
-            total: total,
-            showSteps: showSteps,
-          ),
+          Flexible(
+            flex: 2,
+            child: Column(
+              children: <Widget>[
+                buttons,
+                Steps(
+                  current: current,
+                  total: total,
+                  showSteps: showSteps,
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class TextBlock extends StatelessWidget {
   final String title;
   final List<String> content;
+  final TextAlign contentTextAlign;
 
-  TextBlock({this.title, this.content});
+  TextBlock({this.title, this.content, this.contentTextAlign = TextAlign.left});
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +24,18 @@ class TextBlock extends StatelessWidget {
       ),
     ];
 
-    content.forEach((str) {
-      children.add(
-        Text(
-          str,
-          style: TextStyle(height: 1.3),
-        ),
-      );
-      children.add(Text(''));
-    });
+    if (content != null) {
+      content.forEach((str) {
+        children.add(
+          Text(
+            str,
+            textAlign: contentTextAlign,
+            style: TextStyle(height: 1.3),
+          ),
+        );
+        children.add(Text(''));
+      });
+    }
 
     return Column(
       children: children,

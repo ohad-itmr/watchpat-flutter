@@ -47,10 +47,3 @@ class MainTemplate extends StatelessWidget {
     );
   }
 }
-
-//body: Center(
-//child: Text(
-//AppLocalizations.of(context).hello,
-//style: Theme.of(context).textTheme.display1,
-//),
-//),

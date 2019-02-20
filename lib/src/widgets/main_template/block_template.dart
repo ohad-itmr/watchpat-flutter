@@ -4,35 +4,29 @@ import '../text_block.dart';
 
 enum BlockType { image, text, custom }
 
-class BlockModel {
+class BlockTemplate extends StatelessWidget {
   final BlockType type;
   final String imageName;
   final String title;
   final List<String> content;
   final Widget customChild;
 
-  BlockModel({this.type, this.imageName, this.title, this.content, this.customChild});
-}
-
-class BlockTemplate extends StatelessWidget {
-  final BlockModel block;
-
-  BlockTemplate({this.block});
+  BlockTemplate({this.type, this.imageName, this.title, this.content, this.customChild});
 
   @override
   Widget build(BuildContext context) {
-    switch (block.type) {
+    switch (type) {
       case BlockType.image:
         return ImageBlock(
-          imageName: block.imageName,
+          imageName: imageName,
         );
       case BlockType.text:
         return TextBlock(
-          title: block.title,
-          content: block.content,
+          title: title,
+          content: content,
         );
       case BlockType.custom:
-        return block.customChild;
+        return customChild;
       default:
         return null;
     }

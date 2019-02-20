@@ -10,7 +10,8 @@ import '../l10n/messages_all.dart';
 flutter pub pub run intl_translation:extract_to_arb --output-dir=lib/src/l10n lib/src/helpers/localizations.dart
 
 2. After translations edit run:
-flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/src/l10n --no-use-deferred-loading lib/src/helpers/localizations.dart lib/src/l10n/intl_*.arb*/
+flutter pub pub run intl_translation:generate_from_arb --output-dir=lib/src/l10n --no-use-deferred-loading lib/src/helpers/localizations.dart lib/src/l10n/intl_*.arb
+*/
 
 class AppLocalizations {
   static Future<AppLocalizations> load(Locale locale) {
@@ -91,6 +92,174 @@ The flat side of the battery  goes to where the MINUS sign is depicted.
   }
 
   //#endregion Battery
+
+  //#region Prepare
+  String get removeJewelryTitle {
+    return Intl.message(
+      'REMOVE JEWELRY',
+      name: 'removeJewelryTitle',
+    );
+  }
+
+  String get removeJewelryContent {
+    return Intl.message(
+      '''
+Remove tight cloths, watches and jewelry.
+Ensure that the finger nail is trimmed.
+Remove artificial nail or colored nail polish from the monitored finger.
+Use the MORE button to see more details.
+''',
+      name: 'removeJewelryContent',
+    );
+  }
+
+  String get strapWristTitle {
+    return Intl.message(
+      'STRAP WRIST DEVICE',
+      name: 'strapWristTitle',
+    );
+  }
+
+  String get strapWristContent {
+    return Intl.message(
+      '''
+You will be putting the WatchPAT on your non-dominant hand. 
+Place the WatchPAT on a flat surface. 
+Insert your hand and close the strap, making sure its snug but not too  tight.
+''',
+      name: 'strapWristContent',
+    );
+  }
+
+  String get chestSensorTitle {
+    return Intl.message(
+      'ATTACH CHEST SENSOR',
+      name: 'chestSensorTitle',
+    );
+  }
+
+  String get chestSensorContent {
+    return Intl.message(
+      '''
+Pull the Chest Sensor along your non dominant hand, and up to the neck opening. 
+Peel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.
+''',
+      name: 'chestSensorContent',
+    );
+  }
+
+  String get fingerProbeTitle {
+    return Intl.message(
+      'WEAR FINGER PROBE',
+      name: 'fingerProbeTitle',
+    );
+  }
+
+  String get fingerProbeContent {
+    return Intl.message(
+      '''
+Insert any finger, except your thumb, all the way into the probe.  
+The sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (like a table) and pull the TOP tab toward you to remove it from the probe.
+''',
+      name: 'fingerProbeContent',
+    );
+  }
+
+  //#endregion Prepare
+
+  //#region PIN
+  String get pinTitle {
+    return Intl.message(
+      'ENTER PIN',
+      name: 'pinTitle',
+    );
+  }
+
+  String get pinContent {
+    return Intl.message(
+      '''
+Enter your assigned four digits PIN 
+(personal identification number) and tap enter
+''',
+      name: 'pinContent',
+    );
+  }
+  //#endregion PIN
+
+  //#region Start Recording
+  String get startRecordingTitle {
+    return Intl.message(
+      'START RECORDING',
+      name: 'startRecordingTitle',
+    );
+  }
+
+  String get startRecordingContent {
+    return Intl.message(
+      '''
+Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.
+If you need to get up during the night, do not remove the device or sensors.
+Do leave the phone behind, connected  to the charger.
+''',
+      name: 'startRecordingContent',
+    );
+  }
+  //#endregion Start Recording
+
+  //#region Recording
+  String get recordingTitle {
+    return Intl.message(
+      'GOOD NIGHT',
+      name: 'recordingTitle',
+    );
+  }
+  //#endregion Recording
+
+  //#region Uploading
+  String get pleaseWait {
+    return Intl.message(
+      'Please wait',
+      name: 'pleaseWait',
+    );
+  }
+
+  String get uploadingTitle {
+    return Intl.message(
+      'GOOD MORNING',
+      name: 'uploadingTitle',
+    );
+  }
+
+  String get uploadingContent {
+    return Intl.message(
+      '''
+Please do not close the application while the data is being uploaded.
+The data transmission will be over in several minutes.
+''',
+      name: 'uploadingContent',
+    );
+  }
+  //#endregion Uploading
+
+
+  //#region Thank You
+  String get thankYouTitle {
+    return Intl.message(
+      'THANK YOU',
+      name: 'thankYouTitle',
+    );
+  }
+
+  String get thankYouContent {
+    return Intl.message(
+      '''
+The data has been successfully uploaded and the test is over.
+Please dispose the product by your local guidances.
+''',
+      name: 'thankYouContent',
+    );
+  }
+  //#endregion Thank You
 
   //#region Buttons
 

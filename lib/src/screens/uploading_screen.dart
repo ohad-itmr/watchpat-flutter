@@ -5,35 +5,33 @@ import '../widgets/main_template/body_template.dart';
 import '../widgets/main_template/block_template.dart';
 import '../widgets/buttons_block.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class UploadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc=AppLocalizations.of(context);
+    final AppLocalizations loc = AppLocalizations.of(context);
 
     return MainTemplate(
       showBack: false,
-      showMenu: true,
+      showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
-          imageName: 'welcome.png',
+          imageName: 'uploading.png',
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
+          title: loc.uploadingTitle,
           content: [
-            loc.welcomeContent,
+            loc.uploadingContent
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/battery');
+              Navigator.pushNamed(context, '/end');
             },
           ),
-          moreActionButton: ButtonModel(
-            action: () {},
-          ),
+          moreActionButton: null,
         ),
         showSteps: false,
       ),

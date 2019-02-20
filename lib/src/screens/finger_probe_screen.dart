@@ -5,37 +5,39 @@ import '../widgets/main_template/body_template.dart';
 import '../widgets/main_template/block_template.dart';
 import '../widgets/buttons_block.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class FingerProbeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations loc=AppLocalizations.of(context);
 
     return MainTemplate(
-      showBack: false,
-      showMenu: true,
+      showBack: true,
+      showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
-          imageName: 'welcome.png',
+          imageName: 'finger.png',
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
+          title: loc.fingerProbeTitle,
           content: [
-            loc.welcomeContent,
+            loc.fingerProbeContent,
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/battery');
+              Navigator.pushNamed(context, '/start');
             },
           ),
           moreActionButton: ButtonModel(
             action: () {},
           ),
         ),
-        showSteps: false,
+        showSteps: true,
+        current: 5,
+        total: 6,
       ),
     );
   }

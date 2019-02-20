@@ -5,37 +5,39 @@ import '../widgets/main_template/body_template.dart';
 import '../widgets/main_template/block_template.dart';
 import '../widgets/buttons_block.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class ChestSensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations loc=AppLocalizations.of(context);
 
     return MainTemplate(
-      showBack: false,
-      showMenu: true,
+      showBack: true,
+      showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
-          imageName: 'welcome.png',
+          imageName: 'chest.png',
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
+          title: loc.chestSensorTitle,
           content: [
-            loc.welcomeContent,
+            loc.chestSensorContent,
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/battery');
+              Navigator.pushNamed(context, '/prepare4');
             },
           ),
           moreActionButton: ButtonModel(
             action: () {},
           ),
         ),
-        showSteps: false,
+        showSteps: true,
+        current: 4,
+        total: 6,
       ),
     );
   }

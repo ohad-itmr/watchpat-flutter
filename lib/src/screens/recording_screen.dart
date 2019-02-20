@@ -5,35 +5,32 @@ import '../widgets/main_template/body_template.dart';
 import '../widgets/main_template/block_template.dart';
 import '../widgets/buttons_block.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class RecordingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc=AppLocalizations.of(context);
+    final AppLocalizations loc = AppLocalizations.of(context);
 
     return MainTemplate(
       showBack: false,
-      showMenu: true,
+      showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
-          imageName: 'welcome.png',
+          imageName: 'recording.png',
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
-          content: [
-            loc.welcomeContent,
-          ],
+          title: loc.recordingTitle,
+          content: null,
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/battery');
+              Navigator.pushNamed(context, '/uploading');
             },
+            text: loc.btnStartRecording,
           ),
-          moreActionButton: ButtonModel(
-            action: () {},
-          ),
+          moreActionButton: null,
         ),
         showSteps: false,
       ),

@@ -8,29 +8,29 @@ import '../widgets/buttons_block.dart';
 class BatteryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations loc=AppLocalizations.of(context);
+
     return MainTemplate(
       showBack: true,
       showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
-          block: BlockModel(
-            type: BlockType.image,
-            imageName: 'insert_battery.png',
-          ),
+          type: BlockType.image,
+          imageName: 'insert_battery.png',
         ),
         bottomBlock: BlockTemplate(
-          block: BlockModel(
-            type: BlockType.text,
-            title: AppLocalizations.of(context).batteryTitle,
-            content: [
-              AppLocalizations.of(context).batteryContent_1,
-              AppLocalizations.of(context).batteryContent_2,
-            ],
-          ),
+          type: BlockType.text,
+          title: loc.batteryTitle,
+          content: [
+            loc.batteryContent_1,
+            loc.batteryContent_2,
+          ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
-            action: () {},
+            action: () {
+              Navigator.pushNamed(context, '/pin');
+            },
           ),
           moreActionButton: ButtonModel(
             action: () {},

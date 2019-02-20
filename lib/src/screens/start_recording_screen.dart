@@ -5,14 +5,14 @@ import '../widgets/main_template/body_template.dart';
 import '../widgets/main_template/block_template.dart';
 import '../widgets/buttons_block.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class StartRecordingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc=AppLocalizations.of(context);
+    final AppLocalizations loc = AppLocalizations.of(context);
 
     return MainTemplate(
-      showBack: false,
-      showMenu: true,
+      showBack: true,
+      showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
@@ -20,22 +20,23 @@ class WelcomeScreen extends StatelessWidget {
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
+          title: loc.startRecordingTitle,
           content: [
-            loc.welcomeContent,
+            loc.startRecordingContent,
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/battery');
+              Navigator.pushNamed(context, '/recording');
             },
+            text: loc.btnStartRecording,
           ),
-          moreActionButton: ButtonModel(
-            action: () {},
-          ),
+          moreActionButton: null,
         ),
-        showSteps: false,
+        showSteps: true,
+        current: 6,
+        total: 6,
       ),
     );
   }

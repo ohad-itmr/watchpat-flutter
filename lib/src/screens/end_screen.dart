@@ -5,35 +5,29 @@ import '../widgets/main_template/body_template.dart';
 import '../widgets/main_template/block_template.dart';
 import '../widgets/buttons_block.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class EndScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc=AppLocalizations.of(context);
+    final AppLocalizations loc = AppLocalizations.of(context);
 
     return MainTemplate(
       showBack: false,
-      showMenu: true,
+      showMenu: false,
       body: BodyTemplate(
-        topBlock: BlockTemplate(
-          type: BlockType.image,
-          imageName: 'welcome.png',
-        ),
-        bottomBlock: BlockTemplate(
+       topBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
+          title: loc.thankYouTitle,
           content: [
-            loc.welcomeContent,
+            loc.thankYouContent
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/battery');
             },
+            text: loc.btnCloseApp,
           ),
-          moreActionButton: ButtonModel(
-            action: () {},
-          ),
+          moreActionButton: null,
         ),
         showSteps: false,
       ),

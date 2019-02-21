@@ -9,6 +9,7 @@ import '../widgets/pin_inputs.dart';
 
 class PinScreen extends StatelessWidget {
   static const String PATH = '/pin';
+
   PinScreen({Key key}) : super(key: key);
 
   @override
@@ -40,11 +41,12 @@ class PinScreen extends StatelessWidget {
                     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                       return ButtonsBlock(
                         nextActionButton: ButtonModel(
-                            disabled: !snapshot.hasData || snapshot.data.length < 4,
-                            action: () {
-                              Navigator.pushNamed(context, '/prepare1');
-                            },
-                            text: loc.btnEnter),
+                          disabled: !snapshot.hasData || snapshot.data.length < 4,
+                          action: () {
+                            Navigator.pushNamed(context, '/prepare1');
+                          },
+                          text: loc.btnEnter,
+                        ),
                         moreActionButton: null,
                       );
                     },

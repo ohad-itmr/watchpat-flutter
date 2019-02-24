@@ -1,20 +1,23 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:MyPAT/bloc/pin_bloc_provider.dart';
-import 'package:MyPAT/ui/screens/BatteryScreen.dart';
-import 'package:MyPAT/ui/screens/ChestSensorScreen.dart';
-import 'package:MyPAT/ui/screens/EndScreen.dart';
-import 'package:MyPAT/ui/screens/FingerProbeScreen.dart';
-import 'package:MyPAT/ui/screens/PinScreen.dart';
-import 'package:MyPAT/ui/screens/RecordingScreen.dart';
-import 'package:MyPAT/ui/screens/RemoveJewelryScreen.dart';
-import 'package:MyPAT/ui/screens/StartRecordingScreen.dart';
-import 'package:MyPAT/ui/screens/StrapWristScreen.dart';
-import 'package:MyPAT/ui/screens/UploadingScreen.dart';
-import 'package:MyPAT/ui/screens/WelcomeScreen.dart';
+import 'package:my_pat/bloc/pin_bloc_provider.dart';
+import 'package:my_pat/bloc/file_bloc_provider.dart';
+import 'package:my_pat/ui/screens/battery_screen.dart';
+import 'package:my_pat/ui/screens/chest_sensor_screen.dart';
+import 'package:my_pat/ui/screens/end_screen.dart';
+import 'package:my_pat/ui/screens/finger_probe_screen.dart';
+import 'package:my_pat/ui/screens/pin_screen.dart';
+import 'package:my_pat/ui/screens/recording_screen.dart';
+import 'package:my_pat/ui/screens/remove_jewelry_screen.dart';
+import 'package:my_pat/ui/screens/start_recording_screen.dart';
+import 'package:my_pat/ui/screens/strap_wrist_screen.dart';
+import 'package:my_pat/ui/screens/uploading_screen.dart';
+import 'package:my_pat/ui/screens/welcome_screen.dart';
 
 var rootHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  final FileBloc fileBloc = FileBlocProvider.of(context);
+//  fileBloc.allocateSpace();
   return WelcomeScreen();
 });
 

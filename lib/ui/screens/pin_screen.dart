@@ -1,5 +1,5 @@
-import 'package:MyPAT/bloc/pin_bloc_provider.dart';
-import 'package:MyPAT/generated/i18n.dart';
+import 'package:my_pat/bloc/pin_bloc_provider.dart';
+import 'package:my_pat/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../widgets/main_template/main_template.dart';
 import '../widgets/text_block.dart';

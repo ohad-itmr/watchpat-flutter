@@ -1,4 +1,4 @@
-import 'package:MyPAT/generated/i18n.dart';
+import 'package:my_pat/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'buttons_block.dart';
 

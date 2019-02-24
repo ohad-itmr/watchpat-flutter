@@ -1,6 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'AppStoreApplication.dart';
+import 'app_store_application.dart';
 
 
 class AppProvider extends InheritedWidget {

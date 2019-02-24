@@ -1,4 +1,4 @@
-import 'package:MyPAT/bloc/pin_bloc_provider.dart';
+import 'package:my_pat/bloc/pin_bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class PinKeyboard extends StatelessWidget {

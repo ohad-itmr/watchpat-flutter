@@ -1,9 +1,9 @@
 import 'package:fluro/fluro.dart';
-import 'AppRoutes.dart';
+import 'app_routes.dart';
 import 'dart:async';
-import 'package:MyPAT/config/Env.dart';
-import 'package:MyPAT/utility/framework/Application.dart';
-import 'package:MyPAT/utility/log/Log.dart';
+import 'package:my_pat/config/Env.dart';
+import 'package:my_pat/utility/framework/Application.dart';
+import 'package:my_pat/utility/log/log.dart';
 import 'package:logging/logging.dart';
 
 class AppStoreApplication implements Application {

@@ -1,6 +1,7 @@
+import 'package:my_pat/bloc/bloc_base.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PinBloc {
+class PinBloc extends BlocBase{
   final _pin = BehaviorSubject<String>();
 
   Function(String) get changePin => _pin.sink.add;

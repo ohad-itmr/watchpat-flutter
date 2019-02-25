@@ -1,4 +1,4 @@
-import 'package:my_pat/bloc/pin_bloc_provider.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class PinKeyboard extends StatelessWidget {
@@ -22,7 +22,7 @@ class PinKeyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PinBloc pinBloc = PinBlocProvider.of(context);
+    final PinBloc pinBloc = BlocProvider.of<PinBloc>(context);
 
     for (var i = 0; i <= 6; i = i + 3) {
       final rowChildren = <Widget>[];

@@ -1,7 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:my_pat/bloc/pin_bloc_provider.dart';
-import 'package:my_pat/bloc/file_bloc_provider.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:my_pat/ui/screens/battery_screen.dart';
 import 'package:my_pat/ui/screens/chest_sensor_screen.dart';
 import 'package:my_pat/ui/screens/end_screen.dart';
@@ -16,8 +15,10 @@ import 'package:my_pat/ui/screens/welcome_screen.dart';
 
 var rootHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final FileBloc fileBloc = FileBlocProvider.of(context);
-//  fileBloc.allocateSpace();
+  final FileBloc fileBloc = BlocProvider.of<FileBloc>(context);
+  final NetworkBloc networkBloc = BlocProvider.of<NetworkBloc>(context);
+  fileBloc.allocateSpace();
+  networkBloc.internetExists().then((exists) => print('connectionExists $exists'));
   return WelcomeScreen();
 });
 
@@ -43,7 +44,7 @@ var fingerProbeRouteHandler =
 
 var pinRouteHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final PinBloc pinBloc = PinBlocProvider.of(context);
+  final PinBloc pinBloc = BlocProvider.of<PinBloc>(context);
   pinBloc.resetPin();
   return PinScreen();
 });

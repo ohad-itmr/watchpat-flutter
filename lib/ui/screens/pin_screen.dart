@@ -1,4 +1,4 @@
-import 'package:my_pat/bloc/pin_bloc_provider.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../widgets/main_template/main_template.dart';
@@ -15,7 +15,7 @@ class PinScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final S loc = S.of(context);
-    final PinBloc pinBloc = PinBlocProvider.of(context);
+    final PinBloc pinBloc = BlocProvider.of<PinBloc>(context);
     return MainTemplate(
       showBack: true,
       showMenu: false,

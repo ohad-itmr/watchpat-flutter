@@ -1,4 +1,4 @@
-import 'package:my_pat/bloc/bloc_provider.dart';
+import 'package:my_pat/bloc/helpers/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class PinInputs extends StatelessWidget {
@@ -22,6 +22,7 @@ class PinInputs extends StatelessWidget {
     final PinBloc pinBloc = BlocProvider.of<PinBloc>(context);
     return StreamBuilder(
       stream: pinBloc.pin,
+      initialData: '',
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         var active = snapshot.hasData && snapshot.data.length - 1 >= index;
 

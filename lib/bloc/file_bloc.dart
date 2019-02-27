@@ -1,31 +1,38 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:my_pat/app/model/api/response.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/app/model/api/file_system_provider.dart';
-import 'package:my_pat/bloc/bloc_base.dart';
+import 'package:my_pat/bloc/helpers/bloc_base.dart';
 
-class FileBloc extends BlocBase{
+class FileBloc extends BlocBase {
   final filesProvider = FileSystemProvider();
-  File _localFile;
+  BehaviorSubject<File> _localFileSubject = BehaviorSubject<File>();
 
-  get localFileRead => _localFile.openRead;
-  get localFileWrite => _localFile.openWrite;
+  Observable<File> get localFile => _localFileSubject.stream;
 
-  Future<void> allocateSpace() async {
-    await filesProvider.allocateSpace();
+  Stream<Response> allocateSpace() {
+    return filesProvider.allocateSpace().asStream();
   }
 
-  Future<void> createStartFiles() async {
-    await filesProvider.init();
+  Stream<Response> createStartFiles() {
+    return filesProvider.init().asStream();
   }
 
   FileBloc() {
-    init();
+    filesProvider.localDataFile.asStream().listen((file) => _localFileSubject.add(file));
   }
 
-  init() async {
-    _localFile = await filesProvider.localDataFile;
-    await createStartFiles();
+  Observable<Response> init() {
+    print('[FileBloc INIT]');
+    return Observable.combineLatest2(allocateSpace(), createStartFiles(), (Response as, Response cf) {
+      print('as ${as.success}');
+      print('cf ${cf.success}');
+      return Response(success: true);
+    });
   }
 
-  dispose() {}
+  dispose() {
+    _localFileSubject.close();
+  }
 }

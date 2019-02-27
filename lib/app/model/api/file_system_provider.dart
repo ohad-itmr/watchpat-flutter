@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:my_pat/utility/log/log.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:my_pat/config/settings.dart';
+import 'response.dart';
 
 class FileSystemProvider {
   final String localDataFileName = Settings.dataFileName;
@@ -30,7 +31,7 @@ class FileSystemProvider {
     return File('$path/$logOutputFileName');
   }
 
-  Future<void> allocateSpace() async {
+  Future<Response> allocateSpace() async {
     File localFile = await localDataFile;
 
     try {
@@ -38,12 +39,14 @@ class FileSystemProvider {
       file.truncateSync(Settings.spaceToAllocate);
       file.closeSync();
       Log.info('ALLOCATION SUCCESSFULL');
+      return Response(success: true);
     } catch (e) {
-      Log.warning('ALLOCATE SPACE ERROR: ${e.toString()}');
+      Log.shout('ALLOCATE SPACE ERROR: ${e.toString()}');
+      return Response(success: false, error: e.toString());
     }
   }
 
-  Future<void> init() async {
+  Future<Response> init() async {
     try {
       File localFile = await localDataFile;
       await localFile.create();
@@ -52,12 +55,14 @@ class FileSystemProvider {
       File logOutFile = await logInputFile;
       logOutFile.create();
       Log.info('FILES CREATED');
+      return Response(success: true);
     } catch (e) {
       Log.warning('FILES CREATION ERROR: ${e.toString()}');
+      return Response(success: false, error: e.toString());
     }
   }
 
-  Future<void> clear() async {
+  Future<Response> clear() async {
     try {
       File localFile = await localDataFile;
       await localFile.delete();
@@ -66,8 +71,10 @@ class FileSystemProvider {
       File logOutFile = await logInputFile;
       logOutFile.delete();
       Log.info('FILES CLEARED');
+      return Response(success: true);
     } catch (e) {
       Log.warning('FILES CLEAR ERROR: ${e.toString()}');
+      return Response(success: false, error: e.toString());
     }
   }
 }

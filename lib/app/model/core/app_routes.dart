@@ -1,6 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:my_pat/bloc/bloc_provider.dart';
+import 'package:my_pat/bloc/helpers/bloc_provider.dart';
 import 'package:my_pat/ui/screens/battery_screen.dart';
 import 'package:my_pat/ui/screens/chest_sensor_screen.dart';
 import 'package:my_pat/ui/screens/end_screen.dart';
@@ -15,10 +15,6 @@ import 'package:my_pat/ui/screens/welcome_screen.dart';
 
 var rootHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final FileBloc fileBloc = BlocProvider.of<FileBloc>(context);
-  final NetworkBloc networkBloc = BlocProvider.of<NetworkBloc>(context);
-  fileBloc.allocateSpace();
-  networkBloc.internetExists().then((exists) => print('connectionExists $exists'));
   return WelcomeScreen();
 });
 

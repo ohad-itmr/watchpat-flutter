@@ -14,4 +14,8 @@ class Settings {
   static final logOutputFileName = 'mypat_log_output.txt';
 
   static final spaceToAllocate = 75 * 1024;
+
+  static const String SERVICE_UID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+  static const String TX_CHAR_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+  static const String RX_CHAR_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 }

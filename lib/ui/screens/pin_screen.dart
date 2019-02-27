@@ -1,11 +1,11 @@
-import 'package:my_pat/bloc/bloc_provider.dart';
+import 'package:my_pat/bloc/helpers/bloc_provider.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../widgets/main_template/main_template.dart';
 import '../widgets/text_block.dart';
 import '../widgets/buttons_block.dart';
-import '../widgets/pin_keyboard.dart';
-import '../widgets/pin_inputs.dart';
+import 'package:my_pat/ui/widgets/pin_screen_components/pin_keyboard.dart';
+import 'package:my_pat/ui/widgets/pin_screen_components/pin_inputs.dart';
 
 class PinScreen extends StatelessWidget {
   static const String PATH = '/pin';
@@ -37,11 +37,12 @@ class PinScreen extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(bottom: 20.0),
                   child: StreamBuilder(
-                    stream: pinBloc.pin,
-                    builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    stream: pinBloc.pinIsValid,
+                    initialData: false,
+                    builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                       return ButtonsBlock(
                         nextActionButton: ButtonModel(
-                          disabled: !snapshot.hasData || snapshot.data.length < 4,
+                          disabled: !snapshot.data,
                           action: () {
                             Navigator.pushNamed(context, '/prepare1');
                           },

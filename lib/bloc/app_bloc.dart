@@ -1,34 +1,29 @@
-import 'package:my_pat/app/model/api/response.dart';
-import 'package:rxdart/rxdart.dart';
+
 import 'helpers/bloc_base.dart';
-import 'helpers/bloc_provider.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
+import 'package:my_pat/generated/i18n.dart';
+
+const int MEGABYTE = 1024 * 1024;
 
 class AppBloc extends BlocBase {
   NetworkBloc networkBloc;
   FileBloc fileBloc;
   PinBloc pinBloc;
   BleBloc bleBloc;
-
-  Observable<bool> get initialChecksComplete => Observable.combineLatest3(
-        networkBloc.internetExists,
-        fileBloc.init(),
-        bleBloc.state,
-        (bool n, Response f, BluetoothState state) {
-          // todo check for errors
-          print('n $n');
-          print('f ${f.success} ${f.error}');
-          print('BLE State $state');
-          return true;
-        },
-      );
+  BatteryBloc batteryBloc;
+  MyPatLoggerBloc loggerBloc;
+  WelcomeActivityBloc welcomeBloc;
+  S lang;
 
   AppBloc() {
-    print('[AppBloc constructor]');
-    networkBloc = NetworkBloc();
-    fileBloc = FileBloc();
-    bleBloc = BleBloc();
-    pinBloc = PinBloc();
+    lang = S();
+    networkBloc = NetworkBloc(lang);
+    fileBloc = FileBloc(lang);
+    bleBloc = BleBloc(lang);
+    pinBloc = PinBloc(lang);
+    batteryBloc = BatteryBloc(lang);
+    loggerBloc = MyPatLoggerBloc(this);
+    welcomeBloc = WelcomeActivityBloc(this);
   }
 
   @override
@@ -36,5 +31,7 @@ class AppBloc extends BlocBase {
     networkBloc.dispose();
     fileBloc.dispose();
     pinBloc.dispose();
+    batteryBloc.dispose();
+    welcomeBloc.dispose();
   }
 }

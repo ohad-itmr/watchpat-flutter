@@ -1,4 +1,4 @@
-import 'package:my_pat/bloc/helpers/bloc_provider.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class PinInputs extends StatelessWidget {

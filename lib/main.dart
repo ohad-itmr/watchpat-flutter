@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_pat/app/model/core/app_component.dart';
-import 'package:my_pat/app/model/core/app_store_application.dart';
+import 'package:my_pat/app/app_component.dart';
+import 'package:my_pat/app/app_store_application.dart';
 
 void main() async {
 //  debugPaintSizeEnabled = true;

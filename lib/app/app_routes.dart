@@ -1,6 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:my_pat/bloc/helpers/bloc_provider.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:my_pat/ui/screens/battery_screen.dart';
 import 'package:my_pat/ui/screens/chest_sensor_screen.dart';
 import 'package:my_pat/ui/screens/end_screen.dart';
@@ -12,6 +12,7 @@ import 'package:my_pat/ui/screens/start_recording_screen.dart';
 import 'package:my_pat/ui/screens/strap_wrist_screen.dart';
 import 'package:my_pat/ui/screens/uploading_screen.dart';
 import 'package:my_pat/ui/screens/welcome_screen.dart';
+
 
 var rootHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -79,6 +80,8 @@ class AppRoutes {
 
     router.define(WelcomeScreen.PATH,
         handler: rootHandler, transitionType: TransitionType.native);
+
+
     router.define(BatteryScreen.PATH,
         handler: batteryRouteHandler, transitionType: TransitionType.native);
     router.define(ChestSensorScreen.PATH,

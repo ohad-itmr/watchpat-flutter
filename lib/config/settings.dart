@@ -10,12 +10,24 @@ class Settings {
   static final dataFileName = 'localData.dat';
   static final serverDataFileName = 'localData.dat';
   static final serverInfoFileName = 'TestInformation.txt';
+  static final logMainFileName = 'mypat_main_log.txt';
   static final logInputFileName = 'mypat_log_input.txt';
   static final logOutputFileName = 'mypat_log_output.txt';
-
-  static final spaceToAllocate = 75 * 1024;
 
   static const String SERVICE_UID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
   static const String TX_CHAR_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
   static const String RX_CHAR_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+
+  static final uploadDataChunkMaxSize = 5000;
+  static final uploadDataAccumulationSize = 100000;
+  static final minStorageSpaceMb = 80;
+  static final minTestLengthHours = 7;
+  static final sessionTimeoutHours = 20;
+  static final minBatteryLevel = 95;
+  static final userPinCodeLength = 4;
+  static final timeoutFtpSec = 80;
+  static final timeoutBleSec = 10;
+  static final timeoutTransactionSec = 20;
+  static final emailService = "alitz@emg-soft.com";
+  static final debugMode = true;
 }

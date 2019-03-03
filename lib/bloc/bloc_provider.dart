@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
-export '../pin_bloc.dart';
-export '../file_bloc.dart';
-export '../network_bloc.dart';
-export '../app_bloc.dart';
-export '../ble_bloc.dart';
+export 'pin_bloc.dart';
+export 'file_bloc.dart';
+export 'network_bloc.dart';
+export 'app_bloc.dart';
+export 'ble_bloc.dart';
+export 'battery_bloc.dart';
+export 'my_pat_logger_bloc.dart';
+export 'welcome_activity_bloc.dart';
 
 Type _typeOf<T>() => T;
 

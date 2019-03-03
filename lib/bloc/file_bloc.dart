@@ -1,11 +1,15 @@
-import 'dart:async';
 import 'dart:io';
-import 'package:my_pat/app/model/api/response.dart';
+import 'dart:async';
+import 'package:my_pat/api/response.dart';
+import 'package:my_pat/utility/log/log.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:my_pat/app/model/api/file_system_provider.dart';
+import 'package:my_pat/api/file_system_provider.dart';
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
+import 'package:my_pat/generated/i18n.dart';
 
 class FileBloc extends BlocBase {
+  S lang;
+
   final filesProvider = FileSystemProvider();
   BehaviorSubject<File> _localFileSubject = BehaviorSubject<File>();
 
@@ -19,16 +23,22 @@ class FileBloc extends BlocBase {
     return filesProvider.init().asStream();
   }
 
-  FileBloc() {
+  FileBloc(s) {
+    lang = s;
     filesProvider.localDataFile.asStream().listen((file) => _localFileSubject.add(file));
   }
 
   Observable<Response> init() {
-    print('[FileBloc INIT]');
-    return Observable.combineLatest2(allocateSpace(), createStartFiles(), (Response as, Response cf) {
-      print('as ${as.success}');
-      print('cf ${cf.success}');
-      return Response(success: true);
+    Log.info('[FileBloc INIT]');
+    return Observable.combineLatest2(allocateSpace(), createStartFiles(),
+        (Response as, Response cf) {
+      if (as.success == true && cf.success == true) {
+        return Response(success: true);
+      }
+      return Response(
+        success: false,
+        error: lang.insufficient_storage_space_on_smartphone,
+      );
     });
   }
 

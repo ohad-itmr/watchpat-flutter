@@ -1,9 +1,12 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:my_pat/app/model/api/ble_provider.dart';
+import 'package:my_pat/api/ble_provider.dart';
+import 'package:my_pat/generated/i18n.dart';
 
 class BleBloc extends BlocBase {
+  S lang;
+
   BleProvider bleProvider = BleProvider();
   FlutterBlue _flutterBlue;
 
@@ -41,7 +44,7 @@ class BleBloc extends BlocBase {
 
   //#region Services and Characteristics
   BehaviorSubject<List<BluetoothService>> _servicesSubject =
-  BehaviorSubject<List<BluetoothService>>();
+      BehaviorSubject<List<BluetoothService>>();
 
   Observable<List<BluetoothService>> get services => _servicesSubject.stream;
 
@@ -50,23 +53,28 @@ class BleBloc extends BlocBase {
   Observable<BluetoothService> get service => _serviceSubject.stream;
 
   BehaviorSubject<BluetoothCharacteristic> _charForWriteSubject =
-  BehaviorSubject<BluetoothCharacteristic>();
+      BehaviorSubject<BluetoothCharacteristic>();
 
   Observable<BluetoothCharacteristic> get charForWrite => _charForWriteSubject.stream;
 
   BehaviorSubject<BluetoothCharacteristic> _charForReadSubject =
-  BehaviorSubject<BluetoothCharacteristic>();
+      BehaviorSubject<BluetoothCharacteristic>();
 
   Observable<BluetoothCharacteristic> get charForRead => _charForReadSubject.stream;
+
   //#endregion Services and Characteristics
-
-
 
   Map<String, dynamic> message;
 
-  BleBloc() {
+  BleBloc(s) {
+    lang = s;
     _flutterBlue = bleProvider.flutterBlue;
-    _flutterBlue.state.then((BluetoothState s) => _stateSubject.add(s));
+
+    _flutterBlue.onStateChanged().listen((BluetoothState s) => _stateSubject.add(s));
+
+    _flutterBlue.state.then((BluetoothState s) {
+      _stateSubject.add(s);
+    });
   }
 
   @override

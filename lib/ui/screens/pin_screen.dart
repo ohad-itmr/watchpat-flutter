@@ -1,4 +1,4 @@
-import 'package:my_pat/bloc/helpers/bloc_provider.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../widgets/main_template/main_template.dart';

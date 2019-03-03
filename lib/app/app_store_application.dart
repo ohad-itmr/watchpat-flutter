@@ -1,5 +1,5 @@
 import 'package:fluro/fluro.dart';
-import 'app_routes.dart';
+import 'package:my_pat/app/app_routes.dart';
 import 'dart:async';
 import 'package:my_pat/config/Env.dart';
 import 'package:my_pat/utility/framework/Application.dart';

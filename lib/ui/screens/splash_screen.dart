@@ -10,7 +10,7 @@ class SplashScreen extends StatelessWidget {
   Future<void> _showBTWarning(
     BuildContext context,
     S loc,
-    WelcomeActivityBloc bloc,
+    BleBloc bloc,
     ) async {
     return showDialog<void>(
       context: context,
@@ -50,7 +50,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final WelcomeActivityBloc bloc = BlocProvider.of<WelcomeActivityBloc>(context);
+    final BleBloc bloc = BlocProvider.of<BleBloc>(context);
 //    print(appBloc.initialChecksComplete.listen((onData) => print('onData $onData')));
     final S loc = S.of(context);
 

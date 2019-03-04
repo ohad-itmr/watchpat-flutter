@@ -4,4 +4,3 @@ class BleProvider {
   FlutterBlue flutterBlue = FlutterBlue.instance;
 }
 
-BleProvider bleProvider = BleProvider();

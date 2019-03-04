@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:flutter_blue/flutter_blue.dart';
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 import '../widgets/main_template/main_template.dart';

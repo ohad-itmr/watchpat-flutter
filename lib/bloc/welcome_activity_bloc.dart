@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/api/file_system_provider.dart';
 import 'package:my_pat/api/network_provider.dart';
+import 'package:my_pat/bloc/app_bloc.dart';
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
 import 'package:my_pat/models/response_model.dart';
 import 'package:my_pat/utility/log/log.dart';
@@ -9,18 +10,16 @@ import 'package:rxdart/rxdart.dart';
 import 'helpers/bloc_base.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/generated/i18n.dart';
-import 'package:my_pat/api/ble_provider.dart';
 
 class WelcomeActivityBloc extends BlocBase {
-  final _flutterBlue = bleProvider.flutterBlue;
+  AppBloc root;
+
   final _networkProvider = NetworkProvider();
   final filesProvider = FileSystemProvider();
 
   final lang = S();
 
-  PublishSubject<BluetoothState> _bleStateSubject = PublishSubject<BluetoothState>();
 
-  Observable<BluetoothState> get bleState => _bleStateSubject.stream;
 
   Observable<bool> get showBTWarning => _showBTWarning.stream;
 
@@ -90,22 +89,15 @@ class WelcomeActivityBloc extends BlocBase {
     _initErrorsSubject.add(currentList);
   }
 
-  startInitialChecks(){
+  startInitialChecks() {}
 
-  }
-
-  WelcomeActivityBloc() {
+  WelcomeActivityBloc(AppBloc root) {
+    this.root=root;
     _initErrorsSubject.add(List());
 
     initErrors.listen((errs) => print('MY LIST ${errs.toString()}'));
 
-    _flutterBlue.onStateChanged().listen((BluetoothState s) {
-      _bleStateSubject.sink.add(s);
-    });
 
-    _flutterBlue.state.then((BluetoothState s) {
-      _bleStateSubject.sink.add(s);
-    });
 
     _networkProvider.connectivity
         .checkConnectivity()
@@ -114,14 +106,13 @@ class WelcomeActivityBloc extends BlocBase {
     _networkProvider.connectivity.onConnectivityChanged
         .listen((ConnectivityResult result) => _connectivityStatusHandler(result));
 
-    _bleStateSubject.stream.map(_bleStateHandler).listen(print);
+    root.bleBloc.bleState.map(_bleStateHandler).listen(print);
   }
 
   @override
   void dispose() {
     _initErrorsSubject.close();
     _showBTWarning.close();
-    _bleStateSubject.close();
     _internetExists.close();
   }
 }

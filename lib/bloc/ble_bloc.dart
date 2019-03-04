@@ -7,9 +7,13 @@ import 'package:my_pat/generated/i18n.dart';
 class BleBloc extends BlocBase {
   S lang;
 
-  BleProvider provider=bleProvider;
+  BleProvider _bleProvider=BleProvider();
 
   FlutterBlue _flutterBlue;
+
+  PublishSubject<BluetoothState> _bleStateSubject = PublishSubject<BluetoothState>();
+
+  Observable<BluetoothState> get bleState => _bleStateSubject.stream;
 
   //#region Scanning
   BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
@@ -25,10 +29,6 @@ class BleBloc extends BlocBase {
   //#endregion Scanning
 
   //#region States
-  BehaviorSubject<BluetoothState> _stateSubject = BehaviorSubject<BluetoothState>();
-
-  Observable<BluetoothState> get state => _stateSubject.stream;
-
   BehaviorSubject<BluetoothDeviceState> _deviceStateSubject =
       BehaviorSubject<BluetoothDeviceState>();
 
@@ -69,19 +69,19 @@ class BleBloc extends BlocBase {
 
   BleBloc(s) {
     lang = s;
-    _flutterBlue = bleProvider.flutterBlue;
-
-    _flutterBlue.onStateChanged().listen((BluetoothState s) => _stateSubject.add(s));
+    _flutterBlue = _bleProvider.flutterBlue;
+    _flutterBlue.onStateChanged().listen((BluetoothState s) {
+      _bleStateSubject.sink.add(s);
+    });
 
     _flutterBlue.state.then((BluetoothState s) {
-      _stateSubject.add(s);
+      _bleStateSubject.sink.add(s);
     });
   }
 
   @override
   void dispose() {
     _deviceSubject.close();
-    _stateSubject.close();
     _scanStateSubject.close();
     _scanResultsSubject.close();
     _servicesSubject.close();
@@ -89,5 +89,7 @@ class BleBloc extends BlocBase {
     _serviceSubject.close();
     _charForWriteSubject.close();
     _charForReadSubject.close();
+    _bleStateSubject.close();
+
   }
 }

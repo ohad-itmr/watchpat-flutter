@@ -32,7 +32,6 @@ class AppComponentState extends State<AppComponent> {
     print('[INIT_STATE]');
     appBloc = AppBloc();
     pinBloc = PinBloc();
-    welcomeBloc = WelcomeActivityBloc();
   }
 
   @override
@@ -41,7 +40,8 @@ class AppComponentState extends State<AppComponent> {
       blocProviders: [
         BlocProvider<AppBloc>(bloc: appBloc),
         BlocProvider<PinBloc>(bloc: pinBloc),
-        BlocProvider<WelcomeActivityBloc>(bloc: welcomeBloc),
+        BlocProvider<BleBloc>(bloc: appBloc.bleBloc),
+        BlocProvider<WelcomeActivityBloc>(bloc: appBloc.welcomeBloc),
       ],
       child: MaterialApp(
         title: Env.appName,
@@ -65,7 +65,6 @@ class AppComponentState extends State<AppComponent> {
   void dispose() {
     appBloc.dispose();
     pinBloc.dispose();
-    welcomeBloc.dispose();
     super.dispose();
   }
 }

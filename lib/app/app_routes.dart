@@ -12,9 +12,14 @@ import 'package:my_pat/ui/screens/start_recording_screen.dart';
 import 'package:my_pat/ui/screens/strap_wrist_screen.dart';
 import 'package:my_pat/ui/screens/uploading_screen.dart';
 import 'package:my_pat/ui/screens/welcome_screen.dart';
-
+import 'package:my_pat/ui/screens/splash_screen.dart';
 
 var rootHandler =
+    Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return SplashScreen();
+});
+
+var welcomeHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return WelcomeScreen();
 });
@@ -78,10 +83,11 @@ class AppRoutes {
       print('ROUTE WAS NOT FOUND !!!');
     });
 
-    router.define(WelcomeScreen.PATH,
+    router.define(SplashScreen.PATH,
         handler: rootHandler, transitionType: TransitionType.native);
 
-
+    router.define(WelcomeScreen.PATH,
+        handler: welcomeHandler, transitionType: TransitionType.native);
     router.define(BatteryScreen.PATH,
         handler: batteryRouteHandler, transitionType: TransitionType.native);
     router.define(ChestSensorScreen.PATH,

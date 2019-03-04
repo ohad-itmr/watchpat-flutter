@@ -7,7 +7,8 @@ import 'package:my_pat/generated/i18n.dart';
 class BleBloc extends BlocBase {
   S lang;
 
-  BleProvider bleProvider = BleProvider();
+  BleProvider provider=bleProvider;
+
   FlutterBlue _flutterBlue;
 
   //#region Scanning

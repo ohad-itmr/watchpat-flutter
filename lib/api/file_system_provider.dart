@@ -4,7 +4,7 @@ import 'package:my_pat/utility/log/log.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:my_pat/config/settings.dart';
 
-import 'response.dart';
+import 'package:my_pat/models/response_model.dart';
 
 class FileSystemProvider {
   final String localDataFileName = Settings.dataFileName;

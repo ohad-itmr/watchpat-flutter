@@ -10,14 +10,53 @@ import '../widgets/buttons_block.dart';
 import 'package:my_pat/bloc/bloc_provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  static const String PATH = '/';
+  static const String PATH = '/welcome';
 
   WelcomeScreen({Key key}) : super(key: key);
 
-  void _handleNext(bool checksComplete, List<String> errors) {
-    print('checksComplete $checksComplete');
+  void _handleNext(WelcomeActivityBloc bloc) {
+    print('checksComplete ');
+  }
 
-    print('Errors $errors');
+  _showNoInternetWarning(
+    BuildContext context,
+    S loc,
+    WelcomeActivityBloc bloc,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(loc.no_inet_connection),
+                StreamBuilder(
+                  stream: bloc.internetExists,
+                  initialData: false,
+                  builder: (context, AsyncSnapshot<bool> snapshot) {
+                    print('snapshot.data ${snapshot.data}');
+                    if (snapshot.hasData && snapshot.data) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Navigator.of(context).pop();
+                      });
+                      _handleNext(bloc);
+                    }
+                    return Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -25,40 +64,6 @@ class WelcomeScreen extends StatelessWidget {
     final WelcomeActivityBloc bloc = BlocProvider.of<WelcomeActivityBloc>(context);
 //    print(appBloc.initialChecksComplete.listen((onData) => print('onData $onData')));
     final S loc = S.of(context);
-
-    Future<void> _showBTWarning() async {
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(loc.bt_initiation_error),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(loc.bt_must_be_enabled),
-                  StreamBuilder(
-                    stream: bloc.bleState,
-                    builder: (context, AsyncSnapshot<BluetoothState> snapshot) {
-                      if (!snapshot.hasData || snapshot.data != BluetoothState.on){
-                        return Container(
-                          padding: EdgeInsets.all(10.0),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      Navigator.of(context).pop();
-                      return Container();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }
 
     return MainTemplate(
       showBack: false,
@@ -76,34 +81,23 @@ class WelcomeScreen extends StatelessWidget {
           ],
         ),
         buttons: StreamBuilder(
-          stream: bloc.bleState,
-          builder: (context, AsyncSnapshot<BluetoothState> bleSnapshot) {
-            if (bleSnapshot.hasData) {
-              if (bleSnapshot.data != BluetoothState.on) {
-                WidgetsBinding.instance.addPostFrameCallback((_) => _showBTWarning());
-              }
-            }
-            return StreamBuilder(
-              stream: bloc.initialChecksComplete,
-              builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                if (!snapshot.hasData) return CircularProgressIndicator();
-                if (snapshot.data == true) {
-                  return StreamBuilder(
-                    stream: bloc.initErrors,
-                    builder: (context, AsyncSnapshot<dynamic> errorsSnapshot) {
-                      return ButtonsBlock(
-                        nextActionButton: ButtonModel(
-                          action: () => _handleNext(snapshot.data, errorsSnapshot.data),
-                        ),
-                        moreActionButton: ButtonModel(
-                          action: () {},
-                        ),
-                      );
-                    },
-                  );
-                }
-                return Container();
-              },
+          stream: bloc.initialChecksComplete,
+          builder: (context, AsyncSnapshot<dynamic> snapshot) {
+            return ButtonsBlock(
+              nextActionButton: ButtonModel(
+                action: () {
+                  bool internetExists = bloc.getInternetConnectionState();
+                  if (!internetExists) {
+                    WidgetsBinding.instance.addPostFrameCallback(
+                        (_) => _showNoInternetWarning(context, loc, bloc));
+                  } else {
+                    _handleNext(bloc);
+                  }
+                },
+              ),
+              moreActionButton: ButtonModel(
+                action: () {},
+              ),
             );
           },
         ),

@@ -12,19 +12,20 @@ class AppInitEvent extends BlocEvent {
 
   AppInitEvent({
     this.type: AppInitEventType.start,
-  }) : assert(type != null);
+  });
 }
 
 class AppInitState extends BlocState {
   AppInitState({
     @required this.isInitialized,
     this.isInitializing: false,
-    this.progress: 0,
-  });
+  })  : bleActive = false,
+        internetExists = false;
 
   final bool isInitialized;
   final bool isInitializing;
-  final int progress;
+  final bool bleActive;
+  final bool internetExists;
 
   factory AppInitState.notInitialized() {
     return AppInitState(
@@ -36,14 +37,12 @@ class AppInitState extends BlocState {
     return AppInitState(
       isInitialized: progress == 100,
       isInitializing: true,
-      progress: progress,
     );
   }
 
   factory AppInitState.initialized() {
     return AppInitState(
       isInitialized: true,
-      progress: 100,
     );
   }
 }

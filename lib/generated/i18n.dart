@@ -78,6 +78,7 @@ class S implements WidgetsLocalizations {
   String get low_power => "Low power alert";
   String get myPAT_connect_to_server_fail => "myPAT connection to SFTP server failure";
   String get mypat_device => "myPAT Device";
+  String get no_inet_connection => "Internet connection not available";
   String get none => "None";
   String get parameters_file_description => "Parameters file";
   String get patient_msg1 => "You are advised to leave the charger plugged in during the entire test procedure and close unused applications before starting test procedure";

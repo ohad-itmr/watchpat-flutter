@@ -1,10 +1,8 @@
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:my_pat/generated/i18n.dart';
 
 
 class PinBloc extends BlocBase {
-  S lang;
 
   String _pin = '';
 
@@ -35,8 +33,7 @@ class PinBloc extends BlocBase {
     _inputSubject.add('');
   }
 
-  PinBloc(s) {
-    lang=s;
+  PinBloc() {
     _inputSubject
         .map((newVal) => _pin = '$newVal')
         .listen((value) => _resultSubject.add(value));

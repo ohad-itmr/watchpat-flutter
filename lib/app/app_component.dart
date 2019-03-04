@@ -21,6 +21,8 @@ class AppComponent extends StatefulWidget {
 class AppComponentState extends State<AppComponent> {
   final AppStoreApplication application;
   AppBloc appBloc;
+  PinBloc pinBloc;
+  WelcomeActivityBloc welcomeBloc;
 
   AppComponentState(this.application);
 
@@ -29,6 +31,8 @@ class AppComponentState extends State<AppComponent> {
     super.initState();
     print('[INIT_STATE]');
     appBloc = AppBloc();
+    pinBloc = PinBloc();
+    welcomeBloc = WelcomeActivityBloc();
   }
 
   @override
@@ -36,10 +40,8 @@ class AppComponentState extends State<AppComponent> {
     final app = BlocProviderTree(
       blocProviders: [
         BlocProvider<AppBloc>(bloc: appBloc),
-        BlocProvider<NetworkBloc>(bloc: appBloc.networkBloc),
-        BlocProvider<FileBloc>(bloc: appBloc.fileBloc),
-        BlocProvider<PinBloc>(bloc: appBloc.pinBloc),
-        BlocProvider<WelcomeActivityBloc>(bloc: appBloc.welcomeBloc),
+        BlocProvider<PinBloc>(bloc: pinBloc),
+        BlocProvider<WelcomeActivityBloc>(bloc: welcomeBloc),
       ],
       child: MaterialApp(
         title: Env.appName,
@@ -62,6 +64,8 @@ class AppComponentState extends State<AppComponent> {
   @override
   void dispose() {
     appBloc.dispose();
+    pinBloc.dispose();
+    welcomeBloc.dispose();
     super.dispose();
   }
 }

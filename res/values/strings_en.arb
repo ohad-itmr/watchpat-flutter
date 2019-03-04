@@ -61,6 +61,7 @@
   "myPAT_connect_to_server_fail": "myPAT connection to SFTP server failure",
   "mypat_device": "myPAT Device",
   "none": "None",
+  "no_inet_connection": "Internet connection not available",
   "parameters_file_description": "Parameters file",
   "patient_msg1": "You are advised to leave the charger plugged in during the entire test procedure and close unused applications before starting test procedure",
   "patient_msg2": "Please don't close myPAT application during test procedure",

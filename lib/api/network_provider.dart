@@ -1,12 +1,6 @@
-import 'dart:async';
-import 'package:my_pat/utility/network/network_check.dart';
+import 'package:connectivity/connectivity.dart';
+
 
 class NetworkProvider {
-  final NetworkCheck _networkCheck = NetworkCheck();
-
-  Future<bool> get internetExists async {
-    return await _networkCheck.check();
-  }
-  
-  
+  final Connectivity connectivity=Connectivity();
 }

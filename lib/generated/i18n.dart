@@ -24,6 +24,7 @@ class S implements WidgetsLocalizations {
   String get all_data_transmitted_successfully => "All data transmitted successfully";
   String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.";
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
+  String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT™ ONE and remove the battery.";
   String get batteryTitle => "Insert Battery";
   String get bt_initiation_error => "Bluetooth initiation error";
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth on.";
@@ -122,8 +123,8 @@ class S implements WidgetsLocalizations {
   String get welcomeContent => "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician.\nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.";
   String get welcomeTitle => "Welcome";
   String get welcome_to_mypat => "Welcome to myPAT";
+  String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   String device_sn(String sn) => "Main Device serial number $sn";
-  String discovered_many_devices_please_disconnect_all(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   String status(String status) => "Status: $status";
   String stepper(String step, String total) => "Step $step of $total";
   String test_length(String time) => "Test Time: $time";

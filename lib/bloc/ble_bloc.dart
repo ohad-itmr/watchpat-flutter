@@ -1,34 +1,53 @@
+import 'dart:async';
+
+import 'package:meta/meta.dart';
+import 'package:my_pat/utility/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/api/ble_provider.dart';
 import 'package:my_pat/generated/i18n.dart';
 
+enum ScanState { NOT_STARTED, SCANNING, COMPLETE }
+
+enum ScanResultSate { NOT_FOUND, FOUND_SINGLE, FOUND_MULTIPLE }
+
 class BleBloc extends BlocBase {
   S lang;
 
-  BleProvider _bleProvider=BleProvider();
+  BleProvider _bleProvider = BleProvider();
 
   FlutterBlue _flutterBlue;
 
-  PublishSubject<BluetoothState> _bleStateSubject = PublishSubject<BluetoothState>();
-
-  Observable<BluetoothState> get bleState => _bleStateSubject.stream;
-
   //#region Scanning
+  StreamSubscription _scanSubscription;
+
   BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
       BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
+
+  BehaviorSubject<ScanResultSate> _scanResultStateSubject =
+      BehaviorSubject<ScanResultSate>();
 
   Observable<Map<DeviceIdentifier, ScanResult>> get scanResults =>
       _scanResultsSubject.stream;
 
-  BehaviorSubject<bool> _scanStateSubject = BehaviorSubject<bool>();
+  BehaviorSubject<ScanState> _scanStateSubject = BehaviorSubject<ScanState>();
 
-  Observable<bool> get isScanning => _scanStateSubject.stream;
+  Observable<ScanState> get scanState => _scanStateSubject.stream;
+
+  Observable<ScanResultSate> get scanResultState => _scanResultStateSubject.stream;
+
+  Sink<ScanResultSate> get changeScanResultState => _scanResultStateSubject.sink;
+
+  int get scanResultsLength => _scanResultsSubject.value.length;
 
   //#endregion Scanning
 
   //#region States
+  PublishSubject<BluetoothState> _bleStateSubject = PublishSubject<BluetoothState>();
+
+  Observable<BluetoothState> get bleState => _bleStateSubject.stream;
+
   BehaviorSubject<BluetoothDeviceState> _deviceStateSubject =
       BehaviorSubject<BluetoothDeviceState>();
 
@@ -65,10 +84,39 @@ class BleBloc extends BlocBase {
 
   //#endregion Services and Characteristics
 
-  Map<String, dynamic> message;
+  startScan({int time, @required bool connectToFirstDevice}) {
+    Log.info('## START SCAN $this');
+    _scanStateSubject.sink.add(ScanState.SCANNING);
+
+    _scanResultsSubject.sink.add(Map());
+    _scanSubscription = _flutterBlue
+        .scan(timeout: time != null ? Duration(seconds: time) : null)
+        .listen((scanResult) {
+      if (scanResult.advertisementData.localName == 'ITAMAR_UART') {
+        Log.info('## FOUND DEVICE $this');
+
+        if (connectToFirstDevice) {
+          stopScan();
+          // TODO connect to device
+        } else {
+          var currentResults = _scanResultsSubject.value;
+          currentResults[scanResult.device.id] = scanResult;
+        }
+      }
+    }, onDone: stopScan);
+  }
+
+  stopScan() {
+    Log.info('## STOP SCAN $this');
+    _scanSubscription?.cancel();
+    _scanSubscription = null;
+
+    _scanStateSubject.sink.add(ScanState.COMPLETE);
+  }
 
   BleBloc(s) {
     lang = s;
+    _scanStateSubject.sink.add(ScanState.NOT_STARTED);
     _flutterBlue = _bleProvider.flutterBlue;
     _flutterBlue.onStateChanged().listen((BluetoothState s) {
       _bleStateSubject.sink.add(s);
@@ -90,6 +138,6 @@ class BleBloc extends BlocBase {
     _charForWriteSubject.close();
     _charForReadSubject.close();
     _bleStateSubject.close();
-
+    _scanResultStateSubject.close();
   }
 }

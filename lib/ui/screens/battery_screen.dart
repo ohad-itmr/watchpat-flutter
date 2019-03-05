@@ -1,3 +1,5 @@
+import 'package:my_pat/bloc/bloc_provider.dart';
+
 import '../../generated/i18n.dart';
 import 'package:flutter/material.dart';
 
@@ -14,27 +16,38 @@ class BatteryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final S loc = S.of(context);
+    final BleBloc bleBloc = BlocProvider.of<BleBloc>(context);
+
     return MainTemplate(
-      showBack: true,
+      showBack: false,
       showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
           imageName: 'insert_battery.png',
         ),
-        bottomBlock: BlockTemplate(
-          type: BlockType.text,
-          title: loc.batteryTitle,
-          content: [
-            loc.batteryContent_1,
-            loc.batteryContent_2,
-          ],
-        ),
+        bottomBlock: StreamBuilder(
+            stream: bleBloc.scanResultState,
+            builder: (BuildContext context, AsyncSnapshot<ScanResultSate> snapshot) {
+              return BlockTemplate(
+                type: BlockType.text,
+                title: loc.batteryTitle,
+                content: !snapshot.hasData || snapshot.data == ScanResultSate.NOT_FOUND
+                    ? [
+                        loc.batteryContent_1,
+                        loc.batteryContent_2,
+                      ]
+                    : [
+                        loc.batteryContent_many_1('${bleBloc.scanResultsLength}'),
+                        loc.batteryContent_many_2,
+                      ],
+              );
+            }),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
               Navigator.pushNamed(context, '/pin');
-              },
+            },
           ),
           moreActionButton: ButtonModel(
             action: () {},

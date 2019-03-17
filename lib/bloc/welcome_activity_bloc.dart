@@ -1,24 +1,38 @@
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/api/file_system_provider.dart';
 import 'package:my_pat/api/network_provider.dart';
 import 'package:my_pat/bloc/app_bloc.dart';
-import 'package:my_pat/bloc/ble_bloc.dart';
+import 'package:my_pat/bloc/bloc_provider.dart';
 import 'package:my_pat/bloc/helpers/bloc_base.dart';
 import 'package:my_pat/models/response_model.dart';
-import 'package:my_pat/utility/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 import 'helpers/bloc_base.dart';
 import 'package:my_pat/generated/i18n.dart';
+
+enum WelcomeActivityState { NOT_STARTED, WORKING, DONE_FAILED, DONE_SUCCESS }
+enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }
 
 class WelcomeActivityBloc extends BlocBase {
   AppBloc _root;
 
   final _networkProvider = NetworkProvider();
-  final filesProvider = FileSystemProvider();
-
+  final _filesProvider = fileSystemProvider;
   final lang = S();
+
+  BehaviorSubject<WelcomeActivityState> _welcomeState =
+      BehaviorSubject<WelcomeActivityState>();
+
+  PublishSubject<FileCreationState> _fileCreationStateSubject =
+      PublishSubject<FileCreationState>();
+
+  Observable<FileCreationState> get fileCreationState => _fileCreationStateSubject.stream;
+
+  PublishSubject<FileCreationState> _fileAllocationStateSubject =
+      PublishSubject<FileCreationState>();
+
+  Observable<FileCreationState> get fileAllocationState =>
+      _fileAllocationStateSubject.stream;
 
   BehaviorSubject<bool> _internetExists = BehaviorSubject<bool>();
 
@@ -28,21 +42,34 @@ class WelcomeActivityBloc extends BlocBase {
 
   Observable<List<String>> get initErrors => _initErrorsSubject.stream;
 
-  Stream<Response> _allocateSpace() {
-    return filesProvider.allocateSpace().asStream();
+  Future<void> _allocateSpace() async {
+    _fileAllocationStateSubject.sink.add(FileCreationState.STARTED);
+    Response res = await _filesProvider.allocateSpace();
+    if (res.success) {
+      _fileAllocationStateSubject.sink.add(FileCreationState.DONE_SUCCESS);
+    } else {
+      _fileAllocationStateSubject.sink.add(FileCreationState.DONE_FAILED);
+    }
   }
 
-  Stream<Response> _createStartFiles() {
-    return filesProvider.init().asStream();
+  Future<void> createStartFiles() async {
+    _fileCreationStateSubject.sink.add(FileCreationState.STARTED);
+    Response res = await _filesProvider.init();
+    if (res.success) {
+      _fileCreationStateSubject.sink.add(FileCreationState.DONE_SUCCESS);
+    } else {
+      _fileCreationStateSubject.sink.add(FileCreationState.DONE_FAILED);
+    }
   }
 
   Observable<Response> _initFiles() {
-    Log.info('[FileBloc INIT]');
-    return Observable.combineLatest2(_allocateSpace(), _createStartFiles(),
-        (Response as, Response cf) {
-      if (as.success == true && cf.success == true) {
+    return Observable.combineLatest2(fileAllocationState, fileCreationState,
+        (FileCreationState allocationState, FileCreationState fileState) {
+      if (allocationState == FileCreationState.DONE_SUCCESS &&
+          fileState == FileCreationState.DONE_SUCCESS) {
         return Response(success: true);
       }
+      _welcomeState.sink.add(WelcomeActivityState.DONE_FAILED);
       return Response(
         success: false,
         error: lang.insufficient_storage_space_on_smartphone,
@@ -51,23 +78,12 @@ class WelcomeActivityBloc extends BlocBase {
   }
 
   Observable<bool> get initialChecksComplete => Observable.combineLatest3(
-        _root.bleBloc.scanState,
-        _root.bleBloc.scanResults,
+        _root.systemStateBloc.bleScanStateStream,
+        _root.systemStateBloc.bleScanResultStream,
         _initFiles(),
-        (ScanState scanState, Map<DeviceIdentifier, ScanResult> scanResults, Response f) {
+        (ScanStates scanState, ScanResultStates scanResultState, Response f) {
           print(scanState);
-          if (scanState == ScanState.COMPLETE) {
-            if (scanResults.length > 1) {
-              Log.warning('## Found multiple devices: ${scanResults.length} $this');
-              _root.bleBloc.changeScanResultState.add(ScanResultSate.FOUND_MULTIPLE);
-            } else if (scanResults.length == 0) {
-              Log.warning('## Devices not found $this');
-              _root.bleBloc.changeScanResultState.add(ScanResultSate.NOT_FOUND);
-            } else {
-              Log.info('## Device found $this');
-              _root.bleBloc.changeScanResultState.add(ScanResultSate.FOUND_SINGLE);
-            }
-          } else {
+          if (scanState != ScanStates.COMPLETE) {
             return false;
           }
           _initErrorsSubject.add(List());
@@ -93,11 +109,9 @@ class WelcomeActivityBloc extends BlocBase {
     _initErrorsSubject.add(currentList);
   }
 
-  WelcomeActivityBloc(AppBloc root) {
-    this._root = root;
-    _initErrorsSubject.add(List());
-
-    initErrors.listen((errs) => Log.info('## INIT ERRORS ${errs.toString()} $this'));
+  init() {
+    _welcomeState.sink.add(WelcomeActivityState.WORKING);
+//    initErrors.listen((errs) => Log.info('## INIT ERRORS ${errs.toString()} $this'));
 
     _networkProvider.connectivity
         .checkConnectivity()
@@ -107,9 +121,22 @@ class WelcomeActivityBloc extends BlocBase {
         .listen((ConnectivityResult result) => _connectivityStatusHandler(result));
   }
 
+  WelcomeActivityBloc(AppBloc root) {
+    this._root = root;
+    _fileCreationStateSubject.sink.add(FileCreationState.NOT_STARTED);
+    _fileAllocationStateSubject.sink.add(FileCreationState.NOT_STARTED);
+    _initErrorsSubject.add(List());
+    _welcomeState.sink.add(WelcomeActivityState.NOT_STARTED);
+    _allocateSpace();
+    createStartFiles();
+  }
+
   @override
   void dispose() {
     _initErrorsSubject.close();
     _internetExists.close();
+    _welcomeState.close();
+    _fileCreationStateSubject.close();
+    _fileAllocationStateSubject.close();
   }
 }

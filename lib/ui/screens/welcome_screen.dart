@@ -18,12 +18,11 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool nextIsPressed = false;
 
-  void _handleNext(
-      BuildContext context, WelcomeActivityBloc welcomeBloc, BleBloc bleBloc) {
-    bleBloc.scanResultState.listen((ScanResultSate state) {
-      if (state != ScanResultSate.FOUND_SINGLE) {
+  void _handleNext(BuildContext context, WelcomeActivityBloc welcomeBloc,SystemStateBloc stateBloc) {
+    stateBloc.bleScanResultStream.listen((ScanResultStates state) {
+      if (state != ScanResultStates.LOCATED_SINGLE) {
         Navigator.of(context).pushReplacementNamed('/battery');
-      } else if(welcomeBloc.getInitialErrors().length>0){
+      } else if (welcomeBloc.getInitialErrors().length > 0) {
         // TODO show errors list
         print('HAVE ERRORS');
       } else {
@@ -34,7 +33,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   _showNoInternetWarning(BuildContext context, S loc, WelcomeActivityBloc welcomeBloc,
-      BleBloc bleBloc) async {
+      SystemStateBloc stateBloc) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -52,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.of(context).pop();
                       });
-                      _handleNext(context, welcomeBloc, bleBloc);
+                      _handleNext(context, welcomeBloc, stateBloc);
                     }
                     return Container(
                       padding: EdgeInsets.all(10.0),
@@ -73,7 +72,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     final WelcomeActivityBloc welcomeBloc = BlocProvider.of<WelcomeActivityBloc>(context);
-    final BleBloc bleBloc = BlocProvider.of<BleBloc>(context);
+    final SystemStateBloc stateBloc = BlocProvider.of<SystemStateBloc>(context);
 //    print(appBloc.initialChecksComplete.listen((onData) => print('onData $onData')));
     final S loc = S.of(context);
 
@@ -99,11 +98,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             if (nextIsPressed) {
               if (snapshot.hasData && snapshot.data) {
                 WidgetsBinding.instance.addPostFrameCallback(
-                    (_) => _handleNext(context, welcomeBloc, bleBloc));
+                    (_) => _handleNext(context, welcomeBloc, stateBloc));
               }
               return CircularProgressIndicator();
             }
-            return buildButtonsBloc(welcomeBloc, bleBloc, snapshot, loc);
+            return buildButtonsBloc(welcomeBloc, stateBloc, snapshot, loc);
           },
         ),
         showSteps: false,
@@ -113,7 +112,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget buildButtonsBloc(
     WelcomeActivityBloc welcomeBloc,
-    BleBloc bleBloc,
+    SystemStateBloc stateBloc,
     AsyncSnapshot<bool> snapshot,
     S loc,
   ) {
@@ -123,10 +122,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           bool internetExists = welcomeBloc.getInternetConnectionState();
           if (!internetExists) {
             WidgetsBinding.instance.addPostFrameCallback(
-                (_) => _showNoInternetWarning(context, loc, welcomeBloc, bleBloc));
+                (_) => _showNoInternetWarning(context, loc, welcomeBloc, stateBloc));
           } else {
             if (snapshot.hasData && snapshot.data) {
-              _handleNext(context, welcomeBloc, bleBloc);
+              _handleNext(context, welcomeBloc, stateBloc);
             } else {
               setState(() {
                 nextIsPressed = true;

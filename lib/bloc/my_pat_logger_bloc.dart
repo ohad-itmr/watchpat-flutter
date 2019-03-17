@@ -4,7 +4,7 @@ import 'package:my_pat/utility/log/log.dart';
 import 'dart:io';
 
 class MyPatLoggerBloc {
-  final _filesProvider = FileSystemProvider();
+  final _filesProvider = fileSystemProvider;
 
 
   _saveLogMessage(String tag, String sender, String message) async {

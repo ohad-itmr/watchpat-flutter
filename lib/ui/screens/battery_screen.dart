@@ -17,6 +17,7 @@ class BatteryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final S loc = S.of(context);
     final BleBloc bleBloc = BlocProvider.of<BleBloc>(context);
+    final SystemStateBloc systemStateBloc = BlocProvider.of<SystemStateBloc>(context);
 
     return MainTemplate(
       showBack: false,
@@ -27,12 +28,12 @@ class BatteryScreen extends StatelessWidget {
           imageName: 'insert_battery.png',
         ),
         bottomBlock: StreamBuilder(
-            stream: bleBloc.scanResultState,
-            builder: (BuildContext context, AsyncSnapshot<ScanResultSate> snapshot) {
+            stream: systemStateBloc.bleScanResultStream,
+            builder: (BuildContext context, AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
                 type: BlockType.text,
                 title: loc.batteryTitle,
-                content: !snapshot.hasData || snapshot.data == ScanResultSate.NOT_FOUND
+                content: !snapshot.hasData || snapshot.data == ScanResultStates.NOT_LOCATED
                     ? [
                         loc.batteryContent_1,
                         loc.batteryContent_2,

@@ -64,6 +64,7 @@ class FileSystemProvider {
   }
 
   Future<Response> init() async {
+
     try {
       Log.info('Attempt to create initial files...');
       File mainLogFile = await logMainFile;
@@ -101,3 +102,5 @@ class FileSystemProvider {
     }
   }
 }
+
+FileSystemProvider fileSystemProvider = FileSystemProvider();

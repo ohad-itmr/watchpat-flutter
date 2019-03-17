@@ -6,6 +6,10 @@ export 'ble_bloc.dart';
 export 'battery_bloc.dart';
 export 'my_pat_logger_bloc.dart';
 export 'welcome_activity_bloc.dart';
+export 'command_tasker_bloc.dart';
+export 'device_config_bloc.dart';
+export 'system_state_bloc.dart';
+export 'incoming_packet_handler_bloc.dart';
 
 Type _typeOf<T>() => T;
 

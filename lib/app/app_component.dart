@@ -22,7 +22,6 @@ class AppComponentState extends State<AppComponent> {
   final AppStoreApplication application;
   AppBloc _appBloc;
   PinBloc _pinBloc;
-  WelcomeActivityBloc welcomeBloc;
 
   AppComponentState(this.application);
 
@@ -41,6 +40,7 @@ class AppComponentState extends State<AppComponent> {
         BlocProvider<PinBloc>(bloc: _pinBloc),
         BlocProvider<BleBloc>(bloc: _appBloc.bleBloc),
         BlocProvider<WelcomeActivityBloc>(bloc: _appBloc.welcomeBloc),
+        BlocProvider<SystemStateBloc>(bloc: _appBloc.systemStateBloc),
       ],
       child: MaterialApp(
         title: Env.appName,

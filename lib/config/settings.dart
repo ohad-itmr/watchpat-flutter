@@ -1,4 +1,5 @@
 class Settings {
+  static const appName = 'WatchPATApp';
   static final itamarUartName = 'ITAMAR_UART';
   static final itamarUartAddress = 'CD:FC:5C:DA:F0:AD';
 

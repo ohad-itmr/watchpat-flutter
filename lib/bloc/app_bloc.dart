@@ -9,14 +9,24 @@ class AppBloc extends BlocBase {
   BatteryBloc batteryBloc;
   MyPatLoggerBloc loggerBloc;
   WelcomeActivityBloc welcomeBloc;
+  CommandTaskerBloc commandTaskerBloc;
+  DeviceConfigBloc configBloc;
+  SystemStateBloc systemStateBloc;
+  IncomingPacketHandlerBloc incomingPacketHandler;
+
   S lang;
 
   AppBloc() {
     lang = S();
-    bleBloc = BleBloc(lang);
     batteryBloc = BatteryBloc(lang);
     loggerBloc = MyPatLoggerBloc();
     welcomeBloc = WelcomeActivityBloc(this);
+    commandTaskerBloc = CommandTaskerBloc();
+    configBloc = DeviceConfigBloc(this);
+    systemStateBloc = SystemStateBloc(this);
+    incomingPacketHandler = IncomingPacketHandlerBloc(this);
+    bleBloc = BleBloc(lang, this);
+
   }
 
   @override
@@ -24,5 +34,9 @@ class AppBloc extends BlocBase {
     batteryBloc.dispose();
     bleBloc.dispose();
     welcomeBloc.dispose();
+    commandTaskerBloc.dispose();
+    configBloc.dispose();
+    systemStateBloc.dispose();
+    incomingPacketHandler.dispose();
   }
 }

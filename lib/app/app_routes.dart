@@ -22,6 +22,8 @@ var rootHandler =
 var welcomeHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   final BleBloc bleBloc = BlocProvider.of<BleBloc>(context);
+  final WelcomeActivityBloc welcomeBloc = BlocProvider.of<WelcomeActivityBloc>(context);
+  welcomeBloc.init();
   bleBloc.startScan(time: 3, connectToFirstDevice: false);
   return WelcomeScreen();
 });

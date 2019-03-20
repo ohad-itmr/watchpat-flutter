@@ -28,7 +28,6 @@ class AppComponentState extends State<AppComponent> {
   @override
   void initState() {
     super.initState();
-    print('[INIT_STATE]');
     _appBloc = AppBloc();
     _pinBloc = PinBloc();
   }

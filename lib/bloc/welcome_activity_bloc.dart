@@ -20,16 +20,23 @@ class WelcomeActivityBloc extends BlocBase {
   final _filesProvider = fileSystemProvider;
   final lang = S();
 
-  BehaviorSubject<WelcomeActivityState> _welcomeState =
-      BehaviorSubject<WelcomeActivityState>();
+  WelcomeActivityBloc(AppBloc root) {
+    this._root = root;
+    _initErrorsSubject.add(List());
+    _allocateSpace();
+    createStartFiles();
+  }
 
-  PublishSubject<FileCreationState> _fileCreationStateSubject =
-      PublishSubject<FileCreationState>();
+  BehaviorSubject<WelcomeActivityState> _welcomeState =
+      BehaviorSubject<WelcomeActivityState>.seeded(WelcomeActivityState.NOT_STARTED);
+
+  BehaviorSubject<FileCreationState> _fileCreationStateSubject =
+  BehaviorSubject<FileCreationState>.seeded(FileCreationState.NOT_STARTED);
 
   Observable<FileCreationState> get fileCreationState => _fileCreationStateSubject.stream;
 
-  PublishSubject<FileCreationState> _fileAllocationStateSubject =
-      PublishSubject<FileCreationState>();
+  BehaviorSubject<FileCreationState> _fileAllocationStateSubject =
+  BehaviorSubject<FileCreationState>.seeded(FileCreationState.NOT_STARTED);
 
   Observable<FileCreationState> get fileAllocationState =>
       _fileAllocationStateSubject.stream;
@@ -121,15 +128,7 @@ class WelcomeActivityBloc extends BlocBase {
         .listen((ConnectivityResult result) => _connectivityStatusHandler(result));
   }
 
-  WelcomeActivityBloc(AppBloc root) {
-    this._root = root;
-    _fileCreationStateSubject.sink.add(FileCreationState.NOT_STARTED);
-    _fileAllocationStateSubject.sink.add(FileCreationState.NOT_STARTED);
-    _initErrorsSubject.add(List());
-    _welcomeState.sink.add(WelcomeActivityState.NOT_STARTED);
-    _allocateSpace();
-    createStartFiles();
-  }
+
 
   @override
   void dispose() {

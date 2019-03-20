@@ -7,7 +7,7 @@ import 'package:my_pat/utility/convert_formats.dart';
 import 'package:my_pat/api/ble_provider.dart';
 import 'package:my_pat/api/prefs_provider.dart';
 import 'package:my_pat/api/received_packet.dart';
-import 'package:my_pat/api/file_system_provider.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 enum PacketState { WAITING_FOR_NEW, HANDLING_PACKET, PACKET_COMPLETE }
 
@@ -17,7 +17,34 @@ class IncomingPacketHandlerBloc extends BlocBase {
   AppBloc _root;
   SystemStateBloc _systemStateBloc;
   CommandTaskerBloc _commandTasker;
-  FileSystemProvider _fileSystemProvider = fileSystemProvider;
+
+  String get tag => Trace.from(StackTrace.current).terse.toString();
+
+  IncomingPacketHandlerBloc(this._root) {
+    lang = S();
+    _commandTasker = _root.commandTaskerBloc;
+    _systemStateBloc = _root.systemStateBloc;
+    _incomingPacketLength = 0;
+    _receivedByteStream = [];
+    _paramFileByteStream = [];
+    _logFileByteStream = [];
+    _dataReceivedTimer =
+        WatchPATTimer('DataReceivedTimeout', 3000, () => _isDataReceiving = false);
+    _packetAnalysisTimer = WatchPATTimer('PacketAnalysisTimer', 60 * 1000, () {
+      _isPacketAnalysis = false;
+      Log.info(
+          '>>>>>>>>>>>> PACKET ANALYSIS END.\n\n @@@packets received: $_packetAnalyzed, \n@@@bytes received: $_bytesAnalyzed');
+    });
+    _testStartTimer = WatchPATTimer('TestStartTimeout', 60 * 1000, () {
+      Log.info(">>>>>>>>>>>> STARTING PACKET ANALYSIS ,$tag");
+      _packetAnalysisTimer.startTimer();
+      _isPacketAnalysis = true;
+    });
+
+    _packetAnalyzed = 0;
+    _bytesAnalyzed = 0;
+    _isPacketAnalysis = false;
+  }
 
   static const int _PATIENT_ERROR_BATTERY_VOLTAGE_TEST = 0x0001;
   static const int _PATIENT_ERROR_ACTIGRAPH_TEST = 0x0008;
@@ -28,47 +55,24 @@ class IncomingPacketHandlerBloc extends BlocBase {
   static const int _PATIENT_ERROR_SBP_TEST = 0x0400;
   static const int _PATIENT_ERROR_NO_FINGER = 0x2000;
 
-  PacketState _packetState = PacketState.WAITING_FOR_NEW;
+  static PacketState _packetState = PacketState.WAITING_FOR_NEW;
 
   WatchPATTimer _dataReceivedTimer;
   WatchPATTimer _testStartTimer;
   WatchPATTimer _packetAnalysisTimer;
 
-  List<int> _receivedByteStream;
-  List<int> _paramFileByteStream;
-  List<int> _logFileByteStream;
+  List<int> _receivedByteStream = [];
+  List<int> _paramFileByteStream = [];
+  List<int> _logFileByteStream = [];
 
   List<int> _incomingData;
-  int _incomingPacketLength;
+  int _incomingPacketLength = 0;
   bool _isPacketAnalysis;
   int _packetAnalyzed;
   int _bytesAnalyzed;
 
   bool _isFirstPacketOfDataReceived = false;
   bool _isDataReceiving = false;
-
-  IncomingPacketHandlerBloc(this._root) {
-    lang = S();
-    _commandTasker = _root.commandTaskerBloc;
-    _systemStateBloc = _root.systemStateBloc;
-    _incomingPacketLength = 0;
-    _dataReceivedTimer =
-        WatchPATTimer('DataReceivedTimeout', 3000, () => _isDataReceiving = false);
-    _packetAnalysisTimer = WatchPATTimer('PacketAnalysisTimer', 60 * 1000, () {
-      _isPacketAnalysis = false;
-      Log.info(
-          '>>>>>>>>>>>> PACKET ANALYSIS END.\n\n @@@packets received: $_packetAnalyzed, \n@@@bytes received: $_bytesAnalyzed');
-    });
-    _testStartTimer = WatchPATTimer('TestStartTimeout', 60 * 1000, () {
-      Log.info(">>>>>>>>>>>> STARTING PACKET ANALYSIS ,$this");
-      _packetAnalysisTimer.startTimer();
-      _isPacketAnalysis = true;
-    });
-
-    _packetAnalyzed = 0;
-    _bytesAnalyzed = 0;
-    _isPacketAnalysis = false;
-  }
 
   void startPacketAnalysis() {
     _testStartTimer.startTimer();
@@ -79,11 +83,12 @@ class IncomingPacketHandlerBloc extends BlocBase {
   }
 
   void acceptAndHandleData(List<int> data) {
+    print('acceptAndHandleData $_packetState');
     _incomingData = data;
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
-      Log.info("Handling new packet $this");
+      Log.info("Handling new packet $tag, $_packetState");
       _packetState = PacketState.HANDLING_PACKET;
 
       if (_isValidSignature()) {
@@ -98,6 +103,8 @@ class IncomingPacketHandlerBloc extends BlocBase {
         resetPacket();
         return;
       }
+    } else {
+      Log.info("Handling continue of packet");
     }
 
     _recordPacket();
@@ -308,44 +315,46 @@ class IncomingPacketHandlerBloc extends BlocBase {
 
   void _recordPacket() {
     if (_incomingPacketLength >= DeviceCommands.PACKET_CHUNK_SIZE) {
-      // todo implement
-
+      print('_recordPacket $_incomingData');
+      print('_incomingPacketLength before $_incomingPacketLength');
+      _receivedByteStream.addAll(_incomingData);
 //      _receivedByteStream.write(_incomingData, 0, DeviceCommands.PACKET_CHUNK_SIZE);
-      _incomingPacketLength -= DeviceCommands.PACKET_CHUNK_SIZE;
+      _incomingPacketLength -= _incomingData.length;
+      print('_incomingPacketLength after $_incomingPacketLength');
     } else {
-      // todo implement
-
-//      _receivedByteStream.write(_incomingData, 0, _incomingPacketLength);
+      print('_recordPacket_2 $_incomingData');
+      _receivedByteStream.addAll(_incomingData);
       _incomingPacketLength = 0;
     }
 
     if (_incomingPacketLength == 0) {
+      print('_recordPacket_2 PacketState.PACKET_COMPLETE');
+
       _packetState = PacketState.PACKET_COMPLETE;
     }
   }
 
   void resetPacket() {
-    // todo implement
-
-//    _receivedByteStream.reset();
+    print('resetPacket');
+    _receivedByteStream.clear();
     _incomingPacketLength = 0;
     _packetState = PacketState.WAITING_FOR_NEW;
   }
 
   bool _isValidSignature() {
-    final int signature = int.parse([
+    final int signature = ConvertFormats.byteArrayToHex([
       _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE + 1],
       _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE]
-    ].join());
+    ]);
 
     return signature == DeviceCommands.CMD_SIGNATURE_PACKET;
   }
 
   bool _setPacketSize() {
-    List<int> bytes = new List(4);
+    List<int> bytes = new List(2);
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
-    _incomingPacketLength = int.parse(bytes.join());
+    _incomingPacketLength = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]);
     return _incomingPacketLength >= 0;
   }
 

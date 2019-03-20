@@ -14,7 +14,6 @@ class FileSystemProvider {
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
-    print('DIR ${dir.path}');
     return dir.path;
   }
 

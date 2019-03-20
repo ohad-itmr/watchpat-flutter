@@ -1,6 +1,7 @@
 import 'package:my_pat/api/ble_provider.dart';
 import 'package:my_pat/models/device_config_payload.dart';
 import 'package:my_pat/models/tech_status_payload.dart';
+import 'package:my_pat/utility/convert_formats.dart';
 import 'package:my_pat/utility/log/log.dart';
 import 'package:my_pat/utility/crc16.dart';
 import 'package:my_pat/bloc/bloc_provider.dart';
@@ -25,7 +26,7 @@ class ReceivedPacket {
   int packetType;
 
   ReceivedPacket(this.bytes, this._commandTasker)
-      : _signature = int.parse(bytes.take(2).join()),
+      : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
         opCode = int.parse(bytes
             .sublist(PACKET_OPCODE_STARTING_BYTE, PACKET_OPCODE_STARTING_BYTE + 2)
             .join()),
@@ -44,6 +45,8 @@ class ReceivedPacket {
   int get size => _len;
 
   int _extractPacketType() {
+    print('_extractPacketType $_signature');
+    print('_extractPacketType_2 ${_signature == DeviceCommands.CMD_SIGNATURE_PACKET}');
     if (_signature != DeviceCommands.CMD_SIGNATURE_PACKET) {
       return DeviceCommands.CMD_SIGNATURE_PACKET_INVALID;
     }
@@ -114,7 +117,7 @@ class ReceivedPacket {
 
   bool isValidPacket() {
     if (packetType == DeviceCommands.CMD_SIGNATURE_PACKET_INVALID) {
-      Log.shout("Illegal packet signature");
+      Log.shout("Illegal packet signature ");
       return false;
     } else if (packetType == DeviceCommands.CMD_OPCODE_UNKNOWN) {
       Log.shout("Unknown opCode");
@@ -124,8 +127,8 @@ class ReceivedPacket {
       return false;
     } else if (!_validatePacketCRC()) {
       Log.shout("Invalid CRC");
-      _commandTasker.addAck(DeviceCommands.getAckCmd(
-          packetType, DeviceCommands.ACK_STATUS_CRC_FAIL, identifier));
+//      _commandTasker.addAck(DeviceCommands.getAckCmd(
+//          packetType, DeviceCommands.ACK_STATUS_CRC_FAIL, identifier));
       return false;
     }
 
@@ -135,10 +138,12 @@ class ReceivedPacket {
   bool _validatePacketCRC() {
     int crcByte1 = bytes[PACKET_CRC_STARTING_BYTE];
     int crcByte2 = bytes[PACKET_CRC_STARTING_BYTE + 1];
+    print('Before validation $bytes');
+
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
-    int packetCRC = int.parse([crcByte1, crcByte2].join());
+    int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
     int validationCRC = Crc16().convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;
@@ -149,7 +154,7 @@ class ReceivedPacket {
     }
 
     Log.shout(
-        "CRC validation failed. packet CRC: ${packetCRC.toRadixString(16)} | should be: ${validationCRC.toRadixString(16)}");
+        "CRC validation failed. packet CRC: $packetCRC | should be: $validationCRC");
     return false;
   }
 

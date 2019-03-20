@@ -9,6 +9,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/api/ble_provider.dart';
 import 'package:my_pat/api/prefs_provider.dart';
 import 'package:my_pat/generated/i18n.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 class BleBloc extends BlocBase {
   S lang;
@@ -32,12 +33,14 @@ class BleBloc extends BlocBase {
   StreamSubscription _scanSubscription;
   StreamSubscription deviceStateSubscription;
 
-  BehaviorSubject<List<ScanResult>> _scanResultsSubject =
-      BehaviorSubject<List<ScanResult>>();
+  BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
+      BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
 
-  Observable<List<ScanResult>> get scanResults => _scanResultsSubject.stream;
+  Observable<Map<DeviceIdentifier, ScanResult>> get scanResults =>
+      _scanResultsSubject.stream;
 
   int get scanResultsLength => _scanResultsSubject.value.length;
+  String get tag => Trace.from(StackTrace.current).terse.toString();
 
   //#endregion Scanning
 
@@ -55,6 +58,8 @@ class BleBloc extends BlocBase {
 
   Observable<BluetoothDeviceState> get deviceState => _deviceStateSubject.stream;
 
+  //#endregion Device
+
   BleBloc(S s, AppBloc root) {
     lang = s;
     this._root = root;
@@ -67,7 +72,6 @@ class BleBloc extends BlocBase {
     initializeBT();
   }
 
-  //#endregion Device
   void _btStateHandler(BluetoothState s) {
     switch (s) {
       case BluetoothState.unknown:
@@ -88,16 +92,15 @@ class BleBloc extends BlocBase {
     // Connect to device
     _deviceConnection = _flutterBlue
         .connect(
-      _device,
-    )
+          _device,
+        )
         .listen(
-      null,
+          null,
 //          onDone: _disconnect,
-      onDone: _disconnect,
-    );
+        );
 
     // Update the connection state immediately
-    _device.state.then(_deviceConnectionStateHandler);
+//    _device.state.then(_deviceConnectionStateHandler);
 
     // Subscribe to connection changes
     deviceStateSubscription =
@@ -111,6 +114,7 @@ class BleBloc extends BlocBase {
     if (state == BluetoothDeviceState.connected) {
       Log.info("### connected to device: ${_device.name}");
       Log.info("### starting services discovery");
+      _systemState.setDeviceCommState(DeviceStates.CONNECTED);
 
       _device.discoverServices().then((List<BluetoothService> services) {
         _services = services;
@@ -130,10 +134,10 @@ class BleBloc extends BlocBase {
         Log.info("### services discovered");
         _setNotification();
         _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
-        if (PrefsProvider.getIsFirstDeviceConnection()) {
+        if (PrefsProvider.getIsFirstDeviceConnection() != null &&
+            PrefsProvider.getIsFirstDeviceConnection()) {
           _systemState.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
         }
-        _systemState.setDeviceCommState(DeviceStates.CONNECTED);
       });
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info("disconnected from device");
@@ -144,7 +148,7 @@ class BleBloc extends BlocBase {
           startScan(connectToFirstDevice: false);
         }
       } else {
-        Log.shout("BT not enabled scan cycle not initiated");
+        Log.shout("BT not enabled scan cycle not initiated $tag");
       }
     }
   }
@@ -169,16 +173,17 @@ class BleBloc extends BlocBase {
     _taskerBloc.timeoutCallback = _sendTimeoutCallback;
   }
 
-  Function _sendCallback(CommandTaskerItem command) {
+  Future<dynamic> _sendCallback(CommandTaskerItem command) {
+    Log.info('_sendCallback $tag');
     try {
       if (_systemState.deviceCommState == DeviceStates.CONNECTED) {
 //        _sendCommand(command.data);
         return _sendCommand(command.data);
       } else {
-        Log.warning("device disconnected, command not sent");
+        Log.warning("device disconnected, command not sent ");
       }
     } catch (e) {
-      Log.shout(e);
+      Log.shout('$e $tag');
     }
     return null;
   }
@@ -224,7 +229,8 @@ class BleBloc extends BlocBase {
 
   void _postScan() {
     _systemState.setBleScanState(ScanStates.COMPLETE);
-    final List<ScanResult> _discoveredDevices = _scanResultsSubject.value;
+    final Map<DeviceIdentifier, ScanResult> _discoveredDevices =
+        _scanResultsSubject.value;
     Log.info('Discovered ${_discoveredDevices.length} devices');
     if (_discoveredDevices.isEmpty) {
       Log.info("no device discovered on scan");
@@ -233,7 +239,7 @@ class BleBloc extends BlocBase {
       Log.info("discovered a SINGLE device on scan");
       _systemState.setBleScanResult(ScanResultStates.LOCATED_SINGLE);
       _systemState.setDeviceCommState(DeviceStates.CONNECTING);
-      connect(_discoveredDevices[0].device);
+      connect(_discoveredDevices.values.toList()[0].device);
     } else {
       Log.info("discovered MULTIPLE devices on scan");
       _systemState.setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
@@ -260,6 +266,8 @@ class BleBloc extends BlocBase {
   }
 
   _sendCommand(List<List<int>> byteList) async {
+    Log.info("### _sendCommand $tag");
+
     if (byteList != null) {
       try {
         List<Future<void>> futures = [];
@@ -269,39 +277,40 @@ class BleBloc extends BlocBase {
         }
         await Future.wait(futures);
       } catch (e) {
-        Log.shout("sendCommand exception: ${e.toString()}");
+        Log.shout("sendCommand exception: ${e.toString()} $tag");
       }
     } else {
-      Log.shout("sendCommand failed: byteList is null");
+      Log.shout("sendCommand failed: byteList is null $tag");
     }
   }
 
   void _sendStartSession(int useType) {
-    Log.info("### sending start session");
+    Log.info("### sending start session $tag");
     _taskerBloc.addCommandWithNoCb(
         DeviceCommands.getStartSessionCmd(0x0000, useType, [0, 0, 0, 1]));
   }
 
   void startScan({int time, @required bool connectToFirstDevice}) {
-    Log.info('## START SCAN $this');
+    Log.info('## START SCAN');
     if (!_preScanChecks()) {
       return;
     }
 
-    _scanResultsSubject.sink.add(List());
+    _scanResultsSubject.sink.add(Map());
     _systemState.setBleScanState(ScanStates.SCANNING);
     _scanSubscription =
         _flutterBlue.scan(timeout: time != null ? Duration(seconds: time) : null).listen(
       (scanResult) {
         final String name = scanResult.advertisementData.localName;
-        print('Found ${scanResult.advertisementData.localName} ${scanResult.device.id}');
+        print('Found $name ${scanResult.device.id}');
         if (name.contains('ITAMAR')) {
           Log.info(
               ">>> name on scan: $name | name local: ${PrefsProvider.loadDeviceName()}");
 
           Log.info('## FOUND DEVICE ${scanResult.device.id}');
           var currentResults = _scanResultsSubject.value;
-          currentResults.add(scanResult);
+          currentResults[scanResult.device.id] = scanResult;
+
           _scanResultsSubject.sink.add(currentResults);
           if (connectToFirstDevice) {
             stopScan();
@@ -357,7 +366,9 @@ class BleBloc extends BlocBase {
     }
   }
 
-  Future writeCharacteristic(List<int> data) async {
+  Future<void> writeCharacteristic(List<int> data) async {
+    Log.info("Start writing TX characteristic: ${data.toString()}");
+
     var status = 'success';
     try {
       await _device.writeCharacteristic(
@@ -369,7 +380,7 @@ class BleBloc extends BlocBase {
       status = 'failure';
     }
 
-    Log.info("writing TX characteristic: ${DeviceCommands.bytesToHex(data)} $status");
+    Log.info("Finish writing TX characteristic: ${data.toString()} $status");
   }
 
   @override

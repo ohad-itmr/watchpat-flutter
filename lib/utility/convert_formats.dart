@@ -5,8 +5,8 @@ class ConvertFormats {
     return Uint8List.fromList(arr.map((i) => int.parse(i.toRadixString(16))));
   }
 
-  static List<int> longToByteList(int long, {int size = 8}) {
-    List byteList = List(size);
+  static List<int> longToByteList(int long, {int size = 8, bool reversed = true}) {
+    List<int> byteList = List(size);
     for (var i = 0; i < size; i++) {
       byteList[i] = 0;
     }
@@ -17,18 +17,19 @@ class ConvertFormats {
       long = (long - byte) ~/ 256;
     }
 
-    return byteList;
+    return reversed ? byteList.reversed.toList() : byteList;
   }
 
   static String byteToHex(int number) => number.toRadixString(16);
+
+  static int byteArrayToHex(List<int> byteArray) {
+    List<String> res = byteArray.map((i) => i.toRadixString(16)).toList();
+    return int.parse('0x${res.join()}');
+  }
 
   static String bytesToHex(final List<int> bytes) {
     String result = '';
     bytes.forEach((byte) => result = result + byte.toRadixString(16));
     return result;
   }
-
-
-  
-
 }

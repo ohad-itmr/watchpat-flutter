@@ -1,8 +1,10 @@
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/utility/crc16.dart';
+import 'package:my_pat/utility/lists_combainer.dart';
 import 'package:my_pat/utility/log/log.dart';
 import 'package:my_pat/utility/time_utils.dart';
 import 'package:my_pat/utility/convert_formats.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 class BleProvider {
   static const String SERVICE_UID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
@@ -340,18 +342,16 @@ class Header {
 
   int get opCode => _opCode;
 
-  List<int> get bytes => List.from(
-        [
-          ConvertFormats.longToByteList(_signature, size: 2),
-          ConvertFormats.longToByteList(_opCode, size: 2),
-          ConvertFormats.longToByteList(_timeStamp, size: 8),
-          ConvertFormats.longToByteList(_packetID, size: 4),
-          ConvertFormats.longToByteList(_packetLength, size: 2),
-          ConvertFormats.longToByteList(_opCodeDep1, size: 2),
-          ConvertFormats.longToByteList(_opCodeDep2, size: 2),
-          ConvertFormats.longToByteList(_crc, size: 2),
-        ],
-      );
+  List<int> get bytes => [
+        ConvertFormats.longToByteList(_signature, size: 2),
+        ConvertFormats.longToByteList(_opCode, size: 2),
+        ConvertFormats.longToByteList(_timeStamp, size: 8),
+        ConvertFormats.longToByteList(_packetID, size: 4),
+        ConvertFormats.longToByteList(_packetLength, size: 2, reversed: false),
+        ConvertFormats.longToByteList(_opCodeDep1, size: 2),
+        ConvertFormats.longToByteList(_opCodeDep2, size: 2),
+        ConvertFormats.longToByteList(_crc, size: 2),
+      ].expand((x) => x).toList();
 
   set packetLength(int length) => _packetLength = length;
 
@@ -409,11 +409,11 @@ class AckCommandPacket extends CommandPacket {
     final status = ConvertFormats.longToByteList(_status, size: 1);
     final opCode = ConvertFormats.longToByteList(_reqOpcode, size: 2);
 
-    List<int> buffer = List.from([_header.bytes, opCode, status, length]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, opCode, status, length],requiredLength: _packetSize);
     calcCRC(buffer);
 
     buffer.clear();
-    buffer = List.from([_header.bytes, opCode, status, length]);
+    buffer = ListCombainer.combain([_header.bytes, opCode, status, length],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -424,8 +424,14 @@ class SessionStartCommandPacket extends CommandPacket {
   List<int> _swVersion;
   int _key;
 
-  SessionStartCommandPacket(this._mobileID, this._useType, this._swVersion, int packetID)
-      : super(DeviceCommands.CMD_OPCODE_START_SESSION, (TimeUtils.getTimeStamp()).toInt(),
+  String get tag => Trace.from(StackTrace.current).terse.toString();
+
+  SessionStartCommandPacket(
+    this._mobileID,
+    this._useType,
+    this._swVersion,
+    int packetID,
+  ) : super(DeviceCommands.CMD_OPCODE_START_SESSION, (TimeUtils.getTimeStamp()).toInt(),
             packetID, 20) {
     _key = 0;
   }
@@ -436,12 +442,13 @@ class SessionStartCommandPacket extends CommandPacket {
     final useType = ConvertFormats.longToByteList(_useType, size: 1);
     final key = ConvertFormats.longToByteList(_key, size: 1);
 
-    List<int> buffer = List.from([_header.bytes, mobileId, useType, _swVersion, key]);
+    List<int> buffer =
+        ListCombainer.combain([_header.bytes, mobileId, useType, _swVersion, key],requiredLength: _packetSize);
 
     calcCRC(buffer);
 
     buffer.clear();
-    buffer = List.from([_header.bytes, mobileId, useType, _swVersion, key]);
+    buffer = ListCombainer.combain([_header.bytes, mobileId, useType, _swVersion, key],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -456,10 +463,10 @@ class ResetCommandPacket extends CommandPacket {
   List<List<int>> prepare() {
     final flag = ConvertFormats.longToByteList(_flag, size: 1);
 
-    List<int> buffer = List.from([_header.bytes, flag]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, flag],requiredLength: _packetSize);
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, flag]);
+    buffer = ListCombainer.combain([_header.bytes, flag],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -474,10 +481,10 @@ class SetLEDsCommandPacket extends CommandPacket {
   List<List<int>> prepare() {
     final led = ConvertFormats.longToByteList(_led, size: 1);
 
-    List<int> buffer = List.from([_header.bytes, led]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, led],requiredLength: _packetSize);
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, led]);
+    buffer = ListCombainer.combain([_header.bytes, led],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -492,11 +499,11 @@ class SetDeviceSerialCommandPacket extends CommandPacket {
   List<List<int>> prepare() {
     final serial = ConvertFormats.longToByteList(_serial, size: 4);
 
-    List<int> buffer = List.from([_header.bytes, serial]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, serial],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, serial]);
+    buffer = ListCombainer.combain([_header.bytes, serial],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -513,11 +520,11 @@ class GetParametersFilePacket extends CommandPacket {
     final offset = ConvertFormats.longToByteList(_offset, size: 2);
     final length = ConvertFormats.longToByteList(_length, size: 2);
 
-    List<int> buffer = List.from([_header.bytes, offset, length]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, offset, length],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, offset, length]);
+    buffer = ListCombainer.combain([_header.bytes, offset, length],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -544,11 +551,11 @@ class SetParametersFilePacket extends CommandPacket {
     final offset = ConvertFormats.longToByteList(_offset, size: 2);
     final length = ConvertFormats.longToByteList(_length, size: 2);
 
-    List<int> buffer = List.from([_header.bytes, offset, length, _dataChunk]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, offset, length, _dataChunk],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, offset, length, _dataChunk]);
+    buffer = ListCombainer.combain([_header.bytes, offset, length, _dataChunk],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -565,11 +572,11 @@ class GetLogFilePacket extends CommandPacket {
     final offset = ConvertFormats.longToByteList(_offset, size: 2);
     final length = ConvertFormats.longToByteList(_length, size: 2);
 
-    List<int> buffer = List.from([_header.bytes, offset, length]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, offset, length],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, offset, length]);
+    buffer = ListCombainer.combain([_header.bytes, offset, length],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -582,11 +589,11 @@ class SetAFERegistersPacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    List<int> buffer = List.from([_header.bytes, _regData]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, _regData],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, _regData]);
+    buffer = ListCombainer.combain([_header.bytes, _regData],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -599,11 +606,11 @@ class SetACCRegistersPacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    List<int> buffer = List.from([_header.bytes, _regData]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, _regData],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, _regData]);
+    buffer = ListCombainer.combain([_header.bytes, _regData],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -616,11 +623,11 @@ class SetEEPROMPacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    List<int> buffer = List.from([_header.bytes, _regData]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, _regData],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, _regData]);
+    buffer = ListCombainer.combain([_header.bytes, _regData],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -635,11 +642,11 @@ class BitReqPacket extends CommandPacket {
   List<List<int>> prepare() {
     final bitType = ConvertFormats.longToByteList(_bitType, size: 4);
 
-    List<int> buffer = List.from([_header.bytes, bitType]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, bitType],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, bitType]);
+    buffer = ListCombainer.combain([_header.bytes, bitType],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }
@@ -657,11 +664,11 @@ class FWUpgradeRequestPacket extends CommandPacket {
     final offset = ConvertFormats.longToByteList(_offset, size: 2);
     final length = ConvertFormats.longToByteList(_length, size: 2);
 
-    List<int> buffer = List.from([_header.bytes, offset, length, _upgradeData]);
+    List<int> buffer = ListCombainer.combain([_header.bytes, offset, length, _upgradeData],requiredLength: _packetSize);
 
     calcCRC(buffer);
     buffer.clear();
-    buffer = List.from([_header.bytes, offset, length, _upgradeData]);
+    buffer = ListCombainer.combain([_header.bytes, offset, length, _upgradeData],requiredLength: _packetSize);
     return getSplitPacketBytes(buffer);
   }
 }

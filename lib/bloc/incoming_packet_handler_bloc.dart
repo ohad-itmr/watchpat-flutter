@@ -316,14 +316,12 @@ class IncomingPacketHandlerBloc extends BlocBase {
   void _recordPacket() {
     if (_incomingPacketLength >= DeviceCommands.PACKET_CHUNK_SIZE) {
       print('_recordPacket $_incomingData');
-      print('_incomingPacketLength before $_incomingPacketLength');
       _receivedByteStream.addAll(_incomingData);
 //      _receivedByteStream.write(_incomingData, 0, DeviceCommands.PACKET_CHUNK_SIZE);
       _incomingPacketLength -= _incomingData.length;
-      print('_incomingPacketLength after $_incomingPacketLength');
     } else {
       print('_recordPacket_2 $_incomingData');
-      _receivedByteStream.addAll(_incomingData);
+      _receivedByteStream.addAll(_incomingData.sublist(0,_incomingPacketLength));
       _incomingPacketLength = 0;
     }
 

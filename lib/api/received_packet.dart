@@ -52,10 +52,14 @@ class ReceivedPacket {
     }
 
     if (opCode == DeviceCommands.CMD_OPCODE_ACK) {
+      print('_extractPacketType DeviceCommands.CMD_OPCODE_ACK');
+
       return DeviceCommands.CMD_OPCODE_ACK;
     }
 
     if (opCode == DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM) {
+      print('_extractPacketType DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM');
+
       return DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM;
     }
 
@@ -138,7 +142,8 @@ class ReceivedPacket {
   bool _validatePacketCRC() {
     int crcByte1 = bytes[PACKET_CRC_STARTING_BYTE];
     int crcByte2 = bytes[PACKET_CRC_STARTING_BYTE + 1];
-    print('Before validation $bytes');
+    print('crcByte1 $crcByte1');
+    print('crcByte2 $crcByte2');
 
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;

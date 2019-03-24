@@ -1,18 +1,8 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:my_pat/bloc/bloc_provider.dart';
-import 'package:my_pat/ui/screens/battery_screen.dart';
-import 'package:my_pat/ui/screens/chest_sensor_screen.dart';
-import 'package:my_pat/ui/screens/end_screen.dart';
-import 'package:my_pat/ui/screens/finger_probe_screen.dart';
-import 'package:my_pat/ui/screens/pin_screen.dart';
-import 'package:my_pat/ui/screens/recording_screen.dart';
-import 'package:my_pat/ui/screens/remove_jewelry_screen.dart';
-import 'package:my_pat/ui/screens/start_recording_screen.dart';
-import 'package:my_pat/ui/screens/strap_wrist_screen.dart';
-import 'package:my_pat/ui/screens/uploading_screen.dart';
-import 'package:my_pat/ui/screens/welcome_screen.dart';
-import 'package:my_pat/ui/screens/splash_screen.dart';
+import 'package:my_pat/app/screens.dart';
+import 'package:my_pat/service_locator.dart';
+
 
 var rootHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -21,10 +11,10 @@ var rootHandler =
 
 var welcomeHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final BleBloc bleBloc = BlocProvider.of<BleBloc>(context);
-  final WelcomeActivityBloc welcomeBloc = BlocProvider.of<WelcomeActivityBloc>(context);
-  welcomeBloc.init();
-  bleBloc.startScan(time: 3, connectToFirstDevice: false);
+  final BleManager bleManager = sl<BleManager>();
+  final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
+  welcomeManager.init();
+  bleManager.startScan(time: 3, connectToFirstDevice: false);
   return WelcomeScreen();
 });
 
@@ -50,8 +40,8 @@ var fingerProbeRouteHandler =
 
 var pinRouteHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final PinBloc pinBloc = BlocProvider.of<PinBloc>(context);
-  pinBloc.resetPin();
+  final PinManager pinManager = sl<PinManager>();
+  pinManager.resetPin();
   return PinScreen();
 });
 

@@ -1,5 +1,5 @@
 import 'package:my_pat/generated/i18n.dart';
-import 'package:my_pat/utility/log/log.dart';
+import 'package:my_pat/utils/log/log.dart';
 
 
 class DeviceConfigPayload {

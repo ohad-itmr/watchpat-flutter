@@ -28,9 +28,9 @@ class Header {
 
   List<int> get bytes => [
     ConvertFormats.longToByteList(_signature, size: 2),
-    ConvertFormats.longToByteList(_opCode, size: 2),
-    ConvertFormats.longToByteList(_timeStamp, size: 8),
-    ConvertFormats.longToByteList(_packetID, size: 4),
+    ConvertFormats.longToByteList(_opCode, size: 2,reversed: false),
+    ConvertFormats.longToByteList(_timeStamp, size: 8,reversed: false),
+    ConvertFormats.longToByteList(_packetID, size: 4,reversed: false),
     ConvertFormats.longToByteList(_packetLength, size: 2, reversed: false),
     ConvertFormats.longToByteList(_opCodeDep1, size: 2),
     ConvertFormats.longToByteList(_opCodeDep2, size: 2),
@@ -128,12 +128,10 @@ class SessionStartCommandPacket extends CommandPacket {
     final mobileId = ConvertFormats.longToByteList(_mobileID, size: 4);
     final useType = ConvertFormats.longToByteList(_useType, size: 1);
     final key = ConvertFormats.longToByteList(_key, size: 1);
-//[187, 187, 1, 0, 0, 0, 0, 0, 0, 0, 28, 32, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-//[187, 187, 1, 0, 0, 0, 0, 0, 0, 0, 28, 32, 0, 0, 0, 0, 44, 0, 0, 0,0, 0, 183, 95, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0]
     List<int> buffer = ListCombainer.combain(
       [_header.bytes, mobileId, useType, _swVersion, key],
       requiredLength: _packetSize);
-    print('CommandPacket SEnd bytes to prepare $buffer $tag');
+    print('CommandPacket Send bytes to prepare $buffer $tag');
 
     calcCRC(buffer);
 

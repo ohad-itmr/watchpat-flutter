@@ -11,17 +11,7 @@ import 'package:my_pat/service_locator.dart';
 class BleManager extends ManagerBase {
   S lang;
 
-  BleService _bleProvider = BleService();
   IncomingPacketHandlerService _incomingPacketHandler;
-
-  FlutterBlue _flutterBlue;
-
-  BluetoothDevice _device;
-  List<BluetoothService> _services = new List();
-  BluetoothService _service;
-  BluetoothCharacteristic _charForWrite;
-  BluetoothCharacteristic _charForRead;
-  Map<Guid, StreamSubscription> _valueChangedSubscriptions = {};
 
   //#region Scanning
   StreamSubscription _scanSubscription;
@@ -39,11 +29,6 @@ class BleManager extends ManagerBase {
 
   //#endregion Scanning
 
-  //#region States
-  PublishSubject<BluetoothState> _bleStateSubject = PublishSubject<BluetoothState>();
-
-  Observable<BluetoothState> get bleState => _bleStateSubject.stream;
-
   //#endregion States
 
   //#region Device
@@ -57,7 +42,6 @@ class BleManager extends ManagerBase {
 
   BleManager() {
     lang = sl<S>();
-
     _incomingPacketHandler = sl<IncomingPacketHandlerService>();
     _initTasker();
     initializeBT();
@@ -74,62 +58,28 @@ class BleManager extends ManagerBase {
         sl<SystemStateManager>().setBtState(BtStates.ENABLED);
         break;
     }
-    _bleStateSubject.sink.add(s);
   }
 
-  void connect(BluetoothDevice d) async {
-    Log.info('## Connection to device ${d.id}');
-    _device = d;
-    // Connect to device
-    _deviceConnection = _flutterBlue
-        .connect(
-          _device,
-        )
-        .listen(
-          null,
-//          onDone: _disconnect,
-        );
-
-    // Update the connection state immediately
-//    _device.state.then(_deviceConnectionStateHandler);
-
-    // Subscribe to connection changes
-    deviceStateSubscription =
-        _device.onStateChanged().listen(_deviceConnectionStateHandler);
+  void connect(BluetoothDevice d) {
+    sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
   }
 
-  void _deviceConnectionStateHandler(BluetoothDeviceState state) {
+  void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
     Log.info('## Device State Changed to $state');
     _deviceStateSubject.sink.add(state);
 
     if (state == BluetoothDeviceState.connected) {
-      Log.info("### connected to device: ${_device.name}");
+      Log.info("### connected to device");
       Log.info("### starting services discovery");
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTED);
+      await sl<BleService>().setServicesAndChars();
+      await sl<BleService>().setNotification(_incomingPacketHandler);
 
-      _device.discoverServices().then((List<BluetoothService> services) {
-        _services = services;
-        _services.forEach((ser) {
-          if ((ser.uuid).toString() == BleService.SERVICE_UID) {
-            _service = ser;
-            _service.characteristics.forEach((char) {
-              if ((char.uuid).toString() == BleService.RX_CHAR_UUID) {
-                _charForWrite = char;
-              }
-              if ((char.uuid).toString() == BleService.TX_CHAR_UUID) {
-                _charForRead = char;
-              }
-            });
-          }
-        });
-        Log.info("### services discovered");
-        _setNotification();
-        _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
-        if (PrefsProvider.getIsFirstDeviceConnection() != null &&
-            PrefsProvider.getIsFirstDeviceConnection()) {
-          sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
-        }
-      });
+      _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
+      if (PrefsProvider.getIsFirstDeviceConnection() != null &&
+          PrefsProvider.getIsFirstDeviceConnection()) {
+        sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
+      }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info("disconnected from device");
       _incomingPacketHandler.resetPacket();
@@ -145,59 +95,26 @@ class BleManager extends ManagerBase {
   }
 
   void _disconnect() {
-    // Remove all value changed listeners
     Log.info('Remove all value changed listeners');
-    _valueChangedSubscriptions.forEach((uuid, sub) => sub.cancel());
-    _valueChangedSubscriptions.clear();
     deviceStateSubscription?.cancel();
     deviceStateSubscription = null;
     _deviceConnection?.cancel();
-    _deviceConnection = null;
-    _device = null;
-  }
-
-  void _initTasker() {
-    sl<SystemStateManager>().stateChangeStream.listen(_systemStateHandler);
-
-    sl<CommandTaskerManager>().setDelays(BleService.SEND_COMMANDS_DELAY, BleService.SEND_ACK_DELAY,
-        BleService.MAX_COMMAND_TIMEOUT);
-    sl<CommandTaskerManager>().ackOpCode = DeviceCommands.CMD_OPCODE_ACK;
-    sl<CommandTaskerManager>().sendCmdCallback = _sendCallback;
-    sl<CommandTaskerManager>().timeoutCallback = _sendTimeoutCallback;
-  }
-
-  Future<dynamic> _sendCallback(CommandTaskerItem command) {
-    Log.info('_sendCallback $tag');
-    try {
-      if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
-//        _sendCommand(command.data);
-        return _sendCommand(command.data);
-      } else {
-        Log.warning("device disconnected, command not sent ");
-      }
-    } catch (e) {
-      Log.shout('$e $tag');
-    }
-    return null;
-  }
-
-  _sendTimeoutCallback() {
-    Log.info(">>> CommandTasker timeout");
-    _disconnect();
-    if (sl<SystemStateManager>().isBTEnabled) {
-      if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(connectToFirstDevice: false);
-      }
-    } else {
-      Log.warning("BT not enabled scan cycle not initiated");
-    }
+    sl<BleService>().disconnect();
   }
 
   void initializeBT() {
     Log.info("initializing BT");
-    _flutterBlue = _bleProvider.flutterBlue;
-    _flutterBlue.onStateChanged().listen(_btStateHandler);
-    _flutterBlue.state.then(_btStateHandler);
+    sl<BleService>().btStateOnChange.listen(_btStateHandler);
+    sl<BleService>().btState.then(_btStateHandler);
+  }
+
+  void _initTasker() {
+    sl<SystemStateManager>().stateChangeStream.listen(_systemStateHandler);
+    sl<CommandTaskerManager>().setDelays(BleService.SEND_COMMANDS_DELAY,
+        BleService.SEND_ACK_DELAY, BleService.MAX_COMMAND_TIMEOUT);
+    sl<CommandTaskerManager>().ackOpCode = DeviceCommands.CMD_OPCODE_ACK;
+    sl<CommandTaskerManager>().sendCmdCallback = _sendCallback;
+    sl<CommandTaskerManager>().timeoutCallback = _sendTimeoutCallback;
   }
 
   bool _preScanChecks() {
@@ -239,22 +156,29 @@ class BleManager extends ManagerBase {
     }
   }
 
-  void _setNotification() async {
-    Log.info("setNotification");
+  Future<dynamic> _sendCallback(CommandTaskerItem command) {
+    Log.info('_sendCallback $tag');
+    try {
+      if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
+        return _sendCommand(command.data);
+      } else {
+        Log.warning("device disconnected, command not sent ");
+      }
+    } catch (e) {
+      Log.shout('$e $tag');
+    }
+    return null;
+  }
 
-    if (_charForRead.isNotifying) {
-      await _device.setNotifyValue(_charForRead, false);
-      // Cancel subscription
-      _valueChangedSubscriptions[_charForRead.uuid]?.cancel();
-      _valueChangedSubscriptions.remove(_charForRead.uuid);
+  _sendTimeoutCallback() {
+    Log.info(">>> CommandTasker timeout");
+    _disconnect();
+    if (sl<SystemStateManager>().isBTEnabled) {
+      if (sl<SystemStateManager>().isScanCycleEnabled) {
+        startScan(connectToFirstDevice: false);
+      }
     } else {
-      await _device.setNotifyValue(_charForRead, true);
-      // ignore: cancel_subscriptions
-      final sub = _device.onValueChanged(_charForRead).listen((data) {
-        _incomingPacketHandler.acceptAndHandleData(data);
-      });
-      // Add to map
-      _valueChangedSubscriptions[_charForRead.uuid] = sub;
+      Log.warning("BT not enabled scan cycle not initiated");
     }
   }
 
@@ -266,7 +190,7 @@ class BleManager extends ManagerBase {
         List<Future<void>> futures = [];
         for (var req in byteList) {
           print('Subrequest $req');
-          futures.add(writeCharacteristic(req));
+          futures.add(sl<BleService>().writeCharacteristic(req));
         }
         await Future.wait(futures);
       } catch (e) {
@@ -291,28 +215,33 @@ class BleManager extends ManagerBase {
 
     _scanResultsSubject.sink.add(Map());
     sl<SystemStateManager>().setBleScanState(ScanStates.SCANNING);
-    _scanSubscription =
-        _flutterBlue.scan(timeout: time != null ? Duration(seconds: time) : null).listen(
-      (scanResult) {
-        final String name = scanResult.advertisementData.localName;
-        print('Found $name ${scanResult.device.id}');
-        if (name.contains('ITAMAR')) {
-          Log.info(
-              ">>> name on scan: $name | name local: ${PrefsProvider.loadDeviceName()}");
+    _scanSubscription = sl<BleService>()
+        .scanForDevices(
+          time: time,
+          connectToFirstDevice: connectToFirstDevice,
+        )
+        .listen(
+          (scanResult) => _scanResultHandler(scanResult, connectToFirstDevice),
+          onDone: stopScan,
+        );
+  }
 
-          Log.info('## FOUND DEVICE ${scanResult.device.id}');
-          var currentResults = _scanResultsSubject.value;
-          currentResults[scanResult.device.id] = scanResult;
+  void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice) {
+    final String name = scanResult.advertisementData.localName;
+    print('Found $name ${scanResult.device.id}');
+    if (name.contains('ITAMAR')) {
+      Log.info(">>> name on scan: $name | name local: ${PrefsProvider.loadDeviceName()}");
 
-          _scanResultsSubject.sink.add(currentResults);
-          if (connectToFirstDevice) {
-            stopScan();
-            return;
-          }
-        }
-      },
-      onDone: stopScan,
-    );
+      Log.info('## FOUND DEVICE ${scanResult.device.id}');
+      var currentResults = _scanResultsSubject.value;
+      currentResults[scanResult.device.id] = scanResult;
+
+      _scanResultsSubject.sink.add(currentResults);
+      if (connectToFirstDevice) {
+        stopScan();
+        return;
+      }
+    }
   }
 
   void stopScan() {
@@ -327,7 +256,8 @@ class BleManager extends ManagerBase {
       case StateChangeActions.TEST_STATE_CHANGED:
         final TestStates testState = sl<SystemStateManager>().testState;
         if (testState == TestStates.STARTED) {
-          sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
+          sl<CommandTaskerManager>()
+              .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
           _incomingPacketHandler.startPacketAnalysis();
         }
         break;
@@ -338,15 +268,20 @@ class BleManager extends ManagerBase {
           case AppModes.USER:
             Log.info("### sending start session");
             // todo add real SW ID
-            sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
-                0x0000, DeviceCommands.SESSION_START_USE_TYPE_PATIENT, [0, 0, 0, 1]));
+            sl<CommandTaskerManager>()
+                .addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
+              0x0000,
+              DeviceCommands.SESSION_START_USE_TYPE_PATIENT,
+              [0, 0, 0, 1],
+            ));
             break;
           case AppModes.CS:
             Future.delayed(Duration(milliseconds: 2000), () {
               if (sl<SystemStateManager>().appMode != AppModes.TECH) {
                 // todo add real SW ID
-                sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
-                    0x0000, DeviceCommands.SESSION_START_USE_TYPE_SERVICE, [0, 0, 0, 1]));
+                sl<CommandTaskerManager>().addCommandWithNoCb(
+                    DeviceCommands.getStartSessionCmd(0x0000,
+                        DeviceCommands.SESSION_START_USE_TYPE_SERVICE, [0, 0, 0, 1]));
               }
             });
             break;
@@ -359,28 +294,10 @@ class BleManager extends ManagerBase {
     }
   }
 
-  Future<void> writeCharacteristic(List<int> data) async {
-    Log.info("Start writing TX characteristic: ${data.toString()}");
-
-    var status = 'success';
-    try {
-      await _device.writeCharacteristic(
-        _charForWrite,
-        data,
-        type: CharacteristicWriteType.withoutResponse,
-      );
-    } catch (e) {
-      status = 'failure';
-    }
-
-    Log.info("Finish writing TX characteristic: ${data.toString()} $status");
-  }
-
   @override
   void dispose() {
     _scanResultsSubject.close();
     _deviceStateSubject.close();
-    _bleStateSubject.close();
     _deviceStateSubject.close();
     _deviceConnection.cancel();
     deviceStateSubscription.cancel();

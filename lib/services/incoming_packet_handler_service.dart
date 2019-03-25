@@ -15,7 +15,6 @@ enum PacketState { WAITING_FOR_NEW, HANDLING_PACKET, PACKET_COMPLETE }
 class IncomingPacketHandlerService extends ManagerBase {
   S lang;
 
-
   String get tag => Trace.from(StackTrace.current).terse.toString();
 
   IncomingPacketHandlerService() {
@@ -42,14 +41,14 @@ class IncomingPacketHandlerService extends ManagerBase {
     _isPacketAnalysis = false;
   }
 
-  static const int _PATIENT_ERROR_BATTERY_VOLTAGE_TEST = 0x0001;
-  static const int _PATIENT_ERROR_ACTIGRAPH_TEST = 0x0008;
-  static const int _PATIENT_ERROR_DEVICE_USED = 0x0020;
-  static const int _PATIENT_ERROR_FLASH_TEST = 0x0040;
+  static const int _PATIENT_ERROR_BATTERY_VOLTAGE_TEST = 0x2b;
+  static const int _PATIENT_ERROR_ACTIGRAPH_TEST = 0x28;
+  static const int _PATIENT_ERROR_DEVICE_USED = 0x49;
+  static const int _PATIENT_ERROR_FLASH_TEST = 0x2c;
   static const int _PATIENT_ERROR_PROBE_LEDS_TEST = 0x0080;
   static const int _PATIENT_ERROR_PROBE_PHOTO_TEST = 0x0100;
-  static const int _PATIENT_ERROR_SBP_TEST = 0x0400;
-  static const int _PATIENT_ERROR_NO_FINGER = 0x2000;
+  static const int _PATIENT_ERROR_SBP_TEST = 0x14;
+  static const int _PATIENT_ERROR_NO_FINGER = 0x15;
 
   static PacketState _packetState = PacketState.WAITING_FOR_NEW;
 
@@ -107,7 +106,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     if (_packetState == PacketState.PACKET_COMPLETE) {
       // packet is fully received
-      ReceivedPacket receivedPacket = ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
+      ReceivedPacket receivedPacket =
+          ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
       Log.info(">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
@@ -187,8 +187,10 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_CONFIG_RESPONSE:
           Log.info("packet received (CONFIG_RESPONSE)");
-          sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
-          PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
+          sl<DeviceConfigManager>()
+              .setDeviceConfiguration(receivedPacket.extractConfigBlock());
+          PrefsProvider.saveDeviceSerial(
+              sl<DeviceConfigManager>().deviceConfig.deviceSerial);
           sl<CommandTaskerManager>().addAck(
             DeviceCommands.getAckCmd(
               packetType,
@@ -239,7 +241,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info("packet received (END_OF_TEST_DATA)");
           // end-of-test-data packet received
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
-          sl<SystemStateManager>().setDataTransferState(DataTransferStates.UPLOADING_TO_SERVER);
+          sl<SystemStateManager>()
+              .setDataTransferState(DataTransferStates.UPLOADING_TO_SERVER);
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
@@ -342,7 +345,6 @@ class IncomingPacketHandlerService extends ManagerBase {
       _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE + 1],
       _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE]
     ]);
-
     return signature == DeviceCommands.CMD_SIGNATURE_PACKET;
   }
 
@@ -357,7 +359,8 @@ class IncomingPacketHandlerService extends ManagerBase {
   bool _checkStartSessionErrors(final int opcodeDependant) {
     Log.info(">>> opcodeDependant: $opcodeDependant");
 
-    if (PrefsProvider.getIgnoreDeviceErrors()) {
+    if (PrefsProvider.getIgnoreDeviceErrors() != null &&
+        PrefsProvider.getIgnoreDeviceErrors()) {
       Log.info(">>> device errors ignored");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return true;
@@ -377,7 +380,7 @@ class IncomingPacketHandlerService extends ManagerBase {
       errorState = DeviceErrorStates.USED_DEVICE;
       errorString += '- ${lang.err_used_device}\n';
     } else {
-      Log.info(">>> Used NOT device");
+      Log.info(">>>  NOT Used device");
     }
     if ((opcodeDependant & _PATIENT_ERROR_BATTERY_VOLTAGE_TEST) != 0) {
       errorState = DeviceErrorStates.CHANGE_BATTERY;
@@ -404,12 +407,14 @@ class IncomingPacketHandlerService extends ManagerBase {
       errorString += '- ${lang.err_sbp}\n';
     }
 
-    sl<SystemStateManager>().setDeviceErrorState(errorState, errors: errorString.toString());
+    sl<SystemStateManager>()
+        .setDeviceErrorState(errorState, errors: errorString.toString());
     return false;
   }
 
   void _manageError(final int errorCode) {
-    if (PrefsProvider.getIgnoreDeviceErrors()) {
+    if (PrefsProvider.getIgnoreDeviceErrors() != null &&
+        PrefsProvider.getIgnoreDeviceErrors()) {
       Log.info(">>> ignoring device errors");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return;

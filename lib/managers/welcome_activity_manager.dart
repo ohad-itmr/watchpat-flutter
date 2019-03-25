@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
-import 'package:my_pat/models/response_model.dart';
+import 'package:my_pat/domain_model/response_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/service_locator.dart';
 
@@ -10,7 +10,7 @@ enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }
 class WelcomeActivityManager extends ManagerBase {
   final _networkProvider = NetworkService();
   final _filesProvider = sl<FileSystemService>();
-  final lang = S();
+  final lang = sl<S>();
 
   WelcomeActivityManager() {
     _initErrorsSubject.add(List());
@@ -46,21 +46,15 @@ class WelcomeActivityManager extends ManagerBase {
   Future<void> _allocateSpace() async {
     _fileAllocationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await _filesProvider.allocateSpace();
-    if (res.success) {
-      _fileAllocationStateSubject.sink.add(FileCreationState.DONE_SUCCESS);
-    } else {
-      _fileAllocationStateSubject.sink.add(FileCreationState.DONE_FAILED);
-    }
+    _fileAllocationStateSubject.sink.add(
+        res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   Future<void> createStartFiles() async {
     _fileCreationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await _filesProvider.init();
-    if (res.success) {
-      _fileCreationStateSubject.sink.add(FileCreationState.DONE_SUCCESS);
-    } else {
-      _fileCreationStateSubject.sink.add(FileCreationState.DONE_FAILED);
-    }
+    _fileCreationStateSubject.sink.add(
+        res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   Observable<Response> _initFiles() {
@@ -82,14 +76,14 @@ class WelcomeActivityManager extends ManagerBase {
         sl<SystemStateManager>().bleScanStateStream,
         sl<SystemStateManager>().bleScanResultStream,
         _initFiles(),
-        (ScanStates scanState, ScanResultStates scanResultState, Response f) {
+        (ScanStates scanState, ScanResultStates scanResultState, Response initFilesResponse) {
           print(scanState);
           if (scanState != ScanStates.COMPLETE) {
             return false;
           }
           _initErrorsSubject.add(List());
-          if (!f.success) {
-            addInitialErrors(f.error);
+          if (!initFilesResponse.success) {
+            addInitialErrors(initFilesResponse.error);
           }
 
           return true;
@@ -112,7 +106,6 @@ class WelcomeActivityManager extends ManagerBase {
 
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
-//    initErrors.listen((errs) => Log.info('## INIT ERRORS ${errs.toString()} $this'));
 
     _networkProvider.connectivity
         .checkConnectivity()

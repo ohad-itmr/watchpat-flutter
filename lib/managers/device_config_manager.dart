@@ -1,6 +1,6 @@
 import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/manager_base.dart';
-import 'package:my_pat/models/device_config_payload.dart';
+import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/service_locator.dart';
 
 class DeviceConfigManager extends ManagerBase {

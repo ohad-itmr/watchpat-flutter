@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
 
@@ -7,6 +6,7 @@ class SplashScreen extends StatelessWidget {
   static const String PATH = '/';
   final S loc = sl<S>();
   final BleManager bleManager = sl<BleManager>();
+  final SystemStateManager systemStateManager = sl<SystemStateManager>();
 
   Future<void> _showBTWarning(
     BuildContext context,
@@ -22,10 +22,9 @@ class SplashScreen extends StatelessWidget {
               children: <Widget>[
                 Text(loc.bt_must_be_enabled),
                 StreamBuilder(
-                  stream: bleManager.bleState,
-                  initialData: BluetoothState.off,
-                  builder: (context, AsyncSnapshot<BluetoothState> snapshot) {
-                    if (snapshot.hasData && snapshot.data == BluetoothState.on) {
+                  stream: systemStateManager.btStateStream,
+                  builder: (context, AsyncSnapshot<BtStates> snapshot) {
+                    if (snapshot.hasData && snapshot.data == BtStates.ENABLED) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushReplacementNamed('/welcome');
@@ -54,10 +53,10 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         child: StreamBuilder(
-          stream: bleManager.bleState,
-          builder: (context, AsyncSnapshot<BluetoothState> bleSnapshot) {
+          stream: systemStateManager.btStateStream,
+          builder: (context, AsyncSnapshot<BtStates> bleSnapshot) {
             if (bleSnapshot.hasData) {
-              if (bleSnapshot.data != BluetoothState.on) {
+              if (bleSnapshot.data != BtStates.ENABLED) {
                 WidgetsBinding.instance
                     .addPostFrameCallback((_) => _showBTWarning(context));
               } else {

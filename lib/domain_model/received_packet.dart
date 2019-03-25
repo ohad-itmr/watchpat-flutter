@@ -1,7 +1,7 @@
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/managers/managers.dart';
-import 'package:my_pat/models/device_config_payload.dart';
-import 'package:my_pat/models/tech_status_payload.dart';
+import 'package:my_pat/domain_model/device_config_payload.dart';
+import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/crc16.dart';
@@ -27,26 +27,26 @@ class ReceivedPacket {
 
   ReceivedPacket(this.bytes, this._commandTasker)
       : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
-        opCode = int.parse(bytes
-            .sublist(PACKET_OPCODE_STARTING_BYTE, PACKET_OPCODE_STARTING_BYTE + 2)
-            .join()),
-        identifier = int.parse(bytes
+        opCode = ConvertFormats.byteArrayToHex(
+            [bytes[PACKET_OPCODE_STARTING_BYTE + 1], bytes[PACKET_OPCODE_STARTING_BYTE]]),
+        identifier = ConvertFormats.byteArrayToHex(bytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE, PACKET_IDENTIFIER_STARTING_BYTE + 4)
-            .join()),
-        _len = int.parse(bytes
+            .reversed
+            .toList()),
+        _len = ConvertFormats.byteArrayToHex(bytes
             .sublist(PACKET_SIZE_STARTING_BYTE, PACKET_SIZE_STARTING_BYTE + 2)
-            .join()),
-        opCodeDependent = int.parse(bytes
+            .reversed
+            .toList()),
+        opCodeDependent = ConvertFormats.byteArrayToHex(bytes
             .sublist(PACKET_DEPENDENT_STARTING_BYTE, PACKET_DEPENDENT_STARTING_BYTE + 4)
-            .join()) {
+            .reversed
+            .toList()) {
     packetType = _extractPacketType();
   }
 
   int get size => _len;
 
   int _extractPacketType() {
-    print('_extractPacketType $_signature');
-    print('_extractPacketType_2 ${_signature == DeviceCommands.CMD_SIGNATURE_PACKET}');
     if (_signature != DeviceCommands.CMD_SIGNATURE_PACKET) {
       return DeviceCommands.CMD_SIGNATURE_PACKET_INVALID;
     }
@@ -115,7 +115,7 @@ class ReceivedPacket {
       return DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES;
     }
 
-    Log.shout("unknown packet type: ${opCode.toRadixString(16)}");
+    Log.shout("unknown packet type: $opCode");
     return DeviceCommands.CMD_OPCODE_UNKNOWN;
   }
 
@@ -142,8 +142,6 @@ class ReceivedPacket {
   bool _validatePacketCRC() {
     int crcByte1 = bytes[PACKET_CRC_STARTING_BYTE];
     int crcByte2 = bytes[PACKET_CRC_STARTING_BYTE + 1];
-    print('crcByte1 $crcByte1');
-    print('crcByte2 $crcByte2');
 
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;

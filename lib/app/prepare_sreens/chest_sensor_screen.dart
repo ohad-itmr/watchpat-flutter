@@ -4,6 +4,7 @@ import 'package:my_pat/widgets/widgets.dart';
 
 class ChestSensorScreen extends StatelessWidget {
   static const String PATH = '/prepare3';
+  static const String TAG = 'ChestSensorScreen';
 
   ChestSensorScreen({Key key}) : super(key: key);
   final S loc = sl<S>();

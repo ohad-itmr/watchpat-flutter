@@ -1,6 +1,8 @@
 import 'package:my_pat/utils/log/log.dart';
 
 class TechStatusPayload {
+  static const String TAG = 'TechStatusPayload';
+
   //
   // offsets
   //
@@ -35,7 +37,7 @@ class TechStatusPayload {
     returnConfig.setRedLedStatus(bytes);
     returnConfig.setPatLedStatus(bytes);
 
-    Log.info(
+    Log.info(TAG,
         "Tech status:\nBattery voltage: ${returnConfig._batteryVoltage}\nVVD voltage: ${returnConfig._vddVoltage}\nIR LED status: ${returnConfig._irLedStatus}\nRed LED status: ${returnConfig._redLedStatus}\nPat LED status: ${returnConfig._patLedStatus}");
 
     return returnConfig;

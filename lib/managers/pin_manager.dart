@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 
 
 class PinManager extends ManagerBase {
+  static const String TAG = 'PinManager';
 
   String _pin = '';
 

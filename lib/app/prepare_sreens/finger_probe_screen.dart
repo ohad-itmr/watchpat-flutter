@@ -6,6 +6,7 @@ import 'package:my_pat/widgets/widgets.dart';
 class FingerProbeScreen extends StatelessWidget {
   static const String PATH = '/prepare4';
   final S loc = sl<S>();
+  static const String TAG = 'FingerProbeScreen';
 
   FingerProbeScreen({Key key}) : super(key: key);
 

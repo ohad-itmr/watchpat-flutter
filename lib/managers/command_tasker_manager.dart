@@ -15,6 +15,8 @@ abstract class OnAckListener {
 enum ThreadState { ACTIVE, NON_ACTIVE }
 
 class CommandTaskerManager extends ManagerBase {
+  static const String TAG = 'CommandTaskerManager';
+
   CommandTaskerManager({
     int sendCommandsDelay,
     int sendAckDelay,
@@ -102,11 +104,11 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   bool _addCommand(int id, int opCode, List<List<int>> data, String name) {
-    Log.info("adding command: $name (id: ${id.toString()})");
+    Log.info(TAG,"adding command: $name (id: ${id.toString()})");
 
     // if command the same id exists
     if (_getCommandByID(id) != null) {
-      Log.shout(">>> command with same id exists, $this");
+      Log.shout(TAG,">>> command with same id exists, $this");
       return false;
     }
 
@@ -135,7 +137,7 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   void sendDirectCommand(CommandTask commandTask) {
-    Log.info("sending DIRECT command, $this");
+    Log.info(TAG,"sending DIRECT command, $this");
     CommandTaskerItem item = CommandTaskerItem(commandTask.packetIdentifier,
         commandTask.opCode, commandTask.byteList, commandTask.name);
 //    _sendCmdCallback._sendCommand(item);

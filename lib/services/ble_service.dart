@@ -5,6 +5,8 @@ import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 
 class BleService {
+  static const String TAG = 'BleService';
+
   static const String SERVICE_UID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
   static const String TX_CHAR_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
   static const String RX_CHAR_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
@@ -31,7 +33,7 @@ class BleService {
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
-    Log.info('## Connection to device ${d.id}');
+    Log.info(TAG, '## Connection to device ${d.id}');
     _device = d;
     _flutterBlue
         .connect(
@@ -60,12 +62,12 @@ class BleService {
           });
         }
       });
-      Log.info("### services discovered");
+      Log.info(TAG, "### services discovered");
     });
   }
 
   Future setNotification(IncomingPacketHandlerService notificationHandler) async {
-    Log.info("setNotification");
+    Log.info(TAG, "setNotification");
 
     if (_charForRead.isNotifying) {
       await _device.setNotifyValue(_charForRead, false);
@@ -90,7 +92,7 @@ class BleService {
   }
 
   Future<void> writeCharacteristic(List<int> data) async {
-    Log.info("Start writing TX characteristic: ${data.toString()}");
+    Log.info(TAG, "Start writing TX characteristic: ${data.toString()}");
 
     var status = 'success';
     try {
@@ -103,6 +105,6 @@ class BleService {
       status = 'failure';
     }
 
-    Log.info("Finish writing TX characteristic: ${data.toString()} $status");
+    Log.info(TAG, "Finish writing TX characteristic: ${data.toString()} $status");
   }
 }

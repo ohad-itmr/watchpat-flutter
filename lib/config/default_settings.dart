@@ -1,4 +1,4 @@
-class Settings {
+class DefaultSettings {
   static const appName = 'WatchPATApp';
   static final itamarUartName = 'ITAMAR_UART';
   static final itamarUartAddress = 'CD:FC:5C:DA:F0:AD';
@@ -23,12 +23,33 @@ class Settings {
   static final uploadDataAccumulationSize = 100000;
   static final minStorageSpaceMb = 80;
   static final minTestLengthHours = 7;
+  static final maxTestLengthHours = 10;
   static final sessionTimeoutHours = 20;
   static final minBatteryLevel = 95;
+  static final dispatcherLink = "https://wp1-we.itamar-online.com:3335";
   static final userPinCodeLength = 4;
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;
   static final timeoutTransactionSec = 20;
   static final emailService = "alitz@emg-soft.com";
   static final debugMode = true;
+
+  static Map<String, dynamic> settingsToMap() {
+    return <String, dynamic>{
+      'uploadDataChunkMaxSize': uploadDataChunkMaxSize,
+      'uploadDataAccumulationSize': uploadDataAccumulationSize,
+      'minStorageSpaceMb': minStorageSpaceMb,
+      'minTestLengthHours': minTestLengthHours,
+      'maxTestLengthHours': maxTestLengthHours,
+      'sessionTimeoutHours': sessionTimeoutHours,
+      'minBatteryLevel': minBatteryLevel,
+      'dispatcherLink': dispatcherLink,
+      'userPinCodeLength': userPinCodeLength,
+      'timeoutFtpSec': timeoutFtpSec,
+      'timeoutBleSec': timeoutBleSec,
+      'timeoutTransactionSec': timeoutTransactionSec,
+      'emailService': emailService,
+      'debugMode': debugMode,
+    };
+  }
 }

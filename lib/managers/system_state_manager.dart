@@ -53,6 +53,8 @@ enum StateChangeActions {
 }
 
 class SystemStateManager extends ManagerBase {
+  static const String TAG = 'SystemStateManager';
+
   // BT STATES
   static List<String> _btStates = [
     "None",
@@ -198,7 +200,7 @@ class SystemStateManager extends ManagerBase {
   String _deviceErrors = "";
 
   void initAllBTStates() {
-    Log.info("initializing all BT states");
+    Log.info(TAG,"initializing all BT states");
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
     setBleScanResult(ScanResultStates.NOT_LOCATED);
@@ -206,7 +208,7 @@ class SystemStateManager extends ManagerBase {
   }
 
   void initAllStates() {
-    Log.info("initializing all system states");
+    Log.info(TAG,"initializing all system states");
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
     setBleScanResult(ScanResultStates.NOT_LOCATED);
@@ -222,35 +224,35 @@ class SystemStateManager extends ManagerBase {
 
   void setBtState(final BtStates state) {
     if (state != _btState.value) {
-      Log.info("setBtState: ${getBTStateName(state.index)}");
+      Log.info(TAG,"setBtState: ${getBTStateName(state.index)}");
       _btState.sink.add(state);
     }
   }
 
   void setBleScanState(ScanStates state) {
     if (state != _bleScanState.value) {
-      Log.info("setBleScanState: ${getScanStateName(state.index)}");
+      Log.info(TAG,"setBleScanState: ${getScanStateName(state.index)}");
       _bleScanState.sink.add(state);
     }
   }
 
   void setBleScanResult(ScanResultStates state) {
     if (state != _bleScanResult.value) {
-      Log.info("setBleScanResult: ${getScanResultStateName(state.index)}");
+      Log.info(TAG,"setBleScanResult: ${getScanResultStateName(state.index)}");
       _bleScanResult.sink.add(state);
     }
   }
 
   void setDeviceCommState(DeviceStates state) {
     if (state != _deviceCommState.value) {
-      Log.info("setDeviceCommState: ${getDeviceStateName(state.index)}");
+      Log.info(TAG,"setDeviceCommState: ${getDeviceStateName(state.index)}");
       _deviceCommState.sink.add(state);
     }
   }
 
   void setDeviceErrorState(DeviceErrorStates state, {String errors}) {
     if (state != _deviceErrorState.value) {
-      Log.info(
+      Log.info(TAG,
           "setDeviceErrorState: ${getDeviceErrorStateName(state.index)} ${errors != null ? errors : ''}");
       if (errors != null) {
         _deviceErrors = errors;
@@ -261,42 +263,42 @@ class SystemStateManager extends ManagerBase {
 
   void setServerCommState(ServerStates state) {
     if (state != _serverCommState.value) {
-      Log.info("setServerCommState: ${getServerStateName(state.index)}");
+      Log.info(TAG,"setServerCommState: ${getServerStateName(state.index)}");
       _serverCommState.sink.add(state);
     }
   }
 
   void setTestState(TestStates state) {
     if (state != _testState.value) {
-      Log.info("setTestState: ${getTestStateName(state.index)}");
+      Log.info(TAG,"setTestState: ${getTestStateName(state.index)}");
       _testState.sink.add(state);
     }
   }
 
   void setDataTransferState(DataTransferStates state) {
     if (state != _dataTransferState.value) {
-      Log.info("setDataTransferState: ${getDataTransferStateName(state.index)}");
+      Log.info(TAG,"setDataTransferState: ${getDataTransferStateName(state.index)}");
       _dataTransferState.sink.add(state);
     }
   }
 
   void setAppMode(AppModes state) {
     if (state != _appMode.value) {
-      Log.info("setAppMode: ${getAppModeName(state.index)}");
+      Log.info(TAG,"setAppMode: ${getAppModeName(state.index)}");
       _appMode.sink.add(state);
     }
   }
 
   void setFirmwareState(FirmwareUpgradeStates state) {
     if (state != _firmwareState.value) {
-      Log.info("setFirmwareState: ${getFirmwareStateName(state.index)}");
+      Log.info(TAG,"setFirmwareState: ${getFirmwareStateName(state.index)}");
       _firmwareState.sink.add(state);
     }
   }
 
   void setDispatcherState(DispatcherStates state) {
     if (state != _dispatcherState.value) {
-      Log.info("setDispatcherState: ${getDispatcherStateName(state.index)}");
+      Log.info(TAG,"setDispatcherState: ${getDispatcherStateName(state.index)}");
       _dispatcherState.sink.add(state);
     }
   }

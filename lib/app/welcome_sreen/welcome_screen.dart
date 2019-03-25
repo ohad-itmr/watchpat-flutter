@@ -3,6 +3,8 @@ import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  static const String TAG = 'WelcomeScreen';
+
   static const String PATH = '/welcome';
 
   WelcomeScreen({Key key}) : super(key: key);
@@ -19,11 +21,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   void _handleNext(BuildContext context) {
     systemStateManager.bleScanResultStream.listen((ScanResultStates state) {
-      if (state != ScanResultStates.LOCATED_SINGLE) {
-        Navigator.of(context).pushReplacementNamed('/battery');
-      } else if (welcomeManager.getInitialErrors().length > 0) {
+      if (welcomeManager.getInitialErrors().length > 0) {
         // TODO show errors list
         print('HAVE ERRORS');
+      } else if (state == ScanResultStates.NOT_LOCATED) {
+        Navigator.of(context).pushReplacementNamed('/battery');
       } else {
         Navigator.of(context).pushReplacementNamed('/prepare1');
       }
@@ -89,7 +91,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         buttons: StreamBuilder(
           stream: welcomeManager.initialChecksComplete,
           builder: (context, AsyncSnapshot<bool> snapshot) {
-            print('snapshot.data ${snapshot.data}');
             if (nextIsPressed) {
               if (snapshot.hasData && snapshot.data) {
                 WidgetsBinding.instance.addPostFrameCallback((_) => _handleNext(context));

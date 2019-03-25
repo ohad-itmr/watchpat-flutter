@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class BatteryScreen extends StatelessWidget {
+  static const String TAG = 'BatteryScreen';
   static const String PATH = '/battery';
   final S loc = sl<S>();
   final BleManager bleBloc = sl<BleManager>();

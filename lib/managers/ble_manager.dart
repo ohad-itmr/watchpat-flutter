@@ -9,6 +9,8 @@ import 'package:stack_trace/stack_trace.dart';
 import 'package:my_pat/service_locator.dart';
 
 class BleManager extends ManagerBase {
+  static const String TAG = 'BleManager';
+
   S lang;
 
   IncomingPacketHandlerService _incomingPacketHandler;
@@ -65,12 +67,12 @@ class BleManager extends ManagerBase {
   }
 
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
-    Log.info('## Device State Changed to $state');
+    Log.info(TAG,'## Device State Changed to $state');
     _deviceStateSubject.sink.add(state);
 
     if (state == BluetoothDeviceState.connected) {
-      Log.info("### connected to device");
-      Log.info("### starting services discovery");
+      Log.info(TAG,"### connected to device");
+      Log.info(TAG,"### starting services discovery");
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTED);
       await sl<BleService>().setServicesAndChars();
       await sl<BleService>().setNotification(_incomingPacketHandler);
@@ -81,7 +83,7 @@ class BleManager extends ManagerBase {
         sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
     } else if (state == BluetoothDeviceState.disconnected) {
-      Log.info("disconnected from device");
+      Log.info(TAG,"disconnected from device");
       _incomingPacketHandler.resetPacket();
       _disconnect();
       if (sl<SystemStateManager>().isBTEnabled) {
@@ -89,13 +91,13 @@ class BleManager extends ManagerBase {
           startScan(connectToFirstDevice: false);
         }
       } else {
-        Log.shout("BT not enabled scan cycle not initiated $tag");
+        Log.shout(TAG,"BT not enabled scan cycle not initiated $tag");
       }
     }
   }
 
   void _disconnect() {
-    Log.info('Remove all value changed listeners');
+    Log.info(TAG,'Remove all value changed listeners');
     deviceStateSubscription?.cancel();
     deviceStateSubscription = null;
     _deviceConnection?.cancel();
@@ -103,7 +105,7 @@ class BleManager extends ManagerBase {
   }
 
   void initializeBT() {
-    Log.info("initializing BT");
+    Log.info(TAG,"initializing BT");
     sl<BleService>().btStateOnChange.listen(_btStateHandler);
     sl<BleService>().btState.then(_btStateHandler);
   }
@@ -118,19 +120,19 @@ class BleManager extends ManagerBase {
   }
 
   bool _preScanChecks() {
-    Log.info("performing pre-scan checks");
+    Log.info(TAG,"performing pre-scan checks");
     if (!sl<SystemStateManager>().isBTEnabled) {
-      Log.warning("[preScanChecks] BT disabled, LE scan canceled");
+      Log.warning(TAG,"[preScanChecks] BT disabled, LE scan canceled");
       return false;
     }
 
     if (sl<SystemStateManager>().bleScanResult == ScanResultStates.LOCATED_SINGLE) {
-      Log.warning("[preScanChecks] device already located");
+      Log.warning(TAG,"[preScanChecks] device already located");
       return false;
     }
 
     if (sl<SystemStateManager>().isConnectionToDevice) {
-      Log.warning("[preScanChecks] connection to device already in progress");
+      Log.warning(TAG,"[preScanChecks] connection to device already in progress");
       return false;
     }
 
@@ -141,74 +143,73 @@ class BleManager extends ManagerBase {
     sl<SystemStateManager>().setBleScanState(ScanStates.COMPLETE);
     final Map<DeviceIdentifier, ScanResult> _discoveredDevices =
         _scanResultsSubject.value;
-    Log.info('Discovered ${_discoveredDevices.length} devices');
+    Log.info(TAG,'Discovered ${_discoveredDevices.length} devices');
     if (_discoveredDevices.isEmpty) {
-      Log.info("no device discovered on scan");
+      Log.info(TAG,"no device discovered on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     } else if (_discoveredDevices.length == 1) {
-      Log.info("discovered a SINGLE device on scan");
+      Log.info(TAG,"discovered a SINGLE device on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_SINGLE);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
       connect(_discoveredDevices.values.toList()[0].device);
     } else {
-      Log.info("discovered MULTIPLE devices on scan");
+      Log.info(TAG,"discovered MULTIPLE devices on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
     }
   }
 
   Future<dynamic> _sendCallback(CommandTaskerItem command) {
-    Log.info('_sendCallback $tag');
+    Log.info(TAG,'_sendCallback $tag');
     try {
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
         return _sendCommand(command.data);
       } else {
-        Log.warning("device disconnected, command not sent ");
+        Log.warning(TAG,"device disconnected, command not sent ");
       }
     } catch (e) {
-      Log.shout('$e $tag');
+      Log.shout(TAG,'$e $tag',e);
     }
     return null;
   }
 
   _sendTimeoutCallback() {
-    Log.info(">>> CommandTasker timeout");
+    Log.info(TAG,">>> CommandTasker timeout");
     _disconnect();
     if (sl<SystemStateManager>().isBTEnabled) {
       if (sl<SystemStateManager>().isScanCycleEnabled) {
         startScan(connectToFirstDevice: false);
       }
     } else {
-      Log.warning("BT not enabled scan cycle not initiated");
+      Log.warning(TAG,"BT not enabled scan cycle not initiated");
     }
   }
 
   _sendCommand(List<List<int>> byteList) async {
-    Log.info("### _sendCommand $tag");
+    Log.info(TAG,"### _sendCommand $tag");
 
     if (byteList != null) {
       try {
         List<Future<void>> futures = [];
         for (var req in byteList) {
-          print('Subrequest $req');
           futures.add(sl<BleService>().writeCharacteristic(req));
         }
         await Future.wait(futures);
       } catch (e) {
-        Log.shout("sendCommand exception: ${e.toString()} $tag");
+        Log.shout(TAG,"sendCommand exception: ${e.toString()} $tag");
       }
     } else {
-      Log.shout("sendCommand failed: byteList is null $tag");
+      Log.shout(TAG,"sendCommand failed: byteList is null $tag");
     }
   }
 
   void _sendStartSession(int useType) {
-    Log.info("### sending start session $tag");
+    Log.info(TAG,"### sending start session $tag");
     sl<CommandTaskerManager>().addCommandWithNoCb(
         DeviceCommands.getStartSessionCmd(0x0000, useType, [0, 0, 0, 1]));
   }
 
   void startScan({int time, @required bool connectToFirstDevice}) {
-    Log.info('## START SCAN');
+    Log.info(TAG,'## START SCAN');
     if (!_preScanChecks()) {
       return;
     }
@@ -230,9 +231,9 @@ class BleManager extends ManagerBase {
     final String name = scanResult.advertisementData.localName;
     print('Found $name ${scanResult.device.id}');
     if (name.contains('ITAMAR')) {
-      Log.info(">>> name on scan: $name | name local: ${PrefsProvider.loadDeviceName()}");
+      Log.info(TAG,">>> name on scan: $name | name local: ${PrefsProvider.loadDeviceName()}");
 
-      Log.info('## FOUND DEVICE ${scanResult.device.id}');
+      Log.info(TAG,'## FOUND DEVICE ${scanResult.device.id}');
       var currentResults = _scanResultsSubject.value;
       currentResults[scanResult.device.id] = scanResult;
 
@@ -245,7 +246,7 @@ class BleManager extends ManagerBase {
   }
 
   void stopScan() {
-    Log.info('## STOP SCAN $this');
+    Log.info(TAG,'## STOP SCAN $this');
     _scanSubscription?.cancel();
     _scanSubscription = null;
     _postScan();
@@ -263,10 +264,10 @@ class BleManager extends ManagerBase {
         break;
       case StateChangeActions.APP_MODE_CHANGED:
         final AppModes mode = sl<SystemStateManager>().appMode;
-        Log.info("receiverAppMode: " + SystemStateManager.getAppModeName(mode.index));
+        Log.info(TAG,"receiverAppMode: " + SystemStateManager.getAppModeName(mode.index));
         switch (mode) {
           case AppModes.USER:
-            Log.info("### sending start session");
+            Log.info(TAG,"### sending start session");
             // todo add real SW ID
             sl<CommandTaskerManager>()
                 .addCommandWithNoCb(DeviceCommands.getStartSessionCmd(

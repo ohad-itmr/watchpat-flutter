@@ -3,23 +3,30 @@ import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/domain_model/response_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:rx_command/rx_command.dart';
 
 enum WelcomeActivityState { NOT_STARTED, WORKING, DONE_FAILED, DONE_SUCCESS }
 enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }
 
 class WelcomeActivityManager extends ManagerBase {
-  final _networkProvider = NetworkService();
+  static const String TAG = 'WelcomeActivityManager';
+
   final _filesProvider = sl<FileSystemService>();
   final lang = sl<S>();
+  final Connectivity connectivity = Connectivity();
 
   WelcomeActivityManager() {
     _initErrorsSubject.add(List());
     _allocateSpace();
     createStartFiles();
+    getDispatcherIsAliveCommand.execute();
     _welcomeState.add(WelcomeActivityState.NOT_STARTED);
     _fileCreationStateSubject.add(FileCreationState.NOT_STARTED);
     _fileAllocationStateSubject.add(FileCreationState.NOT_STARTED);
   }
+
+  final RxCommand<void, bool> getDispatcherIsAliveCommand =
+      RxCommand.createAsyncNoParam<bool>(sl<DispatcherService>().checkDispatcherAlive);
 
   BehaviorSubject<WelcomeActivityState> _welcomeState =
       BehaviorSubject<WelcomeActivityState>();
@@ -72,11 +79,13 @@ class WelcomeActivityManager extends ManagerBase {
     });
   }
 
-  Observable<bool> get initialChecksComplete => Observable.combineLatest3(
+  Observable<bool> get initialChecksComplete => Observable.combineLatest4(
         sl<SystemStateManager>().bleScanStateStream,
         sl<SystemStateManager>().bleScanResultStream,
         _initFiles(),
-        (ScanStates scanState, ScanResultStates scanResultState, Response initFilesResponse) {
+        getDispatcherIsAliveCommand,
+        (ScanStates scanState, ScanResultStates scanResultState,
+            Response initFilesResponse, bool dispatcherIsAlive) {
           print(scanState);
           if (scanState != ScanStates.COMPLETE) {
             return false;
@@ -84,6 +93,14 @@ class WelcomeActivityManager extends ManagerBase {
           _initErrorsSubject.add(List());
           if (!initFilesResponse.success) {
             addInitialErrors(initFilesResponse.error);
+          }
+
+          if (scanResultState == ScanResultStates.LOCATED_MULTIPLE) {
+            addInitialErrors(lang.batteryContent_1);
+          }
+
+          if (!dispatcherIsAlive) {
+            addInitialErrors(lang.myPAT_connect_to_server_fail);
           }
 
           return true;
@@ -107,11 +124,11 @@ class WelcomeActivityManager extends ManagerBase {
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
 
-    _networkProvider.connectivity
+    connectivity
         .checkConnectivity()
         .then((ConnectivityResult result) => _connectivityStatusHandler(result));
 
-    _networkProvider.connectivity.onConnectivityChanged
+    connectivity.onConnectivityChanged
         .listen((ConnectivityResult result) => _connectivityStatusHandler(result));
   }
 

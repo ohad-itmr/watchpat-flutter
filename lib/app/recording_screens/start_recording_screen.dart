@@ -5,6 +5,7 @@ import 'package:my_pat/widgets/widgets.dart';
 
 class StartRecordingScreen extends StatelessWidget {
   static const String PATH = '/start';
+  static const String TAG = 'StartRecordingScreen';
 
   StartRecordingScreen({Key key}) : super(key: key);
   final S loc = sl<S>();

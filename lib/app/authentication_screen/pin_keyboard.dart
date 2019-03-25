@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
 
 class PinKeyboard extends StatelessWidget {
+  static const String TAG = 'PinKeyboard';
+
   final children = <Widget>[];
   final PinManager pinManager = sl<PinManager>();
 

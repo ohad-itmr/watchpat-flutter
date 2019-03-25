@@ -4,6 +4,7 @@ import 'package:my_pat/widgets/widgets.dart';
 
 
 class EndScreen extends StatelessWidget {
+  static const String TAG = 'EndScreen';
   static const String PATH = '/end';
   final S loc = sl<S>();
 

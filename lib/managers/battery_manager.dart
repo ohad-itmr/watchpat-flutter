@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 
 class BatteryManager extends ManagerBase {
+  static const String TAG = 'BatteryManager';
 
   Battery battery;
   BehaviorSubject<BatteryState> _batteryStateSubject = BehaviorSubject<BatteryState>();

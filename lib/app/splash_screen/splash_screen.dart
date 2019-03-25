@@ -5,6 +5,8 @@ import 'package:my_pat/service_locator.dart';
 class SplashScreen extends StatelessWidget {
   static const String PATH = '/';
   final S loc = sl<S>();
+  static const String TAG = 'SplashScreen';
+
   final BleManager bleManager = sl<BleManager>();
   final SystemStateManager systemStateManager = sl<SystemStateManager>();
 

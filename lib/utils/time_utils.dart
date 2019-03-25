@@ -8,6 +8,8 @@ abstract class TimerCallback {
 }
 
 class TimeUtils {
+  static const String TAG = 'TimeUtils';
+
   static const int TICK_SPAN = 1000;
   static const int TIME_DIFF_PACKET_REAL_SEC = 5;
   static const int TIME_DIFF_TEST_START_FIRST_DATA_SEC = 9;
@@ -20,7 +22,7 @@ class TimeUtils {
   static double getTimeStamp() {
     final DateTime now = DateTime.now();
     final int currMillis = now.millisecond;
-    Log.info("## current time: ${getFullDateStringFromTimeStamp(now)}");
+    Log.info(TAG,"## current time: ${getFullDateStringFromTimeStamp(now)}");
     return (currMillis + getGMTDiffMillis()) / 1000;
   }
 
@@ -30,6 +32,7 @@ class TimeUtils {
 }
 
 class WatchPATTimer {
+  static const String TAG = 'WatchPATTimer';
 
   String _name;
   int _interval;
@@ -42,7 +45,7 @@ class WatchPATTimer {
   bool _isCycle;
 
   void onFinish() {
-    Log.info("$_name triggered, $this");
+    Log.info(TAG,"$_name triggered, $this");
     _timeoutCallback();
     _isRunning = false;
     if (_isCycle) {
@@ -53,7 +56,7 @@ class WatchPATTimer {
   void startTimer() {
     if (!_isRunning) {
       if (_startCallback != null) {
-        Log.info("$_name started");
+        Log.info(TAG,"$_name started");
         _startCallback();
       }
       _isRunning = true;

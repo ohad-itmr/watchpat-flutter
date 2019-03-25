@@ -1,4 +1,6 @@
 class CommandTask {
+  static const String TAG = 'CommandTask';
+
   List<List<int>> _byteList;
   int _packetIdentifier;
   int _opCode;

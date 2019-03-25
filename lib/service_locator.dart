@@ -13,8 +13,8 @@ void setUpServiceLocator() {
   // Services
   sl.registerSingleton<FileSystemService>(FileSystemService());
   sl.registerSingleton<BleService>(BleService());
-  sl.registerSingleton<NetworkService>(NetworkService());
   sl.registerSingleton<IncomingPacketHandlerService>(IncomingPacketHandlerService());
+  sl.registerSingleton<DispatcherService>(DispatcherService());
 
   // Managers
   sl.registerSingleton<BatteryManager>(BatteryManager());

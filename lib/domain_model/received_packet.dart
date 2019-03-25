@@ -7,6 +7,8 @@ import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/crc16.dart';
 
 class ReceivedPacket {
+  static const String TAG = 'ReceivedPacket';
+
   static const int PACKET_SIGNATURE_STARTING_BYTE = 0;
   static const int PACKET_OPCODE_STARTING_BYTE = 2;
   static const int PACKET_IDENTIFIER_STARTING_BYTE = 12;
@@ -115,22 +117,22 @@ class ReceivedPacket {
       return DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES;
     }
 
-    Log.shout("unknown packet type: $opCode");
+    Log.shout(TAG,"unknown packet type: $opCode");
     return DeviceCommands.CMD_OPCODE_UNKNOWN;
   }
 
   bool isValidPacket() {
     if (packetType == DeviceCommands.CMD_SIGNATURE_PACKET_INVALID) {
-      Log.shout("Illegal packet signature ");
+      Log.shout(TAG,"Illegal packet signature ");
       return false;
     } else if (packetType == DeviceCommands.CMD_OPCODE_UNKNOWN) {
-      Log.shout("Unknown opCode");
+      Log.shout(TAG,"Unknown opCode");
 
       _commandTasker.addAck(DeviceCommands.getAckCmd(
           packetType, DeviceCommands.ACK_STATUS_ILLEGAL_OPCODE, identifier));
       return false;
     } else if (!_validatePacketCRC()) {
-      Log.shout("Invalid CRC");
+      Log.shout(TAG,"Invalid CRC");
 //      _commandTasker.addAck(DeviceCommands.getAckCmd(
 //          packetType, DeviceCommands.ACK_STATUS_CRC_FAIL, identifier));
       return false;
@@ -156,7 +158,7 @@ class ReceivedPacket {
       return true;
     }
 
-    Log.shout(
+    Log.shout(TAG,
         "CRC validation failed. packet CRC: $packetCRC | should be: $validationCRC");
     return false;
   }

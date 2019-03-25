@@ -71,10 +71,12 @@ var uploadingRouteHandler =
 });
 
 class AppRoutes {
+  static const String TAG = 'AppRoutes';
+
   static void configureRoutes(Router router) {
     router.notFoundHandler =
         Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-      print('ROUTE WAS NOT FOUND !!!');
+      print('$TAG - ROUTE WAS NOT FOUND !!!');
     });
 
     router.define(SplashScreen.PATH,

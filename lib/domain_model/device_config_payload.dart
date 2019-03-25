@@ -1,9 +1,10 @@
-import 'package:my_pat/generated/i18n.dart';
+import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 
-
 class DeviceConfigPayload {
-  S lang = S();
+  static const String TAG = 'DeviceConfigPayload';
+
+  S lang = sl<S>();
 
   //
   // fields length
@@ -132,8 +133,8 @@ class DeviceConfigPayload {
     config._setFWVersion(bytesData);
     _setDeviceSerial(bytesData);
 
-    Log.info(
-      "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
+    Log.info(TAG,
+        "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
     return config;
   }
 
@@ -161,11 +162,9 @@ class DeviceConfigPayload {
 
   void _setDeviceSerial(final List<int> bytesConfig) {
     final List<int> serialBytes =
-    bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
+        bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
     _deviceSerial = int.parse(serialBytes.join());
   }
-
-
 
   static void updateSmartPhoneInfo(List<int> bytes) {
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT] = 0x0F;
@@ -205,6 +204,8 @@ class DeviceConfigPayload {
 enum CompareResults { VERSION_HIGHER, VERSION_IDENTICAL, VERSION_LOWER }
 
 class Version {
+  static const String TAG = 'Version';
+
   String _name;
   int _major;
   int _minor;
@@ -213,34 +214,34 @@ class Version {
   Version(this._major, this._minor, this._compilation, this._name);
 
   String get versionString =>
-    '$_major.$_minor${_compilation > 0 ? '.$_compilation' : ''}';
+      '$_major.$_minor${_compilation > 0 ? '.$_compilation' : ''}';
 
   CompareResults compareTo(final Version versionToCmp) {
-    Log.info(
-      'comparing versions:\n $_name: $versionString <--> ${versionToCmp._name}: ${versionToCmp.versionString}');
+    Log.info(TAG,
+        'comparing versions:\n $_name: $versionString <--> ${versionToCmp._name}: ${versionToCmp.versionString}');
 
     if (versionToCmp._major > _major) {
-      Log.info('${versionToCmp._name} is higher');
+      Log.info(TAG, '${versionToCmp._name} is higher');
       return CompareResults.VERSION_HIGHER;
     } else if (versionToCmp._major < _major) {
-      Log.info("${versionToCmp._name} is lower");
+      Log.info(TAG, "${versionToCmp._name} is lower");
       return CompareResults.VERSION_LOWER;
     } else {
       if (versionToCmp._minor > _minor) {
-        Log.info("${versionToCmp._name} is higher");
+        Log.info(TAG, "${versionToCmp._name} is higher");
         return CompareResults.VERSION_HIGHER;
       } else if (versionToCmp._minor < _minor) {
-        Log.info("${versionToCmp._name} is lower");
+        Log.info(TAG, "${versionToCmp._name} is lower");
         return CompareResults.VERSION_LOWER;
       } else {
         if (versionToCmp._compilation > _compilation) {
-          Log.info("${versionToCmp._name} is higher");
+          Log.info(TAG, "${versionToCmp._name} is higher");
           return CompareResults.VERSION_HIGHER;
         } else if (versionToCmp._compilation < _compilation) {
-          Log.info("${versionToCmp._name} is lower");
+          Log.info(TAG, "${versionToCmp._name} is lower");
           return CompareResults.VERSION_LOWER;
         } else {
-          Log.info("versions identical");
+          Log.info(TAG, "versions identical");
           return CompareResults.VERSION_IDENTICAL;
         }
       }
@@ -248,10 +249,10 @@ class Version {
   }
 
   static Version stringToVersion(final String versionStr, final String name) {
-    Log.info("parsing version $name: $versionStr");
+    Log.info(TAG, "parsing version $name: $versionStr");
     final List<String> splitVersion = versionStr.split("[.]");
     if (splitVersion.length != 3) {
-      Log.shout("invalid version length format");
+      Log.shout(TAG, "invalid version length format");
       return null;
     }
 
@@ -261,7 +262,7 @@ class Version {
       int compilation = int.parse(splitVersion[2]);
       return new Version(major, minor, compilation, name);
     } catch (e) {
-      Log.shout("invalid version format");
+      Log.shout(TAG, "invalid version format");
       return null;
     }
   }

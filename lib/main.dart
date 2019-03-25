@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:my_pat/app/app_routes.dart';
 import 'package:my_pat/config/app_theme.dart';
-import 'package:my_pat/config/config.dart';
+import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,7 +48,7 @@ class _AppComponentState extends State<AppComponent> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: Config.appName,
+      title: DefaultSettings.appName,
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

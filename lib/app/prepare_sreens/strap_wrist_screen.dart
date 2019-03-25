@@ -6,6 +6,7 @@ import 'package:my_pat/widgets/widgets.dart';
 class StrapWristScreen extends StatelessWidget {
   static const String PATH = '/prepare2';
   final S loc = sl<S>();
+  static const String TAG = 'StrapWristScreen';
 
   StrapWristScreen({Key key}) : super(key: key);
 

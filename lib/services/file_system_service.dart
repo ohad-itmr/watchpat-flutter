@@ -1,16 +1,19 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:my_pat/config/settings.dart';
+import 'package:my_pat/config/default_settings.dart';
 
 import 'package:my_pat/domain_model/response_model.dart';
 
 class FileSystemService {
-  final String localDataFileName = Settings.dataFileName;
-  final String logInputFileName = Settings.logInputFileName;
-  final String logMainFileName = Settings.logMainFileName;
-  final String logOutputFileName = Settings.logOutputFileName;
+  static const String TAG = 'FileSystemService';
+
+  final String localDataFileName = DefaultSettings.dataFileName;
+  final String logInputFileName = DefaultSettings.logInputFileName;
+  final String logMainFileName = DefaultSettings.logMainFileName;
+  final String logOutputFileName = DefaultSettings.logOutputFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -40,24 +43,24 @@ class FileSystemService {
   Future<Response> allocateSpace() async {
     File localFile = await localDataFile;
     if (await localFile.exists()) {
-      Log.info("data file from previous session is found, deleting...");
+      Log.info(TAG,"data file from previous session is found, deleting...");
       try {
         await localFile.delete();
       } catch (e) {
-        Log.shout('data file delete failed $e');
+        Log.shout(TAG,'data file delete failed $e');
       }
     }
-    Log.info('checking sufficient local storage space...,');
+    Log.info(TAG,'checking sufficient local storage space...,');
 
     try {
-      var spaceToAllocate = Settings.minStorageSpaceMb * 1024;
-      Log.info('Free storage space: $spaceToAllocate required');
+      var spaceToAllocate = GlobalSettings.minStorageSpaceMB * 1024;
+      Log.info(TAG,'Free storage space: $spaceToAllocate required');
       RandomAccessFile file = await localFile.open(mode: FileMode.write);
       file.truncateSync(spaceToAllocate);
       file.closeSync();
       return Response(success: true);
     } catch (e) {
-      Log.shout('SPACE ALLOCATION FAILED $e');
+      Log.shout(TAG,'SPACE ALLOCATION FAILED $e');
       return Response(success: false, error: e.toString());
     }
   }
@@ -65,22 +68,22 @@ class FileSystemService {
   Future<Response> init() async {
 
     try {
-      Log.info('Attempt to create initial files...');
+      Log.info(TAG,'Attempt to create initial files...');
       File mainLogFile = await logMainFile;
       await mainLogFile.create();
-      Log.info('MAIN_LOG_FILE CREATED');
+      Log.info(TAG,'MAIN_LOG_FILE CREATED');
       File localFile = await localDataFile;
       await localFile.create();
-      Log.info('LOCAL_DATA_FILE CREATED');
+      Log.info(TAG,'LOCAL_DATA_FILE CREATED');
       File logInFile = await logInputFile;
       logInFile.create();
-      Log.info('LOG_INBOUND_FILE CREATED');
+      Log.info(TAG,'LOG_INBOUND_FILE CREATED');
       File logOutFile = await logInputFile;
       logOutFile.create();
-      Log.info('LOG_OUTBOUND_FILE CREATED');
+      Log.info(TAG,'LOG_OUTBOUND_FILE CREATED');
       return Response(success: true);
     } catch (e) {
-      Log.warning('FILES CREATION ERROR: ${e.toString()}');
+      Log.warning(TAG,'FILES CREATION ERROR: ${e.toString()}');
       return Response(success: false, error: e.toString());
     }
   }
@@ -93,10 +96,10 @@ class FileSystemService {
       logInFile.delete();
       File logOutFile = await logInputFile;
       logOutFile.delete();
-      Log.info('FILES CLEARED');
+      Log.info(TAG,'FILES CLEARED');
       return Response(success: true);
     } catch (e) {
-      Log.warning('FILES CLEAR ERROR: ${e.toString()}');
+      Log.warning(TAG,'FILES CLEAR ERROR: ${e.toString()}');
       return Response(success: false, error: e.toString());
     }
   }

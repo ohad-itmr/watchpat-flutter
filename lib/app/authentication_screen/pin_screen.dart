@@ -5,6 +5,7 @@ import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class PinScreen extends StatelessWidget {
+  static const String TAG = 'PinScreen';
   static const String PATH = '/pin';
   final S loc = sl<S>();
   final PinManager pinManager = sl<PinManager>();

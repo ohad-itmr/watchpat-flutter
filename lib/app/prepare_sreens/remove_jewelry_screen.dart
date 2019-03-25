@@ -6,6 +6,7 @@ import 'package:my_pat/widgets/widgets.dart';
 class RemoveJewelryScreen extends StatelessWidget {
   static const String PATH = '/prepare1';
   final S loc = sl<S>();
+  static const String TAG = 'RemoveJewelryScreen';
 
   RemoveJewelryScreen({Key key}) : super(key: key);
 

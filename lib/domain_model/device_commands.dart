@@ -2,6 +2,8 @@ import 'package:my_pat/domain_model/command_packets.dart';
 import 'package:my_pat/domain_model/command_task.dart';
 
 class DeviceCommands {
+  static const String TAG = 'DeviceCommands';
+
   static const int PACKET_HEADER_SIZE = 24;
   static const int PACKET_CHUNK_SIZE = 20;
   static const int LOAD_FILE_CHUNK_SIZE = 256;

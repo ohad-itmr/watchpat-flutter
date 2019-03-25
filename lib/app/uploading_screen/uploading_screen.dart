@@ -5,6 +5,8 @@ import 'package:my_pat/widgets/widgets.dart';
 
 class UploadingScreen extends StatelessWidget {
   static const String PATH = '/uploading';
+  static const String TAG = 'UploadingScreen';
+
   final S loc = sl<S>();
 
   UploadingScreen({Key key}) : super(key: key);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
@@ -30,7 +31,7 @@ class StartRecordingScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/recording');
+              Navigator.pushNamed(context, RecordingScreen.PATH);
             },
             text: loc.btnStartRecording,
           ),

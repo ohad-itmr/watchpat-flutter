@@ -1,7 +1,6 @@
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 class PinManager extends ManagerBase {
   static const String TAG = 'PinManager';
 
@@ -11,9 +10,11 @@ class PinManager extends ManagerBase {
   BehaviorSubject<String> _resultSubject = BehaviorSubject<String>();
   BehaviorSubject<bool> _pinIsValid = BehaviorSubject<bool>();
 
-  Observable<String> get pin => _resultSubject.stream;
+  Observable<String> get pinStream => _resultSubject.stream;
 
   Observable<bool> get pinIsValid => _pinIsValid.stream;
+
+  String get pin => _pin;
 
   void onPinChange(int value) {
     var newPin = '';

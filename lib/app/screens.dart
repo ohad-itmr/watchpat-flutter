@@ -1,10 +1,10 @@
 export 'authentication_screen/pin_screen.dart';
 export 'battery_screen/battery_screen.dart';
 export 'end_screen/end_screen.dart';
-export 'prepare_sreens/chest_sensor_screen.dart';
-export 'prepare_sreens/finger_probe_screen.dart';
+export 'device_setup_screens/chest_sensor_screen.dart';
+export 'device_setup_screens/finger_probe_screen.dart';
 export 'prepare_sreens/remove_jewelry_screen.dart';
-export 'prepare_sreens/strap_wrist_screen.dart';
+export 'device_setup_screens/strap_wrist_screen.dart';
 export 'splash_screen/splash_screen.dart';
 export 'uploading_screen/uploading_screen.dart';
 export 'welcome_sreen/welcome_screen.dart';

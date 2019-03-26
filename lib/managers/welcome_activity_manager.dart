@@ -3,7 +3,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/domain_model/response_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:rx_command/rx_command.dart';
 
 enum WelcomeActivityState { NOT_STARTED, WORKING, DONE_FAILED, DONE_SUCCESS }
 enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }
@@ -11,22 +10,19 @@ enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }
 class WelcomeActivityManager extends ManagerBase {
   static const String TAG = 'WelcomeActivityManager';
 
-  final _filesProvider = sl<FileSystemService>();
-  final lang = sl<S>();
-  final Connectivity connectivity = Connectivity();
+  final _lang = sl<S>();
+  final Connectivity _connectivity = Connectivity();
+
+  String _deviceName;
 
   WelcomeActivityManager() {
     _initErrorsSubject.add(List());
     _allocateSpace();
     createStartFiles();
-    getDispatcherIsAliveCommand.execute();
     _welcomeState.add(WelcomeActivityState.NOT_STARTED);
     _fileCreationStateSubject.add(FileCreationState.NOT_STARTED);
     _fileAllocationStateSubject.add(FileCreationState.NOT_STARTED);
   }
-
-  final RxCommand<void, bool> getDispatcherIsAliveCommand =
-      RxCommand.createAsyncNoParam<bool>(sl<DispatcherService>().checkDispatcherAlive);
 
   BehaviorSubject<WelcomeActivityState> _welcomeState =
       BehaviorSubject<WelcomeActivityState>();
@@ -52,14 +48,14 @@ class WelcomeActivityManager extends ManagerBase {
 
   Future<void> _allocateSpace() async {
     _fileAllocationStateSubject.sink.add(FileCreationState.STARTED);
-    Response res = await _filesProvider.allocateSpace();
+    Response res = await sl<FileSystemService>().allocateSpace();
     _fileAllocationStateSubject.sink.add(
         res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   Future<void> createStartFiles() async {
     _fileCreationStateSubject.sink.add(FileCreationState.STARTED);
-    Response res = await _filesProvider.init();
+    Response res = await sl<FileSystemService>().init();
     _fileCreationStateSubject.sink.add(
         res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
@@ -74,18 +70,17 @@ class WelcomeActivityManager extends ManagerBase {
       _welcomeState.sink.add(WelcomeActivityState.DONE_FAILED);
       return Response(
         success: false,
-        error: lang.insufficient_storage_space_on_smartphone,
+        error: _lang.insufficient_storage_space_on_smartphone,
       );
     });
   }
 
-  Observable<bool> get initialChecksComplete => Observable.combineLatest4(
+  Observable<bool> get initialChecksComplete => Observable.combineLatest3(
         sl<SystemStateManager>().bleScanStateStream,
         sl<SystemStateManager>().bleScanResultStream,
         _initFiles(),
-        getDispatcherIsAliveCommand,
         (ScanStates scanState, ScanResultStates scanResultState,
-            Response initFilesResponse, bool dispatcherIsAlive) {
+            Response initFilesResponse) {
           print(scanState);
           if (scanState != ScanStates.COMPLETE) {
             return false;
@@ -93,14 +88,6 @@ class WelcomeActivityManager extends ManagerBase {
           _initErrorsSubject.add(List());
           if (!initFilesResponse.success) {
             addInitialErrors(initFilesResponse.error);
-          }
-
-          if (scanResultState == ScanResultStates.LOCATED_MULTIPLE) {
-            addInitialErrors(lang.batteryContent_1);
-          }
-
-          if (!dispatcherIsAlive) {
-            addInitialErrors(lang.myPAT_connect_to_server_fail);
           }
 
           return true;
@@ -124,12 +111,16 @@ class WelcomeActivityManager extends ManagerBase {
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
 
-    connectivity
+    _connectivity
         .checkConnectivity()
         .then((ConnectivityResult result) => _connectivityStatusHandler(result));
 
-    connectivity.onConnectivityChanged
+    _connectivity.onConnectivityChanged
         .listen((ConnectivityResult result) => _connectivityStatusHandler(result));
+
+    if (PrefsProvider.getIsFirstTimeRun() == null || PrefsProvider.getIsFirstTimeRun()) {
+      sl<BleManager>().startScan(time: 3000, connectToFirstDevice: false);
+    }
   }
 
   @override

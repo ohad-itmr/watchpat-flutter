@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -29,7 +30,7 @@ class SplashScreen extends StatelessWidget {
                     if (snapshot.hasData && snapshot.data == BtStates.ENABLED) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacementNamed('/welcome');
+                        Navigator.of(context).pushReplacementNamed(WelcomeScreen.PATH);
                       });
                     }
                     return Container(
@@ -63,7 +64,7 @@ class SplashScreen extends StatelessWidget {
                     .addPostFrameCallback((_) => _showBTWarning(context));
               } else {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushReplacementNamed('/welcome');
+                  Navigator.of(context).pushReplacementNamed(WelcomeScreen.PATH);
                 });
               }
             }

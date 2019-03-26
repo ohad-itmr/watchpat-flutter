@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:my_pat/services/services.dart';
+import 'package:my_pat/domain_model/dispatcher_response_models.dart';
+import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/http/http_exception.dart';
 import 'package:my_pat/utils/log/dio_logger.dart';
 
@@ -24,11 +25,19 @@ class DispatcherService {
 
   static final String _dispatcherUrl = GlobalSettings.dispatcherLink;
   final String _testEndpoint = '$_dispatcherUrl/test';
+  final String _getConfigEndpoint = '$_dispatcherUrl/api/getConfiguration';
 
   Future<bool> checkDispatcherAlive() async {
     Response response = await _dio.get(_testEndpoint);
     throwIfNoSuccess(response);
     return response.data['test'] == 'ok';
+  }
+
+  void sendGetConfig(String serialNumber) async {
+    Response response = await _dio.get('$_getConfigEndpoint/$serialNumber');
+    throwIfNoSuccess(response);
+    sl<UserAuthenticationService>()
+        .setConfigParams(GetConfigurationResponseModel.fromJson(response.data));
   }
 
   void throwIfNoSuccess(Response response) {

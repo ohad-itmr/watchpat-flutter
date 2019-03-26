@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
-import 'buttons_block.dart';
+import 'package:my_pat/widgets/widgets.dart';
 
 class RecordingControl extends StatelessWidget {
   @override
@@ -25,7 +26,7 @@ class RecordingControl extends StatelessWidget {
             moreActionButton: null,
             nextActionButton: ButtonModel(
               action: () {
-                Navigator.pushNamed(context, '/uploading');
+                Navigator.pushNamed(context, UploadingScreen.PATH);
               },
               text: loc.btnEndRecording,
             ),

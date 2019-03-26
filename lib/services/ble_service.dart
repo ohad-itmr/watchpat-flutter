@@ -28,8 +28,9 @@ class BleService {
 
   Stream<BluetoothState> get btStateOnChange => _flutterBlue.onStateChanged();
 
-  Stream<ScanResult> scanForDevices({int time, @required bool connectToFirstDevice}) {
-    return _flutterBlue.scan(timeout: time != null ? Duration(seconds: time) : null);
+  Stream<ScanResult> scanForDevices(int time) {
+
+    return _flutterBlue.scan(timeout: time != null ? Duration(milliseconds: time) : null);
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {

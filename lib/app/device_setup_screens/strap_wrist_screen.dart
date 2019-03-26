@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 
-class FingerProbeScreen extends StatelessWidget {
-  static const String PATH = '/prepare4';
+class StrapWristScreen extends StatelessWidget {
+  static const String PATH = '/device_set_up_1';
   final S loc = sl<S>();
-  static const String TAG = 'FingerProbeScreen';
+  static const String TAG = 'StrapWristScreen';
 
-  FingerProbeScreen({Key key}) : super(key: key);
+  StrapWristScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
-      showBack: true,
+      showBack: false,
       showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
-          imageName: 'finger.png',
+          imageName: 'strap_wrist.png',
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.fingerProbeTitle,
+          title: loc.strapWristTitle,
           content: [
-            loc.fingerProbeContent,
+            loc.strapWristContent,
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/start');
+              Navigator.pushNamed(context, ChestSensorScreen.PATH);
             },
           ),
           moreActionButton: ButtonModel(
@@ -38,7 +39,7 @@ class FingerProbeScreen extends StatelessWidget {
           ),
         ),
         showSteps: true,
-        current: 5,
+        current: 3,
         total: 6,
       ),
     );

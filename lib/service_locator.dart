@@ -15,6 +15,7 @@ void setUpServiceLocator() {
   sl.registerSingleton<BleService>(BleService());
   sl.registerSingleton<IncomingPacketHandlerService>(IncomingPacketHandlerService());
   sl.registerSingleton<DispatcherService>(DispatcherService());
+  sl.registerSingleton<UserAuthenticationService>(UserAuthenticationService());
 
   // Managers
   sl.registerSingleton<BatteryManager>(BatteryManager());

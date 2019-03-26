@@ -13,6 +13,8 @@ void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();
   Log.init();
   Log.setLevel(Level.INFO);
+
+
   setUpServiceLocator();
 
   runApp(AppComponent());
@@ -28,11 +30,6 @@ class AppComponent extends StatefulWidget {
 class _AppComponentState extends State<AppComponent> {
   Router router;
 
-  void _initLog() {
-//    Log.init();
-//    Log.setLevel(Level.INFO);
-  }
-
   void _initRouter() {
     router = new Router();
     AppRoutes.configureRoutes(router);
@@ -41,8 +38,11 @@ class _AppComponentState extends State<AppComponent> {
   @override
   void initState() {
     super.initState();
-    _initLog();
     _initRouter();
+    // todo for development only
+    PrefsProvider.setIgnoreDeviceErrors(true);
+
+    PrefsProvider.setFirstDeviceConnection(state: true);
   }
 
   @override

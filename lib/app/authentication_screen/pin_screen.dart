@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/authentication_screen/pin_inputs.dart';
 import 'package:my_pat/app/authentication_screen/pin_keyboard.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
@@ -11,6 +12,11 @@ class PinScreen extends StatelessWidget {
   final PinManager pinManager = sl<PinManager>();
 
   PinScreen({Key key}) : super(key: key);
+
+  _checkPin(BuildContext context) {
+    print('PIN is ${pinManager.pin}');
+//    Navigator.pushReplacementNamed(context, StrapWristScreen.PATH);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +47,7 @@ class PinScreen extends StatelessWidget {
                       return ButtonsBlock(
                         nextActionButton: ButtonModel(
                           disabled: !snapshot.data,
-                          action: () {
-                            Navigator.pushNamed(context, '/prepare1');
-                          },
+                          action: () => _checkPin(context),
                           text: loc.btnEnter,
                         ),
                         moreActionButton: null,

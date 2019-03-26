@@ -33,7 +33,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           '>>>>>>>>>>>> PACKET ANALYSIS END.\n\n @@@packets received: $_packetAnalyzed, \n@@@bytes received: $_bytesAnalyzed');
     });
     _testStartTimer = WatchPATTimer('TestStartTimeout', 60 * 1000, () {
-      Log.info(TAG,">>>>>>>>>>>> STARTING PACKET ANALYSIS ,$tag");
+      Log.info(TAG, ">>>>>>>>>>>> STARTING PACKET ANALYSIS ,$tag");
       _packetAnalysisTimer.startTimer();
       _isPacketAnalysis = true;
     });
@@ -43,14 +43,14 @@ class IncomingPacketHandlerService extends ManagerBase {
     _isPacketAnalysis = false;
   }
 
-  static const int _PATIENT_ERROR_BATTERY_VOLTAGE_TEST = 0x2b;
-  static const int _PATIENT_ERROR_ACTIGRAPH_TEST = 0x28;
-  static const int _PATIENT_ERROR_DEVICE_USED = 0x49;
-  static const int _PATIENT_ERROR_FLASH_TEST = 0x2c;
+  static const int _PATIENT_ERROR_BATTERY_VOLTAGE_TEST = 0x0001;
+  static const int _PATIENT_ERROR_ACTIGRAPH_TEST = 0x0008;
+  static const int _PATIENT_ERROR_DEVICE_USED = 0x0020;
+  static const int _PATIENT_ERROR_FLASH_TEST = 0x0040;
   static const int _PATIENT_ERROR_PROBE_LEDS_TEST = 0x0080;
   static const int _PATIENT_ERROR_PROBE_PHOTO_TEST = 0x0100;
-  static const int _PATIENT_ERROR_SBP_TEST = 0x14;
-  static const int _PATIENT_ERROR_NO_FINGER = 0x15;
+  static const int _PATIENT_ERROR_SBP_TEST = 0x0400;
+  static const int _PATIENT_ERROR_NO_FINGER = 0x2000;
 
   static PacketState _packetState = PacketState.WAITING_FOR_NEW;
 
@@ -85,23 +85,23 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
-      Log.info(TAG,"Handling new packet $tag, $_packetState");
+      Log.info(TAG, "Handling new packet  $_packetState");
       _packetState = PacketState.HANDLING_PACKET;
 
       if (_isValidSignature()) {
         if (!_setPacketSize()) {
-          Log.shout(TAG,"Wrong packet size" + ConvertFormats.bytesToHex(data));
+          Log.shout(TAG, "Wrong packet size" + ConvertFormats.bytesToHex(data));
           resetPacket();
           return;
         }
         //Log.i(TAG, "Packet size: " + _incomingPacketLength);
       } else {
-        Log.shout(TAG,"Wrong starting packet " + ConvertFormats.bytesToHex(data));
+        Log.shout(TAG, "Wrong starting packet " + ConvertFormats.bytesToHex(data));
         resetPacket();
         return;
       }
     } else {
-      Log.info(TAG,"Handling continue of packet");
+      Log.info(TAG, "Handling continue of packet");
     }
 
     _recordPacket();
@@ -112,7 +112,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
-      Log.info(TAG,">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
+      Log.info(TAG, ">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -123,12 +123,12 @@ class IncomingPacketHandlerService extends ManagerBase {
       // system reaction to the packet
       switch (packetType) {
         case DeviceCommands.CMD_OPCODE_ACK:
-          Log.info(TAG,"packet received (ACK)");
+          Log.info(TAG, "packet received (ACK)");
           // ACK received - notify cmdTasker
           sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
           break;
         case DeviceCommands.CMD_OPCODE_DATA_PACKET:
-          Log.info(TAG,"packet received (DATA_PACKET)");
+          Log.info(TAG, "packet received (DATA_PACKET)");
           // data packet received - store to local file
           _isDataReceiving = true;
           _dataReceivedTimer.restart();
@@ -143,29 +143,28 @@ class IncomingPacketHandlerService extends ManagerBase {
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM:
-          Log.info(TAG,"### start session confirm received");
-          Log.info(TAG,"packet received (START_SESSION_CONFIRM)");
+          Log.info(TAG, "### start session confirm received");
+          Log.info(TAG, "packet received (START_SESSION_CONFIRM)");
           // start-session-confirm packet received
           // retrieve device configuration
           sl<DeviceConfigManager>()
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
-          Log.info(TAG,"### start session confirm: device configuration set");
+          Log.info(TAG, "### start session confirm: device configuration set");
           if (_checkStartSessionErrors(receivedPacket.opCodeDependent)) {
             PrefsProvider.saveDeviceSerial(
                 sl<DeviceConfigManager>().deviceConfig.deviceSerial);
-            Log.info(TAG,"### start session confirm: device serial saved");
+            Log.info(TAG, "### start session confirm: device serial saved ${PrefsProvider.getIsFirstDeviceConnection()}");
 
-            if (PrefsProvider.getIsFirstDeviceConnection()) {
+            if (PrefsProvider.getIsFirstDeviceConnection() != null &&
+                PrefsProvider.getIsFirstDeviceConnection()) {
               PrefsProvider.setFirstDeviceConnection();
-
-              //getDataFileHandler().storeData(getDeviceConfiguration().getPayloadBytes());
               // TODO implement
+              //getDataFileHandler().storeData(getDeviceConfiguration().getPayloadBytes());
 
-//              _context.sendBroadcast(new Intent(ACTION_SEND_DISPATCHER)
-//                  .putExtra(EXTRA_CMD, DISPATCHER_CMD_GET_CONFIG));
+              sl<DispatcherService>().sendGetConfig(PrefsProvider.loadDeviceSerial());
 
-              Log.info(TAG,"first connection to device");
-              Log.info(TAG,"### start session confirm: device FW version check START");
+              Log.info(TAG, "first connection to device");
+              Log.info(TAG, "### start session confirm: device FW version check START");
               //todo Firmwarer upgrade
 //              if (getFirmwareUpgrader().isDeviceFirmwareVersionUpToDate()) {
 //                Log.info(TAG,"### start session confirm: device FW version check END");
@@ -183,12 +182,12 @@ class IncomingPacketHandlerService extends ManagerBase {
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           final String deviceName =
               "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial}";
-          Log.info(TAG,"device new name: $deviceName");
+          Log.info(TAG, "device new name: $deviceName");
           PrefsProvider.saveDeviceName(deviceName);
-          Log.info(TAG,"### start session confirm: END");
+          Log.info(TAG, "### start session confirm: END");
           break;
         case DeviceCommands.CMD_OPCODE_CONFIG_RESPONSE:
-          Log.info(TAG,"packet received (CONFIG_RESPONSE)");
+          Log.info(TAG, "packet received (CONFIG_RESPONSE)");
           sl<DeviceConfigManager>()
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
           PrefsProvider.saveDeviceSerial(
@@ -202,7 +201,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           );
           break;
         case DeviceCommands.CMD_OPCODE_TECHNICAL_STATUS_REPORT:
-          Log.info(TAG,"packet received (TECHNICAL_STATUS_REPORT)");
+          Log.info(TAG, "packet received (TECHNICAL_STATUS_REPORT)");
           // tech-status-report packet received
           // TODO implement
 //          broadcastTechStatusReceived(
@@ -234,13 +233,13 @@ class IncomingPacketHandlerService extends ManagerBase {
           );
           break;
         case DeviceCommands.CMD_OPCODE_ERROR_STATUS:
-          Log.info(TAG,"packet received (ERROR_STATUS)");
+          Log.info(TAG, "packet received (ERROR_STATUS)");
           _manageError(receivedPacket.extractSingleBytePayload());
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_END_OF_TEST_DATA:
-          Log.info(TAG,"packet received (END_OF_TEST_DATA)");
+          Log.info(TAG, "packet received (END_OF_TEST_DATA)");
           // end-of-test-data packet received
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
           sl<SystemStateManager>()
@@ -249,7 +248,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES:
-          Log.info(TAG,"packet received (FW_UPGRADE_RES)");
+          Log.info(TAG, "packet received (FW_UPGRADE_RES)");
           // fw-response packet received
           // TODO implement getFirmwareUpgrader
 //          getFirmwareUpgrader().responseReceived();
@@ -257,20 +256,22 @@ class IncomingPacketHandlerService extends ManagerBase {
 //              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_AFE_REGISTERS_VALUES:
-          Log.info(TAG,"packet received (AFE_REGISTERS_VALUES)");
+          Log.info(TAG, "packet received (AFE_REGISTERS_VALUES)");
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_ACTIGRAPH_REGISTERS_VALUES:
-          Log.info(TAG,"packet received (ACTIGRAPH_REGISTERS_VALUES)");
+          Log.info(TAG, "packet received (ACTIGRAPH_REGISTERS_VALUES)");
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_GET_LOG_FILE_RESPONSE:
-          Log.info(TAG,"packet received (LOG_FILE_RESPONSE): " +
-              ConvertFormats.bytesToHex(receivedPacket.bytes));
+          Log.info(
+              TAG,
+              "packet received (LOG_FILE_RESPONSE): " +
+                  ConvertFormats.bytesToHex(receivedPacket.bytes));
           final int payloadSize = receivedPacket.extractLogFileSize();
-          Log.info(TAG,">> log chunk size: $payloadSize");
+          Log.info(TAG, ">> log chunk size: $payloadSize");
           // todo implement write to file
 //          _logFileByteStream.write(
 //              receivedPacket.extractParameterFilePayload(), 0, payloadSize);
@@ -303,7 +304,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_UPAT_EEPROM_VALUES:
-          Log.info(TAG,"packet received (UPAT_EEPROM_VALUES)");
+          Log.info(TAG, "packet received (UPAT_EEPROM_VALUES)");
 
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
@@ -359,17 +360,17 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   bool _checkStartSessionErrors(final int opcodeDependant) {
-    Log.info(TAG,">>> opcodeDependant: $opcodeDependant");
+    Log.info(TAG, ">>> opcodeDependant: $opcodeDependant");
 
     if (PrefsProvider.getIgnoreDeviceErrors() != null &&
         PrefsProvider.getIgnoreDeviceErrors()) {
-      Log.info(TAG,">>> device errors ignored");
+      Log.info(TAG, ">>> device errors ignored");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return true;
     }
 
     if (opcodeDependant == 0) {
-      Log.info(TAG,"start session error: No error");
+      Log.info(TAG, "start session error: No error");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return true;
     }
@@ -378,11 +379,11 @@ class IncomingPacketHandlerService extends ManagerBase {
     DeviceErrorStates errorState;
 
     if ((opcodeDependant & _PATIENT_ERROR_DEVICE_USED) != 0) {
-      Log.info(TAG,">>> Used device");
+      Log.info(TAG, ">>> Used device");
       errorState = DeviceErrorStates.USED_DEVICE;
       errorString += '- ${lang.err_used_device}\n';
     } else {
-      Log.info(TAG,">>>  NOT Used device");
+      Log.info(TAG, ">>>  NOT Used device");
     }
     if ((opcodeDependant & _PATIENT_ERROR_BATTERY_VOLTAGE_TEST) != 0) {
       errorState = DeviceErrorStates.CHANGE_BATTERY;
@@ -417,7 +418,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   void _manageError(final int errorCode) {
     if (PrefsProvider.getIgnoreDeviceErrors() != null &&
         PrefsProvider.getIgnoreDeviceErrors()) {
-      Log.info(TAG,">>> ignoring device errors");
+      Log.info(TAG, ">>> ignoring device errors");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return;
     }
@@ -425,11 +426,11 @@ class IncomingPacketHandlerService extends ManagerBase {
     switch (errorCode) {
       case DeviceCommands.ERROR_BATTERY_LOW:
         sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.CHANGE_BATTERY);
-        Log.info(TAG,lang.low_power);
+        Log.info(TAG, lang.low_power);
         break;
 
       case DeviceCommands.ERROR_FLASH_FULL:
-        Log.info(TAG,lang.flash_full);
+        Log.info(TAG, lang.flash_full);
       // for future use: do something
     }
   }

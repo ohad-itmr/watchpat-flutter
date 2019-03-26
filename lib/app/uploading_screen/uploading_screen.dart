@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
-
 
 class UploadingScreen extends StatelessWidget {
   static const String PATH = '/uploading';
@@ -29,7 +29,7 @@ class UploadingScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/end');
+              Navigator.pushNamed(context, EndScreen.PATH);
             },
           ),
           moreActionButton: null,

@@ -24,7 +24,7 @@ class PinInputs extends StatelessWidget {
 
   Widget buildDot(BuildContext context, int index) {
     return StreamBuilder(
-      stream: pinManager.pin,
+      stream: pinManager.pinStream,
       initialData: '',
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         var active = snapshot.hasData && snapshot.data.length - 1 >= index;

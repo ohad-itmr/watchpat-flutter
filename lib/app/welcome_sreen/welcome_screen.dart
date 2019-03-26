@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
@@ -25,9 +26,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         // TODO show errors list
         print('HAVE ERRORS');
       } else if (state == ScanResultStates.NOT_LOCATED) {
-        Navigator.of(context).pushReplacementNamed('/battery');
+        Navigator.of(context).pushNamed(BatteryScreen.PATH);
       } else {
-        Navigator.of(context).pushReplacementNamed('/prepare1');
+        Navigator.of(context).pushNamed(RemoveJewelryScreen.PATH);
       }
     });
     print('checksComplete ${welcomeManager.initialChecksComplete}');
@@ -92,6 +93,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           stream: welcomeManager.initialChecksComplete,
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (nextIsPressed) {
+              print('snapshot ${snapshot.data}');
               if (snapshot.hasData && snapshot.data) {
                 WidgetsBinding.instance.addPostFrameCallback((_) => _handleNext(context));
               }

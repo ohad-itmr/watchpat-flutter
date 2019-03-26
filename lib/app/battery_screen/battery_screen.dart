@@ -1,3 +1,4 @@
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/widgets/widgets.dart';
@@ -42,7 +43,7 @@ class BatteryScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/pin');
+              Navigator.pushNamed(context, RemoveJewelryScreen.PATH);
             },
           ),
           moreActionButton: ButtonModel(

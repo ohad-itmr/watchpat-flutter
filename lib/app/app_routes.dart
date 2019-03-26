@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 
-
 var rootHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return SplashScreen();
@@ -11,10 +10,7 @@ var rootHandler =
 
 var welcomeHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final BleManager bleManager = sl<BleManager>();
-  final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
-  welcomeManager.init();
-  bleManager.startScan(time: 3, connectToFirstDevice: false);
+  sl<WelcomeActivityManager>().init();
   return WelcomeScreen();
 });
 
@@ -52,6 +48,10 @@ var recordingRouteHandler =
 
 var removeJewelryRouteHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  if (sl<SystemStateManager>().dispatcherState == DispatcherStates.DISCONNECTED &&
+      PrefsProvider.loadDeviceSerial() != null) {
+    sl<DispatcherService>().sendGetConfig(PrefsProvider.loadDeviceSerial());
+  }
   return RemoveJewelryScreen();
 });
 

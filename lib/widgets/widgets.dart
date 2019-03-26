@@ -1,7 +1,6 @@
 export 'buttons_block.dart';
 export 'button.dart';
 export 'image_block.dart';
-export 'recording_control.dart';
 export 'steps.dart';
 export 'text_block.dart';
 export 'main_template/block_template.dart';

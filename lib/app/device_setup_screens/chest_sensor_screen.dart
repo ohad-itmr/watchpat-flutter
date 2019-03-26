@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:flutter/material.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
+class ChestSensorScreen extends StatelessWidget {
+  static const String PATH = '/device_set_up_2';
+  static const String TAG = 'ChestSensorScreen';
 
-class StrapWristScreen extends StatelessWidget {
-  static const String PATH = '/prepare2';
+  ChestSensorScreen({Key key}) : super(key: key);
   final S loc = sl<S>();
-  static const String TAG = 'StrapWristScreen';
-
-  StrapWristScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,19 +18,19 @@ class StrapWristScreen extends StatelessWidget {
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,
-          imageName: 'strap_wrist.png',
+          imageName: 'chest.png',
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.strapWristTitle,
+          title: loc.chestSensorTitle,
           content: [
-            loc.strapWristContent,
+            loc.chestSensorContent,
           ],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, '/prepare3');
+              Navigator.pushNamed(context, FingerProbeScreen.PATH);
             },
           ),
           moreActionButton: ButtonModel(
@@ -38,7 +38,7 @@ class StrapWristScreen extends StatelessWidget {
           ),
         ),
         showSteps: true,
-        current: 3,
+        current: 4,
         total: 6,
       ),
     );

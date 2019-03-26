@@ -4,3 +4,4 @@ export 'incoming_packet_handler_service.dart';
 export 'prefs_service.dart';
 export 'global_settings_service.dart';
 export 'dispatcher_service.dart';
+export 'user_authentication_service.dart';

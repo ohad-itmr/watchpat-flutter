@@ -10,12 +10,30 @@ class PinScreen extends StatelessWidget {
   static const String PATH = '/pin';
   final S loc = sl<S>();
   final PinManager pinManager = sl<PinManager>();
+  final GlobalKey _ctxKey = GlobalKey(); // For navigator context
 
   PinScreen({Key key}) : super(key: key);
 
-  _checkPin(BuildContext context) {
+  _checkPin() {
     print('PIN is ${pinManager.pin}');
-//    Navigator.pushReplacementNamed(context, StrapWristScreen.PATH);
+    pinManager.authStateStream.listen((state) {
+      print('authStateStream.listen((state) $state');
+      switch (state) {
+        case PatientAuthState.Authenticated:
+          Navigator.of(_ctxKey.currentContext)
+              .pushReplacementNamed(StrapWristScreen.PATH);
+          break;
+        case PatientAuthState.FailedTryAgain:
+          print('PatientAuthState.FailedTryAgain');
+          break;
+        case PatientAuthState.FailedClose:
+          print('PatientAuthState.FailedClose');
+          break;
+        default:
+          break;
+      }
+    });
+    pinManager.authenticatePatient();
   }
 
   @override
@@ -24,6 +42,7 @@ class PinScreen extends StatelessWidget {
       showBack: true,
       showMenu: false,
       body: Column(
+        key: _ctxKey,
         children: <Widget>[
           Flexible(
             flex: 8,
@@ -38,22 +57,40 @@ class PinScreen extends StatelessWidget {
                   contentTextAlign: TextAlign.center,
                   content: [loc.pinContent],
                 ),
-                Container(
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  child: StreamBuilder(
-                    stream: pinManager.pinIsValid,
-                    initialData: false,
-                    builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      return ButtonsBlock(
-                        nextActionButton: ButtonModel(
-                          disabled: !snapshot.data,
-                          action: () => _checkPin(context),
-                          text: loc.btnEnter,
-                        ),
-                        moreActionButton: null,
+                StreamBuilder(
+                  stream: pinManager.authStateStream,
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot<PatientAuthState> snapshot,
+                  ) {
+                    if (snapshot.hasData &&
+                        snapshot.data == PatientAuthState.InProgress) {
+                      return Container(
+                        padding: EdgeInsets.only(bottom: 20.0),
+                        child: CircularProgressIndicator(),
                       );
-                    },
-                  ),
+                    }
+                    return Container(
+                      padding: EdgeInsets.only(bottom: 20.0),
+                      child: StreamBuilder(
+                        stream: pinManager.pinIsValid,
+                        initialData: false,
+                        builder: (
+                          BuildContext context,
+                          AsyncSnapshot<bool> snapshot,
+                        ) {
+                          return ButtonsBlock(
+                            nextActionButton: ButtonModel(
+                              disabled: !snapshot.data,
+                              action: _checkPin,
+                              text: loc.btnEnter,
+                            ),
+                            moreActionButton: null,
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

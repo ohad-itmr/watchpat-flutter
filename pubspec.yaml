@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  rxdart: ^0.20.0
+  rxdart: ^0.21.0
   fluro: ^1.4.0
   dio: ^2.1.0
   logging: 0.11.3+2
@@ -23,8 +23,6 @@ dependencies:
   shared_preferences: ^0.5.1+1
   stack_trace: ^1.9.3
   get_it: ^1.0.3
-  rx_command: ^4.2.0
-  rx_widgets: ^2.2.0
 
 
 

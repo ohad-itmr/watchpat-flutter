@@ -41,7 +41,7 @@ class PinKeyboard extends StatelessWidget {
     children.add(
       Center(
         child: MaterialButton(
-          onPressed: ()=>pinManager.onPinChange(10),
+          onPressed: ()=>pinManager.onPinChange(0),
           minWidth: 30.0,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),

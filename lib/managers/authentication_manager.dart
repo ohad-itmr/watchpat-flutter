@@ -11,7 +11,7 @@ enum PatientAuthState {
   FailedClose
 }
 
-class PinManager extends ManagerBase {
+class AuthenticationManager extends ManagerBase {
   static const String TAG = 'PinManager';
 
   String _pin = '';
@@ -19,7 +19,8 @@ class PinManager extends ManagerBase {
   final PublishSubject<String> _inputSubject = PublishSubject<String>();
   final BehaviorSubject<PatientAuthState> _authStateSubject =
       BehaviorSubject<PatientAuthState>.seeded(PatientAuthState.NotStarted);
-  final BehaviorSubject<String> _resultSubject = BehaviorSubject<String>.seeded('');
+  final BehaviorSubject<String> _resultSubject =
+      BehaviorSubject<String>.seeded('');
   final BehaviorSubject<bool> _pinIsValid = BehaviorSubject<bool>.seeded(false);
 
   Observable<String> get pinStream => _resultSubject.stream;
@@ -59,6 +60,8 @@ class PinManager extends ManagerBase {
     print('AuthenticateUserResponseModel data ${data.error}');
 
     if (data.error) {
+      sl<SystemStateManager>()
+          .setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
       resetPin();
       if (data.message == '1') {
         _authStateSubject.add(PatientAuthState.FailedTryAgain);
@@ -66,7 +69,10 @@ class PinManager extends ManagerBase {
         _authStateSubject.add(PatientAuthState.FailedClose);
       }
     } else {
+      sl<UserAuthenticationService>().setSftpParams(data.credentials);
       _authStateSubject.add(PatientAuthState.Authenticated);
+      sl<SystemStateManager>()
+          .setDispatcherState(DispatcherStates.AUTHENTICATED);
     }
   }
 
@@ -75,7 +81,7 @@ class PinManager extends ManagerBase {
     _resultSubject.add('');
   }
 
-  PinManager() {
+  AuthenticationManager() {
     _inputSubject
         .map((newVal) => _pin = '$newVal')
         .listen((value) => _resultSubject.add(value));

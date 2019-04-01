@@ -104,11 +104,11 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   bool _addCommand(int id, int opCode, List<List<int>> data, String name) {
-    Log.info(TAG,"adding command: $name (id: ${id.toString()})");
+    Log.info(TAG, "adding command: $name (id: ${id.toString()})");
 
     // if command the same id exists
     if (_getCommandByID(id) != null) {
-      Log.shout(TAG,">>> command with same id exists, $this");
+      Log.shout(TAG, ">>> command with same id exists, $this");
       return false;
     }
 
@@ -137,7 +137,7 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   void sendDirectCommand(CommandTask commandTask) {
-    Log.info(TAG,"sending DIRECT command, $this");
+    Log.info(TAG, "sending DIRECT command, $this");
     CommandTaskerItem item = CommandTaskerItem(commandTask.packetIdentifier,
         commandTask.opCode, commandTask.byteList, commandTask.name);
 //    _sendCmdCallback._sendCommand(item);
@@ -158,7 +158,7 @@ class CommandTaskerManager extends ManagerBase {
 
   CommandTaskerItem _getCommandByID(final int id) {
     return _lstCommandQueue.firstWhere((CommandTaskerItem item) => item._id == id,
-        orElse: ()=>null);
+        orElse: () => null);
   }
 
   void ackCommandReceived(int id) {
@@ -200,8 +200,7 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   @override
-  void dispose() {
-  }
+  void dispose() {}
 }
 
 class CommandTaskerItem {

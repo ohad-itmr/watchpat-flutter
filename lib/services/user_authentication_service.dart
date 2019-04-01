@@ -2,6 +2,7 @@ import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/domain_model/patient_policy_model.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:my_pat/domain_model/patient_credentials_model.dart';
 
 enum AuthErrors { NoError, TryAgain, AuthFailed, SftpCommError }
 
@@ -35,17 +36,25 @@ class UserAuthenticationService {
       if (!resp.error) {
         Log.info(TAG, "setting config params");
         _patientPolicy = resp.policy;
-        sl<SystemStateManager>().setDispatcherState(DispatcherStates.CONFIG_RECEIVED);
+        sl<SystemStateManager>()
+            .setDispatcherState(DispatcherStates.CONFIG_RECEIVED);
       } else {
         Log.info(TAG, "config params error: user not registered");
-        sl<SystemStateManager>().setDispatcherState(DispatcherStates.CONFIG_ERROR);
+        sl<SystemStateManager>()
+            .setDispatcherState(DispatcherStates.CONFIG_ERROR);
       }
-    }
-    catch (e) {
+    } catch (e) {
       Log.shout(TAG, "config params parsing failed");
       sl<SystemStateManager>().setDispatcherState(DispatcherStates.FAILURE);
     }
   }
 
-
+  void setSftpParams(PatientCredentialsModel credentials) {
+    Log.info(TAG, "setting sftp params");
+    PrefsProvider.saveSftpHost(credentials.host);
+    PrefsProvider.saveSftpPort(credentials.port);
+    PrefsProvider.saveSftpPassword(credentials.password);
+    PrefsProvider.saveSftpUsername(credentials.username);
+    PrefsProvider.saveSftpPath(credentials.root);
+  }
 }

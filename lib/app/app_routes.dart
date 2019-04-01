@@ -36,7 +36,7 @@ var fingerProbeRouteHandler =
 
 var pinRouteHandler =
     Handler(handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final PinManager pinManager = sl<PinManager>();
+  final AuthenticationManager pinManager = sl<AuthenticationManager>();
   pinManager.resetPin();
   return PinScreen();
 });

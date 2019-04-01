@@ -23,7 +23,7 @@ void setUpServiceLocator() {
   sl.registerSingleton<CommandTaskerManager>(CommandTaskerManager());
 
   sl.registerSingleton<BleManager>(BleManager());
-  sl.registerSingleton<PinManager>(PinManager());
+  sl.registerSingleton<AuthenticationManager>(AuthenticationManager());
   sl.registerSingleton<WelcomeActivityManager>(WelcomeActivityManager());
   sl.registerSingleton<DeviceConfigManager>(DeviceConfigManager());
 }

@@ -4,7 +4,7 @@ import 'package:my_pat/service_locator.dart';
 class PinInputs extends StatelessWidget {
   static const String TAG = 'PinInputs';
 
-  final PinManager pinManager = sl<PinManager>();
+  final AuthenticationManager pinManager = sl<AuthenticationManager>();
 
   @override
   Widget build(BuildContext context) {

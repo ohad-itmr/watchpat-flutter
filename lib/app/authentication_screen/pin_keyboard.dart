@@ -5,7 +5,7 @@ class PinKeyboard extends StatelessWidget {
   static const String TAG = 'PinKeyboard';
 
   final children = <Widget>[];
-  final PinManager pinManager = sl<PinManager>();
+  final AuthenticationManager pinManager = sl<AuthenticationManager>();
 
 
   @override

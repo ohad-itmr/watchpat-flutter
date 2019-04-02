@@ -10,8 +10,8 @@ GetIt sl = new GetIt();
 
 void setUpServiceLocator() {
   sl.registerSingleton<S>(S());
+
   // Services
-  sl.registerSingleton<FileSystemService>(FileSystemService());
   sl.registerSingleton<BleService>(BleService());
   sl.registerSingleton<IncomingPacketHandlerService>(IncomingPacketHandlerService());
   sl.registerSingleton<DispatcherService>(DispatcherService());
@@ -26,4 +26,8 @@ void setUpServiceLocator() {
   sl.registerSingleton<AuthenticationManager>(AuthenticationManager());
   sl.registerSingleton<WelcomeActivityManager>(WelcomeActivityManager());
   sl.registerSingleton<DeviceConfigManager>(DeviceConfigManager());
+}
+
+void preSetupServiceLocator() {
+  sl.registerSingleton<FileSystemService>(FileSystemService());
 }

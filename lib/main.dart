@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -11,9 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();
-  Log.init();
-  Log.setLevel(Level.INFO);
 
+  preSetupServiceLocator();
+  await Log.init();
+  Log.setLevel(Level.INFO);
 
   setUpServiceLocator();
 

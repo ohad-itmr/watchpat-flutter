@@ -7,8 +7,10 @@ class ImageBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      padding: EdgeInsets.only(top: 50.0, bottom: 30.0),
+      padding: EdgeInsets.only(top: screenWidth / 8, bottom: screenWidth / 12),
+
       child: Image.asset('assets/$imageName'),
     );
   }

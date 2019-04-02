@@ -10,7 +10,7 @@ class PinKeyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final screenWidth = MediaQuery.of(context).size.width;
     for (var i = 0; i <= 6; i = i + 3) {
       final rowChildren = <Widget>[];
       for (var j = 0; j <= 2; j++) {
@@ -20,7 +20,7 @@ class PinKeyboard extends StatelessWidget {
             onPressed: ()=>pinManager.onPinChange(number),
             minWidth: 20.0,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 17.0),
+              padding: EdgeInsets.symmetric(vertical: screenWidth / 80, horizontal: screenWidth / 22),
               child: Text(
                 '$number',
                 style: TextStyle(

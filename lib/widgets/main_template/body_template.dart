@@ -20,12 +20,13 @@ class BodyTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sidePadding = MediaQuery.of(context).size.width / 14;
     return Container(
-      padding: EdgeInsets.only(left: 30.0, right: 30.0),
+      padding: EdgeInsets.symmetric(horizontal: sidePadding),
       child: Column(
         children: <Widget>[
           Flexible(
-            flex: 14,
+            flex: 18,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -41,7 +42,7 @@ class BodyTemplate extends StatelessWidget {
             ),
           ),
           Flexible(
-            flex: 2,
+            flex: 3,
             child: Column(
               children: <Widget>[
                 buttons,

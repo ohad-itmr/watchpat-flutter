@@ -6,17 +6,18 @@ class BodyTemplate extends StatelessWidget {
   final Widget bottomBlock;
   final Widget buttons;
   final bool showSteps;
+  final bool showCarousel;
   final int current;
   final int total;
 
-  BodyTemplate({
-    this.topBlock,
-    this.bottomBlock,
-    this.buttons,
-    this.current,
-    this.total,
-    this.showSteps = true,
-  });
+  BodyTemplate(
+      {this.topBlock,
+      this.bottomBlock,
+      this.buttons,
+      this.current,
+      this.total,
+      this.showSteps = true,
+      this.showCarousel = false});
 
   @override
   Widget build(BuildContext context) {

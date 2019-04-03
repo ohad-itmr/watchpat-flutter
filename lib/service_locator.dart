@@ -26,6 +26,8 @@ void setUpServiceLocator() {
   sl.registerSingleton<AuthenticationManager>(AuthenticationManager());
   sl.registerSingleton<WelcomeActivityManager>(WelcomeActivityManager());
   sl.registerSingleton<DeviceConfigManager>(DeviceConfigManager());
+
+  sl.registerSingleton<CarouselManager>(CarouselManager());
 }
 
 void preSetupServiceLocator() {

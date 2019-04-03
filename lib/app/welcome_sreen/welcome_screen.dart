@@ -19,6 +19,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final S loc = sl<S>();
   final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
   final SystemStateManager systemStateManager = sl<SystemStateManager>();
+  final CarouselManager carouselManager = sl<CarouselManager>();
 
   void _handleNext(BuildContext context) {
     systemStateManager.bleScanResultStream.listen((ScanResultStates state) {
@@ -95,7 +96,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             if (nextIsPressed) {
               print('snapshot ${snapshot.data}');
               if (snapshot.hasData && snapshot.data) {
-                WidgetsBinding.instance.addPostFrameCallback((_) => _handleNext(context));
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _handleNext(context));
               }
               return CircularProgressIndicator();
             }
@@ -127,8 +129,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         },
       ),
       moreActionButton: ButtonModel(
-        action: () {},
-      ),
+          action: () => Navigator.of(context).pushNamed(CarouselScreen.PATH)),
     );
   }
 }

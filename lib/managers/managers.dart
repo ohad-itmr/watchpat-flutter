@@ -6,3 +6,4 @@ export 'system_state_manager.dart';
 export 'authentication_manager.dart';
 export 'welcome_activity_manager.dart';
 export 'device_config_manager.dart';
+export 'carousel_manager.dart';

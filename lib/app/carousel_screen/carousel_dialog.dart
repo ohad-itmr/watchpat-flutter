@@ -21,7 +21,7 @@ class CarouselDialog extends StatelessWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withOpacity(0.75),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth / 20, vertical: screenWidth / 8),
         child: Container(

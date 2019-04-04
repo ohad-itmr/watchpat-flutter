@@ -33,11 +33,11 @@ class BodyTemplate extends StatelessWidget {
               children: <Widget>[
                 Flexible(
                   flex: 4,
-                  child: topBlock,
+                  child: topBlock ?? Container(height: 0.0, width: 0.0),
                 ),
                 Flexible(
                   flex: 4,
-                  child: bottomBlock,
+                  child: bottomBlock ?? Container(height: 0.0, width: 0.0),
                 ),
               ],
             ),

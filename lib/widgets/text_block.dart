@@ -4,12 +4,23 @@ class TextBlock extends StatelessWidget {
   final String title;
   final List<String> content;
   final TextAlign contentTextAlign;
+  final Color textColor;
+  final bool topPadding;
 
-  TextBlock({this.title, this.content, this.contentTextAlign = TextAlign.left});
+  TextBlock(
+      {this.title,
+      this.content,
+      this.contentTextAlign = TextAlign.left,
+      this.textColor,
+      this.topPadding});
 
   @override
   Widget build(BuildContext context) {
+    final double padding = MediaQuery.of(context).size.width / 16;
     final children = <Widget>[
+      SizedBox(
+        height: topPadding ? padding * 2 : 0.0,
+      ),
       Text(
         title,
         textAlign: TextAlign.center,
@@ -17,10 +28,10 @@ class TextBlock extends StatelessWidget {
         style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: Theme.of(context).textTheme.title.fontSize,
-            color: Theme.of(context).textTheme.title.color),
+            color: textColor ?? Theme.of(context).textTheme.title.color),
       ),
       Container(
-        height: 30.0,
+        height: padding,
       ),
     ];
 
@@ -30,7 +41,10 @@ class TextBlock extends StatelessWidget {
           Text(
             str,
             textAlign: contentTextAlign,
-            style: TextStyle(height: 1.3),
+            style: TextStyle(
+              height: 1.3,
+              color: textColor,
+            ),
           ),
         );
         children.add(Text(''));

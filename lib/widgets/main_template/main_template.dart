@@ -5,8 +5,9 @@ class MainTemplate extends StatelessWidget {
   final Widget body;
   final bool showBack;
   final bool showMenu;
+  final Color backgroundColor;
 
-  MainTemplate({this.body, this.showBack = true, this.showMenu = false});
+  MainTemplate({this.body, this.showBack = true, this.showMenu = false, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,7 @@ class MainTemplate extends StatelessWidget {
         ),
       ),
       body: body,
+      backgroundColor: backgroundColor,
     );
   }
 }

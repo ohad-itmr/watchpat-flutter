@@ -63,66 +63,65 @@ class CarouselManager extends ManagerBase {
     _scopedSlides = LinkedHashMap.from({
       WelcomeScreen.TAG: [
         CarouselData(
-            text: "Welcome Screen Slide 1", image: "assets/carousel/test.jpg"),
+            text: "Welcome Screen Slide 1", image: "assets/carousel/test.png"),
         CarouselData(
-            text: "Welcome Screen Slide 2", image: "assets/carousel/test.jpg"),
+            text: "Welcome Screen Slide 2", image: "assets/carousel/test.png"),
         CarouselData(
-            text: "Welcome Screen Slide 3", image: "assets/carousel/test.jpg")
+            text: "Welcome Screen Slide 3", image: "assets/carousel/test.png")
       ],
       BatteryScreen.TAG: [
         CarouselData(
-            text: "Battery Screen Slide 1", image: "assets/carousel/test.jpg"),
+            text: "Battery Screen Slide 1", image: "assets/carousel/test.png"),
         CarouselData(
-            text: "Battery Screen Slide 2", image: "assets/carousel/test.jpg"),
+            text: "Battery Screen Slide 2", image: "assets/carousel/test.png"),
         CarouselData(
-            text: "Battery Screen Slide 3", image: "assets/carousel/test.jpg")
+            text: "Battery Screen Slide 3", image: "assets/carousel/test.png")
       ],
       RemoveJewelryScreen.TAG: [
         CarouselData(
             text: "RemoveJewelryScreen Slide 1",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "RemoveJewelryScreen Slide 2",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "RemoveJewelryScreen Slide 3",
-            image: "assets/carousel/test.jpg")
+            image: "assets/carousel/test.png")
       ],
       StrapWristScreen.TAG: [
         CarouselData(
             text: "StrapWristScreen Slide 1",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "StrapWristScreen Slide 2",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "StrapWristScreen Slide 3",
-            image: "assets/carousel/test.jpg")
+            image: "assets/carousel/test.png")
       ],
       ChestSensorScreen.TAG: [
         CarouselData(
             text: "ChestSensorScreen Slide 1",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "ChestSensorScreen Slide 2",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "ChestSensorScreen Slide 3",
-            image: "assets/carousel/test.jpg")
+            image: "assets/carousel/test.png")
       ],
       FingerProbeScreen.TAG: [
         CarouselData(
             text: "FingerProbeScreen Slide 1",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "FingerProbeScreen Slide 2",
-            image: "assets/carousel/test.jpg"),
+            image: "assets/carousel/test.png"),
         CarouselData(
             text: "FingerProbeScreen Slide 3",
-            image: "assets/carousel/test.jpg")
+            image: "assets/carousel/test.png")
       ],
     });
-
     _scopedSlides.values.forEach((list) => _allSlides.addAll(list));
   }
 }

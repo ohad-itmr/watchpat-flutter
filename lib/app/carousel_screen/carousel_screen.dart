@@ -7,7 +7,6 @@ class CarouselScreen extends StatelessWidget {
   static const String TAG = 'CarouselScreen';
   static const String PATH = '/carousel';
 
-  final S loc = sl<S>();
   final CarouselManager carouselManager = sl<CarouselManager>();
 
   CarouselScreen(String tag) {

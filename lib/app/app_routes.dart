@@ -76,6 +76,11 @@ var carouselRouteHandler = Handler(
   return CarouselScreen(params["tag"][0]);
 });
 
+var errorRouteHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return ErrorScreen();
+});
+
 class AppRoutes {
   static const String TAG = 'AppRoutes';
 
@@ -113,5 +118,7 @@ class AppRoutes {
         handler: uploadingRouteHandler, transitionType: TransitionType.native);
     router.define("${CarouselScreen.PATH}/:tag",
         handler: carouselRouteHandler, transitionType: TransitionType.fadeIn);
+    router.define(ErrorScreen.PATH,
+        handler: errorRouteHandler, transitionType: TransitionType.native);
   }
 }

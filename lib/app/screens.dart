@@ -11,3 +11,4 @@ export 'welcome_sreen/welcome_screen.dart';
 export 'recording_screens/recording_screen.dart';
 export 'recording_screens/start_recording_screen.dart';
 export 'carousel_screen/carousel_screen.dart';
+export 'error_screen/error_screen.dart';

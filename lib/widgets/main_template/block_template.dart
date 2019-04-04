@@ -10,8 +10,17 @@ class BlockTemplate extends StatelessWidget {
   final String title;
   final List<String> content;
   final Widget customChild;
+  final Color textColor;
+  final bool textTopPadding;
 
-  BlockTemplate({this.type, this.imageName, this.title, this.content, this.customChild});
+  BlockTemplate(
+      {this.type,
+      this.imageName,
+      this.title,
+      this.content,
+      this.customChild,
+      this.textColor,
+      this.textTopPadding = false});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +33,13 @@ class BlockTemplate extends StatelessWidget {
         return TextBlock(
           title: title.toUpperCase(),
           content: content,
+          textColor: textColor,
+          topPadding: textTopPadding,
         );
       case BlockType.custom:
         return customChild;
       default:
-        return null;
+        return Container(height: 0.0, width: 0.0);
     }
   }
 }

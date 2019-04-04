@@ -19,7 +19,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final S loc = sl<S>();
   final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
   final SystemStateManager systemStateManager = sl<SystemStateManager>();
-  final CarouselManager carouselManager = sl<CarouselManager>();
 
   void _handleNext(BuildContext context) {
     systemStateManager.bleScanResultStream.listen((ScanResultStates state) {
@@ -129,7 +128,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         },
       ),
       moreActionButton: ButtonModel(
-          action: () => Navigator.of(context).pushNamed(CarouselScreen.PATH)),
+          action: () => Navigator.of(context)
+              .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
-
 class RemoveJewelryScreen extends StatelessWidget {
   static const String PATH = '/prepare';
   final S loc = sl<S>();
@@ -35,7 +34,8 @@ class RemoveJewelryScreen extends StatelessWidget {
             },
           ),
           moreActionButton: ButtonModel(
-            action: () {},
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${RemoveJewelryScreen.TAG}"),
           ),
         ),
         showSteps: true,

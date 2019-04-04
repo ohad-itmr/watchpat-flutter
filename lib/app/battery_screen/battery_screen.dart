@@ -24,20 +24,22 @@ class BatteryScreen extends StatelessWidget {
         ),
         bottomBlock: StreamBuilder(
             stream: systemStateBloc.bleScanResultStream,
-            builder: (BuildContext context, AsyncSnapshot<ScanResultStates> snapshot) {
+            builder: (BuildContext context,
+                AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
                 type: BlockType.text,
                 title: loc.batteryTitle,
-                content:
-                    !snapshot.hasData || snapshot.data == ScanResultStates.NOT_LOCATED
-                        ? [
-                            loc.batteryContent_1,
-                            loc.batteryContent_2,
-                          ]
-                        : [
-                            loc.batteryContent_many_1('${bleBloc.scanResultsLength}'),
-                            loc.batteryContent_many_2,
-                          ],
+                content: !snapshot.hasData ||
+                        snapshot.data == ScanResultStates.NOT_LOCATED
+                    ? [
+                        loc.batteryContent_1,
+                        loc.batteryContent_2,
+                      ]
+                    : [
+                        loc.batteryContent_many_1(
+                            '${bleBloc.scanResultsLength}'),
+                        loc.batteryContent_many_2,
+                      ],
               );
             }),
         buttons: ButtonsBlock(
@@ -47,7 +49,8 @@ class BatteryScreen extends StatelessWidget {
             },
           ),
           moreActionButton: ButtonModel(
-            action: () {},
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
           ),
         ),
         showSteps: true,

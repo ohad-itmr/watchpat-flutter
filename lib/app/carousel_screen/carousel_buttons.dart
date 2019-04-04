@@ -40,7 +40,9 @@ class CarouselButton extends StatelessWidget {
     return FlatButton(
       child: Text(
         title,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: onPressed != null ? Colors.white : Colors.grey[600],
+        ),
       ),
       onPressed: onPressed,
     );

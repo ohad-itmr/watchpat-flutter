@@ -10,6 +10,10 @@ class CarouselScreen extends StatelessWidget {
   final S loc = sl<S>();
   final CarouselManager carouselManager = sl<CarouselManager>();
 
+  CarouselScreen(String tag) {
+    carouselManager.loadCarouselData(tag);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -20,15 +24,15 @@ class CarouselScreen extends StatelessWidget {
   }
 
   Widget _buildScreen(BuildContext ctx) {
-    return StreamBuilder<CarouselData>(
-      stream: carouselManager.carouselData,
-      builder: (BuildContext ctx, AsyncSnapshot<CarouselData> snapshot) {
+    return StreamBuilder<CarouselSnapshot>(
+      stream: carouselManager.carouselSnapshot,
+      builder: (BuildContext ctx, AsyncSnapshot<CarouselSnapshot> snapshot) {
         if (snapshot.hasData && !snapshot.hasError) {
           return CarouselDialogContainer(
-            image: snapshot.data.image,
-            text: snapshot.data.text,
-            leftBtnCallback: () => carouselManager.previousSlide(snapshot.data),
-            rightBtnCallback: () => carouselManager.nextSlide(snapshot.data),
+            image: snapshot.data.content.image,
+            text: snapshot.data.content.text,
+            rightBtnCallback: snapshot.data.nextBtnCallback,
+            leftBtnCallback: snapshot.data.prevBtnCallback,
           );
         } else {
           return Container(height: 0.0, width: 0.0);

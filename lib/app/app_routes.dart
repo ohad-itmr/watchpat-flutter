@@ -73,7 +73,7 @@ var uploadingRouteHandler = Handler(
 
 var carouselRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return CarouselScreen();
+  return CarouselScreen(params["tag"][0]);
 });
 
 class AppRoutes {
@@ -87,7 +87,6 @@ class AppRoutes {
 
     router.define(SplashScreen.PATH,
         handler: rootHandler, transitionType: TransitionType.native);
-
     router.define(WelcomeScreen.PATH,
         handler: welcomeHandler, transitionType: TransitionType.native);
     router.define(BatteryScreen.PATH,
@@ -112,7 +111,7 @@ class AppRoutes {
         handler: strapWristRouteHandler, transitionType: TransitionType.native);
     router.define(UploadingScreen.PATH,
         handler: uploadingRouteHandler, transitionType: TransitionType.native);
-    router.define(CarouselScreen.PATH,
+    router.define("${CarouselScreen.PATH}/:tag",
         handler: carouselRouteHandler, transitionType: TransitionType.fadeIn);
   }
 }

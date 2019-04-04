@@ -231,8 +231,9 @@ class BleManager extends ManagerBase {
   void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice,
       {String deviceName}) {
     final String name = scanResult.advertisementData.localName;
-    print('Found $name');
-    print('Found ID ${scanResult.device.id}');
+    // Commented for the purpose of not pissing me off
+    //    print('Found $name');
+    //    print('Found ID ${scanResult.device.id}');
 
     if (deviceName != null) {
       // todo add implementation

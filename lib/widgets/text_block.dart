@@ -12,7 +12,7 @@ class TextBlock extends StatelessWidget {
       this.content,
       this.contentTextAlign = TextAlign.left,
       this.textColor,
-      this.topPadding});
+      this.topPadding = false});
 
   @override
   Widget build(BuildContext context) {

@@ -28,7 +28,7 @@ class CarouselScreen extends StatelessWidget {
       stream: carouselManager.carouselSnapshot,
       builder: (BuildContext ctx, AsyncSnapshot<CarouselSnapshot> snapshot) {
         if (snapshot.hasData && !snapshot.hasError) {
-          return CarouselDialogContainer(
+          return CarouselDialog(
             image: snapshot.data.content.image,
             text: snapshot.data.content.text,
             rightBtnCallback: snapshot.data.nextBtnCallback,

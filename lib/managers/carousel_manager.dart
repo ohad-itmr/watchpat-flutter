@@ -5,6 +5,8 @@ import 'package:rxdart/rxdart.dart';
 
 class CarouselManager extends ManagerBase {
   static const String TAG = 'CarouselManager';
+  static LinkedHashMap<String, List<CarouselData>> _scopedSlides;
+  static List<CarouselData> _allSlides = [];
 
   final BehaviorSubject<CarouselSnapshot> _carouselDataState =
       BehaviorSubject<CarouselSnapshot>.seeded(null);
@@ -12,23 +14,43 @@ class CarouselManager extends ManagerBase {
   Observable<CarouselSnapshot> get carouselSnapshot =>
       _carouselDataState.stream;
 
+  CarouselManager() {
+    _prepareCarouselContent();
+  }
+
   loadCarouselData(String screenTAG) {
     final CarouselSnapshot s = CarouselSnapshot(
-      content: _carouselContent[screenTAG][0],
-      prevBtnCallback: null,
-      nextBtnCallback: () => switchSlide(screenTAG, 1)
-    );
+        content: _scopedSlides[screenTAG][0],
+        prevBtnCallback: null,
+        nextBtnCallback: screenTAG == WelcomeScreen.TAG
+            ? () => switchUnlimitedSlide(1)
+            : () => switchLimitedSlide(screenTAG, 1));
     _carouselDataState.sink.add(s);
   }
 
-  switchSlide(String screenTAG, int currentIndex) {
-    final bool hasNext = _carouselContent[screenTAG].length != currentIndex + 1;
+  switchLimitedSlide(String screenTAG, int currentIndex) {
+    final bool hasNext = _scopedSlides[screenTAG].length != currentIndex + 1;
     final bool hasPrev = currentIndex != 0;
     final CarouselSnapshot s = CarouselSnapshot(
-        content: _carouselContent[screenTAG][currentIndex],
-        prevBtnCallback: hasPrev ? () => switchSlide(screenTAG, currentIndex - 1) : null,
-        nextBtnCallback: hasNext ? () => switchSlide(screenTAG, currentIndex + 1) : null
-    );
+        content: _scopedSlides[screenTAG][currentIndex],
+        prevBtnCallback: hasPrev
+            ? () => switchLimitedSlide(screenTAG, currentIndex - 1)
+            : null,
+        nextBtnCallback: hasNext
+            ? () => switchLimitedSlide(screenTAG, currentIndex + 1)
+            : null);
+    _carouselDataState.sink.add(s);
+  }
+
+  switchUnlimitedSlide(int currentIndex) {
+    final bool hasNext = _allSlides.length != currentIndex + 1;
+    final bool hasPrev = currentIndex != 0;
+    final CarouselSnapshot s = CarouselSnapshot(
+        content: _allSlides[currentIndex],
+        prevBtnCallback:
+            hasPrev ? () => switchUnlimitedSlide(currentIndex - 1) : null,
+        nextBtnCallback:
+            hasNext ? () => switchUnlimitedSlide(currentIndex + 1) : null);
     _carouselDataState.sink.add(s);
   }
 
@@ -37,51 +59,72 @@ class CarouselManager extends ManagerBase {
     _carouselDataState.close();
   }
 
-  static final LinkedHashMap<String, List<CarouselData>>
-      _carouselContent = LinkedHashMap.from({
-    WelcomeScreen.TAG: [
-      CarouselData(
-          text: "Welcome Screen Slide 1",
-          image: "assets/carousel/test.jpg",
-          tag: WelcomeScreen.TAG),
-      CarouselData(
-          text: "Welcome Screen Slide 2",
-          image: "assets/carousel/test.jpg",
-          tag: WelcomeScreen.TAG),
-      CarouselData(
-          text: "Welcome Screen Slide 3",
-          image: "assets/carousel/test.jpg",
-          tag: WelcomeScreen.TAG)
-    ],
-    BatteryScreen.TAG: [
-      CarouselData(
-          text: "Battery Screen Slide 1",
-          image: "assets/carousel/test.jpg",
-          tag: BatteryScreen.TAG),
-      CarouselData(
-          text: "Battery Screen Slide 2",
-          image: "assets/carousel/test.jpg",
-          tag: BatteryScreen.TAG),
-      CarouselData(
-          text: "Battery Screen Slide 3",
-          image: "assets/carousel/test.jpg",
-          tag: BatteryScreen.TAG)
-    ],
-    RemoveJewelryScreen.TAG: [
-      CarouselData(
-          text: "RemoveJewelryScreen Slide 1",
-          image: "assets/carousel/test.jpg",
-          tag: RemoveJewelryScreen.TAG),
-      CarouselData(
-          text: "RemoveJewelryScreen Slide 2",
-          image: "assets/carousel/test.jpg",
-          tag: RemoveJewelryScreen.TAG),
-      CarouselData(
-          text: "RemoveJewelryScreen Slide 3",
-          image: "assets/carousel/test.jpg",
-          tag: RemoveJewelryScreen.TAG)
-    ],
-  });
+  _prepareCarouselContent() {
+    _scopedSlides = LinkedHashMap.from({
+      WelcomeScreen.TAG: [
+        CarouselData(
+            text: "Welcome Screen Slide 1", image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "Welcome Screen Slide 2", image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "Welcome Screen Slide 3", image: "assets/carousel/test.jpg")
+      ],
+      BatteryScreen.TAG: [
+        CarouselData(
+            text: "Battery Screen Slide 1", image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "Battery Screen Slide 2", image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "Battery Screen Slide 3", image: "assets/carousel/test.jpg")
+      ],
+      RemoveJewelryScreen.TAG: [
+        CarouselData(
+            text: "RemoveJewelryScreen Slide 1",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "RemoveJewelryScreen Slide 2",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "RemoveJewelryScreen Slide 3",
+            image: "assets/carousel/test.jpg")
+      ],
+      StrapWristScreen.TAG: [
+        CarouselData(
+            text: "StrapWristScreen Slide 1",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "StrapWristScreen Slide 2",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "StrapWristScreen Slide 3",
+            image: "assets/carousel/test.jpg")
+      ],
+      ChestSensorScreen.TAG: [
+        CarouselData(
+            text: "ChestSensorScreen Slide 1",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "ChestSensorScreen Slide 2",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "ChestSensorScreen Slide 3",
+            image: "assets/carousel/test.jpg")
+      ],
+      FingerProbeScreen.TAG: [
+        CarouselData(
+            text: "FingerProbeScreen Slide 1",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "FingerProbeScreen Slide 2",
+            image: "assets/carousel/test.jpg"),
+        CarouselData(
+            text: "FingerProbeScreen Slide 3",
+            image: "assets/carousel/test.jpg")
+      ],
+    });
+
+    _scopedSlides.values.forEach((list) => _allSlides.addAll(list));
+  }
 }
 
 class CarouselSnapshot {
@@ -95,7 +138,6 @@ class CarouselSnapshot {
 class CarouselData {
   final String text;
   final String image;
-  final String tag;
 
-  CarouselData({this.text, this.image, this.tag});
+  CarouselData({this.text, this.image});
 }

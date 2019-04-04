@@ -34,7 +34,8 @@ class ChestSensorScreen extends StatelessWidget {
             },
           ),
           moreActionButton: ButtonModel(
-            action: () {},
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${ChestSensorScreen.TAG}"),
           ),
         ),
         showSteps: true,

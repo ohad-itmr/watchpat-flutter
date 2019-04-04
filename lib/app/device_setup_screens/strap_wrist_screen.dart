@@ -35,7 +35,8 @@ class StrapWristScreen extends StatelessWidget {
             },
           ),
           moreActionButton: ButtonModel(
-            action: () {},
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${StrapWristScreen.TAG}"),
           ),
         ),
         showSteps: true,

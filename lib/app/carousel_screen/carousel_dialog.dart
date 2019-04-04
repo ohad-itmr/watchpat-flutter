@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/carousel_screen/carousel_button_bar.dart';
 import 'package:my_pat/app/carousel_screen/carousel_buttons.dart';
 
-class CarouselDialogContainer extends StatelessWidget {
+class CarouselDialog extends StatelessWidget {
   final String image;
   final String text;
   final Function leftBtnCallback;
   final Function rightBtnCallback;
 
-  const CarouselDialogContainer(
+  const CarouselDialog(
       {Key key,
         @required this.image,
         @required this.text,
@@ -18,14 +18,15 @@ class CarouselDialogContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
       color: Colors.black.withOpacity(0.8),
       child: Padding(
-        padding: MediaQuery.of(context).viewInsets +
-            const EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth / 20, vertical: screenWidth / 8),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0), color: Colors.white),
+              borderRadius: BorderRadius.circular(5.0), color: Colors.white),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

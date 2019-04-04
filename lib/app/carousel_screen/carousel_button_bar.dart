@@ -13,8 +13,8 @@ class CarouselBar extends StatelessWidget {
       position == CarouselBarPosition.top ? Alignment.centerRight : null,
       decoration: BoxDecoration(
         borderRadius: position == CarouselBarPosition.top
-            ? BorderRadius.vertical(top: Radius.circular(10.0))
-            : BorderRadius.vertical(bottom: Radius.circular(10.0)),
+            ? BorderRadius.vertical(top: Radius.circular(5.0))
+            : BorderRadius.vertical(bottom: Radius.circular(5.0)),
         color: Theme.of(context).accentColor,
       ),
       height: 45.0,

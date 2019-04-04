@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/service_locator.dart';
 
 class CarouselButtonBlock extends StatelessWidget {
   final Function leftBtnCallback;
   final Function rightBtnCallback;
 
-  const CarouselButtonBlock(
-      {Key key, this.leftBtnCallback, this.rightBtnCallback})
+  final S loc = sl<S>();
+
+  CarouselButtonBlock({Key key, this.leftBtnCallback, this.rightBtnCallback})
       : super(key: key);
 
   @override
@@ -14,13 +16,13 @@ class CarouselButtonBlock extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: CarouselButton(
-            title: 'PREVIOUS',
+            title: loc.btnPrevious.toUpperCase(),
             onPressed: leftBtnCallback,
           ),
         ),
         Expanded(
           child: CarouselButton(
-            title: 'NEXT',
+            title: loc.btnNext.toUpperCase(),
             onPressed: rightBtnCallback,
           ),
         ),

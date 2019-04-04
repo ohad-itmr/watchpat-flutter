@@ -36,6 +36,7 @@ class S implements WidgetsLocalizations {
   String get btnMore => "More";
   String get btnNext => "Next";
   String get btnPreview => "Preview";
+  String get btnPrevious => "Previous";
   String get btnReady => "Ready";
   String get btnReturnToApp => "Return To App";
   String get btnStartRecording => "Start Recording";

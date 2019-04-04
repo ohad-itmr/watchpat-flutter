@@ -35,7 +35,8 @@ class FingerProbeScreen extends StatelessWidget {
             },
           ),
           moreActionButton: ButtonModel(
-            action: () {},
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${FingerProbeScreen.TAG}"),
           ),
         ),
         showSteps: true,

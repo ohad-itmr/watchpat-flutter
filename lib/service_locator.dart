@@ -28,6 +28,7 @@ void setUpServiceLocator() {
   sl.registerSingleton<DeviceConfigManager>(DeviceConfigManager());
 
   sl.registerSingleton<CarouselManager>(CarouselManager());
+  sl.registerSingleton<RecordingManager>(RecordingManager());
 }
 
 void preSetupServiceLocator() {

@@ -19,6 +19,10 @@ class BatteryManager extends ManagerBase {
     return level;
   }
 
+  Future<BatteryState> getBatteryState() async {
+    return await batteryState.first;
+  }
+
   BatteryManager() {
     battery = Battery();
     battery.onBatteryStateChanged.listen((BatteryState state) {

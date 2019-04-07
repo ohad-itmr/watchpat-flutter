@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
-
 
 class StartRecordingScreen extends StatelessWidget {
   static const String PATH = '/start';
@@ -10,6 +10,7 @@ class StartRecordingScreen extends StatelessWidget {
 
   StartRecordingScreen({Key key}) : super(key: key);
   final S loc = sl<S>();
+  final _recordingManager = sl<RecordingManager>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +31,14 @@ class StartRecordingScreen extends StatelessWidget {
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
-            action: () {
-              Navigator.pushNamed(context, RecordingScreen.PATH);
+            action: () async {
+              final bool canStart = await _recordingManager.canStartRecording;
+              if (canStart) {
+                Navigator.pushNamed(context, RecordingScreen.PATH);
+              } else {
+                Navigator.pushNamed(context,
+                    "${ErrorScreen.PATH}/${ErrorScreenError.BATTERY_LOW_LEVEL_NOT_CHARGING}");
+              }
             },
             text: loc.btnStartRecording,
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
@@ -6,7 +7,11 @@ import 'package:my_pat/widgets/widgets.dart';
 class ErrorScreen extends StatelessWidget {
   static const String TAG = 'ErrorScreen';
   static const String PATH = '/error';
+
+  final String error;
   final S loc = sl<S>();
+
+  ErrorScreen({Key key, this.error}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class ErrorScreen extends StatelessWidget {
         topBlock: BlockTemplate(
           type: BlockType.text,
           title: "ERROR",
-          content: ["Oh shit! We're all going to die. Eventually."],
+          content: [error],
           textColor: Colors.white.withOpacity(0.9),
           textTopPadding: true,
         ),

@@ -22,7 +22,7 @@ class ErrorScreen extends StatelessWidget {
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.text,
-          title: "ERROR",
+          title: loc.error_state,
           content: [error],
           textColor: Colors.white.withOpacity(0.9),
           textTopPadding: true,

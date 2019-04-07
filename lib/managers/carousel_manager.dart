@@ -9,7 +9,7 @@ class CarouselManager extends ManagerBase {
   static List<CarouselData> _allSlides = [];
 
   final BehaviorSubject<CarouselSnapshot> _carouselDataState =
-      BehaviorSubject<CarouselSnapshot>.seeded(null);
+      BehaviorSubject<CarouselSnapshot>();
 
   Observable<CarouselSnapshot> get carouselSnapshot =>
       _carouselDataState.stream;
@@ -21,8 +21,8 @@ class CarouselManager extends ManagerBase {
   loadCarouselData(String screenTAG) {
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][0],
-        prevBtnCallback: null,
-        nextBtnCallback: screenTAG == WelcomeScreen.TAG
+        actionPrev: null,
+        actionNext: screenTAG == WelcomeScreen.TAG
             ? () => switchUnlimitedSlide(1)
             : () => switchLimitedSlide(screenTAG, 1));
     _carouselDataState.sink.add(s);
@@ -33,10 +33,10 @@ class CarouselManager extends ManagerBase {
     final bool hasPrev = currentIndex != 0;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][currentIndex],
-        prevBtnCallback: hasPrev
+        actionPrev: hasPrev
             ? () => switchLimitedSlide(screenTAG, currentIndex - 1)
             : null,
-        nextBtnCallback: hasNext
+        actionNext: hasNext
             ? () => switchLimitedSlide(screenTAG, currentIndex + 1)
             : null);
     _carouselDataState.sink.add(s);
@@ -47,9 +47,9 @@ class CarouselManager extends ManagerBase {
     final bool hasPrev = currentIndex != 0;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _allSlides[currentIndex],
-        prevBtnCallback:
+        actionPrev:
             hasPrev ? () => switchUnlimitedSlide(currentIndex - 1) : null,
-        nextBtnCallback:
+        actionNext:
             hasNext ? () => switchUnlimitedSlide(currentIndex + 1) : null);
     _carouselDataState.sink.add(s);
   }
@@ -96,8 +96,7 @@ class CarouselManager extends ManagerBase {
             text: "StrapWristScreen Slide 2",
             image: "assets/carousel/test.png"),
         CarouselData(
-            text: "StrapWristScreen Slide 3",
-            image: "assets/carousel/test.png")
+            text: "StrapWristScreen Slide 3", image: "assets/carousel/test.png")
       ],
       ChestSensorScreen.TAG: [
         CarouselData(
@@ -128,10 +127,10 @@ class CarouselManager extends ManagerBase {
 
 class CarouselSnapshot {
   final CarouselData content;
-  final Function prevBtnCallback;
-  final Function nextBtnCallback;
+  final Function actionPrev;
+  final Function actionNext;
 
-  CarouselSnapshot({this.content, this.prevBtnCallback, this.nextBtnCallback});
+  CarouselSnapshot({this.content, this.actionPrev, this.actionNext});
 }
 
 class CarouselData {

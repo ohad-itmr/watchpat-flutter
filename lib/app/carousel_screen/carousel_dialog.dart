@@ -5,15 +5,15 @@ import 'package:my_pat/app/carousel_screen/carousel_buttons.dart';
 class CarouselDialog extends StatelessWidget {
   final String image;
   final String text;
-  final Function leftBtnCallback;
-  final Function rightBtnCallback;
+  final Function leftBtnAction;
+  final Function rightBtnAction;
 
   const CarouselDialog(
       {Key key,
         @required this.image,
         @required this.text,
-        this.leftBtnCallback,
-        this.rightBtnCallback})
+        this.leftBtnAction,
+        this.rightBtnAction})
       : super(key: key);
 
   @override
@@ -59,8 +59,8 @@ class CarouselDialog extends StatelessWidget {
               CarouselBar(
                 position: CarouselBarPosition.bottom,
                 content: CarouselButtonBlock(
-                  leftBtnCallback: leftBtnCallback,
-                  rightBtnCallback: rightBtnCallback,
+                  leftBtnCallback: leftBtnAction,
+                  rightBtnCallback: rightBtnAction,
                 ),
               )
             ],

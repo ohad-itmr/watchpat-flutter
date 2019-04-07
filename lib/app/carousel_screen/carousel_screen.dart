@@ -30,8 +30,8 @@ class CarouselScreen extends StatelessWidget {
           return CarouselDialog(
             image: snapshot.data.content.image,
             text: snapshot.data.content.text,
-            rightBtnCallback: snapshot.data.nextBtnCallback,
-            leftBtnCallback: snapshot.data.prevBtnCallback,
+            leftBtnAction: snapshot.data.actionPrev,
+            rightBtnAction: snapshot.data.actionNext,
           );
         } else {
           return Container(height: 0.0, width: 0.0);

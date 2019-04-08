@@ -14,27 +14,6 @@ class StrapWristScreen extends StatefulWidget {
 }
 
 class _StrapWristScreenState extends State<StrapWristScreen> {
-  void _showDialogIfNotCharging(BuildContext context) async {
-    final BatteryState state = await sl<BatteryManager>().getBatteryState();
-    if (state != BatteryState.charging) return;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(widget.loc.patient_msg1),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("OK"),
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     _showDialogIfNotCharging(context);
@@ -73,6 +52,27 @@ class _StrapWristScreenState extends State<StrapWristScreen> {
         current: 3,
         total: 6,
       ),
+    );
+  }
+
+  void _showDialogIfNotCharging(BuildContext context) async {
+    final BatteryState state = await sl<BatteryManager>().getBatteryState();
+    if (state != BatteryState.charging) return;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(widget.loc.patient_msg1),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("OK"),
+            )
+          ],
+        );
+      },
     );
   }
 }

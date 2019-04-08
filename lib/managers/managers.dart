@@ -7,4 +7,4 @@ export 'authentication_manager.dart';
 export 'welcome_activity_manager.dart';
 export 'device_config_manager.dart';
 export 'carousel_manager.dart';
-export 'recording_manager.dart';
+export 'testing_manager.dart';

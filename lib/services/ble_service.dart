@@ -103,7 +103,7 @@ class BleService {
         type: CharacteristicWriteType.withoutResponse,
       );
     } catch (e) {
-      status = 'failure';
+      status = 'failure ${e.toString()}';
     }
 
     Log.info(TAG, "Finish writing TX characteristic: ${data.toString()} $status");

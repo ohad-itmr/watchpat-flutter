@@ -30,7 +30,7 @@ class ErrorScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () => Navigator.pop(context),
-            text: "Return to app".toUpperCase(),
+            text: loc.btnReturnToApp.toUpperCase(),
           ),
           moreActionButton: null,
         ),

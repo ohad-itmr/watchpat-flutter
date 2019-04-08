@@ -10,7 +10,7 @@ class StartRecordingScreen extends StatelessWidget {
 
   StartRecordingScreen({Key key}) : super(key: key);
   final S loc = sl<S>();
-  final _recordingManager = sl<RecordingManager>();
+  final _testingManager = sl<TestingManager>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,9 @@ class StartRecordingScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () async {
-              final bool canStart = await _recordingManager.canStartRecording;
+              final bool canStart = await _testingManager.canStartTesting;
               if (canStart) {
+                _testingManager.startTesting();
                 Navigator.pushNamed(context, RecordingScreen.PATH);
               } else {
                 Navigator.pushNamed(context,

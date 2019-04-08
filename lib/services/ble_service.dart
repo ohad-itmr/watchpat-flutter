@@ -105,7 +105,6 @@ class BleService {
     } catch (e) {
       status = 'failure ${e.toString()}';
     }
-
     Log.info(TAG, "Finish writing TX characteristic: ${data.toString()} $status");
   }
 }

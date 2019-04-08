@@ -38,7 +38,8 @@ class BleManager extends ManagerBase {
   BehaviorSubject<BluetoothDeviceState> _deviceStateSubject =
       BehaviorSubject<BluetoothDeviceState>();
 
-  Observable<BluetoothDeviceState> get deviceState => _deviceStateSubject.stream;
+  Observable<BluetoothDeviceState> get deviceState =>
+      _deviceStateSubject.stream;
 
   //#endregion Device
 
@@ -80,7 +81,8 @@ class BleManager extends ManagerBase {
       _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
       if (PrefsProvider.getIsFirstDeviceConnection() != null &&
           PrefsProvider.getIsFirstDeviceConnection()) {
-        sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
+        sl<SystemStateManager>()
+            .setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
@@ -126,13 +128,15 @@ class BleManager extends ManagerBase {
       return false;
     }
 
-    if (sl<SystemStateManager>().bleScanResult == ScanResultStates.LOCATED_SINGLE) {
+    if (sl<SystemStateManager>().bleScanResult ==
+        ScanResultStates.LOCATED_SINGLE) {
       Log.warning(TAG, "[preScanChecks] device already located");
       return false;
     }
 
     if (sl<SystemStateManager>().isConnectionToDevice) {
-      Log.warning(TAG, "[preScanChecks] connection to device already in progress");
+      Log.warning(
+          TAG, "[preScanChecks] connection to device already in progress");
       return false;
     }
 
@@ -149,13 +153,15 @@ class BleManager extends ManagerBase {
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     } else if (_discoveredDevices.length == 1) {
       Log.info(TAG, "discovered a SINGLE device on scan");
-      sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_SINGLE);
+      sl<SystemStateManager>()
+          .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
 //
       connect(_discoveredDevices.values.toList()[0].device);
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
-      sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
+      sl<SystemStateManager>()
+          .setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
     }
   }
 
@@ -189,14 +195,8 @@ class BleManager extends ManagerBase {
     Log.info(TAG, "### _sendCommand ");
 
     if (byteList != null) {
-      try {
-        List<Future<void>> futures = [];
-        for (var req in byteList) {
-          futures.add(sl<BleService>().writeCharacteristic(req));
-        }
-        await Future.wait(futures);
-      } catch (e) {
-        Log.shout(TAG, "sendCommand exception: ${e.toString()} $tag");
+      for (var req in byteList) {
+        await sl<BleService>().writeCharacteristic(req);
       }
     } else {
       Log.shout(TAG, "sendCommand failed: byteList is null $tag");
@@ -209,7 +209,8 @@ class BleManager extends ManagerBase {
         DeviceCommands.getStartSessionCmd(0x0000, useType, [0, 0, 0, 1]));
   }
 
-  void startScan({int time, @required bool connectToFirstDevice, String deviceName}) {
+  void startScan(
+      {int time, @required bool connectToFirstDevice, String deviceName}) {
     Log.info(TAG, '## START SCAN');
 
     if (!_preScanChecks()) {
@@ -277,7 +278,9 @@ class BleManager extends ManagerBase {
       case StateChangeActions.APP_MODE_CHANGED:
         final AppModes mode = sl<SystemStateManager>().appMode;
         Log.info(
-            TAG, "receiverAppMode: " + SystemStateManager.getAppModeName(mode.index));
+            TAG,
+            "receiverAppMode: " +
+                SystemStateManager.getAppModeName(mode.index));
         switch (mode) {
           case AppModes.USER:
             Log.info(TAG, "### sending start session");
@@ -294,8 +297,10 @@ class BleManager extends ManagerBase {
               if (sl<SystemStateManager>().appMode != AppModes.TECH) {
                 // todo add real SW ID
                 sl<CommandTaskerManager>().addCommandWithNoCb(
-                    DeviceCommands.getStartSessionCmd(0x0000,
-                        DeviceCommands.SESSION_START_USE_TYPE_SERVICE, [0, 0, 0, 1]));
+                    DeviceCommands.getStartSessionCmd(
+                        0x0000,
+                        DeviceCommands.SESSION_START_USE_TYPE_SERVICE,
+                        [0, 0, 0, 1]));
               }
             });
             break;

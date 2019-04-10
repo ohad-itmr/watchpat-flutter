@@ -1,21 +1,26 @@
 import 'dart:async';
 
+import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_pat/config/default_settings.dart';
 
 class PrefsNames {
   static const String READING_KEY = DefaultSettings.appName + ".reading";
-  static const String FIRST_TIME_RUN_KEY = DefaultSettings.appName + ".firsttimerun";
+  static const String FIRST_TIME_RUN_KEY =
+      DefaultSettings.appName + ".firsttimerun";
   static const String WRITING_KEY = DefaultSettings.appName + ".writing";
   static const String USER_PIN_CODE = DefaultSettings.appName + ".userpincode";
-  static const String DEVICE_SERIAL_KEY = DefaultSettings.appName + ".deviceserial";
+  static const String DEVICE_SERIAL_KEY =
+      DefaultSettings.appName + ".deviceserial";
   static const String DEVICE_NAME_KEY = DefaultSettings.appName + ".devicename";
-  static const String DEVICE_ADDRESS_KEY = DefaultSettings.appName + ".deviceaddress";
+  static const String DEVICE_ADDRESS_KEY =
+      DefaultSettings.appName + ".deviceaddress";
   static const String TEST_STATE_KEY = DefaultSettings.appName + ".teststate";
   static const String DATA_STATE_KEY = DefaultSettings.appName + ".datastate";
   static const String TEST_REAL_START_TIME_KEY =
       DefaultSettings.appName + ".testrealtime";
-  static const String TEST_PACKET_TIME_KEY = DefaultSettings.appName + ".testpackettime";
+  static const String TEST_PACKET_TIME_KEY =
+      DefaultSettings.appName + ".testpackettime";
   static const String PACKET_IDENTIFIER_KEY =
       DefaultSettings.appName + ".packetidentifier";
   static const String PACKET_REMOTE_IDENTIFIER_KEY =
@@ -28,8 +33,10 @@ class PrefsNames {
       DefaultSettings.appName + ".isignoredeviceerrors";
   static const String SFTP_HOST_KEY = DefaultSettings.appName + ".sftphost";
   static const String SFTP_PORT_KEY = DefaultSettings.appName + ".sftpport";
-  static const String SFTP_USERNAME_KEY = DefaultSettings.appName + ".sftpusername";
-  static const String SFTP_PASSWORD_KEY = DefaultSettings.appName + ".sftppassword";
+  static const String SFTP_USERNAME_KEY =
+      DefaultSettings.appName + ".sftpusername";
+  static const String SFTP_PASSWORD_KEY =
+      DefaultSettings.appName + ".sftppassword";
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
 }
 
@@ -49,11 +56,29 @@ class PrefsService {
 
 class PrefsProvider {
   //
+  // Packet time
+  //
+  static Future<void> saveTestPacketTime(int time) async {
+    await PrefsService.prefs.setInt(PrefsNames.TEST_PACKET_TIME_KEY, time);
+  }
+
+  static Future<int> loadTestPacketTime() async {
+    return PrefsService.prefs.getInt(PrefsNames.TEST_PACKET_TIME_KEY) ?? 0;
+  }
+
+  static Future<void> incTestPacketTime() async {
+    final int currentTime = await PrefsProvider.loadTestPacketTime();
+    await PrefsProvider.saveTestPacketTime(currentTime + 1);
+  }
+
+  //
   // packet identifier
   //
   static Future<int> getPacketIdentifier() async {
-    int currIdentifier = PrefsService.prefs.getInt(PrefsNames.PACKET_IDENTIFIER_KEY);
-    await PrefsService.prefs.setInt(PrefsNames.PACKET_IDENTIFIER_KEY, currIdentifier + 1);
+    int currIdentifier =
+        PrefsService.prefs.getInt(PrefsNames.PACKET_IDENTIFIER_KEY) ?? 0;
+    await PrefsService.prefs
+        .setInt(PrefsNames.PACKET_IDENTIFIER_KEY, currIdentifier + 1);
     return currIdentifier;
   }
 
@@ -61,11 +86,13 @@ class PrefsProvider {
   // remote packet identifier
   //
   static void saveRemotePacketIdentifier(int id) async {
-    await PrefsService.prefs.setInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY, id);
+    await PrefsService.prefs
+        .setInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY, id);
   }
 
   static int loadRemotePacketIdentifier() {
-    return PrefsService.prefs.getInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY);
+    return PrefsService.prefs.getInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY) ??
+        0;
   }
 
   //
@@ -87,25 +114,29 @@ class PrefsProvider {
   }
 
   static bool getIsFirstTimeRun() {
-    return PrefsService.prefs.getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
+    return PrefsService.prefs
+        .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
   }
 
   //
   // is first device connection
   //
   static void setFirstDeviceConnection({bool state = false}) async {
-    await PrefsService.prefs.setBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY, state);
+    await PrefsService.prefs
+        .setBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY, state);
   }
 
   static bool getIsFirstDeviceConnection() {
-    return PrefsService.prefs.getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
+    return PrefsService.prefs
+        .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
   }
 
   //
   // Device name
   //
   static void initDeviceName() async {
-    await PrefsService.prefs.setString(PrefsNames.DEVICE_NAME_KEY, "ITAMAR_UART");
+    await PrefsService.prefs
+        .setString(PrefsNames.DEVICE_NAME_KEY, "ITAMAR_UART");
   }
 
   static void saveDeviceName(String name) async {
@@ -120,7 +151,8 @@ class PrefsProvider {
   // is ignore device error
   //
   static void setIgnoreDeviceErrors(bool value) async {
-    await PrefsService.prefs.setBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY, value);
+    await PrefsService.prefs
+        .setBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY, value);
   }
 
   static bool getIgnoreDeviceErrors() {

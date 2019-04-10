@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/services/prefs_service.dart';
+import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:date_format/date_format.dart';
 
@@ -15,14 +18,23 @@ class TimeUtils {
   static const int TIME_DIFF_TEST_START_FIRST_DATA_SEC = 9;
   static int lastPacketTime = 0;
 
+  static void packetTimeTick() async {
+    await PrefsProvider.incTestPacketTime();
+    final int testPacketTime = await PrefsProvider.loadTestPacketTime();
+    if (testPacketTime == GlobalSettings.minTestLengthSeconds) {
+      sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
+    }
+  }
+
   static String getFullDateStringFromTimeStamp(DateTime timeStamp) {
-    return formatDate(timeStamp, [dd, '-', MM, '-', yyyy, '_', HH, ':', mm, ':', ss]);
+    return formatDate(
+        timeStamp, [dd, '-', MM, '-', yyyy, '_', HH, ':', mm, ':', ss]);
   }
 
   static double getTimeStamp() {
     final DateTime now = DateTime.now();
     final int currMillis = now.millisecond;
-    Log.info(TAG,"## current time: ${getFullDateStringFromTimeStamp(now)}");
+    Log.info(TAG, "## current time: ${getFullDateStringFromTimeStamp(now)}");
     return (currMillis + getGMTDiffMillis()) / 1000;
   }
 
@@ -45,7 +57,7 @@ class WatchPATTimer {
   bool _isCycle;
 
   void onFinish() {
-    Log.info(TAG,"$_name triggered, $this");
+    Log.info(TAG, "$_name triggered, $this");
     _timeoutCallback();
     _isRunning = false;
     if (_isCycle) {
@@ -56,7 +68,7 @@ class WatchPATTimer {
   void startTimer() {
     if (!_isRunning) {
       if (_startCallback != null) {
-        Log.info(TAG,"$_name started");
+        Log.info(TAG, "$_name started");
         _startCallback();
       }
       _isRunning = true;

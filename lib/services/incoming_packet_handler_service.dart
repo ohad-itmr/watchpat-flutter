@@ -25,8 +25,8 @@ class IncomingPacketHandlerService extends ManagerBase {
     _receivedByteStream = [];
     _paramFileByteStream = [];
     _logFileByteStream = [];
-    _dataReceivedTimer =
-        WatchPATTimer('DataReceivedTimeout', 3000, () => _isDataReceiving = false);
+    _dataReceivedTimer = WatchPATTimer(
+        'DataReceivedTimeout', 3000, () => _isDataReceiving = false);
     _packetAnalysisTimer = WatchPATTimer('PacketAnalysisTimer', 60 * 1000, () {
       _isPacketAnalysis = false;
       Log.info(TAG,
@@ -79,7 +79,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     return _isDataReceiving;
   }
 
-  void acceptAndHandleData(List<int> data) {
+  void acceptAndHandleData(List<int> data) async {
     print('acceptAndHandleData $_packetState');
     _incomingData = data;
 
@@ -96,7 +96,8 @@ class IncomingPacketHandlerService extends ManagerBase {
         }
         //Log.i(TAG, "Packet size: " + _incomingPacketLength);
       } else {
-        Log.shout(TAG, "Wrong starting packet " + ConvertFormats.bytesToHex(data));
+        Log.shout(
+            TAG, "Wrong starting packet " + ConvertFormats.bytesToHex(data));
         resetPacket();
         return;
       }
@@ -112,7 +113,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
-      Log.info(TAG, ">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
+      Log.info(TAG,
+          ">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -125,7 +127,8 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_ACK:
           Log.info(TAG, "packet received (ACK)");
           // ACK received - notify cmdTasker
-          sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
+          sl<CommandTaskerManager>()
+              .ackCommandReceived(receivedPacket.identifier);
           break;
         case DeviceCommands.CMD_OPCODE_DATA_PACKET:
           Log.info(TAG, "packet received (DATA_PACKET)");
@@ -139,8 +142,28 @@ class IncomingPacketHandlerService extends ManagerBase {
           }
 
           // send data packet ACK
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+
+//          if (!_isFirstPacketOfDataReceived) {
+//            _isFirstPacketOfDataReceived = false;
+//            sl<SystemStateManager>()
+//                .setDataTransferState(DataTransferStates.TRANSFERRING);
+//            // todo Start SFTP service
+//          }
+//
+//          final int prevRemoteIdentifier =
+//              PrefsProvider.loadRemotePacketIdentifier();
+//          if (prevRemoteIdentifier < receivedPacket.identifier) {
+//            Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
+//            PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
+//            TimeUtils.packetTimeTick();
+//            // todo Write test packet to file
+//          } else {
+//            Log.warning(TAG,
+//                "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: $receivedPacket");
+//          }
+
           break;
         case DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM:
           Log.info(TAG, "### start session confirm received");
@@ -153,7 +176,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           if (_checkStartSessionErrors(receivedPacket.opCodeDependent)) {
             PrefsProvider.saveDeviceSerial(
                 sl<DeviceConfigManager>().deviceConfig.deviceSerial);
-            Log.info(TAG, "### start session confirm: device serial saved ${PrefsProvider.getIsFirstDeviceConnection()}");
+            Log.info(TAG,
+                "### start session confirm: device serial saved ${PrefsProvider.getIsFirstDeviceConnection()}");
 
             if (PrefsProvider.getIsFirstDeviceConnection() != null &&
                 PrefsProvider.getIsFirstDeviceConnection()) {
@@ -161,10 +185,12 @@ class IncomingPacketHandlerService extends ManagerBase {
               // TODO implement
               //getDataFileHandler().storeData(getDeviceConfiguration().getPayloadBytes());
 
-              sl<DispatcherService>().sendGetConfig(PrefsProvider.loadDeviceSerial());
+              sl<DispatcherService>()
+                  .sendGetConfig(PrefsProvider.loadDeviceSerial());
 
               Log.info(TAG, "first connection to device");
-              Log.info(TAG, "### start session confirm: device FW version check START");
+              Log.info(TAG,
+                  "### start session confirm: device FW version check START");
               //todo Firmwarer upgrade
 //              if (getFirmwareUpgrader().isDeviceFirmwareVersionUpToDate()) {
 //                Log.info(TAG,"### start session confirm: device FW version check END");
@@ -178,8 +204,8 @@ class IncomingPacketHandlerService extends ManagerBase {
             }
           }
           // send start-session-confirm packet ACK
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           final String deviceName =
               "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial}";
           Log.info(TAG, "device new name: $deviceName");
@@ -235,8 +261,8 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_ERROR_STATUS:
           Log.info(TAG, "packet received (ERROR_STATUS)");
           _manageError(receivedPacket.extractSingleBytePayload());
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_END_OF_TEST_DATA:
           Log.info(TAG, "packet received (END_OF_TEST_DATA)");
@@ -244,8 +270,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
           sl<SystemStateManager>()
               .setDataTransferState(DataTransferStates.UPLOADING_TO_SERVER);
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES:
           Log.info(TAG, "packet received (FW_UPGRADE_RES)");
@@ -257,13 +283,13 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_AFE_REGISTERS_VALUES:
           Log.info(TAG, "packet received (AFE_REGISTERS_VALUES)");
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_ACTIGRAPH_REGISTERS_VALUES:
           Log.info(TAG, "packet received (ACTIGRAPH_REGISTERS_VALUES)");
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_GET_LOG_FILE_RESPONSE:
           Log.info(
@@ -282,8 +308,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 //          } else {
 //            getParameterFileHandler().getLogFileResponse(true);
 //          }
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_PARAMETERS_FILE:
           Log.info(TAG,
@@ -300,14 +326,14 @@ class IncomingPacketHandlerService extends ManagerBase {
 //          } else {
 //            getParameterFileHandler().getParamFileResponse(true);
 //          }
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_UPAT_EEPROM_VALUES:
           Log.info(TAG, "packet received (UPAT_EEPROM_VALUES)");
 
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         default:
           break;
@@ -325,7 +351,8 @@ class IncomingPacketHandlerService extends ManagerBase {
       _incomingPacketLength -= _incomingData.length;
     } else {
       print('_recordPacket_2 $_incomingData');
-      _receivedByteStream.addAll(_incomingData.sublist(0, _incomingPacketLength));
+      _receivedByteStream
+          .addAll(_incomingData.sublist(0, _incomingPacketLength));
       _incomingPacketLength = 0;
     }
 
@@ -425,7 +452,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     switch (errorCode) {
       case DeviceCommands.ERROR_BATTERY_LOW:
-        sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.CHANGE_BATTERY);
+        sl<SystemStateManager>()
+            .setDeviceErrorState(DeviceErrorStates.CHANGE_BATTERY);
         Log.info(TAG, lang.low_power);
         break;
 

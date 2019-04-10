@@ -145,24 +145,24 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
-//          if (!_isFirstPacketOfDataReceived) {
-//            _isFirstPacketOfDataReceived = false;
-//            sl<SystemStateManager>()
-//                .setDataTransferState(DataTransferStates.TRANSFERRING);
-//            // todo Start SFTP service
-//          }
-//
-//          final int prevRemoteIdentifier =
-//              PrefsProvider.loadRemotePacketIdentifier();
-//          if (prevRemoteIdentifier < receivedPacket.identifier) {
-//            Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
-//            PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
-//            TimeUtils.packetTimeTick();
-//            // todo Write test packet to file
-//          } else {
-//            Log.warning(TAG,
-//                "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: $receivedPacket");
-//          }
+          if (!_isFirstPacketOfDataReceived) {
+            _isFirstPacketOfDataReceived = false;
+            sl<SystemStateManager>()
+                .setDataTransferState(DataTransferStates.TRANSFERRING);
+            // todo Start SFTP service
+          }
+
+          final int prevRemoteIdentifier =
+              PrefsProvider.loadRemotePacketIdentifier();
+          if (prevRemoteIdentifier < receivedPacket.identifier) {
+            Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
+            PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
+            TimeUtils.packetTimeTick();
+            // todo Write test packet to file
+          } else {
+            Log.warning(TAG,
+                "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: $receivedPacket");
+          }
 
           break;
         case DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM:

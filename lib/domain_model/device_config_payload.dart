@@ -1,4 +1,5 @@
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/utils/log/log.dart';
 
 class DeviceConfigPayload {
@@ -116,7 +117,8 @@ class DeviceConfigPayload {
   Version _deviceFWVersion;
   int _deviceSerial;
 
-  static final DeviceConfigPayload _singleton = new DeviceConfigPayload._internal();
+  static final DeviceConfigPayload _singleton =
+      new DeviceConfigPayload._internal();
 
   factory DeviceConfigPayload() {
     return _singleton;
@@ -161,9 +163,11 @@ class DeviceConfigPayload {
   }
 
   void _setDeviceSerial(final List<int> bytesConfig) {
-    final List<int> serialBytes =
-        bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
-    _deviceSerial = int.parse(serialBytes.join());
+    final List<int> serialBytes = bytesConfig.sublist(
+        OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
+
+    _deviceSerial =
+        ConvertFormats.byteArrayToHex(serialBytes.reversed.toList());
   }
 
   static void updateSmartPhoneInfo(List<int> bytes) {
@@ -179,7 +183,8 @@ class DeviceConfigPayload {
       bytes[OFFSET_SMARTPHONE_APP_VERSION_MINOR] = int.parse(appVersion[1]);
     }
     if (appVersion.length > 2) {
-      bytes[OFFSET_SMARTPHONE_APP_COMPILATION_NUMBER] = int.parse(appVersion[2]);
+      bytes[OFFSET_SMARTPHONE_APP_COMPILATION_NUMBER] =
+          int.parse(appVersion[2]);
     }
 
     // TOTO implement app version logic

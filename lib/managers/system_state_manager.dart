@@ -15,7 +15,14 @@ enum DeviceErrorStates {
   HW_ERROR
 }
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
-enum TestStates { NOT_STARTED, STARTED, MINIMUM_PASSED, ENDED }
+enum TestStates {
+  NOT_STARTED,
+  STARTED,
+  INTERRUPTED,
+  RESUMED,
+  MINIMUM_PASSED,
+  ENDED
+}
 enum DataTransferStates {
   NOT_STARTED,
   TRANSFERRING,
@@ -76,12 +83,20 @@ class SystemStateManager extends ManagerBase {
   static String getScanResultStateName(int state) => _scanResults[state];
 
   // SCAN STATES
-  static List<String> _scanStates = ["Not started", "Scanning", "Scanning complete"];
+  static List<String> _scanStates = [
+    "Not started",
+    "Scanning",
+    "Scanning complete"
+  ];
 
   static String getScanStateName(int state) => _scanStates[state];
 
   // DEVICE STATES
-  static List<String> _deviceStates = ["Disconnected", "Connecting", "Connected"];
+  static List<String> _deviceStates = [
+    "Disconnected",
+    "Connecting",
+    "Connected"
+  ];
 
   static String getDeviceStateName(int state) => _deviceStates[state];
 
@@ -98,12 +113,23 @@ class SystemStateManager extends ManagerBase {
   static String getDeviceErrorStateName(int state) => _deviceErrorStates[state];
 
   // SERVER STATES
-  static List<String> _serverStates = ["Disconnected", "Connecting", "Connected"];
+  static List<String> _serverStates = [
+    "Disconnected",
+    "Connecting",
+    "Connected"
+  ];
 
   static String getServerStateName(int state) => _serverStates[state];
 
   // TEST STATES
-  static List<String> _testStates = ["Not started", "Started", "Minimum passed", "Ended"];
+  static List<String> _testStates = [
+    "Not started",
+    "Started",
+    "Interrupted",
+    "Resumed",
+    "Minimum passed",
+    "Ended"
+  ];
 
   static String getTestStateName(int state) => _testStates[state];
 
@@ -115,7 +141,8 @@ class SystemStateManager extends ManagerBase {
     "All transferred"
   ];
 
-  static String getDataTransferStateName(int state) => _dataTransferStates[state];
+  static String getDataTransferStateName(int state) =>
+      _dataTransferStates[state];
 
   // APP MODES
   static List<String> _appStates = [
@@ -145,7 +172,6 @@ class SystemStateManager extends ManagerBase {
 
   static String getDispatcherStateName(int state) => _dispatcherStates[state];
 
-
   SystemStateManager() {
     initAllStates();
   }
@@ -153,11 +179,14 @@ class SystemStateManager extends ManagerBase {
   // States
   BehaviorSubject<BtStates> _btState = BehaviorSubject<BtStates>();
   BehaviorSubject<ScanStates> _bleScanState = BehaviorSubject<ScanStates>();
-  BehaviorSubject<ScanResultStates> _bleScanResult = BehaviorSubject<ScanResultStates>();
-  BehaviorSubject<DeviceStates> _deviceCommState = BehaviorSubject<DeviceStates>();
+  BehaviorSubject<ScanResultStates> _bleScanResult =
+      BehaviorSubject<ScanResultStates>();
+  BehaviorSubject<DeviceStates> _deviceCommState =
+      BehaviorSubject<DeviceStates>();
   BehaviorSubject<DeviceErrorStates> _deviceErrorState =
       BehaviorSubject<DeviceErrorStates>();
-  BehaviorSubject<ServerStates> _serverCommState = BehaviorSubject<ServerStates>();
+  BehaviorSubject<ServerStates> _serverCommState =
+      BehaviorSubject<ServerStates>();
   BehaviorSubject<TestStates> _testState = BehaviorSubject<TestStates>();
   BehaviorSubject<DataTransferStates> _dataTransferState =
       BehaviorSubject<DataTransferStates>();
@@ -178,21 +207,26 @@ class SystemStateManager extends ManagerBase {
 
   Observable<DeviceStates> get deviceCommStateStream => _deviceCommState.stream;
 
-  Observable<DeviceErrorStates> get deviceErrorStateStream => _deviceErrorState.stream;
+  Observable<DeviceErrorStates> get deviceErrorStateStream =>
+      _deviceErrorState.stream;
 
   Observable<ServerStates> get serverCommStateStream => _serverCommState.stream;
 
   Observable<TestStates> get testStateStream => _testState.stream;
 
-  Observable<DataTransferStates> get dataTransferStateStream => _dataTransferState.stream;
+  Observable<DataTransferStates> get dataTransferStateStream =>
+      _dataTransferState.stream;
 
   Observable<AppModes> get appModeStream => _appMode.stream;
 
-  Observable<FirmwareUpgradeStates> get firmwareStateStream => _firmwareState.stream;
+  Observable<FirmwareUpgradeStates> get firmwareStateStream =>
+      _firmwareState.stream;
 
-  Observable<DispatcherStates> get dispatcherStateStream => _dispatcherState.stream;
+  Observable<DispatcherStates> get dispatcherStateStream =>
+      _dispatcherState.stream;
 
-  Observable<StateChangeActions> get stateChangeStream => _stateChangeSubject.stream;
+  Observable<StateChangeActions> get stateChangeStream =>
+      _stateChangeSubject.stream;
 
   bool _isServiceModeEnabled = false;
   bool _isScanCycleEnabled = false;
@@ -200,7 +234,7 @@ class SystemStateManager extends ManagerBase {
   String _deviceErrors = "";
 
   void initAllBTStates() {
-    Log.info(TAG,"initializing all BT states");
+    Log.info(TAG, "initializing all BT states");
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
     setBleScanResult(ScanResultStates.NOT_LOCATED);
@@ -208,7 +242,7 @@ class SystemStateManager extends ManagerBase {
   }
 
   void initAllStates() {
-    Log.info(TAG,"initializing all system states");
+    Log.info(TAG, "initializing all system states");
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
     setBleScanResult(ScanResultStates.NOT_LOCATED);
@@ -224,28 +258,28 @@ class SystemStateManager extends ManagerBase {
 
   void setBtState(final BtStates state) {
     if (state != _btState.value) {
-      Log.info(TAG,"setBtState: ${getBTStateName(state.index)}");
+      Log.info(TAG, "setBtState: ${getBTStateName(state.index)}");
       _btState.sink.add(state);
     }
   }
 
   void setBleScanState(ScanStates state) {
     if (state != _bleScanState.value) {
-      Log.info(TAG,"setBleScanState: ${getScanStateName(state.index)}");
+      Log.info(TAG, "setBleScanState: ${getScanStateName(state.index)}");
       _bleScanState.sink.add(state);
     }
   }
 
   void setBleScanResult(ScanResultStates state) {
     if (state != _bleScanResult.value) {
-      Log.info(TAG,"setBleScanResult: ${getScanResultStateName(state.index)}");
+      Log.info(TAG, "setBleScanResult: ${getScanResultStateName(state.index)}");
       _bleScanResult.sink.add(state);
     }
   }
 
   void setDeviceCommState(DeviceStates state) {
     if (state != _deviceCommState.value) {
-      Log.info(TAG,"setDeviceCommState: ${getDeviceStateName(state.index)}");
+      Log.info(TAG, "setDeviceCommState: ${getDeviceStateName(state.index)}");
       _deviceCommState.sink.add(state);
     }
   }
@@ -263,42 +297,44 @@ class SystemStateManager extends ManagerBase {
 
   void setServerCommState(ServerStates state) {
     if (state != _serverCommState.value) {
-      Log.info(TAG,"setServerCommState: ${getServerStateName(state.index)}");
+      Log.info(TAG, "setServerCommState: ${getServerStateName(state.index)}");
       _serverCommState.sink.add(state);
     }
   }
 
   void setTestState(TestStates state) {
     if (state != _testState.value) {
-      Log.info(TAG,"setTestState: ${getTestStateName(state.index)}");
+      Log.info(TAG, "setTestState: ${getTestStateName(state.index)}");
       _testState.sink.add(state);
     }
   }
 
   void setDataTransferState(DataTransferStates state) {
     if (state != _dataTransferState.value) {
-      Log.info(TAG,"setDataTransferState: ${getDataTransferStateName(state.index)}");
+      Log.info(TAG,
+          "setDataTransferState: ${getDataTransferStateName(state.index)}");
       _dataTransferState.sink.add(state);
     }
   }
 
   void setAppMode(AppModes state) {
     if (state != _appMode.value) {
-      Log.info(TAG,"setAppMode: ${getAppModeName(state.index)}");
+      Log.info(TAG, "setAppMode: ${getAppModeName(state.index)}");
       _appMode.sink.add(state);
     }
   }
 
   void setFirmwareState(FirmwareUpgradeStates state) {
     if (state != _firmwareState.value) {
-      Log.info(TAG,"setFirmwareState: ${getFirmwareStateName(state.index)}");
+      Log.info(TAG, "setFirmwareState: ${getFirmwareStateName(state.index)}");
       _firmwareState.sink.add(state);
     }
   }
 
   void setDispatcherState(DispatcherStates state) {
     if (state != _dispatcherState.value) {
-      Log.info(TAG,"setDispatcherState: ${getDispatcherStateName(state.index)}");
+      Log.info(
+          TAG, "setDispatcherState: ${getDispatcherStateName(state.index)}");
       _dispatcherState.sink.add(state);
     }
   }

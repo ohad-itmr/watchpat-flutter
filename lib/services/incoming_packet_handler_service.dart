@@ -82,6 +82,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   void acceptAndHandleData(List<int> data) async {
     print('acceptAndHandleData $_packetState');
     _incomingData = data;
+    print('RECEIVED NEW PACKET: ${data.toString()}');
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
@@ -102,7 +103,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         return;
       }
     } else {
-      Log.info(TAG, "Handling continue of packet");
+//      Log.info(TAG, "Handling continue of packet");
     }
 
     _recordPacket();
@@ -161,7 +162,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             // todo Write test packet to file
           } else {
             Log.warning(TAG,
-                "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: $receivedPacket");
+                "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: ${receivedPacket.identifier}");
           }
 
           break;
@@ -345,7 +346,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   void _recordPacket() {
     if (_incomingPacketLength >= DeviceCommands.PACKET_CHUNK_SIZE) {
-      print('_recordPacket $_incomingData');
+//      print('_recordPacket $_incomingData');
       _receivedByteStream.addAll(_incomingData);
 //      _receivedByteStream.write(_incomingData, 0, DeviceCommands.PACKET_CHUNK_SIZE);
       _incomingPacketLength -= _incomingData.length;

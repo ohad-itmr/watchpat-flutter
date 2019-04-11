@@ -86,6 +86,11 @@ class BleService {
     }
   }
 
+  void clearSubscriptions() {
+    _valueChangedSubscriptions.forEach((uuid, sub) => sub.cancel());
+    _valueChangedSubscriptions.clear();
+  }
+
   void disconnect() {
     _valueChangedSubscriptions.forEach((uuid, sub) => sub.cancel());
     _valueChangedSubscriptions.clear();

@@ -161,6 +161,10 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = crcByte2;
 
+    // todo REMOVE AFTER DEBUG
+    return true;
+
+
     if (packetCRC == validationCRC) {
       return true;
     }

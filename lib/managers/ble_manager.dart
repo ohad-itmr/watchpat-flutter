@@ -71,29 +71,47 @@ class BleManager extends ManagerBase {
     Log.info(TAG, '## Device State Changed to $state');
     _deviceStateSubject.sink.add(state);
 
+    final sysStateManager = sl<SystemStateManager>();
+
     if (state == BluetoothDeviceState.connected) {
       Log.info(TAG, "### connected to device");
+      sysStateManager.setDeviceCommState(DeviceStates.CONNECTED);
+
       Log.info(TAG, "### starting services discovery");
-      sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTED);
       await sl<BleService>().setServicesAndChars();
       await sl<BleService>().setNotification(_incomingPacketHandler);
+
+      if (sysStateManager.testState == TestStates.INTERRUPTED) {
+        Log.info(TAG, '### Successfully reconnected to device');
+        sysStateManager.setTestState(TestStates.RESUMED);
+        return;
+      }
 
       _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
       if (PrefsProvider.getIsFirstDeviceConnection() != null &&
           PrefsProvider.getIsFirstDeviceConnection()) {
-        sl<SystemStateManager>()
+        sysStateManager
             .setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
-      _incomingPacketHandler.resetPacket();
-      _disconnect();
-      if (sl<SystemStateManager>().isBTEnabled) {
-        if (sl<SystemStateManager>().isScanCycleEnabled) {
-          startScan(connectToFirstDevice: false);
-        }
+      sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
+      if (sysStateManager.testState == TestStates.STARTED ||
+          sysStateManager.testState == TestStates.RESUMED) {
+        sysStateManager.setTestState(TestStates.INTERRUPTED);
+        sysStateManager
+            .changeState
+            .add(StateChangeActions.TEST_STATE_CHANGED);
       } else {
-        Log.shout(TAG, "BT not enabled scan cycle not initiated $tag");
+        _incomingPacketHandler.resetPacket();
+        _disconnect();
+        if (sysStateManager.isBTEnabled) {
+          if (sysStateManager.isScanCycleEnabled) {
+            startScan(connectToFirstDevice: false);
+          }
+        } else {
+          Log.shout(TAG, "BT not enabled scan cycle not initiated $tag");
+        }
       }
     }
   }
@@ -129,7 +147,8 @@ class BleManager extends ManagerBase {
     }
 
     if (sl<SystemStateManager>().bleScanResult ==
-        ScanResultStates.LOCATED_SINGLE) {
+            ScanResultStates.LOCATED_SINGLE &&
+        sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
       Log.warning(TAG, "[preScanChecks] device already located");
       return false;
     }
@@ -273,6 +292,9 @@ class BleManager extends ManagerBase {
           sl<CommandTaskerManager>()
               .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
           _incomingPacketHandler.startPacketAnalysis();
+        } else if (testState == TestStates.INTERRUPTED) {
+          Log.shout(TAG, "Test interrupted because of device connection lost");
+          sl<BleService>().clearSubscriptions();
         }
         break;
       case StateChangeActions.APP_MODE_CHANGED:

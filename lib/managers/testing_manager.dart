@@ -11,10 +11,12 @@ class TestingManager extends ManagerBase {
   static const String TAG = 'RecordingManager';
   BatteryManager _batteryManager;
   CommandTaskerManager _commandTaskerManager;
+  SystemStateManager _systemStateManager;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
     _commandTaskerManager = sl<CommandTaskerManager>();
+    _systemStateManager = sl<SystemStateManager>();
   }
 
   Future<bool> get canStartTesting async {
@@ -25,7 +27,13 @@ class TestingManager extends ManagerBase {
 
   void startTesting() {
     Log.info(TAG, "### Sending start aquisition command");
-    _commandTaskerManager.addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
+    _systemStateManager.setTestState(TestStates.STARTED);
+    _systemStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
+//    _systemStateManager.deviceCommStateStream.listen(_deviceConnectionStateListener);
+  }
+
+  void _deviceConnectionStateListener(DeviceStates state) {
+    print("CURRENT DEVICE STATE $state");
   }
 
   @override

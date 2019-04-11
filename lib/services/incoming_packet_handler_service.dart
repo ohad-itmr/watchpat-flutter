@@ -383,6 +383,8 @@ class IncomingPacketHandlerService extends ManagerBase {
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
     _incomingPacketLength = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]);
+    Log.info(TAG, '--------------------------->_setPacketSize $_incomingPacketLength');
+
     return _incomingPacketLength >= 0;
   }
 

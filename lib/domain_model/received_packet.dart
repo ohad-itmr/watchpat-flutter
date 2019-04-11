@@ -29,10 +29,13 @@ class ReceivedPacket {
 
   ReceivedPacket(this.bytes, this._commandTasker)
       : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
-        opCode = ConvertFormats.byteArrayToHex(
-            [bytes[PACKET_OPCODE_STARTING_BYTE + 1], bytes[PACKET_OPCODE_STARTING_BYTE]]),
+        opCode = ConvertFormats.byteArrayToHex([
+          bytes[PACKET_OPCODE_STARTING_BYTE + 1],
+          bytes[PACKET_OPCODE_STARTING_BYTE]
+        ]),
         identifier = ConvertFormats.byteArrayToHex(bytes
-            .sublist(PACKET_IDENTIFIER_STARTING_BYTE, PACKET_IDENTIFIER_STARTING_BYTE + 4)
+            .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
+                PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .reversed
             .toList()),
         _len = ConvertFormats.byteArrayToHex(bytes
@@ -40,7 +43,8 @@ class ReceivedPacket {
             .reversed
             .toList()),
         opCodeDependent = ConvertFormats.byteArrayToHex(bytes
-            .sublist(PACKET_DEPENDENT_STARTING_BYTE, PACKET_DEPENDENT_STARTING_BYTE + 4)
+            .sublist(PACKET_DEPENDENT_STARTING_BYTE,
+                PACKET_DEPENDENT_STARTING_BYTE + 4)
             .reversed
             .toList()) {
     packetType = _extractPacketType();
@@ -60,7 +64,8 @@ class ReceivedPacket {
     }
 
     if (opCode == DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM) {
-      print('_extractPacketType DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM');
+      print(
+          '_extractPacketType DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM');
 
       return DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM;
     }
@@ -117,22 +122,22 @@ class ReceivedPacket {
       return DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES;
     }
 
-    Log.shout(TAG,"unknown packet type: $opCode");
+    Log.shout(TAG, "unknown packet type: $opCode");
     return DeviceCommands.CMD_OPCODE_UNKNOWN;
   }
 
   bool isValidPacket() {
     if (packetType == DeviceCommands.CMD_SIGNATURE_PACKET_INVALID) {
-      Log.shout(TAG,"Illegal packet signature ");
+      Log.shout(TAG, "Illegal packet signature ");
       return false;
     } else if (packetType == DeviceCommands.CMD_OPCODE_UNKNOWN) {
-      Log.shout(TAG,"Unknown opCode");
+      Log.shout(TAG, "Unknown opCode");
 
       _commandTasker.addAck(DeviceCommands.getAckCmd(
           packetType, DeviceCommands.ACK_STATUS_ILLEGAL_OPCODE, identifier));
       return false;
     } else if (!_validatePacketCRC()) {
-      Log.shout(TAG,"Invalid CRC");
+      Log.shout(TAG, "Invalid CRC");
 //      _commandTasker.addAck(DeviceCommands.getAckCmd(
 //          packetType, DeviceCommands.ACK_STATUS_CRC_FAIL, identifier));
       return false;
@@ -149,6 +154,8 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
     int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
+    Log.info(TAG, '-------------------------->${bytes.toList()}');
+    Log.info(TAG, '-------------------------->${bytes.toList().length}');
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;

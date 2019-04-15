@@ -3,6 +3,7 @@ import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/managers/manager_base.dart';
+import 'package:my_pat/services/sftp_service.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/utils/convert_formats.dart';
@@ -80,9 +81,8 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void acceptAndHandleData(List<int> data) async {
-    print('acceptAndHandleData $_packetState');
+//    print('acceptAndHandleData $_packetState');
     _incomingData = data;
-    print('RECEIVED NEW PACKET: ${data.toString()}');
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
@@ -147,10 +147,8 @@ class IncomingPacketHandlerService extends ManagerBase {
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           if (!_isFirstPacketOfDataReceived) {
-            _isFirstPacketOfDataReceived = false;
-            sl<SystemStateManager>()
-                .setDataTransferState(DataTransferStates.TRANSFERRING);
-            // todo Start SFTP service
+            _isFirstPacketOfDataReceived = true;
+            sl<SystemStateManager>().setTestState(TestStates.STARTED);
           }
 
           final int prevRemoteIdentifier =
@@ -159,7 +157,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
             TimeUtils.packetTimeTick();
-            // todo Write test packet to file
+            sl<DataWritingService>().enqueueWritingToFile(receivedPacket.bytes);
           } else {
             Log.warning(TAG,
                 "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: ${receivedPacket.identifier}");
@@ -384,7 +382,8 @@ class IncomingPacketHandlerService extends ManagerBase {
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
     _incomingPacketLength = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]);
-    Log.info(TAG, '--------------------------->_setPacketSize $_incomingPacketLength');
+    Log.info(TAG,
+        '--------------------------->_setPacketSize $_incomingPacketLength');
 
     return _incomingPacketLength >= 0;
   }

@@ -1,6 +1,7 @@
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/services/sftp_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum PatientAuthState {

@@ -96,12 +96,9 @@ class BleManager extends ManagerBase {
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
       sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-      if (sysStateManager.testState == TestStates.STARTED ||
-          sysStateManager.testState == TestStates.RESUMED) {
+      if (sysStateManager.testState == TestStates.STARTED || sysStateManager.testState == TestStates.RESUMED) {
         sysStateManager.setTestState(TestStates.INTERRUPTED);
-        sysStateManager
-            .changeState
-            .add(StateChangeActions.TEST_STATE_CHANGED);
+        sysStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
       } else {
         _incomingPacketHandler.resetPacket();
         _disconnect();
@@ -251,7 +248,7 @@ class BleManager extends ManagerBase {
   void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice,
       {String deviceName}) {
     final String name = scanResult.advertisementData.localName;
-    // Commented for the purpose of not pissing me off
+    // Commented for the purpose of not pissing the developer off
     //    print('Found $name');
     //    print('Found ID ${scanResult.device.id}');
 

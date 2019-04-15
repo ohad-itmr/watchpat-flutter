@@ -26,7 +26,8 @@ class RecordingControl extends StatelessWidget {
             moreActionButton: null,
             nextActionButton: ButtonModel(
               action: () {
-                Navigator.pushNamed(context, UploadingScreen.PATH);
+//                Navigator.pushNamed(context, UploadingScreen.PATH);
+              sl<SftpService>().checkFileSizes();
               },
               text: loc.btnEndRecording,
             ),

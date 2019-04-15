@@ -5,3 +5,5 @@ export 'prefs_service.dart';
 export 'global_settings_service.dart';
 export 'dispatcher_service.dart';
 export 'user_authentication_service.dart';
+export 'sftp_service.dart';
+export 'data-writing-service.dart';

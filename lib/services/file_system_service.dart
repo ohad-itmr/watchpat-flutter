@@ -57,6 +57,7 @@ class FileSystemService {
       Log.info(TAG,'Free storage space: $spaceToAllocate required');
       RandomAccessFile file = await localFile.open(mode: FileMode.write);
       file.truncateSync(spaceToAllocate);
+      file.truncateSync(0);
       file.closeSync();
       return Response(success: true);
     } catch (e) {

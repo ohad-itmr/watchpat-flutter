@@ -27,6 +27,7 @@ enum DataTransferStates {
   NOT_STARTED,
   TRANSFERRING,
   UPLOADING_TO_SERVER,
+  STOPPED,
   ALL_TRANSFERRED
 }
 enum AppModes { USER, CS, TECH, BACKGROUND }
@@ -138,6 +139,7 @@ class SystemStateManager extends ManagerBase {
     "Not started",
     "Transferring",
     "Uploading to server",
+    "Stopped",
     "All transferred"
   ];
 

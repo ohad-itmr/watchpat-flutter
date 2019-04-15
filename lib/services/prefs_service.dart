@@ -17,6 +17,8 @@ class PrefsNames {
       DefaultSettings.appName + ".deviceaddress";
   static const String TEST_STATE_KEY = DefaultSettings.appName + ".teststate";
   static const String DATA_STATE_KEY = DefaultSettings.appName + ".datastate";
+  static const String TEST_DATA_UPLOADING_OFFSET = "testdatauploadingoffset";
+  static const String TEST_DATA_FILENAME = ".testdatafilename";
   static const String TEST_REAL_START_TIME_KEY =
       DefaultSettings.appName + ".testrealtime";
   static const String TEST_PACKET_TIME_KEY =
@@ -212,5 +214,27 @@ class PrefsProvider {
 
   static String loadSftpPath() {
     return PrefsService.prefs.getString(PrefsNames.SFTP_PATH_KEY);
+  }
+
+  //
+  // uploading test data
+  //
+  static int loadTestDataUploadingOffset() {
+    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET) ??
+        0;
+  }
+
+  static Future<void> saveTestDataUploadingOffset(int offset) async {
+    await PrefsService.prefs.setInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET,
+        offset);
+  }
+
+  static String loadTestDataFilename() {
+    return PrefsService.prefs.getString(PrefsNames.TEST_DATA_FILENAME) ??
+        DefaultSettings.serverDataFileName;
+  }
+
+  static Future<void> saveTestDataFilename(String filename) async {
+    await PrefsService.prefs.setString(PrefsNames.TEST_DATA_FILENAME, filename);
   }
 }

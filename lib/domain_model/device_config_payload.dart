@@ -204,6 +204,14 @@ class DeviceConfigPayload {
 //    final int modelValueSize = Math.min(phoneModel.length, 16);
 //    System.arraycopy(phoneModel, 0, bytes, OFFSET_SMARTPHONE_MODEL, modelValueSize);
   }
+
+  void updatePin(String pinString) {
+    final int pin = int.parse(pinString);
+    final List<int> bytes = ConvertFormats.longToByteList(pin, reversed: true);
+    for (int i = 0; i < bytes.length; i++) {
+      payloadBytes[OFFSET_PIN_CODE_NUMBER + i] = bytes[i];
+    }
+  }
 }
 
 enum CompareResults { VERSION_HIGHER, VERSION_IDENTICAL, VERSION_LOWER }

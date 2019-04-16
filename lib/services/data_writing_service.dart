@@ -18,13 +18,23 @@ class DataWritingService {
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
     _systemState.testStateStream.listen(_handleTestState);
+    _systemState.deviceCommStateStream.listen(_handleDeviceState);
+  }
+
+  void _handleDeviceState(DeviceStates state) {
+    switch (state) {
+      case DeviceStates.CONNECTED:
+        _initializeFileWriting();
+        break;
+      case DeviceStates.DISCONNECTED:
+        _closeFileWriting();
+        break;
+      default:
+    }
   }
 
   void _handleTestState(TestStates state) {
     switch (state) {
-      case TestStates.STARTED:
-        _initializeFileWriting();
-        break;
       case TestStates.ENDED:
         _closeFileWriting();
         break;
@@ -33,7 +43,7 @@ class DataWritingService {
   }
 
   Future<void> _initializeFileWriting() async {
-    Log.info(TAG, "Initializing data file writing");
+    Log.info(TAG, "Initializing data file for writing");
     _dataFile = await sl<FileSystemService>().localDataFile;
     _dataFileSink = _dataFile.openWrite();
   }
@@ -53,6 +63,11 @@ class DataWritingService {
   }
 
   void _closeFileWriting() async {
-    _dataFileSink.close();
+    if (_queue.isNotEmpty) {
+      Future.delayed(Duration(seconds: 1));
+      _closeFileWriting();
+    } else {
+      _dataFileSink.close();
+    }
   }
 }

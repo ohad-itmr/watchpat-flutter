@@ -181,8 +181,6 @@ class IncomingPacketHandlerService extends ManagerBase {
             if (PrefsProvider.getIsFirstDeviceConnection() != null &&
                 PrefsProvider.getIsFirstDeviceConnection()) {
               PrefsProvider.setFirstDeviceConnection();
-              // TODO implement
-              //getDataFileHandler().storeData(getDeviceConfiguration().getPayloadBytes());
 
               sl<DispatcherService>()
                   .sendGetConfig(PrefsProvider.loadDeviceSerial());

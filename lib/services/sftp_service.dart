@@ -6,16 +6,26 @@ import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:ssh/ssh.dart';
 import 'package:path_provider/path_provider.dart';
+
+enum SftpConnectionState { CONNECTED, DISCONNECTED }
 
 class SftpService {
   static const String TAG = 'SftpService';
 
+  // Services
   SystemStateManager _systemState = sl<SystemStateManager>();
   FileSystemService _fileSystem = sl<FileSystemService>();
   SSHClient _client;
 
+  // Streams
+  BehaviorSubject<SftpConnectionState> _sftpConnectionState =
+      BehaviorSubject<SftpConnectionState>.seeded(
+          SftpConnectionState.DISCONNECTED);
+
+  // Working variables
   String _sftpFileName;
   String _sftpFilePath;
   File _dataFile;
@@ -86,15 +96,22 @@ class SftpService {
     _sftpFileName = PrefsProvider.loadTestDataFilename();
     _tempDir = await getTemporaryDirectory();
 
-
     _dataFile = await _fileSystem.localDataFile;
     _raf = await _dataFile.open(mode: FileMode.read);
 
-    final resultSession = await _client.connect();
-    Log.info(TAG, "Starting SFTP session: $resultSession");
+    _initSftpConnection();
+  }
 
-    final resultConnection = await _client.connectSFTP();
-    Log.info(TAG, "Connecting to SFTP server: $resultConnection");
+  Future<void> _initSftpConnection() async {
+    try {
+      final resultSession = await _client.connect();
+      final resultConnection = await _client.connectSFTP();
+      Log.info(
+          TAG, "Connected to SFTP server: $resultSession, $resultConnection");
+      _sftpConnectionState.sink.add(SftpConnectionState.CONNECTED);
+    } catch (e) {
+      Log.shout(TAG, "Connection to SFTP failed, $e");
+    }
   }
 
   Future<void> _uploadDataChunk({int offset}) async {
@@ -134,6 +151,7 @@ class SftpService {
 
   void _closeConnection() {
     Log.info(TAG, "Uploading of data file complete, closing sftp connection");
+    _sftpConnectionState.close();
     _client.disconnectSFTP();
     _client.disconnect();
     _raf.close();

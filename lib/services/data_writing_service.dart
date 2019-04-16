@@ -13,7 +13,7 @@ class DataWritingService {
   SystemStateManager _systemState;
   File _dataFile;
   IOSink _dataFileSink;
-  bool _queueIsProcessed = false;
+  bool _queueBeingProcessed = false;
 
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
@@ -44,12 +44,12 @@ class DataWritingService {
   }
 
   void _processQueue() {
-    if (_queueIsProcessed) return;
-    _queueIsProcessed = true;
-    while (!_queue.isEmpty) {
-      _dataFileSink.writeAll(_queue.removeFirst());
+    if (_queueBeingProcessed) return;
+    _queueBeingProcessed = true;
+    while (_queue.isNotEmpty) {
+      _dataFileSink.add(_queue.removeFirst());
     }
-    _queueIsProcessed = false;
+    _queueBeingProcessed = false;
   }
 
   void _closeFileWriting() async {

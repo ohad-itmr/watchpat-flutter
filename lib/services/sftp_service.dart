@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
@@ -27,22 +28,21 @@ class SftpService {
     _fileSystem = sl<FileSystemService>();
     _systemState.testStateStream.listen(_handleTestState);
     _systemState.dispatcherStateStream.listen(_handleDispatcherState);
-
   }
 
   // TESTING
   void checkFileSizes() async {
-      final File localFile = _dataFile;
-      final int localFileSize = await localFile.length();
+    final File localFile = _dataFile;
+    final int localFileSize = await localFile.length();
 
-      final String remoteFilePath = await _client.sftpDownload(
-        path: "$_sftpFilePath/$_sftpFileName",
-        toPath: _tempDir.path,
-      );
-      File remoteFile = File(remoteFilePath);
-      final int remoteFileSize = await remoteFile.length();
+    final String remoteFilePath = await _client.sftpDownload(
+      path: "$_sftpFilePath/$_sftpFileName",
+      toPath: _tempDir.path,
+    );
+    File remoteFile = File(remoteFilePath);
+    final int remoteFileSize = await remoteFile.length();
 
-      print("CHECK = LOCAL SIZE: $localFileSize, REMOTE SIZE: $remoteFileSize");
+    print("CHECK = LOCAL SIZE: $localFileSize, REMOTE SIZE: $remoteFileSize");
   }
 
   _handleDispatcherState(DispatcherStates state) {
@@ -77,12 +77,15 @@ class SftpService {
         username: _authService.sftpUserName,
         passwordOrKey: _authService.sftpPassword);
 
+    String stamp = DateFormat("yyyy.MM.dd_HH:mm:ss").format(DateTime.now());
+    await PrefsProvider.saveTestDataFilename(
+        "${stamp}_${DefaultSettings.serverDataFileName}");
+    await PrefsProvider.saveTestDataUploadingOffset(0);
+
     _sftpFilePath = PrefsProvider.loadSftpPath();
     _sftpFileName = PrefsProvider.loadTestDataFilename();
     _tempDir = await getTemporaryDirectory();
-    await PrefsProvider.saveTestDataFilename(
-        "${DateTime.now()}_${DefaultSettings.serverDataFileName}");
-    await PrefsProvider.saveTestDataUploadingOffset(0);
+
 
     _dataFile = await _fileSystem.localDataFile;
     _raf = await _dataFile.open(mode: FileMode.read);

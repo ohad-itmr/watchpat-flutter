@@ -122,7 +122,7 @@ class SftpService {
     final int fileSize = await _raf.length();
     final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
 
-    if ((currentOffset + _dataChunkSize) < fileSize) {
+    if (currentOffset < fileSize) {
       _uploadDataChunk(offset: currentOffset);
     } else {
       Log.info(TAG,

@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
@@ -174,8 +175,12 @@ class SystemStateManager extends ManagerBase {
 
   static String getDispatcherStateName(int state) => _dispatcherStates[state];
 
+  Connectivity _connectivity = Connectivity();
+
   SystemStateManager() {
     initAllStates();
+    _connectivity.onConnectivityChanged
+        .listen((result) => _inetConnectionState.sink.add(result));
   }
 
   // States
@@ -197,6 +202,8 @@ class SystemStateManager extends ManagerBase {
       BehaviorSubject<FirmwareUpgradeStates>();
   BehaviorSubject<DispatcherStates> _dispatcherState =
       BehaviorSubject<DispatcherStates>();
+  BehaviorSubject<ConnectivityResult> _inetConnectionState =
+      BehaviorSubject<ConnectivityResult>();
 
   PublishSubject<StateChangeActions> _stateChangeSubject =
       PublishSubject<StateChangeActions>();
@@ -226,6 +233,9 @@ class SystemStateManager extends ManagerBase {
 
   Observable<DispatcherStates> get dispatcherStateStream =>
       _dispatcherState.stream;
+
+  Observable<ConnectivityResult> get inetConnectionStateStream =>
+      _inetConnectionState.stream;
 
   Observable<StateChangeActions> get stateChangeStream =>
       _stateChangeSubject.stream;
@@ -404,5 +414,6 @@ class SystemStateManager extends ManagerBase {
     _firmwareState.close();
     _dispatcherState.close();
     _stateChangeSubject.close();
+    _inetConnectionState.close();
   }
 }

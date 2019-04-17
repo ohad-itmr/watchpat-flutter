@@ -30,7 +30,8 @@ class WelcomeActivityManager extends ManagerBase {
   BehaviorSubject<FileCreationState> _fileCreationStateSubject =
       BehaviorSubject<FileCreationState>();
 
-  Observable<FileCreationState> get fileCreationState => _fileCreationStateSubject.stream;
+  Observable<FileCreationState> get fileCreationState =>
+      _fileCreationStateSubject.stream;
 
   BehaviorSubject<FileCreationState> _fileAllocationStateSubject =
       BehaviorSubject<FileCreationState>();
@@ -42,22 +43,25 @@ class WelcomeActivityManager extends ManagerBase {
 
   Observable<bool> get internetExists => _internetExists.stream;
 
-  BehaviorSubject<List<String>> _initErrorsSubject = BehaviorSubject<List<String>>();
+  BehaviorSubject<List<String>> _initErrorsSubject =
+      BehaviorSubject<List<String>>();
 
   Observable<List<String>> get initErrors => _initErrorsSubject.stream;
 
   Future<void> _allocateSpace() async {
     _fileAllocationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await sl<FileSystemService>().allocateSpace();
-    _fileAllocationStateSubject.sink.add(
-        res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
+    _fileAllocationStateSubject.sink.add(res.success
+        ? FileCreationState.DONE_SUCCESS
+        : FileCreationState.DONE_FAILED);
   }
 
   Future<void> createStartFiles() async {
     _fileCreationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await sl<FileSystemService>().init();
-    _fileCreationStateSubject.sink.add(
-        res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
+    _fileCreationStateSubject.sink.add(res.success
+        ? FileCreationState.DONE_SUCCESS
+        : FileCreationState.DONE_FAILED);
   }
 
   Observable<Response> _initFiles() {
@@ -98,9 +102,8 @@ class WelcomeActivityManager extends ManagerBase {
 
   List<String> getInitialErrors() => _initErrorsSubject.value;
 
-  _connectivityStatusHandler(ConnectivityResult result) {
-    _internetExists.sink.add(result != ConnectivityResult.none);
-  }
+  _connectivityStatusHandler(ConnectivityResult result) =>
+      _internetExists.sink.add(result != ConnectivityResult.none);
 
   addInitialErrors(String err) {
     var currentList = _initErrorsSubject.value;
@@ -111,16 +114,14 @@ class WelcomeActivityManager extends ManagerBase {
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
 
-    _connectivity
-        .checkConnectivity()
-        .then((ConnectivityResult result) => _connectivityStatusHandler(result));
-
-    _connectivity.onConnectivityChanged
-        .listen((ConnectivityResult result) => _connectivityStatusHandler(result));
-
-    if (PrefsProvider.getIsFirstTimeRun() == null || PrefsProvider.getIsFirstTimeRun()) {
+    if (PrefsProvider.getIsFirstTimeRun() == null ||
+        PrefsProvider.getIsFirstTimeRun()) {
       sl<BleManager>().startScan(time: 3000, connectToFirstDevice: false);
     }
+
+    sl<SystemStateManager>()
+        .inetConnectionStateStream
+        .listen((result) => _connectivityStatusHandler(result));
   }
 
   @override

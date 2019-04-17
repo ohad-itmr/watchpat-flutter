@@ -26,9 +26,6 @@ class DataWritingService {
       case DeviceStates.CONNECTED:
         _initializeFileWriting();
         break;
-      case DeviceStates.DISCONNECTED:
-        _closeFileWriting();
-        break;
       default:
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
@@ -32,12 +33,24 @@ class SftpService {
   RandomAccessFile _raf;
   Directory _tempDir;
   int _dataChunkSize = DefaultSettings.uploadDataChunkMaxSize;
+  bool _uploadingAvailable = false;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
     _fileSystem = sl<FileSystemService>();
     _systemState.testStateStream.listen(_handleTestState);
     _systemState.dispatcherStateStream.listen(_handleDispatcherState);
+
+    _initConnectionAvailabilityListener();
+  }
+
+  void _initConnectionAvailabilityListener() {
+    Observable.combineLatest2(
+        _systemState.inetConnectionStateStream,
+        _sftpConnectionState.stream,
+        (ConnectivityResult inet, SftpConnectionState sftp) =>
+            _uploadingAvailable = inet != ConnectivityResult.none &&
+                sftp != SftpConnectionState.DISCONNECTED).listen(null);
   }
 
   // TESTING

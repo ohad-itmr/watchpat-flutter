@@ -34,6 +34,7 @@ class SftpService {
   Directory _tempDir;
   int _dataChunkSize = DefaultSettings.uploadDataChunkMaxSize;
   bool _uploadingAvailable = false;
+  TestStates _testState;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
@@ -128,6 +129,7 @@ class SftpService {
   }
 
   Future<void> _uploadDataChunk({int offset}) async {
+    print("ENTERED UPLOAD");
     final int fileLength = await _raf.length();
     Log.info(TAG,
         "Uploading data chunk to SFTP. Current data file size: $fileLength, current writing offset: $offset");
@@ -141,24 +143,25 @@ class SftpService {
 
     await PrefsProvider.saveTestDataUploadingOffset(offset + bytes.length);
 
-    if (offset + _dataChunkSize < fileLength) {
-      _uploadDataChunk(offset: offset + bytes.length);
-    } else {
-      _awaitForData();
-    }
   }
 
   void _awaitForData() async {
-    final int fileSize = await _raf.length();
-    final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
+    while (_testState != TestStates.ENDED) {
 
-    if (currentOffset < fileSize) {
-      _uploadDataChunk(offset: currentOffset);
-    } else {
-      Log.info(TAG,
-          "Waiting for data: FILE SIZE: $fileSize, CURRENT OFFSET: $currentOffset");
-      await Future.delayed(Duration(seconds: 3));
-      _awaitForData();
+      // CHECK IF TEST ENDED AND DATA FULLY UPLOADED
+
+      // CHECK CONNECTION
+      final int fileSize = await _raf.length();
+      final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
+
+      if ((currentOffset + _dataChunkSize) < fileSize) {
+        await _uploadDataChunk(offset: currentOffset);
+      } else {
+        Log.info(TAG,
+            "Waiting for data: FILE SIZE: $fileSize, CURRENT OFFSET: $currentOffset");
+        await Future.delayed(Duration(seconds: 3));
+      }
+
     }
   }
 

@@ -129,28 +129,28 @@ class SftpService {
   }
 
   Future<void> _uploadDataChunk({int offset}) async {
-    print("ENTERED UPLOAD");
-    final int fileLength = await _raf.length();
-    Log.info(TAG,
-        "Uploading data chunk to SFTP. Current data file size: $fileLength, current writing offset: $offset");
-
     RandomAccessFile rafWithOffset = await _raf.setPosition(offset);
     List<int> bytes = await rafWithOffset.read(_dataChunkSize);
     final File tempFile = File("${_tempDir.path}/$_sftpFileName");
     await tempFile.writeAsBytes(bytes);
 
-    await _client.sftpUpload(path: tempFile.path, toPath: _sftpFilePath);
+    final int fileLength = await _raf.length();
+    final String result =  await _client.sftpUpload(path: tempFile.path, toPath: _sftpFilePath);
+    Log.info(TAG,
+        "Uploading chunk to SFTP $result. Local file size: $fileLength, current writing offset: $offset");
 
     await PrefsProvider.saveTestDataUploadingOffset(offset + bytes.length);
-
   }
 
   void _awaitForData() async {
-    while (_testState != TestStates.ENDED) {
-
+    do {
       // CHECK IF TEST ENDED AND DATA FULLY UPLOADED
 
-      //       CHECK CONNECTION
+      // Check for connections, if none start waiting
+      if (!_uploadingAvailable) {
+        await _awaitForConnection();
+      }
+
       final int fileSize = await _raf.length();
       final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
 
@@ -161,16 +161,14 @@ class SftpService {
             "Waiting for data: FILE SIZE: $fileSize, CURRENT OFFSET: $currentOffset");
         await Future.delayed(Duration(seconds: 3));
       }
-
-    }
+    } while (_testState != TestStates.ENDED);
   }
 
-  void _awaitForConnection() async {
-
-   do {
-     Log.shout(TAG, "Waiting for connection");
-     await Future.delayed(Duration(seconds: 3));
-   } while (_uploadingAvailable);
+  Future<void> _awaitForConnection() async {
+    do {
+      Log.info(TAG, "Waiting for connection");
+      await Future.delayed(Duration(seconds: 3));
+    } while (_uploadingAvailable);
   }
 
   void _closeConnection() {

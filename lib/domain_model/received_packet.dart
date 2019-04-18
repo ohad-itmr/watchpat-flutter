@@ -154,8 +154,8 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
     int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
-    Log.info(TAG, '-------------------------->${bytes.toList()}');
-    Log.info(TAG, '-------------------------->${bytes.toList().length}');
+//    Log.info(TAG, '-------------------------->${bytes.toList()}');
+    Log.info(TAG, '--------------------------> ${bytes.toList().length}');
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;

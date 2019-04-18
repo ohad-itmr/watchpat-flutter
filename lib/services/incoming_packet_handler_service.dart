@@ -114,8 +114,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
-      Log.info(TAG,
-          ">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
+//      Log.info(TAG,
+//          ">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {

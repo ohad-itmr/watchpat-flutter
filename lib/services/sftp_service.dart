@@ -150,11 +150,11 @@ class SftpService {
 
       // CHECK IF TEST ENDED AND DATA FULLY UPLOADED
 
-      // CHECK CONNECTION
+      //       CHECK CONNECTION
       final int fileSize = await _raf.length();
       final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
 
-      if ((currentOffset + _dataChunkSize) < fileSize) {
+      if (currentOffset < fileSize) {
         await _uploadDataChunk(offset: currentOffset);
       } else {
         Log.info(TAG,
@@ -163,6 +163,14 @@ class SftpService {
       }
 
     }
+  }
+
+  void _awaitForConnection() async {
+
+   do {
+     Log.shout(TAG, "Waiting for connection");
+     await Future.delayed(Duration(seconds: 3));
+   } while (_uploadingAvailable);
   }
 
   void _closeConnection() {

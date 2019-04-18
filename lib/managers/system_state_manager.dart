@@ -179,8 +179,7 @@ class SystemStateManager extends ManagerBase {
 
   SystemStateManager() {
     initAllStates();
-    _connectivity.onConnectivityChanged
-        .listen((result) => _inetConnectionState.sink.add(result));
+    _initInternetConnectivity();
   }
 
   // States
@@ -244,6 +243,14 @@ class SystemStateManager extends ManagerBase {
   bool _isScanCycleEnabled = false;
 
   String _deviceErrors = "";
+
+  void _initInternetConnectivity() {
+    _connectivity
+        .checkConnectivity()
+        .then((res) => _inetConnectionState.sink.add(res));
+    _connectivity.onConnectivityChanged
+        .listen((result) => _inetConnectionState.sink.add(result));
+  }
 
   void initAllBTStates() {
     Log.info(TAG, "initializing all BT states");

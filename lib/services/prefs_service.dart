@@ -120,6 +120,7 @@ class PrefsProvider {
         .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
   }
 
+
   //
   // is first device connection
   //

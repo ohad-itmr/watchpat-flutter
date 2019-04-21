@@ -59,14 +59,11 @@ class SftpService {
     final File localFile = _dataFile;
     final int localFileSize = await localFile.length();
 
-    final String remoteFilePath = await _client.sftpDownload(
-      path: "$_sftpFilePath/$_sftpFileName",
-      toPath: _tempDir.path,
-    );
-    File remoteFile = File(remoteFilePath);
-    final int remoteFileSize = await remoteFile.length();
+    final SFTPFile remoteFile =
+        await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
 
-    print("CHECK = LOCAL SIZE: $localFileSize, REMOTE SIZE: $remoteFileSize");
+    print(
+        "CHECK = LOCAL SIZE: $localFileSize, REMOTE SIZE: ${remoteFile.size}");
   }
 
   _handleDispatcherState(DispatcherStates state) {
@@ -78,14 +75,18 @@ class SftpService {
     }
   }
 
-  _handleTestState(TestStates state) {
+  _handleTestState(TestStates state) async {
     switch (state) {
       case TestStates.STARTED:
         _systemState.setDataTransferState(DataTransferStates.TRANSFERRING);
         _awaitForData();
         break;
+      case TestStates.RESUMED:
+        await _initService();
+        _restoreUploading();
+        break;
       case TestStates.ENDED:
-        _closeConnection();
+//        _closeConnection();
         break;
       default:
     }
@@ -113,7 +114,7 @@ class SftpService {
     _dataFile = await _fileSystem.localDataFile;
     _raf = await _dataFile.open(mode: FileMode.read);
 
-    _initSftpConnection();
+    await _initSftpConnection();
   }
 
   Future<void> _initSftpConnection() async {
@@ -128,23 +129,9 @@ class SftpService {
     }
   }
 
-  Future<void> _uploadDataChunk({int offset}) async {
-    RandomAccessFile rafWithOffset = await _raf.setPosition(offset);
-    List<int> bytes = await rafWithOffset.read(_dataChunkSize);
-    final File tempFile = File("${_tempDir.path}/$_sftpFileName");
-    await tempFile.writeAsBytes(bytes);
-
-    final int fileLength = await _raf.length();
-    final String result =  await _client.sftpUpload(path: tempFile.path, toPath: _sftpFilePath);
-    Log.info(TAG,
-        "Uploading chunk to SFTP $result. Local file size: $fileLength, current writing offset: $offset");
-
-    await PrefsProvider.saveTestDataUploadingOffset(offset + bytes.length);
-  }
-
   void _awaitForData() async {
     do {
-      // CHECK IF TEST ENDED AND DATA FULLY UPLOADED
+      // TODO Check if test ended and data fully uploaded
 
       // Check for connections, if none start waiting
       if (!_uploadingAvailable) {
@@ -171,6 +158,35 @@ class SftpService {
     } while (_uploadingAvailable);
   }
 
+  Future<void> _uploadDataChunk({int offset}) async {
+    RandomAccessFile rafWithOffset = await _raf.setPosition(offset);
+    List<int> bytes = await rafWithOffset.read(_dataChunkSize);
+    final File tempFile = File("${_tempDir.path}/$_sftpFileName");
+    await tempFile.writeAsBytes(bytes);
+
+    final String result = await _client.sftpAppendToFile(
+        fromFilePath: tempFile.path,
+        toFilePath: '$_sftpFilePath/$_sftpFileName');
+
+    if (result == SftpService.APPENDING_SUCCESS) {
+      final int fileLength = await _raf.length();
+      Log.info(TAG,
+          "Uploaded chunk to SFTP. Local file size: $fileLength, current writing offset: $offset");
+    } else {
+      Log.shout(TAG, "Uploading to SFTP Failed: $result");
+      return;
+    }
+
+    await PrefsProvider.saveTestDataUploadingOffset(offset + bytes.length);
+  }
+
+  void _restoreUploading() async {
+    final SFTPFile remoteFile =
+        await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+    await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
+    _awaitForData();
+  }
+
   void _closeConnection() {
     Log.info(TAG, "Uploading of data file complete, closing sftp connection");
     _sftpConnectionState.close();
@@ -178,4 +194,6 @@ class SftpService {
     _client.disconnect();
     _raf.close();
   }
+
+  static const String APPENDING_SUCCESS = "appending_success";
 }

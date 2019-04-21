@@ -34,6 +34,7 @@ class _AppComponentState extends State<AppComponent> {
     super.initState();
     _initRouter();
     // todo for development only
+
     PrefsProvider.setIgnoreDeviceErrors(true);
     PrefsProvider.saveTestPacketTime(0);
     PrefsProvider.saveRemotePacketIdentifier(0);

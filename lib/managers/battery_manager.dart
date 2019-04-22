@@ -20,6 +20,7 @@ class BatteryManager extends ManagerBase {
   }
 
   Future<BatteryState> getBatteryState() async {
+    // todo implement fully charged phone when state haven't changed
     return await batteryState.first;
   }
 

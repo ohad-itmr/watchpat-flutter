@@ -6,11 +6,17 @@ import 'package:my_pat/app/app_routes.dart';
 import 'package:my_pat/config/app_theme.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/service_locator.dart' as prefix0;
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();
   await setupServices();
+
+  // todo for development purpose only
+  await PrefsProvider.setTestStarted(false);
+
+
   runApp(AppComponent());
 }
 
@@ -33,6 +39,7 @@ class _AppComponentState extends State<AppComponent> {
   void initState() {
     super.initState();
     _initRouter();
+
     // todo for development only
 
     PrefsProvider.setIgnoreDeviceErrors(true);

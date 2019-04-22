@@ -149,6 +149,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
             sl<SystemStateManager>().setTestState(TestStates.STARTED);
+            PrefsProvider.setTestStarted(true);
           }
 
           final int prevRemoteIdentifier =

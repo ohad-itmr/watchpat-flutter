@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/managers/manager_base.dart';
+import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -267,7 +268,9 @@ class SystemStateManager extends ManagerBase {
     setBleScanResult(ScanResultStates.NOT_LOCATED);
     setDeviceCommState(DeviceStates.DISCONNECTED);
     setAppMode(AppModes.USER);
-    setTestState(TestStates.NOT_STARTED);
+    setTestState(PrefsProvider.getTestStarted()
+        ? TestStates.INTERRUPTED
+        : TestStates.NOT_STARTED);
     setDataTransferState(DataTransferStates.NOT_STARTED);
     setDeviceErrorState(DeviceErrorStates.UNKNOWN);
     setServerCommState(ServerStates.DISCONNECTED);

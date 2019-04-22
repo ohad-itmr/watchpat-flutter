@@ -82,8 +82,8 @@ class SftpService {
         _awaitForData();
         break;
       case TestStates.RESUMED:
-        await _initService();
-        _restoreUploading();
+//        await _initService();
+//        _restoreUploading();
         break;
       case TestStates.ENDED:
 //        _closeConnection();

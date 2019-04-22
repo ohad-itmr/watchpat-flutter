@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:meta/meta.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 
@@ -22,15 +21,17 @@ class BleService {
   BluetoothCharacteristic _charForWrite;
   BluetoothCharacteristic _charForRead;
 
-  Map<Guid, StreamSubscription> _valueChangedSubscriptions = {};
+//  Map<Guid, StreamSubscription> _valueChangedSubscriptions = {};
+
+  StreamSubscription _readCharSubscription;
 
   Future<BluetoothState> get btState => _flutterBlue.state;
 
   Stream<BluetoothState> get btStateOnChange => _flutterBlue.onStateChanged();
 
   Stream<ScanResult> scanForDevices(int time) {
-
-    return _flutterBlue.scan(timeout: time != null ? Duration(milliseconds: time) : null);
+    return _flutterBlue.scan(
+        timeout: time != null ? Duration(milliseconds: time) : null);
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
@@ -67,34 +68,26 @@ class BleService {
     });
   }
 
-  Future setNotification(IncomingPacketHandlerService notificationHandler) async {
+  Future setNotification(
+      IncomingPacketHandlerService notificationHandler) async {
     Log.info(TAG, "setNotification");
 
     if (_charForRead.isNotifying) {
       await _device.setNotifyValue(_charForRead, false);
-      // Cancel subscription
-      _valueChangedSubscriptions[_charForRead.uuid]?.cancel();
-      _valueChangedSubscriptions.remove(_charForRead.uuid);
-    } else {
-      await _device.setNotifyValue(_charForRead, true);
-      // ignore: cancel_subscriptions
-      final sub = _device.onValueChanged(_charForRead).listen((data) {
-        notificationHandler.acceptAndHandleData(data);
-      });
-      // Add to map
-      _valueChangedSubscriptions[_charForRead.uuid] = sub;
     }
+    await _device.setNotifyValue(_charForRead, true);
+    _readCharSubscription = _device.onValueChanged(_charForRead).listen((data) {
+      notificationHandler.acceptAndHandleData(data);
+    });
   }
 
   void clearSubscriptions() {
-    _valueChangedSubscriptions.forEach((uuid, sub) => sub.cancel());
-    _valueChangedSubscriptions.clear();
+    _readCharSubscription.cancel();
   }
 
   void disconnect() {
-    _valueChangedSubscriptions.forEach((uuid, sub) => sub.cancel());
-    _valueChangedSubscriptions.clear();
     _device = null;
+    _readCharSubscription.cancel();
   }
 
   Future<void> writeCharacteristic(List<int> data) async {
@@ -110,6 +103,7 @@ class BleService {
     } catch (e) {
       status = 'failure ${e.toString()}';
     }
-    Log.info(TAG, "Finish writing TX characteristic: ${data.toString()} $status");
+    Log.info(
+        TAG, "Finish writing TX characteristic: ${data.toString()} $status");
   }
 }

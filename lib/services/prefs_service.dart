@@ -8,6 +8,7 @@ class PrefsNames {
   static const String READING_KEY = DefaultSettings.appName + ".reading";
   static const String FIRST_TIME_RUN_KEY =
       DefaultSettings.appName + ".firsttimerun";
+  static const String IS_TEST_STARTED = ".isteststarted";
   static const String WRITING_KEY = DefaultSettings.appName + ".writing";
   static const String USER_PIN_CODE = DefaultSettings.appName + ".userpincode";
   static const String DEVICE_SERIAL_KEY =
@@ -117,7 +118,18 @@ class PrefsProvider {
 
   static bool getIsFirstTimeRun() {
     return PrefsService.prefs
-        .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
+        .getBool(PrefsNames.FIRST_TIME_RUN_KEY);
+  }
+
+  //
+  // persist if test started, to restore testing in case of interruption
+  //
+  static Future<void> setTestStarted(bool value) async {
+    await PrefsService.prefs.setBool(PrefsNames.IS_TEST_STARTED, value);
+  }
+
+  static bool getTestStarted() {
+    return PrefsService.prefs.get(PrefsNames.IS_TEST_STARTED) ?? false;
   }
 
 

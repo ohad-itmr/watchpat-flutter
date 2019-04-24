@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
@@ -56,14 +57,14 @@ class SftpService {
 
   // TESTING
   void checkFileSizes() async {
-    final File localFile = _dataFile;
-    final int localFileSize = await localFile.length();
+    final int currentRecordingOffset =
+        PrefsProvider.loadTestDataRecordingOffset();
 
     final SFTPFile remoteFile =
         await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
 
     print(
-        "CHECK = LOCAL SIZE: $localFileSize, REMOTE SIZE: ${remoteFile.size}");
+        "CHECK = LOCAL RECORDING OFFSET: $currentRecordingOffset, REMOTE FILE SIZE: ${remoteFile.size}");
   }
 
   _handleDispatcherState(DispatcherStates state) {
@@ -133,25 +134,29 @@ class SftpService {
   }
 
   void _awaitForData() async {
-//    do {
-//      // TODO Check if test ended and data fully uploaded
-//
-//      // Check for connections, if none start waiting
-//      if (!_uploadingAvailable) {
-//        await _awaitForConnection();
-//      }
-//
-//      final int fileSize = await _raf.length();
-//      final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
-//
-//      if (currentOffset < fileSize) {
-//        await _uploadDataChunk(offset: currentOffset);
-//      } else {
-//        Log.info(TAG,
-//            "Waiting for data: FILE SIZE: $fileSize, CURRENT OFFSET: $currentOffset");
-//        await Future.delayed(Duration(seconds: 3));
-//      }
-//    } while (_currentTestState != TestStates.ENDED);
+    do {
+      // TODO Check if test ended and data fully uploaded
+
+      // Check for connections, if none start waiting
+      if (!_uploadingAvailable) {
+        await _awaitForConnection();
+      }
+
+      final int currentRecordingOffset =
+          PrefsProvider.loadTestDataRecordingOffset();
+      final int currentUploadingOffset =
+          PrefsProvider.loadTestDataUploadingOffset();
+
+      if (currentUploadingOffset < currentRecordingOffset) {
+        await _uploadDataChunk(
+            uploadingOffset: currentUploadingOffset,
+            recordingOffset: currentRecordingOffset);
+      } else {
+        Log.info(TAG,
+            "Waiting for data: UPLOADING OFFSET: $currentUploadingOffset, RECORDING OFFSET: $currentRecordingOffset");
+        await Future.delayed(Duration(seconds: 3));
+      }
+    } while (_currentTestState != TestStates.ENDED);
   }
 
   Future<void> _awaitForConnection() async {
@@ -161,9 +166,17 @@ class SftpService {
     } while (_uploadingAvailable);
   }
 
-  Future<void> _uploadDataChunk({int offset}) async {
-    RandomAccessFile rafWithOffset = await _raf.setPosition(offset);
-    List<int> bytes = await rafWithOffset.read(_dataChunkSize);
+  Future<void> _uploadDataChunk({
+    @required int uploadingOffset,
+    @required int recordingOffset,
+  }) async {
+    RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
+    final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
+        ? _dataChunkSize
+        : recordingOffset - uploadingOffset;
+
+    List<int> bytes = await rafWithOffset.read(lengthToRead);
+
     final File tempFile = File("${_tempDir.path}/$_sftpFileName");
     await tempFile.writeAsBytes(bytes);
 
@@ -172,15 +185,15 @@ class SftpService {
         toFilePath: '$_sftpFilePath/$_sftpFileName');
 
     if (result == SftpService.APPENDING_SUCCESS) {
-      final int fileLength = await _raf.length();
       Log.info(TAG,
-          "Uploaded chunk to SFTP. Local file size: $fileLength, current writing offset: $offset");
+          "Uploaded chunk to SFTP. Current uploading offset: $uploadingOffset, current recording offset: $recordingOffset");
     } else {
       Log.shout(TAG, "Uploading to SFTP Failed: $result");
       return;
     }
 
-    await PrefsProvider.saveTestDataUploadingOffset(offset + bytes.length);
+    await PrefsProvider.saveTestDataUploadingOffset(
+        uploadingOffset + bytes.length);
   }
 
   void _restoreUploading() async {

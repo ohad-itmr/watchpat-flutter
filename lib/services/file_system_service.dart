@@ -43,11 +43,8 @@ class FileSystemService {
 
   Future<Response> allocateSpace() async {
     File localFile = await localDataFile;
-    final int ln = await localFile.length();
-    print("LOCAL DATA FILO $ln");
     TestStates testState = sl<SystemStateManager>().testState;
 
-    // todo implement constant space allocation
     if (testState == TestStates.NOT_STARTED) {
       if (await localFile.exists()) {
         Log.info(TAG, "data file from previous session is found, deleting...");

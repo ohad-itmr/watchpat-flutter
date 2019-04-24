@@ -2,11 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SplashScreen extends StatelessWidget {
   static const String PATH = '/';
   final S loc = sl<S>();
   static const String TAG = 'SplashScreen';
+
+  static const _BT_MAP_KEY = "bt";
+  static const _TEST_MAP_KEY = "test";
 
   final BleManager bleManager = sl<BleManager>();
   final SystemStateManager systemStateManager = sl<SystemStateManager>();
@@ -30,7 +34,8 @@ class SplashScreen extends StatelessWidget {
                     if (snapshot.hasData && snapshot.data == BtStates.ENABLED) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacementNamed(WelcomeScreen.PATH);
+                        Navigator.of(context)
+                            .pushReplacementNamed(WelcomeScreen.PATH);
                       });
                     }
                     return Container(
@@ -56,16 +61,31 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         child: StreamBuilder(
-          stream: systemStateManager.btStateStream,
-          builder: (context, AsyncSnapshot<BtStates> bleSnapshot) {
+//          stream: systemStateManager.btStateStream,
+          stream: Observable.combineLatest2(
+              systemStateManager.btStateStream,
+              systemStateManager.testStateStream,
+              (BtStates btState, TestStates testState) => {
+                    _BT_MAP_KEY: btState,
+                    _TEST_MAP_KEY: testState
+                  }).asBroadcastStream(),
+          builder: (context, AsyncSnapshot<Map> bleSnapshot) {
             if (bleSnapshot.hasData) {
-              if (bleSnapshot.data != BtStates.ENABLED) {
+              if (bleSnapshot.data[_BT_MAP_KEY] != BtStates.ENABLED) {
                 WidgetsBinding.instance
                     .addPostFrameCallback((_) => _showBTWarning(context));
               } else {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).pushReplacementNamed(WelcomeScreen.PATH);
-                });
+                if (bleSnapshot.data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.of(context)
+                        .pushReplacementNamed(RecordingScreen.PATH);
+                  });
+                } else {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.of(context)
+                        .pushReplacementNamed(WelcomeScreen.PATH);
+                  });
+                }
               }
             }
 

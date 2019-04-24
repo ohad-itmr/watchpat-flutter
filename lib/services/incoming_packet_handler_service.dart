@@ -154,7 +154,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
             }
-//            PrefsProvider.setTestStarted(true);
+            PrefsProvider.setTestStarted(true);
           }
 
           final int prevRemoteIdentifier =

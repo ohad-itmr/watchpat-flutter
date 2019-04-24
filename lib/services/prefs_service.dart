@@ -19,6 +19,7 @@ class PrefsNames {
   static const String TEST_STATE_KEY = DefaultSettings.appName + ".teststate";
   static const String DATA_STATE_KEY = DefaultSettings.appName + ".datastate";
   static const String TEST_DATA_UPLOADING_OFFSET = "testdatauploadingoffset";
+  static const String TEST_DATA_RECORDING_OFFSET = "testdatarecordingoffset";
   static const String TEST_DATA_FILENAME = ".testdatafilename";
   static const String TEST_REAL_START_TIME_KEY =
       DefaultSettings.appName + ".testrealtime";
@@ -117,8 +118,7 @@ class PrefsProvider {
   }
 
   static bool getIsFirstTimeRun() {
-    return PrefsService.prefs
-        .getBool(PrefsNames.FIRST_TIME_RUN_KEY);
+    return PrefsService.prefs.getBool(PrefsNames.FIRST_TIME_RUN_KEY);
   }
 
   //
@@ -131,7 +131,6 @@ class PrefsProvider {
   static bool getTestStarted() {
     return PrefsService.prefs.get(PrefsNames.IS_TEST_STARTED) ?? false;
   }
-
 
   //
   // is first device connection
@@ -230,6 +229,19 @@ class PrefsProvider {
   }
 
   //
+  // recording test data
+  //
+  static int loadTestDataRecordingOffset() {
+    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_RECORDING_OFFSET) ??
+        0;
+  }
+
+  static Future<void> saveTestDataRecordingOffset(int offset) async {
+    await PrefsService.prefs
+        .setInt(PrefsNames.TEST_DATA_RECORDING_OFFSET, offset);
+  }
+
+  //
   // uploading test data
   //
   static int loadTestDataUploadingOffset() {
@@ -238,8 +250,8 @@ class PrefsProvider {
   }
 
   static Future<void> saveTestDataUploadingOffset(int offset) async {
-    await PrefsService.prefs.setInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET,
-        offset);
+    await PrefsService.prefs
+        .setInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET, offset);
   }
 
   static String loadTestDataFilename() {

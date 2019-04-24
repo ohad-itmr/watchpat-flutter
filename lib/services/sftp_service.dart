@@ -34,7 +34,7 @@ class SftpService {
   Directory _tempDir;
   int _dataChunkSize = DefaultSettings.uploadDataChunkMaxSize;
   bool _uploadingAvailable = false;
-  TestStates _testState;
+  TestStates _currentTestState;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
@@ -76,14 +76,15 @@ class SftpService {
   }
 
   _handleTestState(TestStates state) async {
+    _currentTestState = state;
     switch (state) {
       case TestStates.STARTED:
         _systemState.setDataTransferState(DataTransferStates.TRANSFERRING);
         _awaitForData();
         break;
       case TestStates.RESUMED:
-//        await _initService();
-//        _restoreUploading();
+        await _initService();
+        _restoreUploading();
         break;
       case TestStates.ENDED:
 //        _closeConnection();
@@ -102,10 +103,12 @@ class SftpService {
         username: _authService.sftpUserName,
         passwordOrKey: _authService.sftpPassword);
 
-    String stamp = DateFormat("yyyy.MM.dd_HH:mm:ss").format(DateTime.now());
-    await PrefsProvider.saveTestDataFilename(
-        "${stamp}_${DefaultSettings.serverDataFileName}");
-    await PrefsProvider.saveTestDataUploadingOffset(0);
+    if (_currentTestState != TestStates.RESUMED) {
+      String stamp = DateFormat("yyyy.MM.dd_HH:mm:ss").format(DateTime.now());
+      await PrefsProvider.saveTestDataFilename(
+          "${stamp}_${DefaultSettings.serverDataFileName}");
+      await PrefsProvider.saveTestDataUploadingOffset(0);
+    }
 
     _sftpFilePath = PrefsProvider.loadSftpPath();
     _sftpFileName = PrefsProvider.loadTestDataFilename();
@@ -130,25 +133,25 @@ class SftpService {
   }
 
   void _awaitForData() async {
-    do {
-      // TODO Check if test ended and data fully uploaded
-
-      // Check for connections, if none start waiting
-      if (!_uploadingAvailable) {
-        await _awaitForConnection();
-      }
-
-      final int fileSize = await _raf.length();
-      final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
-
-      if (currentOffset < fileSize) {
-        await _uploadDataChunk(offset: currentOffset);
-      } else {
-        Log.info(TAG,
-            "Waiting for data: FILE SIZE: $fileSize, CURRENT OFFSET: $currentOffset");
-        await Future.delayed(Duration(seconds: 3));
-      }
-    } while (_testState != TestStates.ENDED);
+//    do {
+//      // TODO Check if test ended and data fully uploaded
+//
+//      // Check for connections, if none start waiting
+//      if (!_uploadingAvailable) {
+//        await _awaitForConnection();
+//      }
+//
+//      final int fileSize = await _raf.length();
+//      final int currentOffset = PrefsProvider.loadTestDataUploadingOffset();
+//
+//      if (currentOffset < fileSize) {
+//        await _uploadDataChunk(offset: currentOffset);
+//      } else {
+//        Log.info(TAG,
+//            "Waiting for data: FILE SIZE: $fileSize, CURRENT OFFSET: $currentOffset");
+//        await Future.delayed(Duration(seconds: 3));
+//      }
+//    } while (_currentTestState != TestStates.ENDED);
   }
 
   Future<void> _awaitForConnection() async {

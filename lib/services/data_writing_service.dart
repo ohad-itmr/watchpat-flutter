@@ -4,16 +4,14 @@ import 'dart:io';
 
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DataWritingService {
   static const String TAG = 'DataWritingService';
 
-  ListQueue<List<int>> _queue = ListQueue();
-
   SystemStateManager _systemState;
-  File _dataFile;
-  IOSink _dataFileSink;
-  bool _queueBeingProcessed = false;
+  static File _dataFile;
+  static RandomAccessFile _raf;
 
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
@@ -42,29 +40,22 @@ class DataWritingService {
   Future<void> _initializeFileWriting() async {
     Log.info(TAG, "Initializing data file for writing");
     _dataFile = await sl<FileSystemService>().localDataFile;
-    _dataFileSink = _dataFile.openWrite();
+    _raf = await _dataFile.open(mode: FileMode.write);
   }
 
-  void enqueueWritingToFile(List<int> bytes) async {
-    _queue.add(bytes);
-    _processQueue();
-  }
-
-  void _processQueue() {
-    if (_queueBeingProcessed) return;
-    _queueBeingProcessed = true;
-    while (_queue.isNotEmpty) {
-      _dataFileSink.add(_queue.removeFirst());
+  void writeToLocalFile(List<int> bytes) {
+    try {
+      final int currentOffset = PrefsProvider.loadTestDataRecordingOffset();
+      _raf.setPositionSync(currentOffset);
+      _raf.writeFromSync(bytes);
+      PrefsProvider.saveTestDataRecordingOffset(currentOffset + bytes.length);
+      Log.info(TAG, "Data packet stored to local file");
+    } catch (e) {
+      Log.shout(TAG, "Failed to store data packet to local file $e");
     }
-    _queueBeingProcessed = false;
   }
 
   void _closeFileWriting() async {
-    if (_queue.isNotEmpty) {
-      Future.delayed(Duration(seconds: 1));
-      _closeFileWriting();
-    } else {
-      _dataFileSink.close();
-    }
+      _raf.close();
   }
 }

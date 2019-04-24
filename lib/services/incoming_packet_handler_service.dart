@@ -148,8 +148,13 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
-            sl<SystemStateManager>().setTestState(TestStates.STARTED);
-            PrefsProvider.setTestStarted(true);
+            final currentTestState = sl<SystemStateManager>().testState;
+            if (currentTestState == TestStates.NOT_STARTED) {
+              sl<SystemStateManager>().setTestState(TestStates.STARTED);
+            } else if (currentTestState == TestStates.INTERRUPTED) {
+              sl<SystemStateManager>().setTestState(TestStates.RESUMED);
+            }
+//            PrefsProvider.setTestStarted(true);
           }
 
           final int prevRemoteIdentifier =
@@ -158,7 +163,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
             TimeUtils.packetTimeTick();
-            sl<DataWritingService>().enqueueWritingToFile(receivedPacket.bytes);
+            sl<DataWritingService>().writeToLocalFile(receivedPacket.bytes);
           } else {
             Log.warning(TAG,
                 "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: ${receivedPacket.identifier}");

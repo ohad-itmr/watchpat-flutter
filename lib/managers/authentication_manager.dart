@@ -79,7 +79,7 @@ class AuthenticationManager extends ManagerBase {
       // update pin and save device config to a local file for further upload to sftp
       DeviceConfigPayload config = sl<DeviceConfigManager>().deviceConfig;
       config.updatePin(pin);
-      sl<DataWritingService>().enqueueWritingToFile(config.payloadBytes);
+      sl<DataWritingService>().writeToLocalFile(config.payloadBytes);
     }
   }
 

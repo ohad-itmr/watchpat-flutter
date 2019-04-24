@@ -14,7 +14,7 @@ void main() async {
   await setupServices();
 
   // todo for development purpose only
-  await PrefsProvider.setTestStarted(false);
+//  await PrefsProvider.setTestStarted(false);
 
 
   runApp(AppComponent());

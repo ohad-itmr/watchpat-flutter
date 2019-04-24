@@ -118,7 +118,10 @@ class WelcomeActivityManager extends ManagerBase {
         PrefsProvider.getIsFirstTimeRun()) {
       sl<BleManager>().startScan(time: 3000, connectToFirstDevice: false);
     }
+    initConnectivityListener();
+  }
 
+  initConnectivityListener() {
     sl<SystemStateManager>()
         .inetConnectionStateStream
         .listen((result) => _connectivityStatusHandler(result));

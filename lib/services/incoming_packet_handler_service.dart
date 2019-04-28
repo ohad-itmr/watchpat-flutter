@@ -200,7 +200,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               Log.info(TAG, "first connection to device");
               Log.info(TAG,
                   "### start session confirm: device FW version check START");
-              //todo Firmwarer upgrade
+              //todo Firmwarer upgrado
 //              if (getFirmwareUpgrader().isDeviceFirmwareVersionUpToDate()) {
 //                Log.info(TAG,"### start session confirm: device FW version check END");
 //                Log.info(TAG,"device FW up to date");
@@ -278,6 +278,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           // end-of-test-data packet received
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
           PrefsProvider.setTestStarted(false);
+          sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;

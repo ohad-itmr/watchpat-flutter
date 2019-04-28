@@ -28,6 +28,7 @@ class DispatcherService {
   final String _testEndpoint = '$_dispatcherUrl/test';
   final String _getConfigEndpoint = '$_dispatcherUrl/api/getConfiguration';
   final String _authenticationEndPoint = '$_dispatcherUrl/api/authentication';
+  final String _testCompleteEndpoint = '$_dispatcherUrl/test/done';
 
   Future<bool> checkDispatcherAlive() async {
     Response response = await _dio.get(_testEndpoint);
@@ -48,6 +49,11 @@ class DispatcherService {
         await _dio.post(_authenticationEndPoint, data: {"sn": serialNumber, "pin": pin});
     throwIfNoSuccess(response);
     return AuthenticateUserResponseModel.fromJson(response.data);
+  }
+
+  void sendTestComplete(String serialNumber) async {
+    Response response = await _dio.get('$_testCompleteEndpoint/$serialNumber');
+    throwIfNoSuccess(response);
   }
 
   void throwIfNoSuccess(Response response) {

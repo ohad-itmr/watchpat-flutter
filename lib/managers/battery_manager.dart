@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 class BatteryManager extends ManagerBase {
   static const String TAG = 'BatteryManager';
 
   Battery battery;
-  BehaviorSubject<BatteryState> _batteryStateSubject = BehaviorSubject<BatteryState>();
+  BehaviorSubject<BatteryState> _batteryStateSubject =
+      BehaviorSubject<BatteryState>();
 
   Observable<BatteryState> get batteryState => _batteryStateSubject.stream;
 
@@ -20,7 +20,6 @@ class BatteryManager extends ManagerBase {
   }
 
   Future<BatteryState> getBatteryState() async {
-    // todo implement fully charged phone when state haven't changed
     return await batteryState.first;
   }
 
@@ -29,6 +28,7 @@ class BatteryManager extends ManagerBase {
     battery.onBatteryStateChanged.listen((BatteryState state) {
       _batteryStateSubject.add(state);
     });
+    battery.batteryState.then((state) => _batteryStateSubject.add(state));
   }
 
   @override

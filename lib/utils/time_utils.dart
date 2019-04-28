@@ -25,6 +25,8 @@ class TimeUtils {
     final int testPacketTime = await PrefsProvider.loadTestPacketTime();
     if (testPacketTime == GlobalSettings.minTestLengthSeconds) {
       sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
+    } else if (testPacketTime > GlobalSettings.maxTestLengthSeconds) {
+      sl<SystemStateManager>().setTestState(TestStates.ENDED);
     }
   }
 

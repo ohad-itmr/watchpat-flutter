@@ -23,11 +23,9 @@ class TestingManager extends ManagerBase {
   }
 
   Future<bool> get canStartTesting async {
-//    final BatteryState state = await _batteryManager.getBatteryState();
-//    final int level = await _batteryManager.getBatteryLevel();
-//    return level >= DefaultSettings.minBatteryLevel || state == BatteryState.charging;
-  // todo implement get instant battery state
-    return true;
+    final BatteryState state = await _batteryManager.getBatteryState();
+    final int level = await _batteryManager.getBatteryLevel();
+    return level >= DefaultSettings.minBatteryLevel || state == BatteryState.charging;
   }
 
   void startTesting() {

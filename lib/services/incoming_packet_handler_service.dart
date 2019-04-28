@@ -44,8 +44,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     _isPacketAnalysis = false;
 
     // reset packet handle identifier
-    final TestStates state = sl<SystemStateManager>().testState;
-    if (state != TestStates.INTERRUPTED) {
+    if (sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
       PrefsProvider.saveRemotePacketIdentifier(0);
     }
   }
@@ -278,7 +277,6 @@ class IncomingPacketHandlerService extends ManagerBase {
           // end-of-test-data packet received
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
           PrefsProvider.setTestStarted(false);
-          sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;

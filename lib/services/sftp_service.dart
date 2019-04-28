@@ -201,7 +201,8 @@ class SftpService {
   }
 
   void _closeConnection() {
-    Log.info(TAG, "Uploading of data complete, closing sftp connection");
+    Log.info(TAG, "Uploading of test data complete, closing sftp connection and informing dispatcher");
+    sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
     _sftpConnectionState.close();
   }
 

@@ -36,12 +36,14 @@ class SftpService {
   int _dataChunkSize = DefaultSettings.uploadDataChunkMaxSize;
   bool _uploadingAvailable = false;
   TestStates _currentTestState;
+  DataTransferStates _currentTransferState;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
     _fileSystem = sl<FileSystemService>();
     _systemState.testStateStream.listen(_handleTestState);
     _systemState.dispatcherStateStream.listen(_handleDispatcherState);
+    _systemState.dataTransferStateStream.listen(_handleDataTransferState);
 
     _initConnectionAvailabilityListener();
   }
@@ -53,18 +55,6 @@ class SftpService {
         (ConnectivityResult inet, SftpConnectionState sftp) =>
             _uploadingAvailable = inet != ConnectivityResult.none &&
                 sftp != SftpConnectionState.DISCONNECTED).listen(null);
-  }
-
-  // TESTING
-  void checkFileSizes() async {
-    final int currentRecordingOffset =
-        PrefsProvider.loadTestDataRecordingOffset();
-
-    final SFTPFile remoteFile =
-        await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-
-    print(
-        "CHECK = LOCAL RECORDING OFFSET: $currentRecordingOffset, REMOTE FILE SIZE: ${remoteFile.size}");
   }
 
   _handleDispatcherState(DispatcherStates state) {
@@ -92,6 +82,11 @@ class SftpService {
         break;
       default:
     }
+  }
+
+  _handleDataTransferState(DataTransferStates state) {
+    _currentTransferState = state;
+    if (state == DataTransferStates.ALL_TRANSFERRED) _closeConnection();
   }
 
   Future<void> _initService() async {
@@ -135,8 +130,6 @@ class SftpService {
 
   void _awaitForData() async {
     do {
-      // TODO Check if test ended and data fully uploaded
-
       // Check for connections, if none start waiting
       if (!_uploadingAvailable) {
         await _awaitForConnection();
@@ -147,6 +140,7 @@ class SftpService {
       final int currentUploadingOffset =
           PrefsProvider.loadTestDataUploadingOffset();
 
+
       if (currentUploadingOffset < currentRecordingOffset) {
         await _uploadDataChunk(
             uploadingOffset: currentUploadingOffset,
@@ -156,7 +150,14 @@ class SftpService {
             "Waiting for data: UPLOADING OFFSET: $currentUploadingOffset, RECORDING OFFSET: $currentRecordingOffset");
         await Future.delayed(Duration(seconds: 3));
       }
-    } while (_currentTestState != TestStates.ENDED);
+
+      // Check if test ended and all data is uploaded
+      final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
+      if (currentRecordingOffset == newUploadingOffset &&
+          _currentTestState == TestStates.ENDED) {
+        _systemState.setDataTransferState(DataTransferStates.ALL_TRANSFERRED);
+      }
+    } while (_currentTransferState != DataTransferStates.ALL_TRANSFERRED);
   }
 
   Future<void> _awaitForConnection() async {
@@ -204,11 +205,8 @@ class SftpService {
   }
 
   void _closeConnection() {
-    Log.info(TAG, "Uploading of data file complete, closing sftp connection");
+    Log.info(TAG, "Uploading of data complete, closing sftp connection");
     _sftpConnectionState.close();
-    _client.disconnectSFTP();
-    _client.disconnect();
-    _raf.close();
   }
 
   static const String APPENDING_SUCCESS = "appending_success";

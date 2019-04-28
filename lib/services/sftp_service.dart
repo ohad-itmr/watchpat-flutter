@@ -77,9 +77,6 @@ class SftpService {
         await _initService();
         _restoreUploading();
         break;
-      case TestStates.ENDED:
-//        _closeConnection();
-        break;
       default:
     }
   }
@@ -140,7 +137,6 @@ class SftpService {
       final int currentUploadingOffset =
           PrefsProvider.loadTestDataUploadingOffset();
 
-
       if (currentUploadingOffset < currentRecordingOffset) {
         await _uploadDataChunk(
             uploadingOffset: currentUploadingOffset,
@@ -152,7 +148,8 @@ class SftpService {
       }
 
       // Check if test ended and all data is uploaded
-      final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
+      final int newUploadingOffset =
+          PrefsProvider.loadTestDataUploadingOffset();
       if (currentRecordingOffset == newUploadingOffset &&
           _currentTestState == TestStates.ENDED) {
         _systemState.setDataTransferState(DataTransferStates.ALL_TRANSFERRED);
@@ -186,15 +183,14 @@ class SftpService {
         toFilePath: '$_sftpFilePath/$_sftpFileName');
 
     if (result == SftpService.APPENDING_SUCCESS) {
+      await PrefsProvider.saveTestDataUploadingOffset(
+          uploadingOffset + bytes.length);
       Log.info(TAG,
-          "Uploaded chunk to SFTP. Current uploading offset: $uploadingOffset, current recording offset: $recordingOffset");
+          "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
     } else {
       Log.shout(TAG, "Uploading to SFTP Failed: $result");
       return;
     }
-
-    await PrefsProvider.saveTestDataUploadingOffset(
-        uploadingOffset + bytes.length);
   }
 
   void _restoreUploading() async {

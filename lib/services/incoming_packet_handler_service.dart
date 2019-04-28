@@ -277,8 +277,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (END_OF_TEST_DATA)");
           // end-of-test-data packet received
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
-          sl<SystemStateManager>()
-              .setDataTransferState(DataTransferStates.UPLOADING_TO_SERVER);
+          PrefsProvider.setTestStarted(false);
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;

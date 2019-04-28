@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
+import 'package:flutter/rendering.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
+import 'package:rxdart/rxdart.dart';
 
-class UploadingScreen extends StatelessWidget {
+class UploadingScreen extends StatefulWidget {
   static const String PATH = '/uploading';
   static const String TAG = 'UploadingScreen';
 
+  @override
+  _UploadingScreenState createState() => _UploadingScreenState();
+}
+
+class _UploadingScreenState extends State<UploadingScreen> {
+  final _systemState = sl<SystemStateManager>();
+
   final S loc = sl<S>();
 
-  UploadingScreen({Key key}) : super(key: key);
+  @override
+  void initState() {
+    super.initState();
+    Observable.combineLatest2(
+        _systemState.testStateStream, _systemState.dataTransferStateStream,
+        (TestStates testState, DataTransferStates dataState) {
+      if (testState == TestStates.ENDED &&
+          dataState == DataTransferStates.ALL_TRANSFERRED) {
+        Navigator.of(context).pushNamed(EndScreen.PATH);
+      }
+    }).listen(null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +48,7 @@ class UploadingScreen extends StatelessWidget {
           content: [loc.uploadingContent],
         ),
         buttons: ButtonsBlock(
-          nextActionButton: ButtonModel(
-            action: () {
-              Navigator.pushNamed(context, EndScreen.PATH);
-            },
-          ),
-          moreActionButton: null,
+          spinner: Center(child: CircularProgressIndicator()),
         ),
         showSteps: false,
       ),

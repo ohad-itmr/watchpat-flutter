@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:battery/battery.dart';
 import 'package:my_pat/config/default_settings.dart';
+import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -30,7 +31,7 @@ class TestingManager extends ManagerBase {
   }
 
   void startTesting() {
-    Log.info(TAG, "### Sending start aquisition command");
+    Log.info(TAG, "### Sending START aquisition command");
     _systemStateManager.setTestState(TestStates.STARTED);
     _systemStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
 
@@ -49,8 +50,9 @@ class TestingManager extends ManagerBase {
   bool stopTesting() {
     final TestStates testState = _systemStateManager.testState;
     if (testState == TestStates.MINIMUM_PASSED) {
-      PrefsProvider.setTestStarted(false);
-      _systemStateManager.setTestState(TestStates.ENDED);
+      Log.info(TAG, "### Sending STOP aquisition command");
+      sl<CommandTaskerManager>()
+          .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
       return true;
     } else {
       return false;

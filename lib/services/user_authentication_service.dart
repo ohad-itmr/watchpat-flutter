@@ -57,7 +57,7 @@ class UserAuthenticationService {
     PrefsProvider.saveSftpUsername(credentials.username);
     PrefsProvider.saveSftpPath(credentials.root);
 
-    Log.info(TAG, "SFTP PARAMS \n -------------------- \n "
+    Log.info(TAG, "SFTP PARAMS \n -------------------- \n"
         "HOST: ${credentials.host} \n"
         "PORT: ${credentials.port} \n"
         "USERNAME: ${credentials.username} \n"

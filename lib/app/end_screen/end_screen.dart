@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
-
 
 class EndScreen extends StatelessWidget {
   static const String TAG = 'EndScreen';
@@ -25,7 +27,7 @@ class EndScreen extends StatelessWidget {
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
-            action: () => Navigator.of(context).pushNamed(ErrorScreen.PATH),
+            action: () => exit(0),
             text: loc.btnCloseApp,
           ),
           moreActionButton: null,

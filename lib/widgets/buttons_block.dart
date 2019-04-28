@@ -13,9 +13,10 @@ class ButtonModel {
 class ButtonsBlock extends StatelessWidget {
   final ButtonModel nextActionButton;
   final ButtonModel moreActionButton;
+  final Widget spinner;
   final S loc = sl<S>();
 
-  ButtonsBlock({this.nextActionButton, this.moreActionButton});
+  ButtonsBlock({this.nextActionButton, this.moreActionButton, this.spinner});
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,8 @@ class ButtonsBlock extends StatelessWidget {
           )
         ],
       );
+    } else if (spinner != null) {
+      return spinner;
     } else {
       return Button(
         disabled: nextActionButton.disabled,

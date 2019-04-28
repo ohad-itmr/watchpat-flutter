@@ -5,6 +5,8 @@ import 'package:my_pat/services/prefs_service.dart';
 import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:date_format/date_format.dart';
+import 'package:sprintf/sprintf.dart';
+
 
 abstract class TimerCallback {
   void callback();
@@ -40,6 +42,14 @@ class TimeUtils {
 
   static int getGMTDiffMillis() {
     return DateTime.now().timeZoneOffset.inMilliseconds;
+  }
+
+  static String convertSecondsToHMmSs(int sec) {
+    double seconds = sec.toDouble();
+    double s = seconds % 60;
+    double m = (seconds / 60) % 60;
+    double h = (seconds / (60 * 60)) % 24;
+    return sprintf("%d:%02d:%02d", [h.toInt(),m.toInt(),s.toInt()]);
   }
 }
 
@@ -87,6 +97,8 @@ class WatchPATTimer {
     stopTimer();
     startTimer();
   }
+
+
 
   WatchPATTimer(this._name, this._interval, this._timeoutCallback) {
     _startCallback = null;

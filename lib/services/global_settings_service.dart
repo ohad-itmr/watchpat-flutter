@@ -18,7 +18,7 @@ class GlobalSettings {
 
   static int get minTestLengthSeconds {
     if (isDebugMode) {
-      return 10;
+      return 30;
     } else {
       final int len = _getMinTestLengthHours;
       return len == INVALID_STATE ? INVALID_STATE : len * 60 * 60;

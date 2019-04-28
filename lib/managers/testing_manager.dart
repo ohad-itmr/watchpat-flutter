@@ -5,11 +5,16 @@ import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:rxdart/rxdart.dart';
 
 class TestingManager extends ManagerBase {
   static const String TAG = 'RecordingManager';
   BatteryManager _batteryManager;
   SystemStateManager _systemStateManager;
+
+  // Timer of test data amount
+  BehaviorSubject<int> _timer = BehaviorSubject<int>();
+  Observable<int> get timer => _timer.stream;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
@@ -28,6 +33,28 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### Sending start aquisition command");
     _systemStateManager.setTestState(TestStates.STARTED);
     _systemStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
+
+    _startTimer();
+  }
+
+  void _startTimer() async {
+    do {
+      final int testPacketTime = await PrefsProvider.loadTestPacketTime();
+      final int delta = GlobalSettings.minTestLengthSeconds - testPacketTime;
+      _timer.sink.add(delta > 0 ? delta : 0);
+      await Future.delayed(Duration(seconds: 1));
+    } while (_systemStateManager.testState != TestStates.ENDED);
+  }
+
+  bool stopTesting() {
+    final TestStates testState = _systemStateManager.testState;
+    if (testState == TestStates.MINIMUM_PASSED) {
+      PrefsProvider.setTestStarted(false);
+      _systemStateManager.setTestState(TestStates.ENDED);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void resumeTesting() {
@@ -35,5 +62,7 @@ class TestingManager extends ManagerBase {
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    _timer.close();
+  }
 }

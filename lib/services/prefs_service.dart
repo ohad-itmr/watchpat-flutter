@@ -9,6 +9,7 @@ class PrefsNames {
   static const String FIRST_TIME_RUN_KEY =
       DefaultSettings.appName + ".firsttimerun";
   static const String IS_TEST_STARTED = ".isteststarted";
+  static const String TEST_ELAPSED_TIME = ".testelapsedtime";
   static const String WRITING_KEY = DefaultSettings.appName + ".writing";
   static const String USER_PIN_CODE = DefaultSettings.appName + ".userpincode";
   static const String DEVICE_SERIAL_KEY =
@@ -73,6 +74,18 @@ class PrefsProvider {
   static Future<void> incTestPacketTime() async {
     final int currentTime = await PrefsProvider.loadTestPacketTime();
     await PrefsProvider.saveTestPacketTime(currentTime + 1);
+  }
+
+  //
+  // Test elapsed time
+  //
+
+  static Future<void> saveTestElapsedTime(int seconds) async {
+    PrefsService.prefs.setInt(PrefsNames.TEST_ELAPSED_TIME, seconds);
+  }
+
+  static int loadTestElapsedTime() {
+    return PrefsService.prefs.getInt(PrefsNames.TEST_ELAPSED_TIME) ?? 0;
   }
 
   //

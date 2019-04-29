@@ -160,7 +160,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               sl<SystemStateManager>().changeState.add(StateChangeActions.TEST_STATE_CHANGED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
-              sl<TestingManager>().startTimer();
+              sl<TestingManager>().restartTimers();
             }
             PrefsProvider.setTestStarted(true);
           }

@@ -14,8 +14,15 @@ class TestingManager extends ManagerBase {
   SystemStateManager _systemStateManager;
 
   // Timer of test data amount
-  BehaviorSubject<int> _timer = BehaviorSubject<int>();
-  Observable<int> get timer => _timer.stream;
+  BehaviorSubject<int> _dataTimerState = BehaviorSubject<int>();
+  Observable<int> get dataTimerStream => _dataTimerState.stream;
+
+  // Timer of elapsed test time
+  BehaviorSubject<int> _elapsedTimerState = BehaviorSubject<int>();
+  Observable<int> get elapsedTimeStream => _elapsedTimerState.stream;
+
+  Timer _elapsedTimer;
+  int _elapsedTimerValue = 0;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
@@ -33,16 +40,30 @@ class TestingManager extends ManagerBase {
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
     sl<NotificationsService>().showLocalNotification("Test in progress");
-    startTimer();
+    _startDataTimer();
+    _startElapsedTimer();
   }
 
-  void startTimer() async {
+  void restartTimers() {
+    _startDataTimer();
+    _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
+    _startElapsedTimer();
+  }
+
+  void _startDataTimer() async {
     do {
       final int testPacketTime = await PrefsProvider.loadTestPacketTime();
       final int delta = GlobalSettings.minTestLengthSeconds - testPacketTime;
-      _timer.sink.add(delta > 0 ? delta : 0);
+      _dataTimerState.sink.add(delta > 0 ? delta : 0);
       await Future.delayed(Duration(seconds: 1));
     } while (_systemStateManager.testState != TestStates.ENDED);
+  }
+
+  void _startElapsedTimer() {
+    _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      _elapsedTimerState.sink.add(++_elapsedTimerValue);
+      PrefsProvider.saveTestElapsedTime(_elapsedTimerValue);
+    });
   }
 
   bool stopTesting() {
@@ -51,6 +72,7 @@ class TestingManager extends ManagerBase {
       Log.info(TAG, "### Sending STOP aquisition command");
       sl<CommandTaskerManager>()
           .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
+      _elapsedTimer.cancel();
       return true;
     } else {
       return false;
@@ -63,6 +85,7 @@ class TestingManager extends ManagerBase {
 
   @override
   void dispose() {
-    _timer.close();
+    _dataTimerState.close();
+    _elapsedTimerState.close();
   }
 }

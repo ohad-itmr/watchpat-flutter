@@ -25,7 +25,7 @@ class RecordingControl extends StatelessWidget {
                 Text(
                     "Application didn't collect enough test data. You can stop test in:"),
                 StreamBuilder(
-                  stream: sl<TestingManager>().timer,
+                  stream: sl<TestingManager>().dataTimerStream,
                   initialData: GlobalSettings.minTestLengthSeconds,
                   builder: (context, AsyncSnapshot<int> snapshot) {
                     if (snapshot.hasData && snapshot.data == 0) {
@@ -71,7 +71,7 @@ class RecordingControl extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(bottom: 20.0),
+            margin: EdgeInsets.only(bottom: 10.0),
             child: Text(
               loc.recordingTitle,
               style: TextStyle(
@@ -79,6 +79,24 @@ class RecordingControl extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
+          ),
+          Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              child: StreamBuilder(
+                stream: sl<TestingManager>().elapsedTimeStream,
+                initialData: 0,
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
+                      style: TextStyle(
+                        fontSize: Theme.of(context).textTheme.title.fontSize,
+                        color: Colors.white,
+                      ),
+                    );
+                  }
+                },
+              )
           ),
           ButtonsBlock(
             moreActionButton: null,

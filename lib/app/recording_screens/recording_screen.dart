@@ -31,7 +31,7 @@ class RecordingScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Flexible(
-                    flex: 7,
+                    flex: 6,
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(

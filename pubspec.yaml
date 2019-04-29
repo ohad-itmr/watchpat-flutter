@@ -23,6 +23,7 @@ dependencies:
   stack_trace: ^1.9.3
   get_it: ^1.0.3
   sprintf: ^4.0.2
+  flutter_local_notifications: ^0.7.0
 
 
 #  battery: ^0.3.0+1

@@ -32,7 +32,7 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### Sending START aquisition command");
     _systemStateManager.setTestState(TestStates.STARTED);
     _systemStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
-
+    sl<NotificationsService>().showLocalNotification("Test in progress");
     _startTimer();
   }
 

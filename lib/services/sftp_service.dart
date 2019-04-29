@@ -129,6 +129,7 @@ class SftpService {
     do {
       // Check for connections, if none start waiting
       if (!_uploadingAvailable) {
+        sl<SystemStateManager>().setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
         await _awaitForConnection();
       }
 

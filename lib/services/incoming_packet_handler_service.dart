@@ -43,9 +43,10 @@ class IncomingPacketHandlerService extends ManagerBase {
     _bytesAnalyzed = 0;
     _isPacketAnalysis = false;
 
-    // reset packet handle identifier
+    // reset packet handle identifier and test packet time
     if (sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
       PrefsProvider.saveRemotePacketIdentifier(0);
+      PrefsProvider.saveTestPacketTime(0);
     }
   }
 
@@ -159,6 +160,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               sl<SystemStateManager>().changeState.add(StateChangeActions.TEST_STATE_CHANGED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
+              sl<TestingManager>().startTimer();
             }
             PrefsProvider.setTestStarted(true);
           }

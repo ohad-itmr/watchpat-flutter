@@ -14,7 +14,7 @@ void main() async {
   await setupServices();
 
   // todo for development purpose only
-  await PrefsProvider.setTestStarted(false);
+//  await PrefsProvider.setTestStarted(false);
 
 
   runApp(AppComponent());
@@ -43,8 +43,6 @@ class _AppComponentState extends State<AppComponent> {
     // todo for development only
 
     PrefsProvider.setIgnoreDeviceErrors(true);
-    PrefsProvider.saveTestPacketTime(0);
-    PrefsProvider.saveRemotePacketIdentifier(0);
     PrefsProvider.setFirstDeviceConnection(state: true);
   }
 

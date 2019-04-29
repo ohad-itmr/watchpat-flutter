@@ -83,7 +83,6 @@ class BleManager extends ManagerBase {
 
       if (sysStateManager.testState == TestStates.INTERRUPTED) {
         Log.info(TAG, '### Successfully reconnected to device');
-        sysStateManager.setTestState(TestStates.RESUMED);
         return;
       }
 

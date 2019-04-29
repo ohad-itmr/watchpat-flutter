@@ -33,10 +33,10 @@ class TestingManager extends ManagerBase {
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
     sl<NotificationsService>().showLocalNotification("Test in progress");
-    _startTimer();
+    startTimer();
   }
 
-  void _startTimer() async {
+  void startTimer() async {
     do {
       final int testPacketTime = await PrefsProvider.loadTestPacketTime();
       final int delta = GlobalSettings.minTestLengthSeconds - testPacketTime;

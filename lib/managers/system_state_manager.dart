@@ -28,6 +28,7 @@ enum TestStates {
 enum DataTransferStates {
   NOT_STARTED,
   TRANSFERRING,
+  WAITING_FOR_DATA,
   UPLOADING_TO_SERVER,
   STOPPED,
   ALL_TRANSFERRED
@@ -140,6 +141,7 @@ class SystemStateManager extends ManagerBase {
   static List<String> _dataTransferStates = [
     "Not started",
     "Transferring",
+    "Waiting for data",
     "Uploading to server",
     "Stopped",
     "All transferred"

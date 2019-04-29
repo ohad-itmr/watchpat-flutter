@@ -26,6 +26,7 @@ class RecordingControl extends StatelessWidget {
                     "Application didn't collect enough test data. You can stop test in:"),
                 StreamBuilder(
                   stream: sl<TestingManager>().timer,
+                  initialData: GlobalSettings.minTestLengthSeconds,
                   builder: (context, AsyncSnapshot<int> snapshot) {
                     if (snapshot.hasData && snapshot.data == 0) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -8,3 +8,4 @@ export 'welcome_activity_manager.dart';
 export 'device_config_manager.dart';
 export 'carousel_manager.dart';
 export 'testing_manager.dart';
+export 'connection_indicator_manager.dart';

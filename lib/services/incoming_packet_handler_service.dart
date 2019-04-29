@@ -156,6 +156,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             final currentTestState = sl<SystemStateManager>().testState;
             if (currentTestState == TestStates.NOT_STARTED) {
               sl<SystemStateManager>().setTestState(TestStates.STARTED);
+              sl<SystemStateManager>().changeState.add(StateChangeActions.TEST_STATE_CHANGED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
             }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/recording_screens/recording_control.dart';
+import 'package:my_pat/widgets/connection_indicators.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 
@@ -43,7 +44,12 @@ class RecordingScreen extends StatelessWidget {
                   RecordingControl(),
                 ],
               ),
-            )
+            ),
+            Positioned(
+              right: 10.0,
+              top: 10.0,
+              child: ConnectionIndicators(),
+            ),
           ],
         ));
   }

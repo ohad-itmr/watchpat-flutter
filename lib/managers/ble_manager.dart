@@ -288,8 +288,7 @@ class BleManager extends ManagerBase {
       case StateChangeActions.TEST_STATE_CHANGED:
         final TestStates testState = sl<SystemStateManager>().testState;
         if (testState == TestStates.STARTED) {
-          sl<CommandTaskerManager>()
-              .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
+
           _incomingPacketHandler.startPacketAnalysis();
         } else if (testState == TestStates.INTERRUPTED) {
           Log.shout(TAG, "Test interrupted because of device connection lost");

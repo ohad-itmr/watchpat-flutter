@@ -183,6 +183,7 @@ class SystemStateManager extends ManagerBase {
   SystemStateManager() {
     initAllStates();
     _initInternetConnectivity();
+    _initPersistentState();
   }
 
   // States
@@ -253,6 +254,16 @@ class SystemStateManager extends ManagerBase {
         .then((res) => _inetConnectionState.sink.add(res));
     _connectivity.onConnectivityChanged
         .listen((result) => _inetConnectionState.sink.add(result));
+  }
+
+  //
+  // Reset all the application persistent properties in case the app started
+  // normally, not restored after started test
+  //
+  _initPersistentState() {
+    if (testState != TestStates.INTERRUPTED) {
+      PrefsProvider.resetPersistentState();
+    }
   }
 
   void initAllBTStates() {

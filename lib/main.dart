@@ -11,10 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();
-  await setupServices();
 
   // todo for development purpose only
-  await PrefsProvider.setTestStarted(false);
+//  await PrefsProvider.setTestStarted(false);
+
+  await setupServices();
+
 
 
   runApp(AppComponent());

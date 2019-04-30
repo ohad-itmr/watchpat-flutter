@@ -42,12 +42,6 @@ class IncomingPacketHandlerService extends ManagerBase {
     _packetAnalyzed = 0;
     _bytesAnalyzed = 0;
     _isPacketAnalysis = false;
-
-    // reset packet handle identifier and test packet time
-    if (sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
-      PrefsProvider.saveRemotePacketIdentifier(0);
-      PrefsProvider.saveTestPacketTime(0);
-    }
   }
 
   static const int _PATIENT_ERROR_BATTERY_VOLTAGE_TEST = 0x0001;

@@ -79,10 +79,6 @@ class TestingManager extends ManagerBase {
     }
   }
 
-  void resumeTesting() {
-    sl<BleManager>().startScan(time: 3000, connectToFirstDevice: false);
-  }
-
   @override
   void dispose() {
     _dataTimerState.close();

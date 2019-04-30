@@ -61,6 +61,15 @@ class PrefsService {
 
 class PrefsProvider {
   //
+  // Reset all the application persistent properties in case the app started normally, not restored after started test
+  //
+  static void resetPersistentState() {
+    saveRemotePacketIdentifier(0);
+    saveTestPacketTime(0);
+    saveTestDataRecordingOffset(0);
+  }
+
+  //
   // Packet time
   //
   static Future<void> saveTestPacketTime(int time) async {

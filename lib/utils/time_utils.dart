@@ -23,7 +23,7 @@ class TimeUtils {
   static void packetTimeTick() async {
     await PrefsProvider.incTestPacketTime();
     final int testPacketTime = await PrefsProvider.loadTestPacketTime();
-    if (testPacketTime == GlobalSettings.minTestLengthSeconds) {
+    if (testPacketTime > GlobalSettings.minTestLengthSeconds) {
       sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
     } else if (testPacketTime > GlobalSettings.maxTestLengthSeconds) {
       sl<SystemStateManager>().setTestState(TestStates.ENDED);

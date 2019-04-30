@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/rendering.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/widgets/connection_indicators.dart';
 import 'package:my_pat/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -37,21 +38,30 @@ class _UploadingScreenState extends State<UploadingScreen> {
     return MainTemplate(
       showBack: false,
       showMenu: false,
-      body: BodyTemplate(
-        topBlock: BlockTemplate(
-          type: BlockType.image,
-          imageName: 'uploading.png',
-        ),
-        bottomBlock: BlockTemplate(
-          type: BlockType.text,
-          title: loc.uploadingTitle,
-          content: [loc.uploadingContent],
-        ),
-        buttons: ButtonsBlock(
-          spinner: Center(child: CircularProgressIndicator()),
-        ),
-        showSteps: false,
-      ),
+      body: Stack(
+        children: <Widget>[
+          BodyTemplate(
+            topBlock: BlockTemplate(
+              type: BlockType.image,
+              imageName: 'uploading.png',
+            ),
+            bottomBlock: BlockTemplate(
+              type: BlockType.text,
+              title: loc.uploadingTitle,
+              content: [loc.uploadingContent],
+            ),
+            buttons: ButtonsBlock(
+              spinner: Center(child: CircularProgressIndicator()),
+            ),
+            showSteps: false,
+          ),
+          Positioned(
+            right: 10.0,
+            top: 10.0,
+            child: ConnectionIndicators(),
+          ),
+        ],
+      )
     );
   }
 }

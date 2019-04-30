@@ -41,10 +41,6 @@ class DataWritingService {
     Log.info(TAG, "Initializing data file for writing");
     _dataFile = await sl<FileSystemService>().localDataFile;
     _raf = await _dataFile.open(mode: FileMode.write);
-    final TestStates testState = await sl<SystemStateManager>().testStateStream.first;
-    if (testState != TestStates.INTERRUPTED && testState != TestStates.RESUMED) {
-      await PrefsProvider.saveTestDataRecordingOffset(0);
-    }
   }
 
   void writeToLocalFile(List<int> bytes) {

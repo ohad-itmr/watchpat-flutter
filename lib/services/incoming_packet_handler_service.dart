@@ -234,7 +234,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_TECHNICAL_STATUS_REPORT:
           Log.info(TAG, "packet received (TECHNICAL_STATUS_REPORT)");
           // tech-status-report packet received
-          // TODO implement
+          // TODO implement technician mode
 //          broadcastTechStatusReceived(
 //            receivedPacket.extractTechStatusPayload(),
 //          );

@@ -24,9 +24,9 @@ dependencies:
   get_it: ^1.0.3
   sprintf: ^4.0.2
   flutter_local_notifications: ^0.7.0
+  mailer: ^2.3.0
 
-
-#  battery: ^0.3.0+1
+  #  battery: ^0.3.0+1
 #  ssh: ^0.0.3
 
   battery:

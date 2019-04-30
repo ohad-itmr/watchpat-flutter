@@ -120,6 +120,7 @@ class SftpService {
       Log.info(
           TAG, "Connected to SFTP server: $resultSession, $resultConnection");
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
+      sl<EmailSenderService>().sendSftpFailureEmail();
     } catch (e) {
       Log.shout(TAG, "Connection to SFTP failed, $e");
     }

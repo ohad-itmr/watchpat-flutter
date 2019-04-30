@@ -8,3 +8,4 @@ export 'user_authentication_service.dart';
 export 'sftp_service.dart';
 export 'data_writing_service.dart';
 export 'notifications_service.dart';
+export 'email_sender_service.dart';

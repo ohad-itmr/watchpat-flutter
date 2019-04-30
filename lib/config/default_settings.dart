@@ -31,7 +31,7 @@ class DefaultSettings {
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;
   static final timeoutTransactionSec = 20;
-  static final emailService = "alitz@emg-soft.com";
+  static final emailService = "m.derzhavets@emg-soft.com";
   static final debugMode = true;
 
   static Map<String, dynamic> settingsToMap() {

@@ -37,6 +37,8 @@ void _initializeAllServices() {
   sl.registerSingleton<DataWritingService>(DataWritingService());
   sl.registerSingleton<NotificationsService>(NotificationsService());
 
+  sl.registerSingleton<EmailSenderService>(EmailSenderService());
+
   // Managers
   sl.registerSingleton<BatteryManager>(BatteryManager());
   sl.registerSingleton<CommandTaskerManager>(CommandTaskerManager());

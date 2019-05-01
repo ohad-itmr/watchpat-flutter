@@ -18,6 +18,7 @@ class WelcomeActivityManager extends ManagerBase {
   WelcomeActivityManager() {
     _initErrorsSubject.add(List());
     _allocateSpace();
+    _configureApplication();
     createStartFiles();
     _welcomeState.add(WelcomeActivityState.NOT_STARTED);
     _fileCreationStateSubject.add(FileCreationState.NOT_STARTED);
@@ -54,6 +55,12 @@ class WelcomeActivityManager extends ManagerBase {
     _fileAllocationStateSubject.sink.add(res.success
         ? FileCreationState.DONE_SUCCESS
         : FileCreationState.DONE_FAILED);
+  }
+
+  Future <void> _configureApplication() async {
+    // Check in external config is enabled
+    final bool configEnabled = await sl<DispatcherService>().checkExternalConfig();
+    print("EXTERNBAL CONFIG ENABLED??? $configEnabled");
   }
 
   Future<void> createStartFiles() async {

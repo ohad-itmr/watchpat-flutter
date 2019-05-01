@@ -147,8 +147,7 @@ class SftpService {
   void _startReconnectionTimer() {
     Log.shout(TAG,
         "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
-    _reconnectionTimer =
-        Timer(Duration(hours: 1), () => _initSftpConnection());
+    _reconnectionTimer = Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
   void _awaitForData() async {
@@ -236,12 +235,7 @@ class SftpService {
   void _closeConnection() {
     Log.info(TAG,
         "Uploading of test data complete, closing sftp connection and informing dispatcher");
-    try {
-      sl<DispatcherService>()
-          .sendTestComplete(PrefsProvider.loadDeviceSerial());
-    } catch (e) {
-      Log.shout(TAG, "Test complete GET request failed $e");
-    }
+    sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
     sftpConnectionStateStream.close();
   }
 

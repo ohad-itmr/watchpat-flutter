@@ -12,7 +12,8 @@ class DispatcherService {
   Dio _dio = new Dio();
 
   DispatcherService() {
-    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+    _dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
       DioLogger.onSend(TAG, options);
       return options;
     }, onResponse: (Response response) {
@@ -20,45 +21,43 @@ class DispatcherService {
       return response;
     }, onError: (DioError error) {
       DioLogger.onError(TAG, error);
-      return error;
+      return _dio.resolve({"error": true, "message": error.message});
     }));
   }
 
   static final String _dispatcherUrl = GlobalSettings.dispatcherLink;
   final String _testEndpoint = '$_dispatcherUrl/test';
+  final String _checkExternalConfigEndpoint =
+      '$_dispatcherUrl/watchpat/isConfigEnabled';
   final String _getConfigEndpoint = '$_dispatcherUrl/api/getConfiguration';
   final String _authenticationEndPoint = '$_dispatcherUrl/api/authentication';
   final String _testCompleteEndpoint = '$_dispatcherUrl/test/done';
 
   Future<bool> checkDispatcherAlive() async {
     Response response = await _dio.get(_testEndpoint);
-    throwIfNoSuccess(response);
     return response.data['test'] == 'ok';
+  }
+
+  Future<bool> checkExternalConfig() async {
+    Response response = await _dio.post(_checkExternalConfigEndpoint,
+        data: {"client": "WatchPAT", "version": "0.0.1"});
+    return ExternalConfigEnabledModel.fromJson(response.data).enabled;
   }
 
   void sendGetConfig(String serialNumber) async {
     Response response = await _dio.get('$_getConfigEndpoint/$serialNumber');
-    throwIfNoSuccess(response);
     sl<UserAuthenticationService>()
         .setConfigParams(GetConfigurationResponseModel.fromJson(response.data));
   }
 
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
       String serialNumber, String pin) async {
-    Response response =
-        await _dio.post(_authenticationEndPoint, data: {"sn": serialNumber, "pin": pin});
-    throwIfNoSuccess(response);
+    Response response = await _dio
+        .post(_authenticationEndPoint, data: {"sn": serialNumber, "pin": pin});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 
   void sendTestComplete(String serialNumber) async {
-    Response response = await _dio.get('$_testCompleteEndpoint/$serialNumber');
-    throwIfNoSuccess(response);
-  }
-
-  void throwIfNoSuccess(Response response) {
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      throw new HttpException(response);
-    }
+    await _dio.get('$_testCompleteEndpoint/$serialNumber');
   }
 }

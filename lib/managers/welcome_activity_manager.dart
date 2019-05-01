@@ -60,7 +60,12 @@ class WelcomeActivityManager extends ManagerBase {
   Future <void> _configureApplication() async {
     // Check in external config is enabled
     final bool configEnabled = await sl<DispatcherService>().checkExternalConfig();
-    print("EXTERNBAL CONFIG ENABLED??? $configEnabled");
+    if (configEnabled) {
+      // get config from server
+      final Map<String, dynamic> config = await sl<DispatcherService>().getExternalConfig();
+      // set config
+      GlobalSettings.setExternalConfiguration(config);
+    }
   }
 
   Future<void> createStartFiles() async {

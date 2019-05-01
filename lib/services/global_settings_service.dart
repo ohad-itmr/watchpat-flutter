@@ -7,12 +7,21 @@ class GlobalSettings {
   static const int INVALID_STATE = 2147483647;
   static const int INVALID_L_STATE = 9223372036854775807;
 
+  static Map<String, dynamic> _configurationResource =
+      DefaultSettings.settingsToMap();
+
+  static setExternalConfiguration(Map<String, dynamic> resource) {
+    _configurationResource = resource;
+  }
+
   static GlobalSettingsModel _globalSettings =
-      _globalSettings = GlobalSettingsModel.fromResource(DefaultSettings.settingsToMap());
+      GlobalSettingsModel.fromResource(_configurationResource);
 
-  static int get uploadDataChunkMaxSize => _globalSettings.uploadDataChunkMaxSize;
+  static int get uploadDataChunkMaxSize =>
+      _globalSettings.uploadDataChunkMaxSize;
 
-  static int get uploadDataAccumulationSize => _globalSettings.uploadDataAccumulationSize;
+  static int get uploadDataAccumulationSize =>
+      _globalSettings.uploadDataAccumulationSize;
 
   static int get minStorageSpaceMB => _globalSettings.minStorageSpace;
 
@@ -39,9 +48,11 @@ class GlobalSettings {
     return (hours == INVALID_STATE ? INVALID_STATE : hours * 60 * 60 * 1000);
   }
 
-  static int get _getSessionTimeoutTimeHours => _globalSettings.sessionTimeoutTimeHours;
+  static int get _getSessionTimeoutTimeHours =>
+      _globalSettings.sessionTimeoutTimeHours;
 
-  static int get minBatteryLevel => _globalSettings.minBatteryLevel;
+  static int get minBatteryRequiredLevel =>
+      _globalSettings.minBatteryRequiredLevel;
 
   static int get userPinCodeLength => _globalSettings.userPinCodeLength;
 
@@ -50,4 +61,19 @@ class GlobalSettings {
   static String get dispatcherLink => _globalSettings.dispatcherLink;
 
   static bool get isDebugMode => _globalSettings.debugMode;
+
+  static String get demoUrl => _globalSettings.demoUrl;
+
+  static double get dataTransferRate => _globalSettings.dataTransferRate;
+
+  static int get minBatteryAskedLevel => _globalSettings.minBatteryAskedLevel;
+
+  static double get minDataForUpload => _globalSettings.minDataForUpload;
+
+  static List<String> get fwVersionsForUpgrade =>
+      _globalSettings.fwVersionsForUpgrade;
+
+  static int get btScanTimeout => _globalSettings.btScanTimeout;
+
+  static List<String> get dispatchersUrls => _globalSettings.dispatchersUrls;
 }

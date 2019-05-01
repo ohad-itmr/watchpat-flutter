@@ -27,8 +27,8 @@ class DispatcherService {
 
   static final String _dispatcherUrl = GlobalSettings.dispatcherLink;
   final String _testEndpoint = '$_dispatcherUrl/test';
-  final String _checkExternalConfigEndpoint =
-      '$_dispatcherUrl/watchpat/isConfigEnabled';
+  final String _checkExternalConfigEndpoint = '$_dispatcherUrl/watchpat/isConfigEnabled';
+  final String _getDefaultConfigEndpoint = '$_dispatcherUrl/watchpat/config';
   final String _getConfigEndpoint = '$_dispatcherUrl/api/getConfiguration';
   final String _authenticationEndPoint = '$_dispatcherUrl/api/authentication';
   final String _testCompleteEndpoint = '$_dispatcherUrl/test/done';
@@ -42,6 +42,12 @@ class DispatcherService {
     Response response = await _dio.post(_checkExternalConfigEndpoint,
         data: {"client": "WatchPAT", "version": "0.0.1"});
     return ExternalConfigEnabledModel.fromJson(response.data).enabled;
+  }
+
+  Future<Map<String, dynamic>> getExternalConfig() async {
+    Response response = await _dio.post(_getDefaultConfigEndpoint,
+        data: {"client": "WatchPAT", "version": "0.0.1"});
+    return response.data;
   }
 
   void sendGetConfig(String serialNumber) async {

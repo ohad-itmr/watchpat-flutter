@@ -25,7 +25,7 @@ class DefaultSettings {
   static final minTestLengthHours = 7;
   static final maxTestLengthHours = 10;
   static final sessionTimeoutHours = 20;
-  static final minBatteryLevel = 95;
+  static final minBatteryRequiredLevel = 95;
   static final dispatcherLink = "https://wp1-we.itamar-online.com:3335";
   static final userPinCodeLength = 4;
   static final timeoutFtpSec = 80;
@@ -33,6 +33,14 @@ class DefaultSettings {
   static final timeoutTransactionSec = 20;
   static final emailService = "m.derzhavets@emg-soft.com";
   static final debugMode = true;
+
+  static final demoUrl = "";
+  static final dataTransferRate = 120.0;
+  static var minBatteryAskedLevel = 95;
+  static var minDataForUpload = 0.1;
+  static var fwVersionsForUpgrade = [];
+  static var btScanTimeout = 5000;
+  static var dispatchersUrls = [];
 
   static Map<String, dynamic> settingsToMap() {
     return <String, dynamic>{
@@ -42,7 +50,7 @@ class DefaultSettings {
       'minTestLengthHours': minTestLengthHours,
       'maxTestLengthHours': maxTestLengthHours,
       'sessionTimeoutHours': sessionTimeoutHours,
-      'minBatteryLevel': minBatteryLevel,
+      'minBatteryLevel': minBatteryRequiredLevel,
       'dispatcherLink': dispatcherLink,
       'userPinCodeLength': userPinCodeLength,
       'timeoutFtpSec': timeoutFtpSec,

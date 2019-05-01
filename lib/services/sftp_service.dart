@@ -37,6 +37,8 @@ class SftpService {
   bool _uploadingAvailable = false;
   TestStates _currentTestState;
   DataTransferStates _currentTransferState;
+  int _reconnectionAttempts = 0;
+  Timer _reconnectionTimer;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
@@ -115,15 +117,38 @@ class SftpService {
 
   Future<void> _initSftpConnection() async {
     try {
+      Log.info(TAG, "Connecting to SFTP server");
       final resultSession = await _client.connect();
       final resultConnection = await _client.connectSFTP();
       Log.info(
           TAG, "Connected to SFTP server: $resultSession, $resultConnection");
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
-      sl<EmailSenderService>().sendSftpFailureEmail();
     } catch (e) {
       Log.shout(TAG, "Connection to SFTP failed, $e");
+      _tryToReconnect(error: e.toString());
     }
+  }
+
+  void _tryToReconnect({@required String error}) async {
+    _reconnectionAttempts++;
+    if (_reconnectionAttempts > 3) {
+      _reconnectionAttempts = 0;
+      sl<EmailSenderService>().sendSftpFailureEmail(error: error);
+      _startReconnectionTimer();
+      return;
+    } else {
+      await Future.delayed(Duration(seconds: 3));
+      Log.shout(TAG,
+          "Trying to reconnect to SFTP server, attempt: $_reconnectionAttempts");
+      _initSftpConnection();
+    }
+  }
+
+  void _startReconnectionTimer() {
+    Log.shout(TAG,
+        "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
+    _reconnectionTimer =
+        Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
   void _awaitForData() async {

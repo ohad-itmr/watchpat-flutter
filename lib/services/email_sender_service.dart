@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
-import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
 
 class EmailSenderService {
@@ -15,13 +15,14 @@ class EmailSenderService {
   final _smtpServer =
       SmtpServer(SMTP_HOST, username: SMTP_USERNAME, password: SMTP_PASSWORD);
 
-  Future<void> sendSftpFailureEmail() async {
+  Future<void> sendSftpFailureEmail({@required String error}) async {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
-      ..recipients.add(DefaultSettings.emailService)
+      ..recipients.add(GlobalSettings.serviceEmailAddress)
       ..subject = 'SFTP server connection failed'
       ..text = 'Connection to SFTP server was failed.\n\n' +
           'Host: ${sl<UserAuthenticationService>().sftpHost}\n' +
+          'Reason: $error\n' +
           'Time: ${DateTime.now().toIso8601String()}\n' +
           'Device s/n: ${PrefsProvider.loadDeviceSerial()}';
 

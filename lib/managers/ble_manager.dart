@@ -166,12 +166,12 @@ class BleManager extends ManagerBase {
     if (_discoveredDevices.isEmpty) {
       Log.info(TAG, "no device discovered on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
+      // todo Implement reconnection cycle
     } else if (_discoveredDevices.length == 1) {
       Log.info(TAG, "discovered a SINGLE device on scan");
       sl<SystemStateManager>()
           .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
-//
       connect(_discoveredDevices.values.toList()[0].device);
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");

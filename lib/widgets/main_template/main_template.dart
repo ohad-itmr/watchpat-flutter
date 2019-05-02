@@ -46,6 +46,7 @@ class MainTemplate extends StatelessWidget {
       ),
       body: body,
       backgroundColor: backgroundColor,
+      resizeToAvoidBottomPadding: false,
     );
   }
 }

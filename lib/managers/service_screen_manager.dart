@@ -3,13 +3,19 @@ import 'dart:async';
 import 'package:my_pat/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
 
+enum ServiceMode { customer, technician }
+
 class ServiceScreenManager extends ManagerBase {
   Stopwatch _clickTimer = Stopwatch();
   int _clickCounter = 1;
 
-  BehaviorSubject<String> _counter = BehaviorSubject<String>();
+  PublishSubject<String> _counter = PublishSubject<String>();
 
   Observable<String> get counter => _counter.stream;
+
+  BehaviorSubject<ServiceMode> _serviceMode = BehaviorSubject<ServiceMode>();
+
+  Observable<ServiceMode> get serviceModesStream => _serviceMode.stream;
 
   void onTitleTap() {
     if (_clickTimer.isRunning) {
@@ -43,17 +49,20 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   _enterCustomerServiceMode() {
-    Timer(Duration(seconds: 4), () {
-      print("CUSTOMER CLICK COUNTER NOW: $_clickCounter");
+    Timer(Duration(seconds: 2), () {
+      if (_clickCounter == 7) {
+        _serviceMode.sink.add(ServiceMode.customer);
+      }
     });
   }
 
   _enterTechnicianMode() {
-    print("TECHNITIAN MODE YOOOO");
+    _serviceMode.sink.add(ServiceMode.technician);
   }
 
   @override
   void dispose() {
+    _serviceMode.close();
     _counter.close();
   }
 }

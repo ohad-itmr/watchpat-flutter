@@ -84,11 +84,6 @@ var errorRouteHandler = Handler(
       error: ErrorScreenErrors.getTextFromEnumStringValue(params["error"][0]));
 });
 
-var serviceRouteHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return ServiceScreen();
-});
-
 class AppRoutes {
   static const String TAG = 'AppRoutes';
 
@@ -128,7 +123,5 @@ class AppRoutes {
         handler: carouselRouteHandler, transitionType: TransitionType.fadeIn);
     router.define("${ErrorScreen.PATH}/:error",
         handler: errorRouteHandler, transitionType: TransitionType.native);
-    router.define(ServiceScreen.PATH,
-        handler: serviceRouteHandler, transitionType: TransitionType.native);
   }
 }

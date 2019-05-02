@@ -112,17 +112,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       return CircularProgressIndicator();
     } else {
       return ButtonsBlock(
-          nextActionButton: ButtonModel(
-            action: () {
-              setState(() => _nextIsPressed = true);
-              _handleNext();
-            },
-          ),
-          moreActionButton: ButtonModel(
-            action: () =>
-//                Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
-                Navigator.of(context).pushNamed(ServiceScreen.PATH),
-          ));
+        nextActionButton: ButtonModel(
+          action: () {
+            setState(() => _nextIsPressed = true);
+            _handleNext();
+          },
+        ),
+        moreActionButton: ButtonModel(
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
+      );
     }
   }
 }

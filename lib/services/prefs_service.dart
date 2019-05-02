@@ -65,24 +65,24 @@ class PrefsProvider {
   //
   static void resetPersistentState() {
     saveRemotePacketIdentifier(0);
-    saveTestPacketTime(0);
+    saveTestPacketCount(0);
     saveTestDataRecordingOffset(0);
   }
 
   //
-  // Packet time
+  // Packet counter
   //
-  static Future<void> saveTestPacketTime(int time) async {
+  static Future<void> saveTestPacketCount(int time) async {
     await PrefsService.prefs.setInt(PrefsNames.TEST_PACKET_TIME_KEY, time);
   }
 
-  static Future<int> loadTestPacketTime() async {
+  static Future<int> loadTestPacketCount() async {
     return PrefsService.prefs.getInt(PrefsNames.TEST_PACKET_TIME_KEY) ?? 0;
   }
 
-  static Future<void> incTestPacketTime() async {
-    final int currentTime = await PrefsProvider.loadTestPacketTime();
-    await PrefsProvider.saveTestPacketTime(currentTime + 1);
+  static Future<void> incTestPacketCount() async {
+    final int currentCount = await PrefsProvider.loadTestPacketCount();
+    await PrefsProvider.saveTestPacketCount(currentCount + 1);
   }
 
   //

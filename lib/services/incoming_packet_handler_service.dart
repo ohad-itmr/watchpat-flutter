@@ -164,7 +164,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           if (prevRemoteIdentifier < receivedPacket.identifier) {
             Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
-            TimeUtils.packetTimeTick();
+            TimeUtils.packetCounterTick();
             sl<DataWritingService>().writeToLocalFile(receivedPacket.bytes);
           } else {
             Log.warning(TAG,

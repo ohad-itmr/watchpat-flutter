@@ -51,12 +51,15 @@ class TestingManager extends ManagerBase {
   }
 
   void _startDataTimer() async {
+    int secondsToEnoughData;
     do {
-      final int testPacketTime = await PrefsProvider.loadTestPacketTime();
-      final int delta = GlobalSettings.minTestLengthSeconds - testPacketTime;
-      _dataTimerState.sink.add(delta > 0 ? delta : 0);
+      final int receivedPackets = await PrefsProvider.loadTestPacketCount();
+      final int necessaryPackets = GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate ~/ 60);
+      final int delta = necessaryPackets - receivedPackets;
+      secondsToEnoughData = delta ~/ (GlobalSettings.dataTransferRate ~/ 60);
+      _dataTimerState.sink.add(secondsToEnoughData > 0 ? delta : 0);
       await Future.delayed(Duration(seconds: 1));
-    } while (_systemStateManager.testState != TestStates.ENDED);
+    } while (secondsToEnoughData > 0);
   }
 
   void _startElapsedTimer() {

@@ -20,12 +20,12 @@ class TimeUtils {
   static const int TIME_DIFF_TEST_START_FIRST_DATA_SEC = 9;
   static int lastPacketTime = 0;
 
-  static void packetTimeTick() async {
-    await PrefsProvider.incTestPacketTime();
-    final int testPacketTime = await PrefsProvider.loadTestPacketTime();
-    if (testPacketTime > GlobalSettings.minTestLengthSeconds) {
+  static void packetCounterTick() async {
+    await PrefsProvider.incTestPacketCount();
+    final int testPacketCount = await PrefsProvider.loadTestPacketCount();
+    if (testPacketCount > GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
       sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
-    } else if (testPacketTime > GlobalSettings.maxTestLengthSeconds) {
+    } else if (testPacketCount > GlobalSettings.maxTestLengthSeconds) {
       sl<SystemStateManager>().setTestState(TestStates.ENDED);
     }
   }

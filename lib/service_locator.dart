@@ -51,6 +51,8 @@ void _initializeAllServices() {
   sl.registerSingleton<CarouselManager>(CarouselManager());
   sl.registerSingleton<TestingManager>(TestingManager());
   sl.registerSingleton<ConnectionIndicatorManager>(ConnectionIndicatorManager());
+
+  sl.registerSingleton<ServiceScreenManager>(ServiceScreenManager());
 }
 
 void _initializeCrucialServices() {

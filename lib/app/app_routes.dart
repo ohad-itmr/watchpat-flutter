@@ -2,6 +2,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/app/screens.dart';
+import 'package:my_pat/app/service_screen/service_screen.dart';
 import 'package:my_pat/service_locator.dart';
 
 var rootHandler = Handler(
@@ -83,6 +84,11 @@ var errorRouteHandler = Handler(
       error: ErrorScreenErrors.getTextFromEnumStringValue(params["error"][0]));
 });
 
+var serviceRouteHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return ServiceScreen();
+});
+
 class AppRoutes {
   static const String TAG = 'AppRoutes';
 
@@ -122,5 +128,7 @@ class AppRoutes {
         handler: carouselRouteHandler, transitionType: TransitionType.fadeIn);
     router.define("${ErrorScreen.PATH}/:error",
         handler: errorRouteHandler, transitionType: TransitionType.native);
+    router.define(ServiceScreen.PATH,
+        handler: serviceRouteHandler, transitionType: TransitionType.native);
   }
 }

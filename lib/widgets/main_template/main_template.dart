@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/widgets/appbar_decoration.dart';
+import 'package:my_pat/widgets/interactive_title.dart';
+import 'package:my_pat/widgets/service_counter.dart';
 
 class MainTemplate extends StatelessWidget {
-  final String title = 'WatchPAT\u1d40\u1d39  ONE';
+  final String title;
   final Widget body;
   final bool showBack;
   final bool showMenu;
   final Color backgroundColor;
 
-  MainTemplate({this.body, this.showBack = true, this.showMenu = false, this.backgroundColor});
+  MainTemplate(
+      {this.body,
+      this.showBack = true,
+      this.showMenu = false,
+      this.backgroundColor,
+      this.title = 'WatchPAT\u1d40\u1d39  ONE'});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: InteractiveTitle(title: title),
         elevation: 0,
         leading: showBack
             ? IconButton(
@@ -24,25 +32,17 @@ class MainTemplate extends StatelessWidget {
                 },
               )
             : Container(),
-        actions: showMenu
-            ? <Widget>[
-                IconButton(
+        actions: <Widget>[
+          ServiceCounter(),
+          showMenu
+              ? IconButton(
                   icon: Icon(Icons.menu),
                   tooltip: 'Main Menu',
                   onPressed: () {},
-                ),
-              ]
-            : null,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).accentColor,
-                Theme.of(context).primaryColor,
-              ],
-            ),
-          ),
-        ),
+                )
+              : Container(height: 0.0, width: 0.0)
+        ],
+        flexibleSpace: AppBarDecoration(),
       ),
       body: body,
       backgroundColor: backgroundColor,

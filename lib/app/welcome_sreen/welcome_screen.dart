@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
+import 'package:my_pat/app/service_screen/service_screen.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
@@ -34,8 +35,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _handleNext() async {
-    await welcomeManager.initialChecksComplete.firstWhere((bool isComplete) => isComplete);
-    final ScanResultStates state = await systemStateManager.bleScanResultStream.first;
+    await welcomeManager.initialChecksComplete
+        .firstWhere((bool isComplete) => isComplete);
+    final ScanResultStates state =
+        await systemStateManager.bleScanResultStream.first;
     if (welcomeManager.getInitialErrors().length > 0) {
       // TODO show errors list
       print('HAVE ERRORS');
@@ -109,16 +112,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       return CircularProgressIndicator();
     } else {
       return ButtonsBlock(
-        nextActionButton: ButtonModel(
-          action: () {
-            setState(() => _nextIsPressed = true);
-            _handleNext();
-          },
-        ),
-        moreActionButton: ButtonModel(
-            action: () => Navigator.of(context)
-                .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
-      );
+          nextActionButton: ButtonModel(
+            action: () {
+              setState(() => _nextIsPressed = true);
+              _handleNext();
+            },
+          ),
+          moreActionButton: ButtonModel(
+            action: () =>
+//                Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
+                Navigator.of(context).pushNamed(ServiceScreen.PATH),
+          ));
     }
   }
 }

@@ -15,23 +15,35 @@ class ServiceScreen extends StatefulWidget {
 }
 
 class _ServiceScreenState extends State<ServiceScreen> {
+  final _manager = sl<ServiceScreenManager>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.mode.toString()),
-        flexibleSpace: AppBarDecoration(),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () => Navigator.pop(context),
-          )
-        ],
-        leading: Container(),
-      ),
-      body: Center(
-        child: Text(widget.mode.toString()),
-      ),
+        appBar: AppBar(
+          title: Text(widget.mode.toString()),
+          flexibleSpace: AppBarDecoration(),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+          leading: Container(),
+        ),
+        body: ListView.separated(
+          itemCount: _manager.serviceOptions.length,
+          padding: EdgeInsets.all(16.0),
+          itemBuilder: _buildOptionTile,
+          separatorBuilder: (_,__) => Divider(),
+        ));
+  }
+
+  Widget _buildOptionTile(BuildContext context, int i) {
+    ServiceOption option = _manager.serviceOptions[i];
+    return ListTile(
+      title: Text(option.title),
+      trailing: Icon(Icons.keyboard_arrow_right),
     );
   }
 }

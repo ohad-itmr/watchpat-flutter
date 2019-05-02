@@ -65,4 +65,20 @@ class ServiceScreenManager extends ManagerBase {
     _serviceMode.close();
     _counter.close();
   }
+
+  List<ServiceOption> get serviceOptions => [
+    ServiceOption(title: "Main device FM version", action: null),
+    ServiceOption(title: "Retrieve test data from device and upload it to server", action: null),
+    ServiceOption(title: "Perform BIT", action: null),
+    ServiceOption(title: "Upgrade main device firmware", action: null),
+    ServiceOption(title: "Main device FM version", action: null),
+    ServiceOption(title: "Handle parameters file", action: null)
+  ];
+}
+
+class ServiceOption {
+  final String title;
+  final Function action;
+
+  ServiceOption({this.title, this.action});
 }

@@ -20,17 +20,21 @@ class _InteractiveTitleState extends State<InteractiveTitle> {
   void initState() {
     super.initState();
     _manager.serviceModesStream.listen((mode) {
-      switch (mode) {
-        case ServiceMode.customer:
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ServiceScreen(mode: mode)));
-          break;
-        case ServiceMode.technician:
-          _showPasswordPrompt();
-          break;
-        default:
+      if (mode == ServiceMode.customer) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
+      } else if (mode == ServiceMode.technician) {
+        _showPasswordPrompt();
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _manager.onTitleTap(),
+      child: Text(widget.title),
+    );
   }
 
   void _showPasswordPrompt() {
@@ -94,13 +98,5 @@ class _InteractiveTitleState extends State<InteractiveTitle> {
             },
           );
         });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _manager.onTitleTap(),
-      child: Text(widget.title),
-    );
   }
 }

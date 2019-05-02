@@ -38,9 +38,9 @@ class DefaultSettings {
   static final dataTransferRate = 120.0;
   static var minBatteryAskedLevel = 95;
   static var minDataForUpload = 0.1;
-  static var fwVersionsForUpgrade = [];
+  static var fwVersionsForUpgrade = List<String>();
   static var btScanTimeout = 5000;
-  static var dispatchersUrls = [];
+  static var dispatchersUrls = List<String>();
 
   static Map<String, dynamic> settingsToMap() {
     return <String, dynamic>{

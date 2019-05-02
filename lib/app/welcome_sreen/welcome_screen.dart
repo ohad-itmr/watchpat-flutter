@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/widgets/connection_indicators.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class WelcomeScreen extends StatefulWidget {

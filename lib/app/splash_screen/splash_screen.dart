@@ -76,7 +76,7 @@ class SplashScreen extends StatelessWidget {
                     .addPostFrameCallback((_) => _showBTWarning(context));
               } else {
                 if (bleSnapshot.data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
-                  sl<BleManager>().startScan(time: 3000, connectToFirstDevice: false);
+                  sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
                   sl<WelcomeActivityManager>().initConnectivityListener();
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     Navigator.of(context)

@@ -57,12 +57,14 @@ class WelcomeActivityManager extends ManagerBase {
         : FileCreationState.DONE_FAILED);
   }
 
-  Future <void> _configureApplication() async {
+  Future<void> _configureApplication() async {
     // Check in external config is enabled
-    final bool configEnabled = await sl<DispatcherService>().checkExternalConfig();
+    final bool configEnabled =
+        await sl<DispatcherService>().checkExternalConfig();
     if (configEnabled) {
       // get config from server
-      final Map<String, dynamic> config = await sl<DispatcherService>().getExternalConfig();
+      final Map<String, dynamic> config =
+          await sl<DispatcherService>().getExternalConfig();
       // set config
       GlobalSettings.setExternalConfiguration(config);
     }
@@ -128,7 +130,8 @@ class WelcomeActivityManager extends ManagerBase {
 
     if (PrefsProvider.getIsFirstTimeRun() == null ||
         PrefsProvider.getIsFirstTimeRun()) {
-      sl<BleManager>().startScan(time: 3000, connectToFirstDevice: false);
+      sl<BleManager>().startScan(
+          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     }
     initConnectivityListener();
   }

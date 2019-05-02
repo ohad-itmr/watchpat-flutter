@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
@@ -15,23 +16,36 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  bool nextIsPressed = false;
+  bool _nextIsPressed = false;
   final S loc = sl<S>();
   final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
   final SystemStateManager systemStateManager = sl<SystemStateManager>();
 
-  void _handleNext(BuildContext context) {
-    systemStateManager.bleScanResultStream.listen((ScanResultStates state) {
-      if (welcomeManager.getInitialErrors().length > 0) {
-        // TODO show errors list
-        print('HAVE ERRORS');
-      } else if (state == ScanResultStates.NOT_LOCATED) {
-        Navigator.of(context).pushNamed(BatteryScreen.PATH);
-      } else {
-        Navigator.of(context).pushNamed(RemoveJewelryScreen.PATH);
+  @override
+  void initState() {
+    super.initState();
+
+    systemStateManager.inetConnectionStateStream
+        .listen((ConnectivityResult state) {
+      if (state == ConnectivityResult.none) {
+        _showNoInternetWarning(context);
       }
     });
-    print('checksComplete ${welcomeManager.initialChecksComplete}');
+  }
+
+  void _handleNext() async {
+    await welcomeManager.initialChecksComplete
+        .firstWhere((bool isComplete) => isComplete);
+    final ScanResultStates state =
+        await systemStateManager.bleScanResultStream.first;
+    if (welcomeManager.getInitialErrors().length > 0) {
+      // TODO show errors list
+      print('HAVE ERRORS');
+    } else if (state == ScanResultStates.NOT_LOCATED) {
+      Navigator.of(context).pushNamed(BatteryScreen.PATH);
+    } else {
+      Navigator.of(context).pushNamed(RemoveJewelryScreen.PATH);
+    }
   }
 
   _showNoInternetWarning(BuildContext context) async {
@@ -52,7 +66,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         Navigator.of(context).pop();
                       });
-                      _handleNext(context);
                     }
                     return Container(
                       padding: EdgeInsets.all(10.0),
@@ -72,8 +85,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-//    print(appBloc.initialChecksComplete.listen((onData) => print('onData $onData')));
-
     return MainTemplate(
       showBack: false,
       showMenu: true,
@@ -89,47 +100,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             loc.welcomeContent,
           ],
         ),
-        buttons: StreamBuilder(
-          stream: welcomeManager.initialChecksComplete,
-          builder: (context, AsyncSnapshot<bool> snapshot) {
-            if (nextIsPressed) {
-              print('snapshot ${snapshot.data}');
-              if (snapshot.hasData && snapshot.data) {
-                WidgetsBinding.instance
-                    .addPostFrameCallback((_) => _handleNext(context));
-              }
-              return CircularProgressIndicator();
-            }
-            return buildButtonsBloc(snapshot);
-          },
-        ),
+        buttons: _buildButtonsBlock(),
         showSteps: false,
       ),
     );
   }
 
-  Widget buildButtonsBloc(AsyncSnapshot<bool> snapshot) {
-    return ButtonsBlock(
-      nextActionButton: ButtonModel(
-        action: () {
-          bool internetExists = welcomeManager.getInternetConnectionState();
-          if (!internetExists) {
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => _showNoInternetWarning(context));
-          } else {
-            if (snapshot.hasData && snapshot.data) {
-              _handleNext(context);
-            } else {
-              setState(() {
-                nextIsPressed = true;
-              });
-            }
-          }
-        },
-      ),
-      moreActionButton: ButtonModel(
-          action: () => Navigator.of(context)
-              .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
-    );
+  Widget _buildButtonsBlock() {
+    if (_nextIsPressed) {
+      return CircularProgressIndicator();
+    } else {
+      return ButtonsBlock(
+        nextActionButton: ButtonModel(
+          action: () {
+            setState(() => _nextIsPressed = true);
+            _handleNext();
+          },
+        ),
+        moreActionButton: ButtonModel(
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
+      );
+    }
   }
 }

@@ -32,7 +32,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           leading: Container(),
         ),
         body: ListView.separated(
-          itemCount: _manager.serviceOptions.length,
+          itemCount: _manager.serviceOptions[widget.mode].length,
           padding: EdgeInsets.all(16.0),
           itemBuilder: _buildOptionTile,
           separatorBuilder: (_,__) => Divider(),
@@ -40,7 +40,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 
   Widget _buildOptionTile(BuildContext context, int i) {
-    ServiceOption option = _manager.serviceOptions[i];
+    ServiceOption option = _manager.serviceOptions[widget.mode][i];
     return ListTile(
       title: Text(option.title),
       trailing: Icon(Icons.keyboard_arrow_right),

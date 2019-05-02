@@ -66,7 +66,15 @@ class ServiceScreenManager extends ManagerBase {
     _counter.close();
   }
 
-  List<ServiceOption> get serviceOptions => [
+  Map<ServiceMode, List<ServiceOption>> get serviceOptions => {
+    ServiceMode.customer: _customerServiceOptions,
+    ServiceMode.technician: [
+      ..._customerServiceOptions,
+      ..._technicianServiceOptions
+    ]
+  };
+
+  final List<ServiceOption> _customerServiceOptions = [
     ServiceOption(title: "Main device FM version", action: null),
     ServiceOption(title: "Retrieve test data from device and upload it to server", action: null),
     ServiceOption(title: "Perform BIT", action: null),
@@ -74,6 +82,12 @@ class ServiceScreenManager extends ManagerBase {
     ServiceOption(title: "Main device FM version", action: null),
     ServiceOption(title: "Handle parameters file", action: null)
   ];
+
+  final List<ServiceOption> _technicianServiceOptions = [
+    ServiceOption(title: "Eat my socks", action: null),
+    ServiceOption(title: "Shave her legs", action: null),
+  ];
+
 }
 
 class ServiceOption {

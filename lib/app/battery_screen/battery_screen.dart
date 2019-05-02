@@ -7,10 +7,14 @@ class BatteryScreen extends StatelessWidget {
   static const String TAG = 'BatteryScreen';
   static const String PATH = '/battery';
   final S loc = sl<S>();
-  final BleManager bleBloc = sl<BleManager>();
-  final SystemStateManager systemStateBloc = sl<SystemStateManager>();
+  final BleManager bleManager = sl<BleManager>();
+  final SystemStateManager systemStateManager = sl<SystemStateManager>();
 
-  BatteryScreen({Key key}) : super(key: key);
+  BatteryScreen({Key key}) : super(key: key) {
+    systemStateManager.scanCycleEnabled = true;
+    bleManager.startScan(
+        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class BatteryScreen extends StatelessWidget {
           imageName: 'insert_battery.png',
         ),
         bottomBlock: StreamBuilder(
-            stream: systemStateBloc.bleScanResultStream,
+            stream: systemStateManager.bleScanResultStream,
             builder: (BuildContext context,
                 AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
@@ -37,7 +41,7 @@ class BatteryScreen extends StatelessWidget {
                       ]
                     : [
                         loc.batteryContent_many_1(
-                            '${bleBloc.scanResultsLength}'),
+                            '${bleManager.scanResultsLength}'),
                         loc.batteryContent_many_2,
                       ],
               );

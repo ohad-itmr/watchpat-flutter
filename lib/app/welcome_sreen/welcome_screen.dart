@@ -34,10 +34,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _handleNext() async {
-    await welcomeManager.initialChecksComplete
-        .firstWhere((bool isComplete) => isComplete);
-    final ScanResultStates state =
-        await systemStateManager.bleScanResultStream.first;
+    await welcomeManager.initialChecksComplete.firstWhere((bool isComplete) => isComplete);
+    final ScanResultStates state = await systemStateManager.bleScanResultStream.first;
     if (welcomeManager.getInitialErrors().length > 0) {
       // TODO show errors list
       print('HAVE ERRORS');

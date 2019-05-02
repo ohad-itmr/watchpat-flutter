@@ -166,7 +166,10 @@ class BleManager extends ManagerBase {
     if (_discoveredDevices.isEmpty) {
       Log.info(TAG, "no device discovered on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
-      // todo Implement reconnection cycle
+
+      if (sl<SystemStateManager>().isScanCycleEnabled) {
+        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      }
     } else if (_discoveredDevices.length == 1) {
       Log.info(TAG, "discovered a SINGLE device on scan");
       sl<SystemStateManager>()
@@ -199,7 +202,7 @@ class BleManager extends ManagerBase {
     _disconnect();
     if (sl<SystemStateManager>().isBTEnabled) {
       if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(connectToFirstDevice: false);
+        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }
     } else {
       Log.warning(TAG, "BT not enabled scan cycle not initiated");

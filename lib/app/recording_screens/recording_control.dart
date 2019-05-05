@@ -4,13 +4,28 @@ import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
-class RecordingControl extends StatelessWidget {
+class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
   void _checkTestState(BuildContext context) {
     if (sl<TestingManager>().stopTesting()) {
       Navigator.pushNamed(context, UploadingScreen.PATH);
     } else {
       _showTestIncompleteDialog(context);
     }
+  }
+
+  RecordingControl() {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("STATEEE ${state.toString()}");
+    if ((sl<SystemStateManager>().testState == TestStates.STARTED ||
+            sl<SystemStateManager>().testState == TestStates.RESUMED) &&
+        state == AppLifecycleState.paused) {
+      sl<NotificationsService>().showLocalNotification("Test in progress");
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   void _showTestIncompleteDialog(BuildContext context) {
@@ -96,8 +111,7 @@ class RecordingControl extends StatelessWidget {
                     );
                   }
                 },
-              )
-          ),
+              )),
           ButtonsBlock(
             moreActionButton: null,
             nextActionButton: ButtonModel(

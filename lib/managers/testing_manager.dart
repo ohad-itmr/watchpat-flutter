@@ -39,7 +39,6 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### Sending START aquisition command");
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
-    sl<NotificationsService>().showLocalNotification("Test in progress");
     _startDataTimer();
     _startElapsedTimer();
   }

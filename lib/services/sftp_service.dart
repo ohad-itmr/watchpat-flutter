@@ -198,6 +198,7 @@ class SftpService {
     @required int uploadingOffset,
     @required int recordingOffset,
   }) async {
+
     RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
     final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
         ? _dataChunkSize
@@ -214,10 +215,18 @@ class SftpService {
           toFilePath: '$_sftpFilePath/$_sftpFileName');
 
       if (result == SftpService.APPENDING_SUCCESS) {
+
         await PrefsProvider.saveTestDataUploadingOffset(
             uploadingOffset + bytes.length);
         Log.info(TAG,
             "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
+
+        // todo test sftp offset
+        SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+        print("CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+        print("CURRENT REMOTE FILE SIZE: ${file.size}");
+        //
+
       }
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");

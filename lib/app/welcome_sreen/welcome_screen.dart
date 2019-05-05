@@ -12,6 +12,8 @@ class WelcomeScreen extends StatefulWidget {
 
   WelcomeScreen({Key key}) : super(key: key);
 
+
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
@@ -20,16 +22,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   bool _nextIsPressed = false;
   final S loc = sl<S>();
   final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
-  final SystemStateManager systemStateManager = sl<SystemStateManager>();
+  final SystemStateManager _systemStateManager = sl<SystemStateManager>();
+  final ServiceScreenManager _serviceManager = sl<ServiceScreenManager>();
+
+  // service mode password prompt
+  final _formKey = GlobalKey<FormState>();
+  bool _showPasswordSelected = false;
 
   @override
   void initState() {
     super.initState();
 
-    systemStateManager.inetConnectionStateStream
+    _systemStateManager.inetConnectionStateStream
         .listen((ConnectivityResult state) {
       if (state == ConnectivityResult.none) {
         _showNoInternetWarning(context);
+      }
+    });
+
+    _serviceManager.serviceModesStream.listen((mode) {
+      if (mode == ServiceMode.customer) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
+      } else if (mode == ServiceMode.technician) {
+        _showServicePasswordPrompt();
       }
     });
   }
@@ -38,7 +54,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     await welcomeManager.initialChecksComplete
         .firstWhere((bool isComplete) => isComplete);
     final ScanResultStates state =
-        await systemStateManager.bleScanResultStream.first;
+        await _systemStateManager.bleScanResultStream.first;
     if (welcomeManager.getInitialErrors().length > 0) {
       // TODO show errors list
       print('HAVE ERRORS');
@@ -82,6 +98,69 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         );
       },
     );
+  }
+
+  void _showServicePasswordPrompt() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text("Enter service password"),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Form(
+                      key: _formKey,
+                      child: TextFormField(
+                        obscureText: !_showPasswordSelected,
+                        autofocus: true,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value != "12345678") {
+                            _formKey.currentState.reset();
+                            return 'Password invalid';
+                          }
+                        },
+                      ),
+                    ),
+                    CheckboxListTile(
+                      title: Text("Show password"),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: _showPasswordSelected,
+                      onChanged: (bool val) {
+                        setState(() {
+                          _showPasswordSelected = val;
+                        });
+                      },
+                    )
+                  ],
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) =>
+                                ServiceScreen(mode: ServiceMode.technician)));
+                      }
+                    },
+                    child: Text("OK"),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("CANCEL"),
+                  )
+                ],
+              );
+            },
+          );
+        });
   }
 
   @override

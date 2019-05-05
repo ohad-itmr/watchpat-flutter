@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum ServiceMode { customer, technician }
 
 class ServiceScreenManager extends ManagerBase {
+
   Stopwatch _clickTimer = Stopwatch();
   int _clickCounter = 1;
 
@@ -66,33 +68,34 @@ class ServiceScreenManager extends ManagerBase {
     _counter.close();
   }
 
-  Map<ServiceMode, List<ServiceOption>> get serviceOptions => {
-    ServiceMode.customer: _customerServiceOptions,
-    ServiceMode.technician: [
-      ..._customerServiceOptions,
-      ..._technicianServiceOptions
-    ]
-  };
+  // SERVICE OPTIONS
 
-  final List<ServiceOption> _customerServiceOptions = [
-    ServiceOption(title: "Main device FM version", action: null),
-    ServiceOption(title: "Retrieve test data from device and upload it to server", action: null),
-    ServiceOption(title: "Perform BIT", action: null),
-    ServiceOption(title: "Upgrade main device firmware", action: null),
-    ServiceOption(title: "Main device FM version", action: null),
-    ServiceOption(title: "Handle parameters file", action: null)
-  ];
+  Future<String> getFirmwareVersion() async {
+    return "123.5.234.asshole";
+  }
 
-  final List<ServiceOption> _technicianServiceOptions = [
-    ServiceOption(title: "Eat my socks", action: null),
-    ServiceOption(title: "Shave her legs", action: null),
-  ];
+  void performBitOperation() {
+
+  }
+
+  retrieveAndUploadStoredData() {
+    print("RETIREVEING AND STUFF");
+  }
 
 }
 
 class ServiceOption {
   final String title;
-  final Function action;
+  final VoidCallback action;
 
   ServiceOption({this.title, this.action});
+}
+
+class ServiceDialog {
+  final Widget title;
+  final Widget content;
+  final List<Widget> actions;
+
+  ServiceDialog(
+      {@required this.title, @required this.content, @required this.actions});
 }

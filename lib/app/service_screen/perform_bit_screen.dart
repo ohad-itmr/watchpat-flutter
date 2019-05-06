@@ -7,30 +7,17 @@ class PerformBitScreen extends StatefulWidget {
   @override
   _PerformBitScreenState createState() => _PerformBitScreenState();
 
-  final List<String> bitOptions = [
-    "AII tests",
-    "AFE LEDs",
-    "AFE Photo-diode",
-    "DC-DC",
-    "Battery",
-    "Flash",
-    "Actigraph",
-    "SBP Exists",
-    "UPAT EEPROM",
-    "Bracelet",
-    "Finger"
-  ];
 }
 
 class _PerformBitScreenState extends State<PerformBitScreen> {
-  List<String> _selectedBitOptions = [];
+  List<BitOption> _selectedBitOptions = [];
   final _manager = sl<ServiceScreenManager>();
 
   Widget _buildListViewItem(BuildContext context, int i) {
-    if (i != widget.bitOptions.length) {
-      String option = widget.bitOptions[i];
+    if (i != _manager.bitOptions.length) {
+      BitOption option = _manager.bitOptions[i];
       return CheckboxListTile(
-        title: Text(option),
+        title: Text(option.title),
         value: _selectedBitOptions.contains(option),
         onChanged: (bool val) => setState(() => val
             ? _selectedBitOptions.add(option)
@@ -50,7 +37,7 @@ class _PerformBitScreenState extends State<PerformBitScreen> {
             ),
             Button(
               text: "Execute",
-              action: () =>_manager.performBitOperation(),
+              action: _selectedBitOptions.length > 0 ? () =>_manager.performBitOperation(_selectedBitOptions) : null,
               type: ButtonType.nextBtn,
               disabled: false,
             )
@@ -71,7 +58,7 @@ class _PerformBitScreenState extends State<PerformBitScreen> {
           shrinkWrap: true,
           itemBuilder: _buildListViewItem,
           separatorBuilder: (_, __) => Divider(),
-          itemCount: widget.bitOptions.length + 1),
+          itemCount: _manager.bitOptions.length + 1),
     );
   }
 }

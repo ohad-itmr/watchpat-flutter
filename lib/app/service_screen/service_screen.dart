@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
+import 'package:my_pat/widgets/mypat_toast.dart';
 
 class ServiceScreen extends StatefulWidget {
   static const String TAG = 'ServiceScreen';
@@ -103,7 +104,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           _buildPopButton("CANCEL"),
           _buildActionButton(
             text: "OK",
-            action: _manager.retrieveAndUploadStoredData
+            action: _manager.retrieveAndUploadStoredData()
           )
         ]));
   }
@@ -114,6 +115,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
         .push(MaterialPageRoute(builder: (context) => PerformBitScreen()));
   }
 
+  _showBadThing() {
+    MyPatToast.show("Go fuck yourself", context);
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -122,7 +127,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Retrieve test data from device and upload it to server",
           action: _retrieveStoredData),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
-      ServiceOption(title: "Upgrade main device firmware", action: null),
+      ServiceOption(title: "Upgrade main device firmware", action: _showBadThing),
       ServiceOption(title: "Handle parameters file", action: null)
     ];
 

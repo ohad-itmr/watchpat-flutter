@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -35,6 +34,11 @@ class BitOperationsManager extends ManagerBase {
 
   int _bitBITRequest = 0;
   void performBitOperation(List<BitOption> selectedOptions) {
+    if (sl<SystemStateManager>().deviceCommState == DeviceStates.DISCONNECTED) {
+      _showToast("Main device disconnected");
+      return;
+    }
+
     loader.sink.add(true);
     _showToast("Performing BIT operation");
 

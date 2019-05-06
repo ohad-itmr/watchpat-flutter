@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
@@ -14,11 +16,21 @@ class _PerformBitScreenState extends State<PerformBitScreen> {
   List<BitOption> _selectedBitOptions = [];
   final _manager = sl<BitOperationsManager>();
 
+  StreamSubscription _toastSub;
+  StreamSubscription _responseSub;
+
   @override
   void initState() {
-    _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
-    sl<IncomingPacketHandlerService>().bitResponse.listen(_showResponseDialog);
+    _toastSub = _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
+    _responseSub = sl<IncomingPacketHandlerService>().bitResponse.listen(_showResponseDialog);
     super.initState();
+  }
+
+  @override
+  void deactivate() {
+    _toastSub.cancel();
+    _responseSub.cancel();
+    super.deactivate();
   }
 
   _showResponseDialog(int response) {

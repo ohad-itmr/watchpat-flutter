@@ -9,7 +9,7 @@ class MyPatToast {
         msg: text,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Colors.blueGrey,
         textColor: Colors.white,
         fontSize: 16.0
     );

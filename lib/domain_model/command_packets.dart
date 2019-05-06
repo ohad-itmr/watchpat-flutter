@@ -369,7 +369,7 @@ class BitReqPacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    final bitType = ConvertFormats.longToByteList(_bitType, size: 4);
+    final bitType = ConvertFormats.longToByteList(_bitType, size: 4, reversed: false);
 
     List<int> buffer =
         ListCombainer.combain([_header.bytes, bitType], requiredLength: _packetSize);

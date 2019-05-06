@@ -53,6 +53,7 @@ void _initializeAllServices() {
   sl.registerSingleton<ConnectionIndicatorManager>(ConnectionIndicatorManager());
 
   sl.registerSingleton<ServiceScreenManager>(ServiceScreenManager());
+  sl.registerSingleton<BitOperationsManager>(BitOperationsManager());
 }
 
 void _initializeCrucialServices() {

@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum ServiceMode { customer, technician }
@@ -24,36 +22,6 @@ class ServiceScreenManager extends ManagerBase {
   Observable<ServiceMode> get serviceModesStream => _serviceMode.stream;
 
   static PublishSubject<String> _tapEvents = PublishSubject<String>();
-
-  // BIT opeartions
-  bool _ackBIT;
-  final List<BitOption> bitOptions = [
-    BitOption(title: "All tests", mask: DeviceCommands.BIT_MASK_ALL_TESTS),
-    BitOption(title: "AFE LEDs", mask: DeviceCommands.BIT_MASK_AFE_LEDS),
-    BitOption(
-        title: "AFE Photo-diode", mask: DeviceCommands.BIT_MASK_AFE_PHOTODIODE),
-    BitOption(title: "DC-DC", mask: DeviceCommands.BIT_MASK_DC_DC),
-    BitOption(title: "Battery", mask: DeviceCommands.BIT_MASK_BATTERY),
-    BitOption(title: "Flash", mask: DeviceCommands.BIT_MASK_FLASH),
-    BitOption(title: "Actigraph", mask: DeviceCommands.BIT_MASK_ACTIGRAPH),
-    BitOption(title: "SBP Exists", mask: DeviceCommands.BIT_MASK_SBP_EXIST),
-    BitOption(title: "UPAT EEPROM", mask: DeviceCommands.BIT_MASK_UPAT_EEPROM),
-    BitOption(title: "Bracelet", mask: DeviceCommands.BIT_MASK_BRACELET),
-    BitOption(title: "Finger", mask: DeviceCommands.BIT_MASK_FINGER),
-  ];
-
-  void performBitOperation(List<BitOption> selectedOptions) {
-    int bit = 0;
-    final bool checkAll = selectedOptions.contains(bitOptions[0]);
-    bitOptions.forEach((BitOption option) {
-      if (checkAll || selectedOptions.contains(option)) {
-        bit |= option.mask;
-      }
-    });
-    Log.info(TAG, "Requesting BIT: $bit");
-    sl<CommandTaskerManager>()
-        .addCommandWithCb(DeviceCommands.getBitRequestCmd(bit), listener: null);
-  }
 
   ServiceScreenManager() {
     _tapEvents.stream
@@ -125,13 +93,6 @@ class ServiceOption {
   ServiceOption({this.title, this.action});
 }
 
-class BitOption {
-  final String title;
-  final int mask;
-
-  BitOption({@required this.title, @required this.mask});
-}
-
 class ServiceDialog {
   final Widget title;
   final Widget content;
@@ -139,11 +100,4 @@ class ServiceDialog {
 
   ServiceDialog(
       {@required this.title, @required this.content, @required this.actions});
-}
-
-class AckCallback extends OnAckListener {
-  @override
-  void onAckReceived() {
-    // TODO: implement onAckReceived
-  }
 }

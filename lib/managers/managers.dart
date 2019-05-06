@@ -9,4 +9,5 @@ export 'device_config_manager.dart';
 export 'carousel_manager.dart';
 export 'testing_manager.dart';
 export 'connection_indicator_manager.dart';
-export 'service_screen_manager.dart';
+export 'package:my_pat/managers/service_screens_managers/service_screen_manager.dart';
+export 'package:my_pat/managers/service_screens_managers/bit_operations_manager.dart';

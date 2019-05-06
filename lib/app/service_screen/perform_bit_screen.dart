@@ -1,17 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/services/services.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
+import 'package:my_pat/widgets/mypat_toast.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class PerformBitScreen extends StatefulWidget {
   @override
   _PerformBitScreenState createState() => _PerformBitScreenState();
-
 }
 
 class _PerformBitScreenState extends State<PerformBitScreen> {
   List<BitOption> _selectedBitOptions = [];
-  final _manager = sl<ServiceScreenManager>();
+  final _manager = sl<BitOperationsManager>();
+
+  @override
+  void initState() {
+    _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
+    sl<IncomingPacketHandlerService>().bitResponse.listen(_showResponseDialog);
+    super.initState();
+  }
+
+  _showResponseDialog(int response) {
+    _manager.loader.sink.add(false);
+    final msg = _manager.getBitResponseMessage(response);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("BIT response"),
+            content: Text(msg),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        });
+  }
 
   Widget _buildListViewItem(BuildContext context, int i) {
     if (i != _manager.bitOptions.length) {
@@ -37,9 +64,9 @@ class _PerformBitScreenState extends State<PerformBitScreen> {
             ),
             Button(
               text: "Execute",
-              action: _selectedBitOptions.length > 0 ? () =>_manager.performBitOperation(_selectedBitOptions) : null,
+              action: () => _manager.performBitOperation(_selectedBitOptions),
               type: ButtonType.nextBtn,
-              disabled: false,
+              disabled: _selectedBitOptions.length == 0,
             )
           ],
         ),
@@ -53,6 +80,22 @@ class _PerformBitScreenState extends State<PerformBitScreen> {
       appBar: AppBar(
         title: Text("Select BIT type"),
         flexibleSpace: AppBarDecoration(),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: null,
+            child: StreamBuilder(
+              stream: _manager.loading,
+              initialData: false,
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                return snapshot.data
+                    ? CircularProgressIndicator(
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(Colors.white))
+                    : Container();
+              },
+            ),
+          ),
+        ],
       ),
       body: ListView.separated(
           shrinkWrap: true,

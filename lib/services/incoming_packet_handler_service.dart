@@ -9,6 +9,7 @@ import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/services/prefs_service.dart';
 import 'package:my_pat/domain_model/received_packet.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 enum PacketState { WAITING_FOR_NEW, HANDLING_PACKET, PACKET_COMPLETE }
@@ -71,6 +72,13 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   bool _isFirstPacketOfDataReceived = false;
   bool _isDataReceiving = false;
+
+  // SERVICE OPERATIONS RESULTS STREAM
+  PublishSubject<int> _bitResponse = PublishSubject<int>();
+  Observable<int> get bitResponse => _bitResponse.stream;
+
+
+
 
   void startPacketAnalysis() {
     _testStartTimer.startTimer();
@@ -250,10 +258,9 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_BIT_RES:
           Log.info(TAG,
               "packet received (BIT_RES): ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
-          // TODO implement
 
-          // bit-response packet received
-//          broadcastBitResponseReceived(receivedPacket.extractBitResponse());
+          _bitResponse.sink.add(receivedPacket.extractBitResponse());
+
           // send bit-response packet ACK
           sl<CommandTaskerManager>().addAck(
             DeviceCommands.getAckCmd(

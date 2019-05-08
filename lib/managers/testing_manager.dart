@@ -52,7 +52,7 @@ class TestingManager extends ManagerBase {
   void _startDataTimer() async {
     int secondsToEnoughData;
     do {
-      final int receivedPackets = await PrefsProvider.loadTestPacketCount();
+      final int receivedPackets = PrefsProvider.loadTestPacketCount();
       final int necessaryPackets = GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate ~/ 60);
       final int delta = necessaryPackets - receivedPackets;
       secondsToEnoughData = delta ~/ (GlobalSettings.dataTransferRate ~/ 60);
@@ -74,6 +74,7 @@ class TestingManager extends ManagerBase {
       Log.info(TAG, "### Sending STOP aquisition command");
       sl<CommandTaskerManager>()
           .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
+      sl<DataWritingService>().startRemainingPacketsTimer();
       _elapsedTimer.cancel();
       return true;
     } else {

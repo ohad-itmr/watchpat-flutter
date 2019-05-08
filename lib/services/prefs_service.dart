@@ -76,12 +76,12 @@ class PrefsProvider {
     await PrefsService.prefs.setInt(PrefsNames.TEST_PACKET_TIME_KEY, time);
   }
 
-  static Future<int> loadTestPacketCount() async {
+  static int loadTestPacketCount() {
     return PrefsService.prefs.getInt(PrefsNames.TEST_PACKET_TIME_KEY) ?? 0;
   }
 
-  static Future<void> incTestPacketCount() async {
-    final int currentCount = await PrefsProvider.loadTestPacketCount();
+  static void incTestPacketCount() async {
+    final int currentCount = PrefsProvider.loadTestPacketCount();
     await PrefsProvider.saveTestPacketCount(currentCount + 1);
   }
 

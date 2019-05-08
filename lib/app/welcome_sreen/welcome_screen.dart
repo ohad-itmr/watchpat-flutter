@@ -12,8 +12,6 @@ class WelcomeScreen extends StatefulWidget {
 
   WelcomeScreen({Key key}) : super(key: key);
 
-
-
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }

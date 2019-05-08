@@ -35,7 +35,7 @@ class DefaultSettings {
   static final debugMode = true;
 
   static final demoUrl = "";
-  static final dataTransferRate = 120.0;
+  static final dataTransferRate = 60.0;
   static var minBatteryAskedLevel = 95;
   static var minDataForUpload = 0.1;
   static var fwVersionsForUpgrade = List<String>();

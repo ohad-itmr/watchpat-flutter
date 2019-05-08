@@ -230,6 +230,8 @@ class SftpService {
       }
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
+      sl<SystemStateManager>()
+          .setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
       await Future.delayed(Duration(seconds: 3));
     }
   }

@@ -13,6 +13,21 @@ class DataWritingService {
   static File _dataFile;
   static RandomAccessFile _raf;
 
+  // remaining data receiving streams
+  BehaviorSubject<int> _remainingDataSeconds = BehaviorSubject<int>();
+
+  Observable<int> get remainingDataSecondsStream =>
+      _remainingDataSeconds.stream;
+
+  BehaviorSubject<double> _remainingDataProgress = BehaviorSubject<double>();
+
+  Observable<double> get remainingDataProgressStream =>
+      _remainingDataProgress.stream;
+
+  int _remainingNecessaryPackets = 0;
+  int _remainingReceivedPackets = 0;
+  bool _testIsStopped = false;
+
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
     _systemState.testStateStream.listen(_handleTestState);
@@ -31,6 +46,7 @@ class DataWritingService {
   void _handleTestState(TestStates state) {
     switch (state) {
       case TestStates.ENDED:
+        _reportRemainingDataProgress();
         _closeFileWriting();
         break;
       default:
@@ -50,12 +66,41 @@ class DataWritingService {
       _raf.writeFromSync(bytes);
       PrefsProvider.saveTestDataRecordingOffset(currentOffset + bytes.length);
       Log.info(TAG, "Data packet stored to local file");
+
+      _reportRemainingDataProgress();
     } catch (e) {
       Log.shout(TAG, "Failed to store data packet to local file $e");
     }
   }
 
+  void startRemainingPacketsTimer() {
+    _testIsStopped = true;
+    final int receivedPackets = PrefsProvider.loadTestPacketCount();
+    final int necessaryPackets = PrefsProvider.loadTestElapsedTime() *
+        (GlobalSettings.dataTransferRate ~/ 60);
+    _remainingNecessaryPackets = necessaryPackets - receivedPackets;
+
+  }
+
+  void _reportRemainingDataProgress() {
+    if (!_testIsStopped) return;
+
+    _remainingReceivedPackets++;
+
+    print("REMAINING PACKETS: $_remainingReceivedPackets / $_remainingNecessaryPackets");
+
+    final int deltaPackets = _remainingNecessaryPackets - _remainingReceivedPackets;
+    final int secondsToFullData =
+        deltaPackets ~/ (GlobalSettings.dataTransferRate ~/ 60);
+    _remainingDataSeconds.sink.add(secondsToFullData > 0 ? secondsToFullData : 0);
+
+    final double fullDataProgress = _remainingReceivedPackets / _remainingNecessaryPackets;
+    _remainingDataProgress.sink.add(fullDataProgress);
+  }
+
   void _closeFileWriting() async {
-      _raf.close();
+    _raf.close();
+    _remainingDataProgress.close();
+    _remainingDataSeconds.close();
   }
 }

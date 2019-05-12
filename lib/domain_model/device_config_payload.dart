@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -149,10 +151,10 @@ class DeviceConfigPayload {
   List<int> get payloadBytes => _configPayloadBytes;
 
   void _setFWVersion(final List<int> bytesConfig) {
-    final int compilation = int.parse([
+    final int compilation = ConvertFormats.byteArrayToHex([
       bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1],
       bytesConfig[OFFSET_FW_COMPILATION_NUMBER]
-    ].join());
+    ]);
 
     _deviceFWVersion = new Version(
       bytesConfig[OFFSET_FW_VERSION_MAJOR],

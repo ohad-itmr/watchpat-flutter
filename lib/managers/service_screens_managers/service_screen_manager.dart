@@ -71,7 +71,7 @@ class ServiceScreenManager extends ManagerBase {
   // SERVICE OPTIONS
 
   Future<String> getFirmwareVersion() async {
-    return "123.5.234.asshole";
+    return sl<DeviceConfigManager>().deviceConfig.fWVersionString;
   }
 
   retrieveAndUploadStoredData() {

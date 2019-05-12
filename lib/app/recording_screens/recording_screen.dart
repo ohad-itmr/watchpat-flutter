@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/recording_screens/recording_control.dart';
 import 'package:my_pat/widgets/connection_indicators.dart';
 import 'package:my_pat/widgets/widgets.dart';

@@ -25,7 +25,7 @@ class DataWritingService {
       _remainingDataProgress.stream;
 
   int _remainingNecessaryPackets = 0;
-  int _remainingReceivedPackets = 0;
+  int _remainingReceivedPackets = 1;
   bool _testIsStopped = false;
 
   DataWritingService() {

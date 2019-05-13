@@ -1,5 +1,5 @@
 export 'authentication_screen/pin_screen.dart';
-export 'battery_screen/battery_screen.dart';
+export 'package:my_pat/app/pairing_issues_screens/battery_screen.dart';
 export 'end_screen/end_screen.dart';
 export 'device_setup_screens/chest_sensor_screen.dart';
 export 'device_setup_screens/finger_probe_screen.dart';

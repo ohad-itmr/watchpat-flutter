@@ -41,7 +41,9 @@ class BleManager extends ManagerBase {
   Observable<BluetoothDeviceState> get deviceState =>
       _deviceStateSubject.stream;
 
-  //#endregion Device
+  // Device name to match regarding of whether this is first connection or not
+  String _deviceNameToMatch;
+
 
   BleManager() {
     lang = sl<S>();
@@ -87,23 +89,24 @@ class BleManager extends ManagerBase {
       }
 
       _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
-      if (PrefsProvider.getIsFirstDeviceConnection() != null &&
-          PrefsProvider.getIsFirstDeviceConnection()) {
-        sysStateManager
-            .setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
+
+      if (PrefsProvider.getIsFirstDeviceConnection()) {
+        sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
       sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-      if (sysStateManager.testState == TestStates.STARTED || sysStateManager.testState == TestStates.RESUMED) {
+      if (sysStateManager.testState == TestStates.STARTED ||
+          sysStateManager.testState == TestStates.RESUMED) {
         sysStateManager.setTestState(TestStates.INTERRUPTED);
         sysStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
       } else {
         _incomingPacketHandler.resetPacket();
         _disconnect();
         if (sysStateManager.isBTEnabled) {
-          if (sysStateManager.isScanCycleEnabled) {
-            startScan(connectToFirstDevice: false);
+          if (sysStateManager.testState != TestStates.ENDED) {
+            sl<SystemStateManager>().setScanCycleEnabled = true;
+            startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
           }
         } else {
           Log.shout(TAG, "BT not enabled scan cycle not initiated $tag");
@@ -114,6 +117,7 @@ class BleManager extends ManagerBase {
 
   void _disconnect() {
     Log.info(TAG, 'Remove all value changed listeners');
+    sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     deviceStateSubscription?.cancel();
     deviceStateSubscription = null;
     _deviceConnection?.cancel();
@@ -168,7 +172,8 @@ class BleManager extends ManagerBase {
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
 
       if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+        startScan(
+            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }
     } else if (_discoveredDevices.length == 1) {
       Log.info(TAG, "discovered a SINGLE device on scan");
@@ -202,7 +207,8 @@ class BleManager extends ManagerBase {
     _disconnect();
     if (sl<SystemStateManager>().isBTEnabled) {
       if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+        startScan(
+            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }
     } else {
       Log.warning(TAG, "BT not enabled scan cycle not initiated");
@@ -230,6 +236,12 @@ class BleManager extends ManagerBase {
   void startScan(
       {int time, @required bool connectToFirstDevice, String deviceName}) {
     Log.info(TAG, '## START SCAN');
+    //todo implement search by serial when device will be upgraded
+    final bool isFirstConnection = PrefsProvider.getIsFirstDeviceConnection();
+    Log.info(TAG,
+        "First connection to device: $isFirstConnection. Looking for name: ${isFirstConnection ? "ITAMAR_UART" : "ITAMAR_${PrefsProvider.loadDeviceSerial()}"}");
+//      _deviceNameToMatch = isFirstConnection ? "ITAMAR_UART" : "ITAMAR_${PrefsProvider.loadDeviceSerial()}";
+//      if (name.contains(nameToMatch)) ...
 
     if (!_preScanChecks()) {
       return;
@@ -250,9 +262,6 @@ class BleManager extends ManagerBase {
   void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice,
       {String deviceName}) {
     final String name = scanResult.advertisementData.localName;
-    // Commented for the purpose of not pissing the developer off
-    //    print('Found $name');
-    //    print('Found ID ${scanResult.device.id}');
 
     if (deviceName != null) {
       // todo add implementation
@@ -290,7 +299,6 @@ class BleManager extends ManagerBase {
       case StateChangeActions.TEST_STATE_CHANGED:
         final TestStates testState = sl<SystemStateManager>().testState;
         if (testState == TestStates.STARTED) {
-
           _incomingPacketHandler.startPacketAnalysis();
         } else if (testState == TestStates.INTERRUPTED) {
           Log.shout(TAG, "Test interrupted because of device connection lost");

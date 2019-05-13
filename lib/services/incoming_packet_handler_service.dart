@@ -89,7 +89,6 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void acceptAndHandleData(List<int> data) async {
-//    print('acceptAndHandleData $_packetState');
     _incomingData = data;
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
@@ -99,11 +98,10 @@ class IncomingPacketHandlerService extends ManagerBase {
 
       if (_isValidSignature()) {
         if (!_setPacketSize()) {
-          Log.shout(TAG, "Wrong packet size" + ConvertFormats.bytesToHex(data));
+          Log.shout(TAG, "Wrong packet size " + ConvertFormats.bytesToHex(data));
           resetPacket();
           return;
         }
-        //Log.i(TAG, "Packet size: " + _incomingPacketLength);
       } else {
         Log.shout(
             TAG, "Wrong starting packet " + ConvertFormats.bytesToHex(data));
@@ -185,6 +183,10 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM:
           Log.info(TAG, "### start session confirm received");
           Log.info(TAG, "packet received (START_SESSION_CONFIRM)");
+
+          // Save that device was once already connected
+          PrefsProvider.setIsFirstDeviceConnection(false);
+
           // start-session-confirm packet received
           // retrieve device configuration
           sl<DeviceConfigManager>()
@@ -198,7 +200,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             if (PrefsProvider.getIsFirstDeviceConnection() != null &&
                 PrefsProvider.getIsFirstDeviceConnection()) {
-              PrefsProvider.setFirstDeviceConnection();
 
               sl<DispatcherService>()
                   .sendGetConfig(PrefsProvider.loadDeviceSerial());

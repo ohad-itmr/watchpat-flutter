@@ -55,6 +55,7 @@ class S implements WidgetsLocalizations {
   String get connection_to_main_device_lost => "Connection to Main Device is lost";
   String get critical_hw_failure => "Critical hardware failure";
   String get customer_service_mode => "Customer service mode";
+  String get device_connection_failed => "Connection with main device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
   String get device_log_file_description => "Device log file";
   String get device_not_found => "Device is not found";
   String get device_ver_name => "DeviceFWVersion";
@@ -72,6 +73,7 @@ class S implements WidgetsLocalizations {
   String get err_used_device => "Used main device";
   String get error_state => "ERROR STATE";
   String get exit_service_mode => "Exit service mode";
+  String get fatal_error => "Fatal error";
   String get fingerProbeContent => "Insert any finger, except your thumb, all the way into the probe.  \nThe sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (like a table) and pull the TOP tab toward you to remove it from the probe.";
   String get fingerProbeTitle => "Wear Finger Probe";
   String get finger_not_detected => "Finger not detected alert";

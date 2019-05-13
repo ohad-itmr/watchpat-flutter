@@ -380,7 +380,7 @@ class SystemStateManager extends ManagerBase {
 
   set serviceModeEnabled(bool value) => _isServiceModeEnabled = value;
 
-  set scanCycleEnabled(bool value) => _isScanCycleEnabled = value;
+  set setScanCycleEnabled(bool value) => _isScanCycleEnabled = value;
 
   bool get isScanCycleEnabled => _isScanCycleEnabled;
 

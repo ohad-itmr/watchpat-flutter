@@ -42,10 +42,10 @@ class _AppComponentState extends State<AppComponent> {
     super.initState();
     _initRouter();
 
-    // todo for development only
 
+    // todo for development only
     PrefsProvider.setIgnoreDeviceErrors(true);
-    PrefsProvider.setFirstDeviceConnection(state: true);
+    PrefsProvider.setIsFirstDeviceConnection(true);
   }
 
   @override

@@ -91,8 +91,6 @@ class BleService {
   }
 
   Future<void> writeCharacteristic(List<int> data) async {
-    Log.info(TAG, "Start writing TX characteristic: ${data.toString()}");
-
     var status = 'success';
     try {
       await _device.writeCharacteristic(
@@ -104,6 +102,6 @@ class BleService {
       status = 'failure ${e.toString()}';
     }
     Log.info(
-        TAG, "Finish writing TX characteristic: ${data.toString()} $status");
+        TAG, "Writing TX characteristic: ${data.toString()} $status");
   }
 }

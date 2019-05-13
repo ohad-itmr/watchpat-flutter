@@ -140,7 +140,7 @@ class PrefsProvider {
   }
 
   static bool getIsFirstTimeRun() {
-    return PrefsService.prefs.getBool(PrefsNames.FIRST_TIME_RUN_KEY);
+    return PrefsService.prefs.getBool(PrefsNames.FIRST_TIME_RUN_KEY) ?? true;
   }
 
   //
@@ -157,14 +157,14 @@ class PrefsProvider {
   //
   // is first device connection
   //
-  static void setFirstDeviceConnection({bool state = false}) async {
+  static void setIsFirstDeviceConnection(state) async {
     await PrefsService.prefs
         .setBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY, state);
   }
 
   static bool getIsFirstDeviceConnection() {
     return PrefsService.prefs
-        .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY);
+        .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY) ?? true;
   }
 
   //

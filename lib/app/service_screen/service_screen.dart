@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
 import 'package:my_pat/service_locator.dart';
@@ -18,16 +20,52 @@ class ServiceScreen extends StatefulWidget {
 
 class _ServiceScreenState extends State<ServiceScreen> {
   final _manager = sl<ServiceScreenManager>();
+  final S _loc = sl<S>();
 
   Map<ServiceMode, List<ServiceOption>> _serviceOptions;
   List<ServiceOption> _customerServiceOptions;
   List<ServiceOption> _technicianServiceOptions;
 
+  StreamSubscription _toastSub;
+  StreamSubscription _progressSub;
+  double _screenWidth;
+  bool _progressBarShowing = false;
+
   @override
   void initState() {
+    _toastSub =
+        _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
+    _progressSub =
+        _manager.progressBar.listen((String msg) => _handleProgressBar(msg));
     _initServiceOptions();
-
     super.initState();
+  }
+
+  @override
+  void deactivate() {
+    _toastSub.cancel();
+    _progressSub.cancel();
+    super.deactivate();
+  }
+
+  void _handleProgressBar(String msg) {
+    if (_progressBarShowing && msg == "") {
+      _progressBarShowing = false;
+      Navigator.pop(context);
+    } else if (!_progressBarShowing && msg != "") {
+      _progressBarShowing = true;
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(msg),
+              content: Container(
+                  height: _screenWidth / 5,
+                  child: Center(child: CircularProgressIndicator())),
+            );
+          });
+    }
   }
 
   void _showServiceDialog(ServiceDialog dialog) {
@@ -45,6 +83,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.mode.toString()),
@@ -82,31 +121,57 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   Widget _buildActionButton({String text, Function action}) {
     return FlatButton(
-      child: Text(text),
+      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold)),
       onPressed: () => action(),
     );
   }
 
   // Show dialog with firmware version
-  _showFirmwareDialog() async {
+  _showFirmwareVersionDialog() async {
     final String version = await _manager.getFirmwareVersion();
     _showServiceDialog(ServiceDialog(
-        title: Text("Firmware version"),
+        title: Text(_loc.firmware_version),
         content: Text(version),
-        actions: [_buildPopButton("OK")]));
+        actions: [_buildPopButton(_loc.ok.toUpperCase())]));
   }
 
-  _retrieveStoredData() {
+  // Retrieve stored data and upload to server dialog
+  _showRetrieveStoredDataDialog() {
     _showServiceDialog(ServiceDialog(
-        title: Text("Retrieve stored data"),
-        content: Text("Retrieve stored data from main device?"),
+        title: Text(_loc.retrieve_stored_data),
+        content: Text(_loc.retrieve_stored_data_from_device),
         actions: [
-          _buildPopButton("CANCEL"),
+          _buildPopButton(_loc.cancel.toUpperCase()),
           _buildActionButton(
-            text: "OK",
-            action: _manager.retrieveAndUploadStoredData()
-          )
+              text: _loc.ok.toUpperCase(),
+              action: () {
+                _manager.retrieveAndUploadStoredData();
+                Navigator.pop(context);
+              })
         ]));
+  }
+
+  // handle parameters file dialog
+  _showParametersFileDialog() {
+    _showServiceDialog(ServiceDialog(
+      title: Text(_loc.parameters_file_title),
+      actions: [
+        _buildPopButton(_loc.cancel.toUpperCase()),
+        Container(width: _screenWidth / 15),
+        _buildActionButton(
+            text: _loc.get.toUpperCase(),
+            action: () {
+              _manager.getParametersFile();
+              Navigator.pop(context);
+            }),
+        _buildActionButton(
+            text: _loc.set.toUpperCase(),
+            action: () {
+              _manager.setParametersFile();
+              Navigator.pop(context);
+            })
+      ],
+    ));
   }
 
   // go to Perform BIT screen
@@ -116,19 +181,21 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 
   _showBadThing() {
-    MyPatToast.show("Go fuck yourself", context);
+    MyPatToast.show("We are not quite here yet...", context);
   }
 
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
-          title: "Main device FW version", action: _showFirmwareDialog),
+          title: "Main device FW version", action: _showFirmwareVersionDialog),
       ServiceOption(
           title: "Retrieve test data from device and upload it to server",
-          action: _retrieveStoredData),
+          action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
-      ServiceOption(title: "Upgrade main device firmware", action: _showBadThing),
-      ServiceOption(title: "Handle parameters file", action: null)
+      ServiceOption(
+          title: "Upgrade main device firmware", action: _showBadThing),
+      ServiceOption(
+          title: "Handle parameters file", action: _showParametersFileDialog)
     ];
 
     _technicianServiceOptions = [

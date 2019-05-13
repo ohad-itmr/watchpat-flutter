@@ -15,6 +15,7 @@ class FileSystemService {
   final String logInputFileName = DefaultSettings.logInputFileName;
   final String logMainFileName = DefaultSettings.logMainFileName;
   final String logOutputFileName = DefaultSettings.logOutputFileName;
+  final String parametersFileName = DefaultSettings.parametersFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -39,6 +40,11 @@ class FileSystemService {
   Future<File> get logOutputFile async {
     final path = await localPath;
     return File('$path/$logOutputFileName');
+  }
+
+  Future<File> get parametersFile async {
+    final path = await localPath;
+    return File('$path/$parametersFileName');
   }
 
   Future<Response> allocateSpace() async {
@@ -91,6 +97,18 @@ class FileSystemService {
     } catch (e) {
       Log.warning(TAG, 'FILES CREATION ERROR: ${e.toString()}');
       return Response(success: false, error: e.toString());
+    }
+  }
+
+  void initParameterFile() async {
+    Log.info(TAG, 'Attempt to create parameter file...');
+    try {
+      File paramFile = await parametersFile;
+      if (paramFile.existsSync()) paramFile.deleteSync();
+      paramFile.createSync();
+      Log.info(TAG, 'PARAMETER FILE CREATED');
+    } catch (e) {
+      Log.warning(TAG, 'PARAMETER FILES CREATION ERROR: ${e.toString()}');
     }
   }
 

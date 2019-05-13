@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
@@ -164,7 +166,6 @@ class ReceivedPacket {
     // todo REMOVE AFTER DEBUG
     return true;
 
-
     if (packetCRC == validationCRC) {
       return true;
     }
@@ -205,9 +206,12 @@ class ReceivedPacket {
 
   int extractParamFileSize() {
     List<int> payload = extractPayload();
-    List<int> bytes = List(4);
+
+    List<int> bytes = List.filled(4, 0, growable: false);
     bytes[2] = payload[3];
     bytes[3] = payload[2];
-    return int.parse(bytes.join());
+    var buffer = new Uint8List.fromList(bytes).buffer;
+    var bdata = new ByteData.view(buffer);
+    return bdata.getInt32(0);
   }
 }

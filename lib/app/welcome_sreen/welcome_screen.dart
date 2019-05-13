@@ -117,12 +117,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         obscureText: !_showPasswordSelected,
                         autofocus: true,
                         keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value != "12345678") {
-                            _formKey.currentState.reset();
-                            return 'Password invalid';
-                          }
-                        },
+//                        validator: (value) {
+//                          if (value != "12345678") {
+//                            _formKey.currentState.reset();
+//                            return 'Password invalid';
+//                          }
+//                        },
                       ),
                     ),
                     CheckboxListTile(

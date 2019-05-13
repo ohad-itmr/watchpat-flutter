@@ -1,17 +1,23 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/ParameterFileHandler.dart';
+import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum ServiceMode { customer, technician }
 
 class ServiceScreenManager extends ManagerBase {
   static const String TAG = "ServiceScreenManager";
+  final S _loc = sl<S>();
 
   Stopwatch _clickTimer = Stopwatch();
   int _clickCounter = 1;
   Timer _countDown;
+
+  ParameterFileHandler _paramFileHandler = sl<ParameterFileHandler>();
 
   PublishSubject<String> _counter = PublishSubject<String>();
 
@@ -21,7 +27,19 @@ class ServiceScreenManager extends ManagerBase {
 
   Observable<ServiceMode> get serviceModesStream => _serviceMode.stream;
 
+  PublishSubject<String> _toasts = PublishSubject<String>();
+
+  Observable<String> get toasts => _toasts.stream;
+
   static PublishSubject<String> _tapEvents = PublishSubject<String>();
+
+  PublishSubject<String> _progressBar = PublishSubject<String>();
+
+  Observable<String> get progressBar => _progressBar.stream;
+
+  StreamSubscription __logFileStatusSub;
+  StreamSubscription _paramFileGetStatusSub;
+  StreamSubscription _paramFileSetStatusSub;
 
   ServiceScreenManager() {
     _tapEvents.stream
@@ -75,7 +93,51 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   retrieveAndUploadStoredData() {
-    print("RETIREVEING AND STUFF");
+    Log.info(TAG, "Retrieving stored data");
+
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.retrieving_stored_test_data));
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getSendStoredDataCmd(),
+        listener: callback);
+    final Timer timer =
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) {
+        _showToast(_loc.retrieve_stored_test_data_failed);
+      }
+    });
+  }
+
+  getParametersFile() {
+    Log.info(TAG, "Get parameters file");
+    sl<FileSystemService>().initParameterFile();
+    _progressBar.sink.add(_loc.getting_param_file);
+    _paramFileHandler.startParamFileGet();
+
+    // subscribe to result
+    _paramFileGetStatusSub =
+        _paramFileHandler.paramFileGetStatusStream.listen((bool isDone) {
+      if (isDone) _hideProgressbarWithMessage(_loc.getting_param_file_success);
+      _paramFileGetStatusSub.cancel();
+    });
+
+    // handle timeout
+    final Timer timer = Timer(Duration(seconds: 30), () {
+      if (!_paramFileHandler.ifFileGetDone)
+        _hideProgressbarWithMessage(_loc.getting_param_file_fail);
+      _paramFileGetStatusSub.cancel();
+    });
+  }
+
+  setParametersFile() {}
+
+  _hideProgressbarWithMessage(String message) {
+    _progressBar.sink.add("");
+    _toasts.sink.add(message);
+  }
+
+  _showToast(String msg) {
+    _toasts.sink.add(msg);
   }
 
   @override
@@ -83,6 +145,8 @@ class ServiceScreenManager extends ManagerBase {
     _serviceMode.close();
     _counter.close();
     _tapEvents.close();
+    _toasts.close();
+    _progressBar.close();
   }
 }
 
@@ -98,6 +162,20 @@ class ServiceDialog {
   final Widget content;
   final List<Widget> actions;
 
-  ServiceDialog(
-      {@required this.title, @required this.content, @required this.actions});
+  ServiceDialog({this.title, this.content, this.actions});
+}
+
+class AckCallback extends OnAckListener {
+  bool _ackReceived = false;
+  final Function action;
+
+  AckCallback({this.action});
+
+  bool get ackReceived => _ackReceived;
+
+  @override
+  void onAckReceived() {
+    _ackReceived = true;
+    if (action != null) action();
+  }
 }

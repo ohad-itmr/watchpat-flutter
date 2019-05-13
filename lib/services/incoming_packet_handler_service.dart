@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/managers/manager_base.dart';
-import 'package:my_pat/services/sftp_service.dart';
+import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/utils/convert_formats.dart';
@@ -75,10 +77,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   // SERVICE OPERATIONS RESULTS STREAM
   PublishSubject<int> _bitResponse = PublishSubject<int>();
+
   Observable<int> get bitResponse => _bitResponse.stream;
-
-
-
 
   void startPacketAnalysis() {
     _testStartTimer.startTimer();
@@ -159,7 +159,9 @@ class IncomingPacketHandlerService extends ManagerBase {
             final currentTestState = sl<SystemStateManager>().testState;
             if (currentTestState == TestStates.NOT_STARTED) {
               sl<SystemStateManager>().setTestState(TestStates.STARTED);
-              sl<SystemStateManager>().changeState.add(StateChangeActions.TEST_STATE_CHANGED);
+              sl<SystemStateManager>()
+                  .changeState
+                  .add(StateChangeActions.TEST_STATE_CHANGED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
               sl<TestingManager>().restartTimers();
@@ -325,18 +327,23 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_PARAMETERS_FILE:
           Log.info(TAG,
               "packet received (PARAMETERS_FILE): ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
+
+          // open parameter file for writing
+
           final int payloadSize = receivedPacket.extractParamFileSize();
+          final List<int> payload =
+              receivedPacket.extractParameterFilePayload();
+
           // todo implement
-//          _paramFileByteStream.write(
-//              receivedPacket.extractParameterFilePayload(), 0, payloadSize);
-//          if (payloadSize < ServiceActivity.PARAM_FILE_DATA_CHUNK) {
-//            Log.info(TAG,">> param EOF!");
-//            getParameterFileHandler().getParamFileResponse(false);
-//
-//            _paramFileByteStream.reset();
-//          } else {
-//            getParameterFileHandler().getParamFileResponse(true);
-//          }
+          File f = await sl<FileSystemService>().parametersFile;
+          f.writeAsBytesSync(payload, mode: FileMode.append);
+          if (payloadSize < ParameterFileHandler.PARAM_FILE_DATA_CHUNK) {
+            Log.info(TAG, ">> param EOF!");
+            sl<ParameterFileHandler>().getParamFileResponse(false);
+            print("PARAMETERS FILE ${f.readAsBytesSync()}");
+          } else {
+            sl<ParameterFileHandler>().getParamFileResponse(true);
+          }
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;

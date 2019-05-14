@@ -40,5 +40,5 @@ class ExternalConfigEnabledModel extends DispatcherResponse {
   ExternalConfigEnabledModel.fromJson(Map<String, dynamic> json)
       : error = json['error'],
         message = json['message'] ?? '',
-        enabled = json["enabled"] ?? false;
+        enabled = json["isEnabled"] ?? false;
 }

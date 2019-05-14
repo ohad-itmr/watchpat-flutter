@@ -143,5 +143,6 @@
   "welcome_to_mypat": "Welcome to myPAT",
   "welcomeContent": "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician.\nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.",
   "fatal_error" : "Fatal error",
-  "device_connection_failed": "Connection with main device failed. \\n\\nPlease contact Itamar Medical support for assistance."
+  "device_connection_failed": "Connection with main device failed. \\n\\nPlease contact Itamar Medical support for assistance.",
+  "device_not_located": "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion."
 }

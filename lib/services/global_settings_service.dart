@@ -14,7 +14,7 @@ class GlobalSettings {
     _configurationResource = resource;
   }
 
-  static GlobalSettingsModel _globalSettings =
+  static GlobalSettingsModel get _globalSettings =>
       GlobalSettingsModel.fromResource(_configurationResource);
 
   static int get uploadDataChunkMaxSize =>

@@ -41,9 +41,9 @@ class GlobalSettingsModel {
   double dataTransferRate = INVALID_D_STATE;
   int minBatteryAskedLevel = INVALID_STATE;
   double minDataForUpload = INVALID_D_STATE;
-  List<String> fwVersionsForUpgrade = [null];
+  List<dynamic> fwVersionsForUpgrade = [null];
   int btScanTimeout = INVALID_STATE;
-  List<String> dispatchersUrls = [null];
+  List<dynamic> dispatchersUrls = [null];
 
   int minTestLength = INVALID_STATE;
   int maxTestLength = INVALID_STATE;
@@ -59,7 +59,7 @@ class GlobalSettingsModel {
         uploadDataAccumulationSize = parsedJson[TAG_UPLOAD_DATA_ACCUMULATION_SIZE] ?? DefaultSettings.uploadDataAccumulationSize,
         minStorageSpace = parsedJson[TAG_MIN_STORAGE_SPACE_MB] ?? DefaultSettings.minStorageSpaceMb,
         demoUrl = parsedJson[TAG_DEMO_URL] ?? DefaultSettings.demoUrl,
-        dataTransferRate = parsedJson[TAG_DATA_TRANSFER_RATE] ?? DefaultSettings.dataTransferRate,
+        dataTransferRate = parsedJson[TAG_DATA_TRANSFER_RATE] != null ? parsedJson[TAG_DATA_TRANSFER_RATE].toDouble() : DefaultSettings.dataTransferRate,
         minBatteryAskedLevel = parsedJson[TAG_MIN_BATTERY_ASKED_LEVEL] ?? DefaultSettings.minBatteryAskedLevel,
         minDataForUpload = parsedJson[TAG_MIN_DATA_FOR_UPLOAD] ?? DefaultSettings.minDataForUpload,
         fwVersionsForUpgrade = parsedJson[TAG_FW_VERSIONS_FOR_UPGRADE] ?? DefaultSettings.fwVersionsForUpgrade,

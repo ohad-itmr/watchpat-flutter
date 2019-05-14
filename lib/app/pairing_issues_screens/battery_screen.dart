@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:my_pat/app/pairing_issues_screens/pairing_issue_screen.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +76,12 @@ class _BatteryScreenState extends State<BatteryScreen> {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, _deviceConnected ? RemoveJewelryScreen.PATH : PairingIssueScreen.PATH);
+//              Navigator.pushNamed(context, _deviceConnected ? RemoveJewelryScreen.PATH : PairingIssueScreen.PATH);
+              if (_deviceConnected) {
+                Navigator.pushNamed(context, RemoveJewelryScreen.PATH);
+              } else {
+                _showNotFoundDialog();
+              }
             },
           ),
           moreActionButton: ButtonModel(
@@ -90,5 +94,22 @@ class _BatteryScreenState extends State<BatteryScreen> {
         total: 6,
       ),
     );
+  }
+
+  _showNotFoundDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(S.of(context).device_not_found),
+            content: Text(S.of(context).device_not_located),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(S.of(context).ok),
+              ),
+            ],
+          );
+        });
   }
 }

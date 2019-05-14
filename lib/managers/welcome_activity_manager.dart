@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/domain_model/response_model.dart';
+import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/service_locator.dart';
 
@@ -62,11 +63,20 @@ class WelcomeActivityManager extends ManagerBase {
     final bool configEnabled =
         await sl<DispatcherService>().checkExternalConfig();
     if (configEnabled) {
+      Log.info(TAG, "External config enabled, getting config from dispatcher");
       // get config from server
-      final Map<String, dynamic> config =
+      final Map<String, dynamic> response =
           await sl<DispatcherService>().getExternalConfig();
+      print(response["config"]);
       // set config
-      GlobalSettings.setExternalConfiguration(config);
+      if (response["error"]) {
+        Log.shout(TAG,
+            "Failed to receive config from dispatcher: ${response["message"]}");
+      } else {
+        Log.info(TAG,
+            "External config received from dispatcher, configuring application");
+        GlobalSettings.setExternalConfiguration(response["config"]);
+      }
     }
   }
 

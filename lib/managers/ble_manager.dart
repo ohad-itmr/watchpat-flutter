@@ -266,7 +266,7 @@ class BleManager extends ManagerBase {
       // todo add implementation
 
     } else {
-      if (name.contains('ITAMAR')) {
+      if (scanResult.advertisementData.localName.contains('ITAMAR')) {
         Log.info(TAG,
             ">>> name on scan: ${scanResult.advertisementData.localName} | name local: ${PrefsProvider.loadDeviceName()}");
 
@@ -284,11 +284,11 @@ class BleManager extends ManagerBase {
   }
 
   void stopScan() {
-    Log.info(TAG, '## STOP SCAN $this');
-    if (_scanSubscription != null) {
-      _scanSubscription.cancel();
-      _scanSubscription = null;
-    }
+    Log.info(TAG, '## STOP SCAN');
+//    if (_scanSubscription != null) {
+//      _scanSubscription.cancel();
+//      _scanSubscription = null;
+//    }
 
     _postScan();
   }

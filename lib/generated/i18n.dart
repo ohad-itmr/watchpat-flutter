@@ -58,6 +58,7 @@ class S implements WidgetsLocalizations {
   String get device_connection_failed => "Connection with main device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
   String get device_log_file_description => "Device log file";
   String get device_not_found => "Device is not found";
+  String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
   String get device_ver_name => "DeviceFWVersion";
   String get digits => "digits";
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";
@@ -181,6 +182,8 @@ class fr extends S {
   String get cancel => "Cancel";
   @override
   String get welcomeTitle => "Bonjour-r-r-r-r";
+  @override
+  String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
   @override
   String get err_flash_test => "Flash test";
   @override

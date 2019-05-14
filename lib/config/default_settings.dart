@@ -27,12 +27,12 @@ class DefaultSettings {
   static final maxTestLengthHours = 10;
   static final sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 95;
-  static final dispatcherLink = "https://wp1-we.itamar-online.com:3335";
+  static final dispatcherLink = "http://mypat.dev.valigar.co.il";
   static final userPinCodeLength = 4;
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;
   static final timeoutTransactionSec = 20;
-  static final emailService = "m.derzhavets@emg-soft.com";
+  static final emailService = "not@working.com";
   static final debugMode = true;
 
   static final demoUrl = "";
@@ -57,7 +57,7 @@ class DefaultSettings {
       'timeoutFtpSec': timeoutFtpSec,
       'timeoutBleSec': timeoutBleSec,
       'timeoutTransactionSec': timeoutTransactionSec,
-      'emailService': emailService,
+      'supportEmail': emailService,
       'debugMode': debugMode,
     };
   }

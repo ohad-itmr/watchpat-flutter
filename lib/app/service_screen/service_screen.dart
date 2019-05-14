@@ -30,6 +30,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   StreamSubscription _progressSub;
   double _screenWidth;
   bool _progressBarShowing = false;
+  bool _operationInProgress = false;
 
   @override
   void initState() {
@@ -94,7 +95,13 @@ class _ServiceScreenState extends State<ServiceScreen> {
               onPressed: () => Navigator.pop(context),
             )
           ],
-          leading: Container(),
+          leading: _operationInProgress
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(Colors.white)))
+              : Container(),
         ),
         body: ListView.separated(
           itemCount: _serviceOptions[widget.mode].length,
@@ -180,6 +187,30 @@ class _ServiceScreenState extends State<ServiceScreen> {
         .push(MaterialPageRoute(builder: (context) => PerformBitScreen()));
   }
 
+  // Send application log file by email
+  _showLogSendingDialog() {
+    _showServiceDialog(ServiceDialog(
+      title: Text(S.of(context).app_log_file_title),
+      content: Text(
+          "${S.of(context).app_log_file_text} ${GlobalSettings.serviceEmailAddress}?"),
+      actions: [
+        _buildPopButton(_loc.cancel.toUpperCase()),
+        _buildActionButton(
+            text: S.of(context).send.toUpperCase(),
+            action: () => _sendLogFileByEmail())
+      ],
+    ));
+  }
+
+  _sendLogFileByEmail() async {
+    Navigator.pop(context);
+    setState(() => _operationInProgress = true);
+    final result = await sl<EmailSenderService>().sendLogFile();
+    MyPatToast.show(
+        "Log file sending: ${result ? 'SUCCESS' : 'FAILED'}", context);
+    setState(() => _operationInProgress = false);
+  }
+
   _showBadThing() {
     MyPatToast.show("We are not quite here yet...", context);
   }
@@ -205,7 +236,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(title: "Set device serial", action: null),
       ServiceOption(title: "Sel LED indication", action: null),
       ServiceOption(title: "Get technical status", action: null),
-      ServiceOption(title: "Export log file by email", action: null),
+      ServiceOption(
+          title: "Export log file by email", action: _showLogSendingDialog),
       ServiceOption(title: "Extract log file from device", action: null),
       ServiceOption(title: "Reset main device", action: null),
       ServiceOption(title: "Ignore device errors", action: null),

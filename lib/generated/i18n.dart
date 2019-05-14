@@ -24,6 +24,8 @@ class S implements WidgetsLocalizations {
   String get acc_registers_description => "ACC registers";
   String get afe_registers_description => "AFE registers";
   String get all_data_transmitted_successfully => "All data transmitted successfully";
+  String get app_log_file_text => "Are you sure you want to send application log file to";
+  String get app_log_file_title => "Application log file";
   String get auth_fail => "Authentication failed";
   String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.";
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
@@ -134,6 +136,7 @@ class S implements WidgetsLocalizations {
   String get scanning_device => "Scanning for device";
   String get select_bit_type => "Select BIT mode";
   String get select_language => "Select language";
+  String get send => "Send";
   String get server_comm_error => "Server communication error, please contact support";
   String get set => "set";
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
@@ -355,6 +358,8 @@ class fr extends S {
   @override
   String get select_bit_type => "Select BIT mode";
   @override
+  String get app_log_file_text => "Are you sure you want to send application log file to";
+  @override
   String get uploadingTitle => "Good Morning";
   @override
   String get error_state => "ERROR STATE";
@@ -394,6 +399,8 @@ class fr extends S {
   String get btnCloseApp => "Close App";
   @override
   String get flash_full => "Device flash is full";
+  @override
+  String get send => "Send";
   @override
   String get chestSensorTitle => "Attach Chest Sensor";
   @override
@@ -436,6 +443,8 @@ class fr extends S {
   String get btnEnter => "Enter";
   @override
   String get getting_param_file_fail => "Getting parameter file: failed";
+  @override
+  String get app_log_file_title => "Application log file";
   @override
   String get err_probe_leds => "Probe LEDs";
   @override

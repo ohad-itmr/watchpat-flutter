@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:date_format/date_format.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/app/service_screen/service_screen.dart';
@@ -173,7 +174,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: loc.welcomeTitle,
+          title: S.of(context).welcomeTitle,
           content: [
             loc.welcomeContent,
           ],

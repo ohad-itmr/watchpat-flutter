@@ -241,7 +241,6 @@ class BleManager extends ManagerBase {
     Log.info(TAG,
         "First connection to device: $isFirstConnection. Looking for name: ${isFirstConnection ? "ITAMAR_UART" : "ITAMAR_${PrefsProvider.loadDeviceSerial()}"}");
 //      _deviceNameToMatch = isFirstConnection ? "ITAMAR_UART" : "ITAMAR_${PrefsProvider.loadDeviceSerial()}";
-//      if (name.contains(nameToMatch)) ...
 
     if (!_preScanChecks()) {
       return;
@@ -269,7 +268,7 @@ class BleManager extends ManagerBase {
     } else {
       if (name.contains('ITAMAR')) {
         Log.info(TAG,
-            ">>> name on scan: $name | name local: ${PrefsProvider.loadDeviceName()}");
+            ">>> name on scan: ${scanResult.advertisementData.localName} | name local: ${PrefsProvider.loadDeviceName()}");
 
         Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
         var currentResults = _scanResultsSubject.value;

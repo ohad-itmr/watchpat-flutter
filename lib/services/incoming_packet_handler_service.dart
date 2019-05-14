@@ -120,8 +120,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
-//      Log.info(TAG,
-//          ">>> New packet: " + ConvertFormats.bytesToHex(receivedPacket.bytes));
+      print("RECEIVED PACKET ${receivedPacket.bytes}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -364,20 +363,16 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   void _recordPacket() {
     if (_incomingPacketLength >= DeviceCommands.PACKET_CHUNK_SIZE) {
-//      print('_recordPacket $_incomingData');
       _receivedByteStream.addAll(_incomingData);
 //      _receivedByteStream.write(_incomingData, 0, DeviceCommands.PACKET_CHUNK_SIZE);
       _incomingPacketLength -= _incomingData.length;
     } else {
-      print('_recordPacket_2 $_incomingData');
       _receivedByteStream
           .addAll(_incomingData.sublist(0, _incomingPacketLength));
       _incomingPacketLength = 0;
     }
 
     if (_incomingPacketLength == 0) {
-      print('_recordPacket_2 PacketState.PACKET_COMPLETE');
-
       _packetState = PacketState.PACKET_COMPLETE;
     }
   }

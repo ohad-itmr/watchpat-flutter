@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
 import 'package:my_pat/widgets/interactive_title.dart';
+import 'package:my_pat/widgets/popup_menu_button.dart';
 import 'package:my_pat/widgets/service_counter.dart';
 
 class MainTemplate extends StatelessWidget {
@@ -21,26 +22,28 @@ class MainTemplate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: InteractiveTitle(title: title),
         elevation: 0,
-        leading: showBack
-            ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                tooltip: 'Back',
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            : Container(),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            showBack
+                ? IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    tooltip: 'Back',
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                : Container(width: 0.0, height: 0.0),
+            showMenu
+                ? MypatPopupMenuButton()
+                : Container(width: 0.0, height: 0.0)
+          ],
+        ),
         actions: <Widget>[
           ServiceCounter(),
-          showMenu
-              ? IconButton(
-                  icon: Icon(Icons.menu),
-                  tooltip: 'Main Menu',
-                  onPressed: () {},
-                )
-              : Container(height: 0.0, width: 0.0)
         ],
         flexibleSpace: AppBarDecoration(),
       ),

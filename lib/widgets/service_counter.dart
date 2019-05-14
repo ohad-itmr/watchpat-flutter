@@ -10,8 +10,12 @@ class ServiceCounter extends StatelessWidget {
       stream: _manager.counter,
       initialData: "",
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        return Center(
-          child: Text(snapshot.data),
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Text(snapshot.data,
+                style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
         );
       },
     );

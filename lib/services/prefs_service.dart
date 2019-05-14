@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,6 +44,7 @@ class PrefsNames {
   static const String SFTP_PASSWORD_KEY =
       DefaultSettings.appName + ".sftppassword";
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
+  static const String LOCALE_CODE = "locale.code";
 }
 
 class PrefsService {
@@ -283,5 +285,18 @@ class PrefsProvider {
 
   static Future<void> saveTestDataFilename(String filename) async {
     await PrefsService.prefs.setString(PrefsNames.TEST_DATA_FILENAME, filename);
+  }
+
+  //
+  // Locale
+  //
+  static Future<void> saveLocale(Locale newLocale) async {
+    final String localeCode = newLocale.toString().replaceAll("_", "");
+    await PrefsService.prefs.setString(PrefsNames.LOCALE_CODE, localeCode);
+  }
+
+  static Locale loadLocale() {
+    final String code = PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
+    return Locale(code, "");
   }
 }

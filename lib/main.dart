@@ -1,4 +1,3 @@
-
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,8 +16,6 @@ void main() async {
 
   await setupServices();
 
-
-
   runApp(AppComponent());
 }
 
@@ -27,21 +24,32 @@ class AppComponent extends StatefulWidget {
 
   @override
   State createState() => _AppComponentState();
+
+  static void setLocale(BuildContext context, Locale newLocale) async {
+    await PrefsProvider.saveLocale(newLocale);
+    _AppComponentState state =
+        context.ancestorStateOfType(TypeMatcher<_AppComponentState>());
+    state.changeLocale();
+  }
 }
 
 class _AppComponentState extends State<AppComponent> {
   Router router;
+  Locale _locale = PrefsProvider.loadLocale();
 
   void _initRouter() {
     router = new Router();
     AppRoutes.configureRoutes(router);
   }
 
+  void changeLocale() {
+    setState(() => _locale = PrefsProvider.loadLocale());
+  }
+
   @override
   void initState() {
     super.initState();
     _initRouter();
-
 
     // todo for development only
     PrefsProvider.setIgnoreDeviceErrors(true);
@@ -52,6 +60,7 @@ class _AppComponentState extends State<AppComponent> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: DefaultSettings.appName,
+      locale: _locale,
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

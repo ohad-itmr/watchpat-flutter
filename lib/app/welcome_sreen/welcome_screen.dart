@@ -194,6 +194,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           action: () {
             setState(() => _nextIsPressed = true);
             _handleNext();
+
+//            Navigator.of(context).pushNamed(RecordingScreen.PATH);
           },
         ),
         moreActionButton: ButtonModel(

@@ -17,8 +17,8 @@ class PatientCredentialsModel {
 
   PatientCredentialsModel.fromJson(Map<String, dynamic> json)
       : _host = json['host'],
-        _root = json['root'],
-        _port = int.parse(json['port']),
+        _root = json['link'],
+        _port = json['port'],
         _username = json['username'],
         _password = json['password'];
 }

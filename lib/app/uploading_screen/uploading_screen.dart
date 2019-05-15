@@ -38,54 +38,47 @@ class _UploadingScreenState extends State<UploadingScreen> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     return MainTemplate(
-        showBack: false,
-        showMenu: false,
-        body: Stack(
+      showBack: false,
+      showMenu: false,
+      body: BodyTemplate(
+        topBlock: BlockTemplate(
+          type: BlockType.image,
+          imageName: 'uploading.png',
+        ),
+        bottomBlock: Column(
           children: <Widget>[
-            BodyTemplate(
-              topBlock: BlockTemplate(
-                type: BlockType.image,
-                imageName: 'uploading.png',
-              ),
-              bottomBlock: Column(
-                children: <Widget>[
-                  BlockTemplate(
-                    type: BlockType.text,
-                    title: loc.uploadingTitle,
-                    content: [loc.uploadingContent],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: width / 6, right:  width / 6, top: width / 10),
-                    child: MyPatProgressIndicator(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Text("Please wait"),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: StreamBuilder(
-                      stream: _dataWritingService.remainingDataSecondsStream,
-                      initialData: 0,
-                      builder: (_, AsyncSnapshot<int> snapshot) {
-                        return Text(
-                          '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
-                          style: Theme.of(context).textTheme.title,
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-              buttons: Container(),
-              showSteps: false,
+            BlockTemplate(
+              type: BlockType.text,
+              title: loc.uploadingTitle,
+              content: [loc.uploadingContent],
             ),
-            Positioned(
-              right: 10.0,
-              top: 10.0,
-              child: ConnectionIndicators(),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: width / 6, right: width / 6, top: width / 10),
+              child: MyPatProgressIndicator(),
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text("Please wait"),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: StreamBuilder(
+                stream: _dataWritingService.remainingDataSecondsStream,
+                initialData: 0,
+                builder: (_, AsyncSnapshot<int> snapshot) {
+                  return Text(
+                    '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
+                    style: Theme.of(context).textTheme.title,
+                  );
+                },
+              ),
+            )
           ],
-        ));
+        ),
+        buttons: Container(),
+        showSteps: false,
+      ),
+    );
   }
 }

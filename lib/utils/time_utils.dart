@@ -51,7 +51,7 @@ class TimeUtils {
     double s = seconds % 60;
     double m = (seconds / 60) % 60;
     double h = (seconds / (60 * 60)) % 24;
-    return sprintf("%d:%02d:%02d", [h.toInt(),m.toInt(),s.toInt()]);
+    return sprintf("%02d:%02d:%02d", [h.toInt(),m.toInt(),s.toInt()]);
   }
 }
 

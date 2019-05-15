@@ -80,46 +80,43 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final S loc = sl<S>();
 
-    return Flexible(
-      flex: 2,
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(bottom: 10.0),
-            child: Text(
-              loc.recordingTitle,
-              style: TextStyle(
-                fontSize: Theme.of(context).textTheme.title.fontSize,
-                color: Colors.white,
-              ),
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          child: Text(
+            loc.recordingTitle,
+            style: TextStyle(
+              fontSize: Theme.of(context).textTheme.title.fontSize,
+              color: Colors.white,
             ),
           ),
-          Container(
-              margin: EdgeInsets.only(bottom: 10.0),
-              child: StreamBuilder(
-                stream: sl<TestingManager>().elapsedTimeStream,
-                initialData: 0,
-                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
-                      style: TextStyle(
-                        fontSize: Theme.of(context).textTheme.title.fontSize,
-                        color: Colors.white,
-                      ),
-                    );
-                  }
-                },
-              )),
-          ButtonsBlock(
-            moreActionButton: null,
-            nextActionButton: ButtonModel(
-              action: () => _checkTestState(context),
-              text: loc.btnEndRecording,
-            ),
-          )
-        ],
-      ),
+        ),
+        Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: StreamBuilder(
+              stream: sl<TestingManager>().elapsedTimeStream,
+              initialData: 0,
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
+                    style: TextStyle(
+                      fontSize: Theme.of(context).textTheme.title.fontSize,
+                      color: Colors.white,
+                    ),
+                  );
+                }
+              },
+            )),
+        ButtonsBlock(
+          moreActionButton: null,
+          nextActionButton: ButtonModel(
+            action: () => _checkTestState(context),
+            text: loc.btnEndRecording,
+          ),
+        )
+      ],
     );
   }
 }

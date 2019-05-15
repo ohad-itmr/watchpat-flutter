@@ -51,11 +51,11 @@ var recordingRouteHandler = Handler(
 
 var removeJewelryRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  if (sl<SystemStateManager>().dispatcherState ==
-          DispatcherStates.DISCONNECTED &&
-      PrefsProvider.loadDeviceSerial() != null) {
-    sl<DispatcherService>().sendGetConfig(PrefsProvider.loadDeviceSerial());
-  }
+//  if (sl<SystemStateManager>().dispatcherState ==
+//          DispatcherStates.DISCONNECTED &&
+//      PrefsProvider.loadDeviceSerial() != null) {
+//    sl<DispatcherService>().sendGetConfig(PrefsProvider.loadDeviceSerial());
+//  }
   return RemoveJewelryScreen();
 });
 

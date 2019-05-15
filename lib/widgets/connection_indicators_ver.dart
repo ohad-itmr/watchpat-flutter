@@ -20,10 +20,10 @@ class _AppbarConnectionIndicatorsState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Container(height: 2.0),
+          Container(),
           _buildLed(color: Theme.of(context).accentColor, indicator: _BT),
           _buildLed(color: Theme.of(context).primaryColor, indicator: _SFTP),
-          Container(height: 2.0),
+          Container(),
         ],
       ),
     );

@@ -26,7 +26,7 @@ class AuthenticateUserResponseModel extends DispatcherResponse {
 
   AuthenticateUserResponseModel.fromJson(Map<String, dynamic> json)
       : error = json['error'],
-        message = json['message'] ?? '',
+        message = json['message'].toString() ?? '',
         credentials = !json['error']
             ? PatientCredentialsModel.fromJson(json['credentials'])
             : null;

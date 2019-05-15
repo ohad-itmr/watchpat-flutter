@@ -98,7 +98,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
       if (_isValidSignature()) {
         if (!_setPacketSize()) {
-          Log.shout(TAG, "Wrong packet size " + ConvertFormats.bytesToHex(data));
+          Log.shout(
+              TAG, "Wrong packet size " + ConvertFormats.bytesToHex(data));
           resetPacket();
           return;
         }
@@ -187,21 +188,18 @@ class IncomingPacketHandlerService extends ManagerBase {
           PrefsProvider.setIsFirstDeviceConnection(false);
 
           // start-session-confirm packet received
-          // retrieve device configuration
           sl<DeviceConfigManager>()
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
           Log.info(TAG, "### start session confirm: device configuration set");
           if (_checkStartSessionErrors(receivedPacket.opCodeDependent)) {
             PrefsProvider.saveDeviceSerial(
                 sl<DeviceConfigManager>().deviceConfig.deviceSerial);
-            Log.info(TAG,
-                "### start session confirm: device serial saved ${PrefsProvider.getIsFirstDeviceConnection()}");
+            Log.info(TAG, "### start session confirm: device serial saved");
 
             if (PrefsProvider.getIsFirstDeviceConnection() != null &&
                 PrefsProvider.getIsFirstDeviceConnection()) {
-
-              sl<DispatcherService>()
-                  .sendGetConfig(PrefsProvider.loadDeviceSerial());
+//              sl<DispatcherService>()
+//                  .sendGetConfig(PrefsProvider.loadDeviceSerial());
 
               Log.info(TAG, "first connection to device");
               Log.info(TAG,

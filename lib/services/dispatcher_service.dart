@@ -30,7 +30,7 @@ class DispatcherService {
   final String _checkExternalConfigEndpoint = '$_dispatcherUrl/watchpat/isConfigEnabled';
   final String _getDefaultConfigEndpoint = '$_dispatcherUrl/watchpat/getDefaultConfig';
   final String _getConfigEndpoint = '$_dispatcherUrl/api/getConfiguration';
-  final String _authenticationEndPoint = '$_dispatcherUrl/api/authentication';
+  final String _authenticationEndPoint = '$_dispatcherUrl/watchpat/authenticate';
   final String _testCompleteEndpoint = '$_dispatcherUrl/test/done';
 
   Future<bool> checkDispatcherAlive() async {
@@ -50,16 +50,16 @@ class DispatcherService {
     return response.data;
   }
 
-  void sendGetConfig(String serialNumber) async {
-    Response response = await _dio.get('$_getConfigEndpoint/$serialNumber');
-    sl<UserAuthenticationService>()
-        .setConfigParams(GetConfigurationResponseModel.fromJson(response.data));
-  }
+//  void sendGetConfig(String serialNumber) async {
+//    Response response = await _dio.get('$_getConfigEndpoint/$serialNumber');
+//    sl<UserAuthenticationService>()
+//        .setConfigParams(GetConfigurationResponseModel.fromJson(response.data));
+//  }
 
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
       String serialNumber, String pin) async {
     Response response = await _dio
-        .post(_authenticationEndPoint, data: {"sn": serialNumber, "pin": pin});
+        .post("$_authenticationEndPoint/$serialNumber", data: {"pin" : pin, "client": "WatchPAT", "version": "0.0.1"});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 

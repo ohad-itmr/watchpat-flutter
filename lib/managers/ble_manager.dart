@@ -285,10 +285,10 @@ class BleManager extends ManagerBase {
 
   void stopScan() {
     Log.info(TAG, '## STOP SCAN');
-//    if (_scanSubscription != null) {
-//      _scanSubscription.cancel();
-//      _scanSubscription = null;
-//    }
+    if (_scanSubscription != null) {
+      _scanSubscription.cancel();
+      _scanSubscription = null;
+    }
 
     _postScan();
   }

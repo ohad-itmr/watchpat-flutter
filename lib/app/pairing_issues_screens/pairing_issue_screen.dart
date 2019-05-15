@@ -45,7 +45,6 @@ class _PairingIssueScreenState extends State<PairingIssueScreen> {
 
   @override
   void deactivate() {
-    print("DEAKTEVEITAAAAAAAAA");
     _deviceConnectionSub.cancel();
     super.deactivate();
   }

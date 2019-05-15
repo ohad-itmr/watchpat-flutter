@@ -93,6 +93,7 @@
   "parameters_file_description": "Parameters file",
   "getting_param_file_success": "Getting parameter file: success",
   "getting_param_file_fail": "Getting parameter file: failed",
+  "not_enough_test_data" : "Application has not collected enough test data. You can stop test in:",
   "patient_msg1": "You are advised to leave the charger plugged in during the entire test procedure and close unused applications before starting test procedure",
   "patient_msg2": "Please don't close myPAT application during test procedure",
   "pinTitle": "Enter Pin",

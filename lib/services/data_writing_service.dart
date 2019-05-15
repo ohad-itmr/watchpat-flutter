@@ -45,8 +45,10 @@ class DataWritingService {
 
   void _handleTestState(TestStates state) {
     switch (state) {
+      case TestStates.STOPPED:
+        startRemainingPacketsTimer();
+        break;
       case TestStates.ENDED:
-        _reportRemainingDataProgress();
         _closeFileWriting();
         break;
       default:
@@ -79,7 +81,6 @@ class DataWritingService {
     final int necessaryPackets = PrefsProvider.loadTestElapsedTime() *
         (GlobalSettings.dataTransferRate ~/ 60);
     _remainingNecessaryPackets = necessaryPackets - receivedPackets;
-
   }
 
   void _reportRemainingDataProgress() {
@@ -87,14 +88,18 @@ class DataWritingService {
 
     _remainingReceivedPackets++;
 
-    print("REMAINING PACKETS: $_remainingReceivedPackets / $_remainingNecessaryPackets");
+    print(
+        "REMAINING PACKETS: $_remainingReceivedPackets / $_remainingNecessaryPackets");
 
-    final int deltaPackets = _remainingNecessaryPackets - _remainingReceivedPackets;
+    final int deltaPackets =
+        _remainingNecessaryPackets - _remainingReceivedPackets;
     final int secondsToFullData =
         deltaPackets ~/ (GlobalSettings.dataTransferRate ~/ 60);
-    _remainingDataSeconds.sink.add(secondsToFullData > 0 ? secondsToFullData : 0);
+    _remainingDataSeconds.sink
+        .add(secondsToFullData > 0 ? secondsToFullData : 0);
 
-    final double fullDataProgress = _remainingReceivedPackets / _remainingNecessaryPackets;
+    final double fullDataProgress =
+        _remainingReceivedPackets / _remainingNecessaryPackets;
     _remainingDataProgress.sink.add(fullDataProgress);
   }
 

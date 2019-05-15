@@ -23,6 +23,7 @@ enum TestStates {
   INTERRUPTED,
   RESUMED,
   MINIMUM_PASSED,
+  STOPPED,
   ENDED
 }
 enum DataTransferStates {
@@ -132,6 +133,7 @@ class SystemStateManager extends ManagerBase {
     "Interrupted",
     "Resumed",
     "Minimum passed",
+    "Stopped",
     "Ended"
   ];
 

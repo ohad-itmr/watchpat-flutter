@@ -93,7 +93,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
-      Log.info(TAG, "Handling new packet  $_packetState");
+      print("Handling new packet  $_packetState");
       _packetState = PacketState.HANDLING_PACKET;
 
       if (_isValidSignature()) {
@@ -122,6 +122,7 @@ class IncomingPacketHandlerService extends ManagerBase {
       final int packetType = receivedPacket.packetType;
 
       print("RECEIVED PACKET ${receivedPacket.bytes}");
+      Log.info(TAG, "Received packet, length: ${receivedPacket.bytes.length}, content: ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -362,7 +363,6 @@ class IncomingPacketHandlerService extends ManagerBase {
   void _recordPacket() {
     if (_incomingPacketLength >= DeviceCommands.PACKET_CHUNK_SIZE) {
       _receivedByteStream.addAll(_incomingData);
-//      _receivedByteStream.write(_incomingData, 0, DeviceCommands.PACKET_CHUNK_SIZE);
       _incomingPacketLength -= _incomingData.length;
     } else {
       _receivedByteStream
@@ -395,8 +395,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
     _incomingPacketLength = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]);
-    Log.info(TAG,
-        '--------------------------->_setPacketSize $_incomingPacketLength');
+    print('--------------------------->_setPacketSize $_incomingPacketLength');
 
     return _incomingPacketLength >= 0;
   }

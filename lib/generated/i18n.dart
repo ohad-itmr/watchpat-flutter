@@ -108,6 +108,7 @@ class S implements WidgetsLocalizations {
   String get mypat_device => "myPAT Device";
   String get no_inet_connection => "Internet connection not available";
   String get none => "None";
+  String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
   String get ok => "Ok";
   String get parameters_file_description => "Parameters file";
   String get parameters_file_title => "Parameters file";
@@ -365,6 +366,8 @@ class fr extends S {
   String get error_state => "ERROR STATE";
   @override
   String get all_data_transmitted_successfully => "All data transmitted successfully";
+  @override
+  String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
   @override
   String get parameters_file_write_failed => "Parameters file write failed";
   @override

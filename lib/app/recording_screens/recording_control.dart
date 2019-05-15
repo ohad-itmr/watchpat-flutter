@@ -36,8 +36,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(
-                    "Application didn't collect enough test data. You can stop test in:"),
+                Text(S.of(context).not_enough_test_data),
                 StreamBuilder(
                   stream: sl<TestingManager>().dataTimerStream,
                   initialData: GlobalSettings.minTestLengthSeconds,
@@ -68,7 +67,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("OK"),
+              child: Text(S.of(context).ok.toUpperCase()),
             )
           ],
         );
@@ -78,14 +77,12 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final S loc = sl<S>();
-
     return Column(
       children: <Widget>[
         Container(
           margin: EdgeInsets.only(bottom: 10.0),
           child: Text(
-            loc.recordingTitle,
+            S.of(context).recordingTitle,
             style: TextStyle(
               fontSize: Theme.of(context).textTheme.title.fontSize,
               color: Colors.white,
@@ -113,7 +110,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
           moreActionButton: null,
           nextActionButton: ButtonModel(
             action: () => _checkTestState(context),
-            text: loc.btnEndRecording,
+            text: S.of(context).btnEndRecording,
           ),
         )
       ],

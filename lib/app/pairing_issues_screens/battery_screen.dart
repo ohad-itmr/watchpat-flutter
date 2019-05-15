@@ -38,7 +38,6 @@ class _BatteryScreenState extends State<BatteryScreen> {
 
   @override
   void deactivate() {
-    print("DEAKTEVEITAAAAAAAAA");
     _deviceConnectionSub.cancel();
     super.deactivate();
   }

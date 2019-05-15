@@ -21,12 +21,13 @@ class TimeUtils {
   static int lastPacketTime = 0;
 
   static void packetCounterTick() async {
-    await PrefsProvider.incTestPacketCount();
-    final int testPacketCount = await PrefsProvider.loadTestPacketCount();
+    PrefsProvider.incTestPacketCount();
+    final int testPacketCount = PrefsProvider.loadTestPacketCount();
     if (testPacketCount > GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
       sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
-    } else if (testPacketCount > GlobalSettings.maxTestLengthSeconds) {
-      sl<SystemStateManager>().setTestState(TestStates.ENDED);
+    } else if (testPacketCount > GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
+//      sl<SystemStateManager>().setTestState(TestStates.ENDED);
+
     }
   }
 

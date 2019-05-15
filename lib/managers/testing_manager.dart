@@ -74,7 +74,8 @@ class TestingManager extends ManagerBase {
       Log.info(TAG, "### Sending STOP aquisition command");
       sl<CommandTaskerManager>()
           .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
-      sl<DataWritingService>().startRemainingPacketsTimer();
+      _systemStateManager.setTestState(TestStates.STOPPED);
+//      sl<DataWritingService>().startRemainingPacketsTimer();
       _elapsedTimer.cancel();
       return true;
     } else {

@@ -99,14 +99,11 @@ class SftpService {
         passwordOrKey: _authService.sftpPassword);
 
     if (_currentTestState != TestStates.RESUMED) {
-      String stamp = DateFormat("yyyy.MM.dd_HH:mm:ss").format(DateTime.now());
-      await PrefsProvider.saveTestDataFilename(
-          "${stamp}_${DefaultSettings.serverDataFileName}");
       await PrefsProvider.saveTestDataUploadingOffset(0);
     }
 
-    _sftpFilePath = PrefsProvider.loadSftpPath();
-    _sftpFileName = PrefsProvider.loadTestDataFilename();
+    _sftpFilePath = _authService.sftPath;
+    _sftpFileName = DefaultSettings.serverDataFileName;
     _tempDir = await getTemporaryDirectory();
 
     _dataFile = await _fileSystem.localDataFile;
@@ -171,8 +168,7 @@ class SftpService {
             recordingOffset: currentRecordingOffset);
 
         // Check if test ended and all data is uploaded
-        final int newUploadingOffset =
-            PrefsProvider.loadTestDataUploadingOffset();
+        final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
         if (currentRecordingOffset == newUploadingOffset &&
             _currentTestState == TestStates.ENDED) {
           _currentTransferState = DataTransferStates.ALL_TRANSFERRED;

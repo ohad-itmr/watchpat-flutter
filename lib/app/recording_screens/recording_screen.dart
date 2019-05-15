@@ -15,30 +15,6 @@ class RecordingScreen extends StatelessWidget {
     return MainTemplate(
         showBack: false,
         showMenu: false,
-//        body: Stack(
-//          children: <Widget>[
-//            Container(
-//              decoration: BoxDecoration(
-//                color: Colors.black,
-//                image: DecorationImage(
-//                  image: AssetImage('assets/sleepgif.gif'),
-//                  fit: BoxFit.cover,
-//                ),
-//              ),
-//            ),
-////            Positioned(
-////              right: 10.0,
-////              top: 10.0,
-////              child: ConnectionIndicators(),
-////            ),
-//            Column(
-//              children: <Widget>[
-//                Flexible(flex: 7, child: Container()),
-//                RecordingControl(),
-//              ],
-//            )
-//          ],
-//        ));
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[

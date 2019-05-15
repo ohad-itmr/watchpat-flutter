@@ -166,7 +166,8 @@ class PrefsProvider {
 
   static bool getIsFirstDeviceConnection() {
     return PrefsService.prefs
-        .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY) ?? true;
+            .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY) ??
+        true;
   }
 
   //
@@ -296,7 +297,15 @@ class PrefsProvider {
   }
 
   static Locale loadLocale() {
-    final String code = PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
+    final String code =
+        PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
     return Locale(code, "");
+  }
+
+  //
+  // Clear all saved preferences
+  //
+  static clearAll() {
+    PrefsService.prefs.clear();
   }
 }

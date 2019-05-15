@@ -9,7 +9,7 @@ class DefaultSettings {
   static final sftpDataDir = 'myPAT_test_data';
 
   static final dataFileName = 'localData.dat';
-  static final serverDataFileName = 'localData.dat';
+  static final serverDataFileName = 'sleep.dat';
   static final serverInfoFileName = 'TestInformation.txt';
   static final logMainFileName = 'mypat_main_log.txt';
   static final logInputFileName = 'mypat_log_input.txt';

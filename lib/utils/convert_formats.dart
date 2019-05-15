@@ -5,7 +5,8 @@ class ConvertFormats {
     return Uint8List.fromList(arr.map((i) => int.parse(i.toRadixString(16))));
   }
 
-  static List<int> longToByteList(int long, {int size = 8, bool reversed = true}) {
+  static List<int> longToByteList(int long,
+      {int size = 8, bool reversed = true}) {
     List<int> byteList = List(size);
     for (var i = 0; i < size; i++) {
       byteList[i] = 0;
@@ -31,5 +32,11 @@ class ConvertFormats {
     String result = '';
     bytes.forEach((byte) => result = result + byte.toRadixString(16));
     return result;
+  }
+
+  static int intFromBytes(List<int> bytes) {
+    var buffer = new Uint8List.fromList(bytes.reversed.toList()).buffer;
+    var bdata = new ByteData.view(buffer);
+    return bdata.getInt32(0);
   }
 }

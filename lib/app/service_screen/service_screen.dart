@@ -103,10 +103,19 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           new AlwaysStoppedAnimation<Color>(Colors.white)))
               : Container(),
         ),
-        body: ListView.separated(
-          itemCount: _serviceOptions[widget.mode].length,
-          itemBuilder: _buildOptionTile,
-          separatorBuilder: (_, __) => Divider(),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/gears_primary.png'),
+              colorFilter: ColorFilter.mode(
+                  Color.fromRGBO(255, 255, 255, 0.2), BlendMode.modulate),
+            ),
+          ),
+          child: ListView.separated(
+            itemCount: _serviceOptions[widget.mode].length,
+            itemBuilder: _buildOptionTile,
+            separatorBuilder: (_, __) => Divider(),
+          ),
         ));
   }
 
@@ -202,6 +211,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ));
   }
 
+  // Reset application
+
   _sendLogFileByEmail() async {
     Navigator.pop(context);
     setState(() => _operationInProgress = true);
@@ -241,6 +252,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(title: "Extract log file from device", action: null),
       ServiceOption(title: "Reset main device", action: null),
       ServiceOption(title: "Ignore device errors", action: null),
+      ServiceOption(title: "Reset application", action: null),
     ];
     _serviceOptions = {
       ServiceMode.customer: _customerServiceOptions,

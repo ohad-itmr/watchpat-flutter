@@ -35,10 +35,14 @@ class ReceivedPacket {
           bytes[PACKET_OPCODE_STARTING_BYTE + 1],
           bytes[PACKET_OPCODE_STARTING_BYTE]
         ]),
-        identifier = ConvertFormats.byteArrayToHex(bytes
+//        identifier = ConvertFormats.byteArrayToHex(bytes
+//            .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
+//                PACKET_IDENTIFIER_STARTING_BYTE + 4)
+//            .reversed
+//            .toList()),
+        identifier = ConvertFormats.intFromBytes(bytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
-                PACKET_IDENTIFIER_STARTING_BYTE + 4)
-            .reversed
+            PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
         _len = ConvertFormats.byteArrayToHex(bytes
             .sublist(PACKET_SIZE_STARTING_BYTE, PACKET_SIZE_STARTING_BYTE + 2)
@@ -156,8 +160,6 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
     int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
-//    Log.info(TAG, '-------------------------->${bytes.toList()}');
-    Log.info(TAG, '--------------------------> ${bytes.toList().length}');
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;

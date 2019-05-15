@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
+import 'package:my_pat/widgets/connection_indicators_ver.dart';
 import 'package:my_pat/widgets/interactive_title.dart';
 import 'package:my_pat/widgets/popup_menu_button.dart';
 import 'package:my_pat/widgets/service_counter.dart';
@@ -44,6 +45,7 @@ class MainTemplate extends StatelessWidget {
         ),
         actions: <Widget>[
           ServiceCounter(),
+          AppbarConnectionIndicators()
         ],
         flexibleSpace: AppBarDecoration(),
       ),

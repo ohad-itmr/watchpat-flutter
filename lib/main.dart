@@ -5,7 +5,6 @@ import 'package:my_pat/app/app_routes.dart';
 import 'package:my_pat/config/app_theme.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/service_locator.dart' as prefix0;
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {

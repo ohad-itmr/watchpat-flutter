@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/time_utils.dart';
-import 'package:my_pat/widgets/connection_indicators.dart';
+import 'package:my_pat/widgets/connection_indicators_hor.dart';
 import 'package:my_pat/widgets/mypat_progress_indicator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart';

@@ -159,15 +159,15 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
-    int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
-//    int packetCRC = ConvertFormats.int16FromBytes([crcByte2, crcByte1]);
+//    int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
+    int packetCRC = ConvertFormats.twoBytesToInt(byte1: crcByte1, byte2: crcByte2);
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = crcByte2;
 
     // todo REMOVE AFTER DEBUG
-    return true;
+//    return true;
 
     if (packetCRC == validationCRC) {
       return true;

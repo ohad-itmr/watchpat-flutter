@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+
 class ConvertFormats {
   static Uint8List intListToBinList(List<int> arr) {
     return Uint8List.fromList(arr.map((i) => int.parse(i.toRadixString(16))));
@@ -40,9 +42,13 @@ class ConvertFormats {
     return bdata.getInt32(0);
   }
 
-  static int int16FromBytes(List<int> bytes) {
-    var buffer = new Uint8List.fromList(bytes.reversed.toList()).buffer;
+  static int twoBytesToInt({@required int byte1, @required int byte2}) {
+    List<int> bytes = List.filled(4, 0, growable: false);
+    bytes[2] = byte2;
+    bytes[3] = byte1;
+    var buffer = new Uint8List.fromList(bytes).buffer;
     var bdata = new ByteData.view(buffer);
-    return bdata.getInt16(0);
+    return bdata.getInt32(0);
   }
+
 }

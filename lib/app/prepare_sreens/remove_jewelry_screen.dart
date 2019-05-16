@@ -13,7 +13,7 @@ class RemoveJewelryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
-      showBack: true,
+      showBack: false,
       showMenu: false,
       body: BodyTemplate(
         topBlock: BlockTemplate(

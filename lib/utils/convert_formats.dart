@@ -34,9 +34,15 @@ class ConvertFormats {
     return result;
   }
 
-  static int intFromBytes(List<int> bytes) {
+  static int int32FromBytes(List<int> bytes) {
     var buffer = new Uint8List.fromList(bytes.reversed.toList()).buffer;
     var bdata = new ByteData.view(buffer);
     return bdata.getInt32(0);
+  }
+
+  static int int16FromBytes(List<int> bytes) {
+    var buffer = new Uint8List.fromList(bytes.reversed.toList()).buffer;
+    var bdata = new ByteData.view(buffer);
+    return bdata.getInt16(0);
   }
 }

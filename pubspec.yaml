@@ -27,14 +27,17 @@ dependencies:
   mailer: ^2.3.0
   fluttertoast: ^3.0.4
 
-  #  battery: ^0.3.0+1
-#  ssh: ^0.0.3
-
+#  battery:
+#    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/
   battery:
-    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/
-
+    git:
+      url: https://github.com/derzhavets/plugins
+      path: packages/battery
+#  ssh:
+#    path: ../../../../derzhavets/projects/flutter_ssh/
   ssh:
-    path: ../../../../derzhavets/projects/flutter_ssh/
+    git:
+      url: https://github.com/derzhavets/flutter_ssh
 
 
   cupertino_icons: ^0.1.2
@@ -54,6 +57,7 @@ flutter:
     - assets/
     - assets/carousel/
     - assets/indicator/
+    - assets/raw/watchpat_params.ini
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

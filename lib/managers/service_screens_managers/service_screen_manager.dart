@@ -129,7 +129,11 @@ class ServiceScreenManager extends ManagerBase {
     });
   }
 
-  setParametersFile() {}
+  setParametersFile() {
+    Log.info(TAG, "Set parameters file");
+
+    _paramFileHandler.startParamFileSet();
+  }
 
   _hideProgressbarWithMessage(String message) {
     _progressBar.sink.add("");

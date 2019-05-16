@@ -15,6 +15,8 @@ class PrefsNames {
   static const String USER_PIN_CODE = DefaultSettings.appName + ".userpincode";
   static const String DEVICE_SERIAL_KEY =
       DefaultSettings.appName + ".deviceserial";
+  static const String DEVICE_UUID_KEY =
+      DefaultSettings.appName + ".device.uuid";
   static const String DEVICE_NAME_KEY = DefaultSettings.appName + ".devicename";
   static const String DEVICE_ADDRESS_KEY =
       DefaultSettings.appName + ".deviceaddress";
@@ -132,6 +134,17 @@ class PrefsProvider {
 
   static String loadDeviceSerial() {
     return PrefsService.prefs.getString(PrefsNames.DEVICE_SERIAL_KEY);
+  }
+
+  //
+  // Device UUID
+  //
+  static void saveDeviceUUID(String uuid) async {
+    await PrefsService.prefs.setString(PrefsNames.DEVICE_UUID_KEY, uuid);
+  }
+
+  static String loadDeviceUUID() {
+    return PrefsService.prefs.getString(PrefsNames.DEVICE_UUID_KEY) ?? '';
   }
 
   //

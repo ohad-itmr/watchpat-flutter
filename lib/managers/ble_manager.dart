@@ -44,7 +44,6 @@ class BleManager extends ManagerBase {
   // Device name to match regarding of whether this is first connection or not
   String _deviceNameToMatch;
 
-
   BleManager() {
     lang = sl<S>();
     _incomingPacketHandler = sl<IncomingPacketHandlerService>();
@@ -106,7 +105,9 @@ class BleManager extends ManagerBase {
         if (sysStateManager.isBTEnabled) {
           if (sysStateManager.testState != TestStates.ENDED) {
             sl<SystemStateManager>().setScanCycleEnabled = true;
-            startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+            startScan(
+                time: GlobalSettings.btScanTimeout,
+                connectToFirstDevice: false);
           }
         } else {
           Log.shout(TAG, "BT not enabled scan cycle not initiated $tag");
@@ -180,7 +181,24 @@ class BleManager extends ManagerBase {
       sl<SystemStateManager>()
           .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
-      connect(_discoveredDevices.values.toList()[0].device);
+
+      final BluetoothDevice device =
+          _discoveredDevices.values.toList()[0].device;
+
+      if (PrefsProvider.getIsFirstDeviceConnection()) {
+        PrefsProvider.saveDeviceUUID(device.id.toString());
+        connect(device);
+      } else {
+        if (device.id.toString() == PrefsProvider.loadDeviceUUID()) {
+          Log.info(TAG, "Reconnecting to previously connected device");
+          connect(device);
+        } else {
+          Log.shout(TAG,
+              "Discovered device is not the same that was connected before. Connection cancelled.");
+          sl<SystemStateManager>()
+              .setBleScanResult(ScanResultStates.NOT_LOCATED);
+        }
+      }
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
       sl<SystemStateManager>()
@@ -230,7 +248,17 @@ class BleManager extends ManagerBase {
   void _sendStartSession(int useType) {
     Log.info(TAG, "### sending start session ");
     sl<CommandTaskerManager>().addCommandWithNoCb(
-        DeviceCommands.getStartSessionCmd(0x0000, useType, [0, 0, 0, 1]));
+//        DeviceCommands.getStartSessionCmd(0x0000, useType, [0, 0, 0, 1]));
+        DeviceCommands.getStartSessionCmd(
+            808598064, useType, [55, 46, 49, 46, 50]));
+  }
+
+  void forgetDeviceAndRestartScan() {
+    sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
+    sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
+    PrefsProvider.setIsFirstDeviceConnection(true);
+    PrefsProvider.saveDeviceUUID("");
+    startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
   }
 
   void startScan(
@@ -238,9 +266,12 @@ class BleManager extends ManagerBase {
     Log.info(TAG, '## START SCAN');
     //todo implement search by serial when device will be upgraded
     final bool isFirstConnection = PrefsProvider.getIsFirstDeviceConnection();
-    Log.info(TAG,
-        "First connection to device: $isFirstConnection. Looking for name: ${isFirstConnection ? "ITAMAR_UART" : "ITAMAR_${PrefsProvider.loadDeviceSerial()}"}");
-//      _deviceNameToMatch = isFirstConnection ? "ITAMAR_UART" : "ITAMAR_${PrefsProvider.loadDeviceSerial()}";
+
+    Log.info(
+        TAG,
+        isFirstConnection
+            ? "First connection to device. Looking for ITAMAR_UART"
+            : "Device was already connected, looking for device with UUID: ${PrefsProvider.loadDeviceUUID()}");
 
     if (!_preScanChecks()) {
       return;
@@ -260,8 +291,6 @@ class BleManager extends ManagerBase {
 
   void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice,
       {String deviceName}) {
-    final String name = scanResult.advertisementData.localName;
-
     if (deviceName != null) {
       // todo add implementation
 

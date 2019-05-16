@@ -45,7 +45,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
     if (option == PopupOption.language) {
       _showLanguageSelectDialog();
     } else if (option == PopupOption.forget) {
-      AppComponent.setLocale(context, Locale("fr", ""));
+      _forgetConnectedDevice();
     }
   }
 
@@ -96,4 +96,10 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
           });
         });
   }
+
+  void _forgetConnectedDevice() {
+    sl<BleManager>().forgetDeviceAndRestartScan();
+  }
+
+
 }

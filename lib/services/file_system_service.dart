@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -16,6 +17,7 @@ class FileSystemService {
   final String logMainFileName = DefaultSettings.logMainFileName;
   final String logOutputFileName = DefaultSettings.logOutputFileName;
   final String parametersFileName = DefaultSettings.parametersFileName;
+  final String assetsParameterFileName = DefaultSettings.assetsParametersFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -45,6 +47,14 @@ class FileSystemService {
   Future<File> get parametersFile async {
     final path = await localPath;
     return File('$path/$parametersFileName');
+  }
+
+  Future<File> get assetsParameterFile async {
+    final path = await localPath;
+    final ByteData bytes = await rootBundle.load('assets/raw/$parametersFileName');
+    final buffer = bytes.buffer;
+    return File('$path/$assetsParameterFileName')
+        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 
   Future<Response> allocateSpace() async {
@@ -80,7 +90,7 @@ class FileSystemService {
 
   Future<Response> init() async {
     try {
-      Log.info(TAG, 'Attempt to create initial files...');
+      Log.info(TAG, 'Attempt to prepare initial files...');
       File mainLogFile = await logMainFile;
       await mainLogFile.create();
       Log.info(TAG, 'MAIN_LOG_FILE CREATED');
@@ -93,9 +103,11 @@ class FileSystemService {
       File logOutFile = await logInputFile;
       logOutFile.create();
       Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
+      File paramFile = await parametersFile;
+      if (paramFile.existsSync()) paramFile.deleteSync();
       return Response(success: true);
     } catch (e) {
-      Log.warning(TAG, 'FILES CREATION ERROR: ${e.toString()}');
+      Log.warning(TAG, 'FILES PREPARATION ERROR: ${e.toString()}');
       return Response(success: false, error: e.toString());
     }
   }
@@ -106,9 +118,9 @@ class FileSystemService {
       File paramFile = await parametersFile;
       if (paramFile.existsSync()) paramFile.deleteSync();
       paramFile.createSync();
-      Log.info(TAG, 'PARAMETER FILE CREATED');
+      Log.info(TAG, 'Parameter file created');
     } catch (e) {
-      Log.warning(TAG, 'PARAMETER FILES CREATION ERROR: ${e.toString()}');
+      Log.warning(TAG, 'Parameter file creation error: ${e.toString()}');
     }
   }
 

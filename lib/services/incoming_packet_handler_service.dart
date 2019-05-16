@@ -122,7 +122,8 @@ class IncomingPacketHandlerService extends ManagerBase {
       final int packetType = receivedPacket.packetType;
 
       print("RECEIVED PACKET ${receivedPacket.bytes}");
-      Log.info(TAG, "Received packet, length: ${receivedPacket.bytes.length}, content: ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
+      Log.info(TAG,
+          "Received packet, length: ${receivedPacket.bytes.length}, content: ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -192,9 +193,11 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<DeviceConfigManager>()
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
           Log.info(TAG, "### start session confirm: device configuration set");
+
           if (_checkStartSessionErrors(receivedPacket.opCodeDependent)) {
             PrefsProvider.saveDeviceSerial(
                 sl<DeviceConfigManager>().deviceConfig.deviceSerial);
+
             Log.info(TAG, "### start session confirm: device serial saved");
 
             if (PrefsProvider.getIsFirstDeviceConnection() != null &&
@@ -230,8 +233,10 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (CONFIG_RESPONSE)");
           sl<DeviceConfigManager>()
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
+
           PrefsProvider.saveDeviceSerial(
               sl<DeviceConfigManager>().deviceConfig.deviceSerial);
+
           sl<CommandTaskerManager>().addAck(
             DeviceCommands.getAckCmd(
               packetType,
@@ -324,12 +329,10 @@ class IncomingPacketHandlerService extends ManagerBase {
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_PARAMETERS_FILE:
-          Log.info(TAG,
-              "packet received (PARAMETERS_FILE): ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
-
-          // open parameter file for writing
+          Log.info(TAG, "packet received (PARAMETERS_FILE)");
 
           final int payloadSize = receivedPacket.extractParamFileSize();
+          print("PAYLOAD SIZE $payloadSize");
           final List<int> payload =
               receivedPacket.extractParameterFilePayload();
 

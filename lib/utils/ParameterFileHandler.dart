@@ -70,12 +70,13 @@ class ParameterFileHandler extends ManagerBase {
     _paramFileSetStatus.sink.add(true);
   }
 
-  void startParamFileSet() {
-    if (!readParamFile()) {
+  void startParamFileSet() async {
+    final bool fileExists = await readParamFile();
+    if (!fileExists) {
       return;
     }
     Log.info(TAG, ">>> param file size: ${_paramFileData.length}");
-    _setParamFile();
+//    _setParamFile();
   }
 
   void startParamFileGet() {
@@ -112,21 +113,24 @@ class ParameterFileHandler extends ManagerBase {
     }
   }
 
-  bool readParamFile() {
-//    File paramFile = File(IOUtils.getExternalWatchPATDir(), _appContext.getString(R.string.params_ini_file_name));
-//    if (paramFile.exists()) {
-//      Log.info(TAG, "Loading parameter file from watchPAT dir");
-//      _paramFileData = IOUtils.readTextFileFromInternalStorage(paramFile.getAbsolutePath());
-//      return true;
-//    } else if (IOUtils.isResourceExists(_appContext.getString(R.string.params_res_name), _appContext.getString(R.string.location_raw))) {
-//      Log.info(TAG, "Loading parameter file from resources");
-//      _paramFileData = IOUtils.readTextFileFromResource(R.raw.watchpat_params);
-//      return true;
-//    } else {
-//      Log.shout(TAG, "Parameter file not found");
-//      return false;
-//    }
-  return false;
+  Future<bool> readParamFile() async {
+    File paramFile = await sl<FileSystemService>().parametersFile;
+    File internalParamsFile = await sl<FileSystemService>().assetsParameterFile;
+
+    if (paramFile.existsSync()) {
+      Log.info(TAG, "Loading parameter file from watchPAT dir");
+      _paramFileData = paramFile.readAsBytesSync();
+      print("RECEIVED FILE EXISTS");
+      return true;
+    } else if (internalParamsFile.existsSync()) {
+      Log.info(TAG, "Loading parameter file from resources");
+      _paramFileData = internalParamsFile.readAsBytesSync();
+      print("INTERNAL FILE EXISTS");
+      return true;
+    } else {
+      Log.shout(TAG, "Parameter file not found");
+      return false;
+    }
   }
 
   @override

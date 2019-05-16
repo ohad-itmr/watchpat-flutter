@@ -40,7 +40,7 @@ class ReceivedPacket {
 //                PACKET_IDENTIFIER_STARTING_BYTE + 4)
 //            .reversed
 //            .toList()),
-        identifier = ConvertFormats.intFromBytes(bytes
+        identifier = ConvertFormats.int32FromBytes(bytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
             PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
@@ -160,6 +160,7 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
     int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
+//    int packetCRC = ConvertFormats.int16FromBytes([crcByte2, crcByte1]);
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;
@@ -208,6 +209,7 @@ class ReceivedPacket {
 
   int extractParamFileSize() {
     List<int> payload = extractPayload();
+    print("PAYLAOD $payload");
 
     List<int> bytes = List.filled(4, 0, growable: false);
     bytes[2] = payload[3];

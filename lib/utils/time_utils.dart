@@ -36,11 +36,11 @@ class TimeUtils {
         timeStamp, [dd, '-', MM, '-', yyyy, '_', HH, ':', mm, ':', ss]);
   }
 
-  static double getTimeStamp() {
+  static int getTimeStamp() {
     final DateTime now = DateTime.now();
-    final int currMillis = now.millisecond;
+    final int currMillis = now.millisecondsSinceEpoch;
     Log.info(TAG, "## current time: ${getFullDateStringFromTimeStamp(now)}");
-    return (currMillis + getGMTDiffMillis()) / 1000;
+    return (currMillis + getGMTDiffMillis()) ~/ 1000;
   }
 
   static int getGMTDiffMillis() {

@@ -52,7 +52,7 @@ class _AppComponentState extends State<AppComponent> {
 
     // todo for development only
     PrefsProvider.setIgnoreDeviceErrors(true);
-    PrefsProvider.setIsFirstDeviceConnection(true);
+//    PrefsProvider.setIsFirstDeviceConnection(true);
   }
 
   @override

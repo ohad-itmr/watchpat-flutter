@@ -342,7 +342,6 @@ class IncomingPacketHandlerService extends ManagerBase {
           if (payloadSize < ParameterFileHandler.PARAM_FILE_DATA_CHUNK) {
             Log.info(TAG, ">> param EOF!");
             sl<ParameterFileHandler>().getParamFileResponse(false);
-            print("PARAMETERS FILE ${f.readAsBytesSync()}");
           } else {
             sl<ParameterFileHandler>().getParamFileResponse(true);
           }

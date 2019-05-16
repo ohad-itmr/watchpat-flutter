@@ -1,5 +1,4 @@
 import 'package:connectivity/connectivity.dart';
-import 'package:date_format/date_format.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/app/service_screen/service_screen.dart';
@@ -41,6 +40,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     _serviceManager.serviceModesStream.listen((mode) {
       if (mode == ServiceMode.customer) {
+        sl<SystemStateManager>().setAppMode(AppModes.CS);
+        sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
       } else if (mode == ServiceMode.technician) {
@@ -142,6 +143,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   FlatButton(
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
+                        sl<SystemStateManager>().setAppMode(AppModes.TECH);
+                        sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) =>
                                 ServiceScreen(mode: ServiceMode.technician)));

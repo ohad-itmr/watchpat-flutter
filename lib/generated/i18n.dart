@@ -110,6 +110,7 @@ class S implements WidgetsLocalizations {
   String get none => "None";
   String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
   String get ok => "Ok";
+  String get param_file_written_successfully => "Parameter file written successfully";
   String get parameters_file_description => "Parameters file";
   String get parameters_file_title => "Parameters file";
   String get parameters_file_write_failed => "Parameters file write failed";
@@ -164,6 +165,7 @@ class S implements WidgetsLocalizations {
   String get welcomeContent => "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician.\nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.";
   String get welcomeTitle => "Welcome";
   String get welcome_to_mypat => "Welcome to myPAT";
+  String get writing_param_file => "Writing parameter file";
   String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   String device_sn(String sn) => "Main Device serial number $sn";
   String status(String status) => "Status: $status";
@@ -320,6 +322,8 @@ class fr extends S {
   String get no_inet_connection => "Internet connection not available";
   @override
   String get afe_registers_description => "AFE registers";
+  @override
+  String get writing_param_file => "Writing parameter file";
   @override
   String get err_probe_photo => "Probe photo";
   @override

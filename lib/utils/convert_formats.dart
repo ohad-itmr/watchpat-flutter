@@ -1,8 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:my_pat/utils/log/log.dart';
 
 class ConvertFormats {
+  static const TAG = "ConvertFormats";
+
   static Uint8List intListToBinList(List<int> arr) {
     return Uint8List.fromList(arr.map((i) => int.parse(i.toRadixString(16))));
   }
@@ -36,7 +39,11 @@ class ConvertFormats {
     return result;
   }
 
-  static int int32FromBytes(List<int> bytes) {
+  static int fourBytesToInt(List<int> bytes) {
+    if (bytes.length != 4) {
+      Log.shout(TAG, "Error in converting bytes to int. Received ${bytes.length} bytes instead of 4");
+      return 0;
+    }
     var buffer = new Uint8List.fromList(bytes.reversed.toList()).buffer;
     var bdata = new ByteData.view(buffer);
     return bdata.getInt32(0);

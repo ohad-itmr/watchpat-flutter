@@ -76,7 +76,7 @@ class ParameterFileHandler extends ManagerBase {
       return;
     }
     Log.info(TAG, ">>> param file size: ${_paramFileData.length}");
-//    _setParamFile();
+    _setParamFile();
   }
 
   void startParamFileGet() {
@@ -120,12 +120,10 @@ class ParameterFileHandler extends ManagerBase {
     if (paramFile.existsSync()) {
       Log.info(TAG, "Loading parameter file from watchPAT dir");
       _paramFileData = paramFile.readAsBytesSync();
-      print("RECEIVED FILE EXISTS");
       return true;
     } else if (internalParamsFile.existsSync()) {
       Log.info(TAG, "Loading parameter file from resources");
       _paramFileData = internalParamsFile.readAsBytesSync();
-      print("INTERNAL FILE EXISTS");
       return true;
     } else {
       Log.shout(TAG, "Parameter file not found");

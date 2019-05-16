@@ -30,17 +30,13 @@ class ReceivedPacket {
   int packetType;
 
   ReceivedPacket(this.bytes, this._commandTasker)
-      : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
+//      : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
+      : _signature = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
         opCode = ConvertFormats.byteArrayToHex([
           bytes[PACKET_OPCODE_STARTING_BYTE + 1],
           bytes[PACKET_OPCODE_STARTING_BYTE]
         ]),
-//        identifier = ConvertFormats.byteArrayToHex(bytes
-//            .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
-//                PACKET_IDENTIFIER_STARTING_BYTE + 4)
-//            .reversed
-//            .toList()),
-        identifier = ConvertFormats.int32FromBytes(bytes
+        identifier = ConvertFormats.fourBytesToInt(bytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
             PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
@@ -159,15 +155,11 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
-//    int packetCRC = ConvertFormats.byteArrayToHex([crcByte2, crcByte1]);
     int packetCRC = ConvertFormats.twoBytesToInt(byte1: crcByte1, byte2: crcByte2);
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = crcByte2;
-
-    // todo REMOVE AFTER DEBUG
-//    return true;
 
     if (packetCRC == validationCRC) {
       return true;
@@ -209,13 +201,6 @@ class ReceivedPacket {
 
   int extractParamFileSize() {
     List<int> payload = extractPayload();
-    print("PAYLAOD $payload");
-
-    List<int> bytes = List.filled(4, 0, growable: false);
-    bytes[2] = payload[3];
-    bytes[3] = payload[2];
-    var buffer = new Uint8List.fromList(bytes).buffer;
-    var bdata = new ByteData.view(buffer);
-    return bdata.getInt32(0);
+    return ConvertFormats.twoBytesToInt(byte1: payload[2], byte2: payload[3]);
   }
 }

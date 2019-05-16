@@ -248,9 +248,7 @@ class BleManager extends ManagerBase {
   void _sendStartSession(int useType) {
     Log.info(TAG, "### sending start session ");
     sl<CommandTaskerManager>().addCommandWithNoCb(
-//        DeviceCommands.getStartSessionCmd(0x0000, useType, [0, 0, 0, 1]));
-        DeviceCommands.getStartSessionCmd(
-            808598064, useType, [55, 46, 49, 46, 50]));
+        DeviceCommands.getStartSessionCmd(0x0000, useType, [55, 46, 49, 46, 50]));
   }
 
   void forgetDeviceAndRestartScan() {

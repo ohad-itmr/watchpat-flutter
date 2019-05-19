@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/services/services.dart';
+import 'package:my_pat/utils/FirmwareUpgrader.dart';
 import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
 export 'package:my_pat/managers/managers.dart';
@@ -53,6 +54,7 @@ void _initializeAllServices() {
   sl.registerSingleton<TestingManager>(TestingManager());
   sl.registerSingleton<ConnectionIndicatorManager>(ConnectionIndicatorManager());
 
+  sl.registerSingleton<FirmwareUpgrader>(FirmwareUpgrader());
   sl.registerSingleton<ParameterFileHandler>(ParameterFileHandler());
   sl.registerSingleton<ServiceScreenManager>(ServiceScreenManager());
   sl.registerSingleton<BitOperationsManager>(BitOperationsManager());

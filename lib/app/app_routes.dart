@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/app/pairing_issues_screens/pairing_issue_screen.dart';
 import 'package:my_pat/app/screens.dart';
-import 'package:my_pat/app/service_screen/service_screen.dart';
 import 'package:my_pat/service_locator.dart';
 
 var rootHandler = Handler(

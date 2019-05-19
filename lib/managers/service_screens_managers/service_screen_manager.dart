@@ -13,6 +13,12 @@ class ServiceScreenManager extends ManagerBase {
   static const String TAG = "ServiceScreenManager";
   final S _loc = sl<S>();
 
+  static const int RESET_TYPE_SHUT_AND_RESET = 0X02;
+  static const int RESET_TYPE_CLOCK_RESET = 0X04;
+  static const int RESET_TYPE_CLEAR_DATA = 0X08;
+  static const int RESET_TYPE_FACTORY_DEFAULTS = 0X10;
+  static const int RESET_TYPE_WARM_VERSION_CHANGE = 0X20;
+
   Stopwatch _clickTimer = Stopwatch();
   int _clickCounter = 1;
   Timer _countDown;

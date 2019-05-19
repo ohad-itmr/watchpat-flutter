@@ -208,6 +208,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               Log.info(TAG, "first connection to device");
               Log.info(TAG,
                   "### start session confirm: device FW version check START");
+              
               //todo Firmwarer upgrado
 //              if (getFirmwareUpgrader().isDeviceFirmwareVersionUpToDate()) {
 //                Log.info(TAG,"### start session confirm: device FW version check END");

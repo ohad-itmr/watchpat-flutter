@@ -158,6 +158,7 @@ class S implements WidgetsLocalizations {
   String get thankYouTitle => "Thank You";
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during authentication, please contact support";
+  String get upgrade_file_ver_name => "UpgradeFileVersion";
   String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
   String get uploadingTitle => "Good Morning";
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
@@ -432,6 +433,8 @@ class fr extends S {
   String get parameters_file_written_successfully => "Parameters file written successfully";
   @override
   String get err_used_device => "Used main device";
+  @override
+  String get upgrade_file_ver_name => "UpgradeFileVersion";
   @override
   String get firmware_alert_title => "Device firmware upgrade";
   @override

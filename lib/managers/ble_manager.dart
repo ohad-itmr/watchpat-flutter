@@ -262,7 +262,6 @@ class BleManager extends ManagerBase {
   void startScan(
       {int time, @required bool connectToFirstDevice, String deviceName}) {
     Log.info(TAG, '## START SCAN');
-    //todo implement search by serial when device will be upgraded
     final bool isFirstConnection = PrefsProvider.getIsFirstDeviceConnection();
 
     Log.info(

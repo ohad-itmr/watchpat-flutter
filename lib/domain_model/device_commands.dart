@@ -45,8 +45,8 @@ class DeviceCommands {
   static const int CMD_OPCODE_LEDS_CONTROL = 0x2300;
   static const int CMD_OPCODE_SET_SERIAL_NUMBER = 0x2400;
   static const int CMD_OPCODE_GET_PATIENT_ID = 0x2500;
-  static const int CMD_OPCODE_FW_UPGRADE_REQ = 0x3000;
-  static const int CMD_OPCODE_FW_UPGRADE_RES = 0x3100;
+  static const int CMD_OPCODE_FW_UPGRADE_REQ = 0x30;
+  static const int CMD_OPCODE_FW_UPGRADE_RES = 0x31;
   static const int CMD_OPCODE_GET_LOG_FILE = 0x4400;
   static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x4500;
   static const int CMD_OPCODE_UNKNOWN = 0x0F00;

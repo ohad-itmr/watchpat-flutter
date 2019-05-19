@@ -31,14 +31,18 @@ class ReceivedPacket {
 
   ReceivedPacket(this.bytes, this._commandTasker)
 //      : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
-      : _signature = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
-        opCode = ConvertFormats.byteArrayToHex([
-          bytes[PACKET_OPCODE_STARTING_BYTE + 1],
-          bytes[PACKET_OPCODE_STARTING_BYTE]
-        ]),
+      : _signature =
+            ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
+        opCode = ConvertFormats.twoBytesToInt(
+            byte1: bytes[PACKET_OPCODE_STARTING_BYTE],
+            byte2: bytes[PACKET_OPCODE_STARTING_BYTE + 1]),
+//        opCode = ConvertFormats.byteArrayToHex([
+//          bytes[PACKET_OPCODE_STARTING_BYTE + 1],
+//          bytes[PACKET_OPCODE_STARTING_BYTE]
+//        ]),
         identifier = ConvertFormats.fourBytesToInt(bytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
-            PACKET_IDENTIFIER_STARTING_BYTE + 4)
+                PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
         _len = ConvertFormats.byteArrayToHex(bytes
             .sublist(PACKET_SIZE_STARTING_BYTE, PACKET_SIZE_STARTING_BYTE + 2)
@@ -155,7 +159,8 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
-    int packetCRC = ConvertFormats.twoBytesToInt(byte1: crcByte1, byte2: crcByte2);
+    int packetCRC =
+        ConvertFormats.twoBytesToInt(byte1: crcByte1, byte2: crcByte2);
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;

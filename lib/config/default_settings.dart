@@ -15,7 +15,8 @@ class DefaultSettings {
   static final logInputFileName = 'mypat_log_input.txt';
   static final logOutputFileName = 'mypat_log_output.txt';
   static final parametersFileName = 'watchpat_params.ini';
-  static final assetsParametersFileName = 'watchpat_params_assets.ini';
+  static final resourceParametersFileName = 'watchpat_params_resource.ini';
+  static final resourceFWFileName = 'watchpat_resource.bin';
 
 
   static const String SERVICE_UID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';

@@ -19,7 +19,6 @@ class WelcomeActivityManager extends ManagerBase {
   WelcomeActivityManager() {
     _initErrorsSubject.add(List());
     _allocateSpace();
-    _configureApplication();
     createStartFiles();
     _welcomeState.add(WelcomeActivityState.NOT_STARTED);
     _fileCreationStateSubject.add(FileCreationState.NOT_STARTED);
@@ -58,7 +57,7 @@ class WelcomeActivityManager extends ManagerBase {
         : FileCreationState.DONE_FAILED);
   }
 
-  Future<void> _configureApplication() async {
+  Future<void> configureApplication() async {
     // Check in external config is enabled
     final bool configEnabled =
         await sl<DispatcherService>().checkExternalConfig();
@@ -137,8 +136,8 @@ class WelcomeActivityManager extends ManagerBase {
 
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
-//    sl<BleManager>().startScan(
-//        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+    sl<BleManager>().startScan(
+        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     initConnectivityListener();
   }
 

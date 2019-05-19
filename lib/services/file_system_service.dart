@@ -17,7 +17,8 @@ class FileSystemService {
   final String logMainFileName = DefaultSettings.logMainFileName;
   final String logOutputFileName = DefaultSettings.logOutputFileName;
   final String parametersFileName = DefaultSettings.parametersFileName;
-  final String assetsParameterFileName = DefaultSettings.assetsParametersFileName;
+  final String resourceParameterFileName = DefaultSettings.resourceParametersFileName;
+  final String resourceFWFileName = DefaultSettings.resourceFWFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -44,17 +45,35 @@ class FileSystemService {
     return File('$path/$logOutputFileName');
   }
 
-  Future<File> get parametersFile async {
+  Future<File> get watchpatDirParametersFile async {
     final path = await localPath;
     return File('$path/$parametersFileName');
   }
 
-  Future<File> get assetsParameterFile async {
+  Future<File> get resourceParametersFile async {
     final path = await localPath;
     final ByteData bytes = await rootBundle.load('assets/raw/$parametersFileName');
     final buffer = bytes.buffer;
-    return File('$path/$assetsParameterFileName')
+    return File('$path/$resourceParameterFileName')
         .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+  }
+
+  Future<File> get resourceFWFile async {
+    final path = await localPath;
+    final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
+    final buffer = bytes.buffer;
+    return File('$path/$resourceFWFileName')
+        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
+  }
+
+  Future<bool> get resourceFWFileExists async {
+    try {
+      final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
+      return bytes.elementSizeInBytes != 0;
+    } catch (e) {
+      Log.shout(TAG, "fw upgrade file not found in resources, ${e.toString()}");
+      return false;
+    }
   }
 
   Future<Response> allocateSpace() async {
@@ -103,7 +122,7 @@ class FileSystemService {
       File logOutFile = await logInputFile;
       logOutFile.create();
       Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
-      File paramFile = await parametersFile;
+      File paramFile = await watchpatDirParametersFile;
       if (paramFile.existsSync()) paramFile.deleteSync();
       return Response(success: true);
     } catch (e) {
@@ -115,7 +134,7 @@ class FileSystemService {
   void initParameterFile() async {
     Log.info(TAG, 'Attempt to create parameter file...');
     try {
-      File paramFile = await parametersFile;
+      File paramFile = await watchpatDirParametersFile;
       if (paramFile.existsSync()) paramFile.deleteSync();
       paramFile.createSync();
       Log.info(TAG, 'Parameter file created');

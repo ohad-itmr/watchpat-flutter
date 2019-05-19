@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
+import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/convert_formats.dart';
 
 import 'log/log.dart';
 
@@ -18,27 +21,44 @@ class FirmwareUpgrader {
   static const int FW_UPGRADE_FIRST_DATA_CHUNK = 512;
   static const int FW_UPGRADE_DATA_CHUNK = 2048;
 
+  Version _upgradeFileFWVersion;
   List<int> _upgradeData;
   int _upgradeDataOffset;
   int _upgradeDataChunkSize;
-  int _retransmissionRetries;
+  int _retransmissionRetries = 0;
   bool _isUpgradeDone;
-
 
   RestartableTimer _timeoutTimer;
 
-  FirmwareUpgrader() {
-//    _timeoutTimer = Timer(Duration(seconds: 6), () {
-//      if (_retransmissionRetries > 0) {
-//        _retransmissionRetries--;
-//        _timeoutTimer.reset();
-//        _firmwareUpgrade();
-//      } else {
-//        sl<SystemStateManager>()
-//            .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
-//      }
-//      _retransmissionRetries = 3;
-//    });
+  Future<bool> isDeviceFirmwareVersionUpToDate() async {
+    final DeviceConfigPayload config = sl<DeviceConfigManager>().deviceConfig;
+    if (config == null) {
+      Log.shout(TAG,
+          "Configuration receive failed, FW may not be checked or upgraded");
+      return true;
+    }
+
+    final bool loaded = await _loadFWUpgradeFileFromResource();
+    if (!loaded) {
+      Log.shout(TAG, "fw upgrade file loading error");
+      return true; // current fw version is up to date because there is no reference for comparison
+    }
+    return (config.fwVersion.compareTo(_upgradeFileFWVersion) !=
+        CompareResults.VERSION_HIGHER);
+  }
+
+  _startTimer() {
+    _timeoutTimer = RestartableTimer(Duration(seconds: 6), () {
+      if (_retransmissionRetries > 0) {
+        _retransmissionRetries--;
+        _timeoutTimer.reset();
+        _firmwareUpgrade();
+      } else {
+        sl<SystemStateManager>()
+            .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+      }
+      _retransmissionRetries = 3;
+    });
   }
 
   _firmwareUpgrade() {
@@ -50,44 +70,131 @@ class FirmwareUpgrader {
       sl<CommandTaskerManager>().sendDirectCommand(
           DeviceCommands.getFWUpgradeRequestCmd(
               _upgradeDataOffset, _upgradeDataChunkSize, dataChunkToSend));
-      Log.info(TAG, "Firmware upgrade finished");
+    } catch (e) {
       sl<SystemStateManager>()
           .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
-    } catch (e) {
       Log.shout(TAG, "Firmware upgrade failed: " + e.toString());
     }
+    Log.info(TAG, "Firmware upgrade cycle succeeded");
   }
 
   void responseReceived() {
     if (!_isUpgradeDone) {
       _timeoutTimer.reset();
-        _upgradeDataOffset += _upgradeDataChunkSize;
+      _upgradeDataOffset += _upgradeDataChunkSize;
 
-        Log.info(TAG, "responseReceived. reporting offset: $_upgradeDataOffset");
-        _reportProgress(_upgradeDataOffset);
+      Log.info(TAG, "responseReceived. reporting offset: $_upgradeDataOffset");
+      _reportProgress(_upgradeDataOffset);
 
-        if (_upgradeDataOffset + FW_UPGRADE_DATA_CHUNK < _upgradeData.length) {
-          _upgradeDataChunkSize = FW_UPGRADE_DATA_CHUNK;
-        } else {
-          // last chunk
-          _upgradeDataChunkSize = _upgradeData.length - _upgradeDataOffset;
-          _isUpgradeDone = true;
-        }
+      if (_upgradeDataOffset + FW_UPGRADE_DATA_CHUNK < _upgradeData.length) {
+        _upgradeDataChunkSize = FW_UPGRADE_DATA_CHUNK;
+      } else {
+        // last chunk
+        _upgradeDataChunkSize = _upgradeData.length - _upgradeDataOffset;
+        _isUpgradeDone = true;
+      }
       _firmwareUpgrade();
     } else {
       Log.info(TAG, "Device firmware upgrade finished, resetting main device");
       _timeoutTimer.cancel();
-      sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
-      sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getResetDeviceCmd(ServiceScreenManager.RESET_TYPE_SHUT_AND_RESET));
+      sl<SystemStateManager>()
+          .setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
+      sl<CommandTaskerManager>().addCommandWithNoCb(
+          DeviceCommands.getResetDeviceCmd(
+              ServiceScreenManager.RESET_TYPE_SHUT_AND_RESET));
       PrefsProvider.initDeviceName();
     }
   }
 
   void _reportProgress(final int progress) {
+    print("PROGRESS ------------------> $progress");
 //    Intent intent = new Intent(ACTION_FIRMWARE_UPGRADE_PROGRESS);
 //    intent.putExtra(watchPATApp.EXTRA_FW_UPDATE_TOTAL, _upgradeData.length)
 //        .putExtra(watchPATApp.EXTRA_FW_UPDATE_VALUE, progress);
 //
 //    _appContext.sendBroadcast(intent);
+  }
+
+  void upgradeDeviceFirmwareFromResources() async {
+    Log.info(TAG, "upgrading device fw from resources");
+    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UPGRADING);
+
+    if (_upgradeData == null) {
+      Log.warning(
+          TAG, "upgradeData not loaded. trying to load from resources...");
+      final bool loaded = await _loadFWUpgradeFileFromResource();
+      if (!loaded) {
+        sl<SystemStateManager>()
+            .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+        return;
+      }
+    }
+    _startFWUpgrade();
+  }
+
+  Future<bool> _loadFWUpgradeFileFromResource() async {
+    final bool resExists = await sl<FileSystemService>().resourceFWFileExists;
+    if (!resExists) {
+      return false;
+    }
+
+    File resource = await sl<FileSystemService>().resourceFWFile;
+    _upgradeData =
+        resource.readAsBytesSync();
+    if (_upgradeData.isEmpty) {
+      return false;
+    }
+
+    _setFWVersion();
+    return true;
+  }
+
+  void _setFWVersion() {
+    final int compilation = ConvertFormats.twoBytesToInt(
+        byte1: _upgradeData[OFST_FILE_FW_COMPILATION_NUMBER],
+        byte2: _upgradeData[OFST_FILE_FW_COMPILATION_NUMBER + 1]);
+    _upgradeFileFWVersion = new Version(
+        _upgradeData[OFST_FILE_FW_VERSION_MAJOR],
+        _upgradeData[OFST_FILE_FW_VERSION_MINOR],
+        compilation,
+        "UpgradeFileVersion");
+  }
+
+//
+//  void upgradeDeviceFirmwareFromWatchPATDir() {
+//    Log.info(TAG, "upgrading device fw from watchPAT dir");
+//    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UPGRADING);
+//
+//    if (!_loadFWUpgradeFileFromWatchPATDir(
+//        _appContext.getString(R.string.fw_upgrade_file_name))) {
+//      sl<SystemStateManager>()
+//          .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+//      return;
+//    }
+//    _startFWUpgrade();
+//  }
+//
+
+//
+//  bool _loadFWUpgradeFileFromWatchPATDir(final String fileName) {
+//    File upgradeFile = new File(getExternalWatchPATDir(), fileName);
+//    if (!upgradeFile.exists()) {
+//      Log.e(TAG, "FW upgrade file not found");
+//      return false;
+//    }
+//
+//    _upgradeData = loadBinaryFile(upgradeFile, FW_UPGRADE_LOAD_DATA_CHUNK);
+//    return true;
+//  }
+//
+  void _startFWUpgrade() {
+    Log.info(TAG,
+        "starting firmware upgrade (upgrade file size: ${_upgradeData.length})");
+    _upgradeDataOffset = 0;
+    _upgradeDataChunkSize = FW_UPGRADE_FIRST_DATA_CHUNK;
+    _isUpgradeDone = false;
+
+    _startTimer();
+    _firmwareUpgrade();
   }
 }

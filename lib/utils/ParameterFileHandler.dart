@@ -114,16 +114,16 @@ class ParameterFileHandler extends ManagerBase {
   }
 
   Future<bool> readParamFile() async {
-    File paramFile = await sl<FileSystemService>().parametersFile;
-    File internalParamsFile = await sl<FileSystemService>().assetsParameterFile;
+    File watchpatDirParamFile = await sl<FileSystemService>().watchpatDirParametersFile;
+    File resourceParamsFile = await sl<FileSystemService>().resourceParametersFile;
 
-    if (paramFile.existsSync()) {
+    if (watchpatDirParamFile.existsSync()) {
       Log.info(TAG, "Loading parameter file from watchPAT dir");
-      _paramFileData = paramFile.readAsBytesSync();
+      _paramFileData = watchpatDirParamFile.readAsBytesSync();
       return true;
-    } else if (internalParamsFile.existsSync()) {
+    } else if (resourceParamsFile.existsSync()) {
       Log.info(TAG, "Loading parameter file from resources");
-      _paramFileData = internalParamsFile.readAsBytesSync();
+      _paramFileData = resourceParamsFile.readAsBytesSync();
       return true;
     } else {
       Log.shout(TAG, "Parameter file not found");

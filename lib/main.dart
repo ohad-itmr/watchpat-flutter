@@ -12,6 +12,9 @@ void main() async {
 
   // todo for development purpose only
   await PrefsProvider.setTestStarted(false);
+  PrefsProvider.setIsFirstDeviceConnection(true);
+  PrefsProvider.setIgnoreDeviceErrors(true);
+
 
   await setupServices();
 
@@ -49,10 +52,6 @@ class _AppComponentState extends State<AppComponent> {
   void initState() {
     super.initState();
     _initRouter();
-
-    // todo for development only
-    PrefsProvider.setIgnoreDeviceErrors(true);
-//    PrefsProvider.setIsFirstDeviceConnection(true);
   }
 
   @override

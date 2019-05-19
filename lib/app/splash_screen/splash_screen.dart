@@ -65,8 +65,6 @@ class _SplashScreenState extends State<SplashScreen> {
         .where((Map<String, dynamic> data) =>
             this.mounted && data[_BT_MAP_KEY] == BtStates.ENABLED)
         .listen((Map<String, dynamic> data) {
-      sl<BleManager>().startScan(
-          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
         sl<WelcomeActivityManager>().initConnectivityListener();
         Navigator.of(context).pushNamed(RecordingScreen.PATH);

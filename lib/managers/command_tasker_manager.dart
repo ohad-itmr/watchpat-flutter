@@ -137,7 +137,7 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   void sendDirectCommand(CommandTask commandTask) {
-    Log.info(TAG, "sending DIRECT command, $this");
+    Log.info(TAG, "sending DIRECT command");
     CommandTaskerItem item = CommandTaskerItem(commandTask.packetIdentifier,
         commandTask.opCode, commandTask.byteList, commandTask.name);
 //    _sendCmdCallback._sendCommand(item);

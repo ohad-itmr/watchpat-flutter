@@ -144,6 +144,8 @@ class DeviceConfigPayload {
 
   String get fWVersionString => _deviceFWVersion.versionString;
 
+  Version get fwVersion => _deviceFWVersion;
+
   String get deviceSerial => _deviceSerial.toString();
 
   String get deviceHexSerial => _deviceSerial.toRadixString(16);

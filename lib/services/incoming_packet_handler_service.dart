@@ -5,6 +5,7 @@ import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/managers/manager_base.dart';
+import 'package:my_pat/utils/FirmwareUpgrader.dart';
 import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/time_utils.dart';
@@ -186,8 +187,9 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "### start session confirm received");
           Log.info(TAG, "packet received (START_SESSION_CONFIRM)");
 
-          // Save that device was once already connected
-          PrefsProvider.setIsFirstDeviceConnection(false);
+          // Send ACK
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           // start-session-confirm packet received
           sl<DeviceConfigManager>()
@@ -200,36 +202,39 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             Log.info(TAG, "### start session confirm: device serial saved");
 
-            if (PrefsProvider.getIsFirstDeviceConnection() != null &&
-                PrefsProvider.getIsFirstDeviceConnection()) {
-//              sl<DispatcherService>()
-//                  .sendGetConfig(PrefsProvider.loadDeviceSerial());
+            if (PrefsProvider.getIsFirstDeviceConnection()) {
+
+              // Set external configuration if necessary
+              sl<WelcomeActivityManager>().configureApplication();
 
               Log.info(TAG, "first connection to device");
               Log.info(TAG,
                   "### start session confirm: device FW version check START");
-              
+
               //todo Firmwarer upgrado
-//              if (getFirmwareUpgrader().isDeviceFirmwareVersionUpToDate()) {
-//                Log.info(TAG,"### start session confirm: device FW version check END");
-//                Log.info(TAG,"device FW up to date");
-//                getStateNotifier()
-//                    .setFirmwareState(SystemStateNotifier.FIRMWARE_STATE_UP_TO_DATE);
-//              } else {
-//                Log.info(TAG,"device FW outdated");
-//                getFirmwareUpgrader().upgradeDeviceFirmwareFromResources();
-//              }
+
+              final bool isUpToDate = await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
+              if (!isUpToDate && PrefsProvider.getIsFirstDeviceConnection()) {
+                Log.info(TAG, "### start session confirm: device FW version check END");
+                Log.info(TAG, "device FW up to date");
+                 sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
+              } else {
+                Log.info(TAG, "device FW outdated");
+                sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
+              }
+
+              // Save that device was once already connected
+              PrefsProvider.setIsFirstDeviceConnection(false);
             }
           }
-          // send start-session-confirm packet ACK
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
-              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+
           final String deviceName =
               "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial}";
           Log.info(TAG, "device new name: $deviceName");
           PrefsProvider.saveDeviceName(deviceName);
           Log.info(TAG, "### start session confirm: END");
           break;
+
         case DeviceCommands.CMD_OPCODE_CONFIG_RESPONSE:
           Log.info(TAG, "packet received (CONFIG_RESPONSE)");
           sl<DeviceConfigManager>()
@@ -293,11 +298,13 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES:
           Log.info(TAG, "packet received (FW_UPGRADE_RES)");
+
           // fw-response packet received
           // TODO implement getFirmwareUpgrader
-//          getFirmwareUpgrader().responseReceived();
-//          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-//              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<FirmwareUpgrader>().responseReceived();
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
+              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+
           break;
         case DeviceCommands.CMD_OPCODE_AFE_REGISTERS_VALUES:
           Log.info(TAG, "packet received (AFE_REGISTERS_VALUES)");
@@ -338,7 +345,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               receivedPacket.extractParameterFilePayload();
 
           // todo implement
-          File f = await sl<FileSystemService>().parametersFile;
+          File f = await sl<FileSystemService>().watchpatDirParametersFile;
           f.writeAsBytesSync(payload, mode: FileMode.append);
           if (payloadSize < ParameterFileHandler.PARAM_FILE_DATA_CHUNK) {
             Log.info(TAG, ">> param EOF!");

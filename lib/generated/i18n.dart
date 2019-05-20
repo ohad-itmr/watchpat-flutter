@@ -151,11 +151,14 @@ class S implements WidgetsLocalizations {
   String get scanning_device => "Scanning for device";
   String get select_bit_type => "Select BIT mode";
   String get select_language => "Select language";
+  String get select_led_color => "Select LED color";
   String get send => "Send";
   String get server_comm_error => "Server communication error, please contact support";
   String get set => "set";
   String get set_device_serial_success => "Set device serial: success";
   String get set_device_serial_timeout => "Set device serial: timeout";
+  String get set_led_color_success => "Set LED color: success";
+  String get set_led_color_timeout => "Set LED color: timeout";
   String get set_serial => "Set device serial";
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
   String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
@@ -319,6 +322,8 @@ class fr extends S {
   @override
   String get eeprom_get_success => "EEPROM data retrieved successfully";
   @override
+  String get set_led_color_timeout => "Set LED color: timeout";
+  @override
   String get eeprom_written_successfully => "Device EEPROM written successfully";
   @override
   String get thankYouTitle => "Thank You";
@@ -433,6 +438,8 @@ class fr extends S {
   @override
   String get fw_check_version => "Please wait while we check device firmware version";
   @override
+  String get set_led_color_success => "Set LED color: success";
+  @override
   String get critical_hw_failure => "Critical hardware failure";
   @override
   String get invalid_id => "Invalid ID";
@@ -518,6 +525,8 @@ class fr extends S {
   String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close myPAT application  Close anyway?";
   @override
   String get device_log_file_description => "Device log file";
+  @override
+  String get select_led_color => "Select LED color";
   @override
   String get removeJewelryTitle => "Remove Jewelry";
   @override

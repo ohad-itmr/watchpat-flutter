@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/service_screen/led_indicators_dialog.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
@@ -330,6 +331,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
         ]));
   }
 
+  // Set LED indicators
+  _showSetLedDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => LedIndicatorsDialog()
+    );
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -352,7 +361,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Handle main devide EEPROM", action: _showEepromDialog),
       ServiceOption(
           title: "Set device serial", action: _showDeviceSerialDialog),
-      ServiceOption(title: "Sel LED indication", action: null),
+      ServiceOption(title: "Sel LED indication", action: _showSetLedDialog),
       ServiceOption(title: "Get technical status", action: null),
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
@@ -370,3 +379,4 @@ class _ServiceScreenState extends State<ServiceScreen> {
     };
   }
 }
+

@@ -168,5 +168,8 @@
   "eeprom_write_failed": "Device EEPROM write failed",
   "set_serial": "Set device serial",
   "set_device_serial_success": "Set device serial: success",
-  "set_device_serial_timeout": "Set device serial: timeout"
+  "set_device_serial_timeout": "Set device serial: timeout",
+  "select_led_color": "Select LED color",
+  "set_led_color_success": "Set LED color: success",
+  "set_led_color_timeout": "Set LED color: timeout"
 }

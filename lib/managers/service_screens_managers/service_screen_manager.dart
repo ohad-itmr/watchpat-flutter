@@ -331,6 +331,35 @@ class ServiceScreenManager extends ManagerBase {
     });
   }
 
+  // handle LED
+  List<LedOption> get ledOptions => [
+        LedOption(color: LedColorOption.None, title: "None", value: 0x00),
+        LedOption(color: LedColorOption.Red, title: "Red", value: 0x01),
+        LedOption(color: LedColorOption.Green, title: "Green", value: 0x02),
+        LedOption(color: LedColorOption.Both, title: "Both", value: 0x03),
+      ];
+
+  setLedColor(LedColorOption selectedColor) {
+    Log.info(TAG, "Setting LEDs indicator mode to ${selectedColor.toString()}");
+
+    final LedOption selectedOption =
+        ledOptions.firstWhere((LedOption o) => o.color == selectedColor);
+
+    // send command and handle response
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.set_led_color_success));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getSetLEDsCmd(selectedOption.value),
+        listener: callback);
+
+    // handle timeout
+    final Timer timer =
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) _showToast(_loc.set_led_color_timeout);
+    });
+  }
+
   _hideProgressbarWithMessage(String message) {
     _progressBar.sink.add("");
     _toasts.sink.add(message);
@@ -378,4 +407,14 @@ class AckCallback extends OnAckListener {
     _ackReceived = true;
     if (action != null) action();
   }
+}
+
+enum LedColorOption { None, Red, Green, Both }
+
+class LedOption {
+  final LedColorOption color;
+  final String title;
+  final int value;
+
+  LedOption({this.color, this.title, this.value});
 }

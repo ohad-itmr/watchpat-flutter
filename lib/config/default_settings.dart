@@ -48,6 +48,9 @@ class DefaultSettings {
 
   static String watchpatDirAFEFileName = 'watchpat_aferegs.bin';
   static String resourceAFEFileName = 'watchpat_aferegs_resource.bin';
+  static String watchpatDirACCFileName = "watchpat_accregs.bin";
+  static String resourceACCFileName = "watchpat_accregs_resource.bin";
+
 
   static Map<String, dynamic> settingsToMap() {
     return <String, dynamic>{

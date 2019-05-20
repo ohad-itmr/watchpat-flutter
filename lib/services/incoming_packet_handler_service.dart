@@ -319,6 +319,12 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_ACTIGRAPH_REGISTERS_VALUES:
           Log.info(TAG, "packet received (ACTIGRAPH_REGISTERS_VALUES)");
+
+          // store received ACC file to documents folder
+          File f = await sl<FileSystemService>().watchpatDirACCFile;
+          f.createSync();
+          f.writeAsBytesSync(receivedPacket.bytes, mode: FileMode.write);
+
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;

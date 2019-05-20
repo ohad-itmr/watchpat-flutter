@@ -155,5 +155,11 @@
   "afe_registers_get_success": "AFE registers retrieved successfully",
   "afe_registers_get_fail": "AFE registers retrieve failed",
   "afe_registers_written_successfully": "AFE registers written successfully",
-  "afe_registers_write_failed": "AFE registers write failed"
+  "afe_registers_write_failed": "AFE registers write failed",
+
+  "acc_registers": "ACC registers",
+  "acc_registers_get_success": "ACC registers retrieved successfully",
+  "acc_registers_get_fail": "ACC registers retrieve failed",
+  "acc_registers_written_successfully": "ACC registers written successfully",
+  "acc_registers_write_failed": "ACC registers write failed"
 }

@@ -246,6 +246,29 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ));
   }
 
+  // Handle ACC registers
+  _showAccRegistersDialog() {
+    _showServiceDialog(ServiceDialog(
+      title: Text(_loc.acc_registers),
+      actions: [
+        _buildPopButton(_loc.cancel.toUpperCase()),
+        Container(width: _screenWidth / 15),
+        _buildActionButton(
+            text: _loc.get.toUpperCase(),
+            action: () {
+              _manager.getAccRegisters();
+              Navigator.pop(context);
+            }),
+        _buildActionButton(
+            text: _loc.set.toUpperCase(),
+            action: () {
+              _manager.setAccRegisters();
+              Navigator.pop(context);
+            })
+      ],
+    ));
+  }
+
   _showBadThing() {
     MyPatToast.show("We are not quite here yet...", context);
   }
@@ -266,7 +289,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
     _technicianServiceOptions = [
       ServiceOption(title: "Handle AFE registers", action: _showAfeRegistersDialog),
-      ServiceOption(title: "Handle ACC registers", action: null),
+      ServiceOption(title: "Handle ACC registers", action: _showAccRegistersDialog),
       ServiceOption(title: "Handle main devide EEPROM", action: null),
       ServiceOption(title: "Set device serial", action: null),
       ServiceOption(title: "Sel LED indication", action: null),

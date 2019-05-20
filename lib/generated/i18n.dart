@@ -21,7 +21,12 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
+  String get acc_registers => "ACC registers";
   String get acc_registers_description => "ACC registers";
+  String get acc_registers_get_fail => "ACC registers retrieve failed";
+  String get acc_registers_get_success => "ACC registers retrieved successfully";
+  String get acc_registers_write_failed => "ACC registers write failed";
+  String get acc_registers_written_successfully => "ACC registers written successfully";
   String get afe_registers_description => "AFE registers";
   String get afe_registers_get_fail => "AFE registers retrieve failed";
   String get afe_registers_get_success => "AFE registers retrieved successfully";

@@ -150,6 +150,8 @@ class ServiceScreenManager extends ManagerBase {
     });
   }
 
+  // Handle AFE registers
+
   getAfeRegisters() {
     Log.info(TAG, "Get AFE registers");
     final AckCallback callback =
@@ -200,6 +202,60 @@ class ServiceScreenManager extends ManagerBase {
     final Timer timer =
         Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.afe_registers_write_failed);
+    });
+  }
+
+  // Handle ACC registers
+  void getAccRegisters() {
+    Log.info(TAG, "Get ACC registers");
+    final AckCallback callback =
+    AckCallback(action: () => _showToast(_loc.acc_registers_get_success));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getGetACCRegistersCmd(),
+        listener: callback);
+
+    final Timer timer =
+    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) {
+        _showToast(_loc.acc_registers_get_fail);
+      }
+    });
+  }
+
+  void setAccRegisters() async {
+    Log.info(TAG, "Set ACC registers");
+    List<int> bytes;
+
+    File dirFile = await sl<FileSystemService>().watchpatDirACCFile;
+    File resourceFile = await sl<FileSystemService>().resourceACCFile;
+
+    // load data
+    if (dirFile.existsSync() && dirFile.lengthSync() != 0) {
+      Log.info(
+          TAG, "Set ACC registers from WatchPatDir file, received from device");
+      bytes = dirFile.readAsBytesSync();
+    } else if (resourceFile.lengthSync() != 0) {
+      Log.info(TAG, "Set ACC registers from resource file");
+      bytes = resourceFile.readAsBytesSync();
+    } else {
+      Log.shout(TAG, "ACC file not found!");
+      _showToast(_loc.acc_registers_write_failed);
+      return;
+    }
+
+    // send command and handle response
+    final AckCallback callback = AckCallback(
+        action: () => _showToast(_loc.acc_registers_written_successfully));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getSetACCRegistersCmd(bytes),
+        listener: callback);
+
+    // handle timeout
+    final Timer timer =
+    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) _showToast(_loc.acc_registers_write_failed);
     });
   }
 

@@ -317,7 +317,6 @@ class SetAFERegistersPacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    print("ASASAS ${_header.bytes}, ${_regData}");
     List<int> buffer = ListCombainer.combain([_header.bytes, _regData],
         requiredLength: _packetSize);
 

@@ -45,7 +45,6 @@ class ServiceScreenManager extends ManagerBase {
 
   Observable<String> get progressBar => _progressBar.stream;
 
-  StreamSubscription __logFileStatusSub;
   StreamSubscription _paramFileGetStatusSub;
   StreamSubscription _paramFileSetStatusSub;
 
@@ -131,7 +130,7 @@ class ServiceScreenManager extends ManagerBase {
 
     // handle timeout
     final Timer timer = Timer(Duration(seconds: 30), () {
-      if (!_paramFileHandler.ifFileGetDone)
+      if (!_paramFileHandler.isFileGetDone)
         _hideProgressbarWithMessage(_loc.getting_param_file_fail);
       _paramFileGetStatusSub.cancel();
     });
@@ -151,8 +150,24 @@ class ServiceScreenManager extends ManagerBase {
     });
   }
 
-  // Handle AFE registers
+  getLogFileFromDevice() async {
+    Log.info(TAG, "Extracting log file from device");
+    sl<FileSystemService>().initLogFile();
+    _progressBar.sink.add(_loc.getting_log_file);
+    sl<ParameterFileHandler>().startLogFileGet();
 
+    // handle timeout
+    final Timer timer = Timer(Duration(minutes: 2), () {
+      if (!sl<ParameterFileHandler>().isFileGetDone)
+        _hideProgressbarWithMessage(_loc.getting_log_file_fail);
+    });
+
+    // subscribe to result
+    final bool isDone = await _paramFileHandler.logFileStatusStream.first;
+    if (isDone) _hideProgressbarWithMessage(_loc.getting_log_file_success);
+  }
+
+  // Handle AFE registers
   getAfeRegisters() {
     Log.info(TAG, "Get AFE registers");
     final AckCallback callback =

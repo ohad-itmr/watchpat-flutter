@@ -27,6 +27,7 @@ class FileSystemService {
   final String resourceDirACCFileName = DefaultSettings.resourceACCFileName;
   final String watchpatDirEEPROMFileName = DefaultSettings.watchpatDirEEPROMFileName;
   final String resourceDirEEPROMFileName = DefaultSettings.resourceEEPROMFileName;
+  final String deviceLogFileName = DefaultSettings.deviceLogFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -136,6 +137,11 @@ class FileSystemService {
         flush: true);
   }
 
+  Future<File> get deviceLogFile async {
+    final path = await localPath;
+    return File('$path/$deviceLogFileName');
+  }
+
   Future<Response> allocateSpace() async {
     File localFile = await localDataFile;
     TestStates testState = sl<SystemStateManager>().testState;
@@ -210,6 +216,18 @@ class FileSystemService {
       Log.info(TAG, 'Parameter file created');
     } catch (e) {
       Log.warning(TAG, 'Parameter file creation error: ${e.toString()}');
+    }
+  }
+
+  void initLogFile() async {
+    Log.info(TAG, 'Attempt to create device log file...');
+    try {
+      File logFile = await watchpatDirParametersFile;
+      if (logFile.existsSync()) logFile.deleteSync();
+      logFile.createSync();
+      Log.info(TAG, 'Device log file created');
+    } catch (e) {
+      Log.warning(TAG, 'Device log file creation error: ${e.toString()}');
     }
   }
 

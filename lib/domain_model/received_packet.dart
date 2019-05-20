@@ -201,7 +201,7 @@ class ReceivedPacket {
 
   int extractLogFileSize() {
     List<int> packetSizeBytes = extractPayload().sublist(4, 8);
-    return int.parse(packetSizeBytes.reversed.join());
+    return ConvertFormats.fourBytesToInt(packetSizeBytes);
   }
 
   int extractParamFileSize() {

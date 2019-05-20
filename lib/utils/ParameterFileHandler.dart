@@ -17,7 +17,7 @@ class ParameterFileHandler extends ManagerBase {
   int _getFileOffset;
   bool _isGetFileDone;
 
-  bool get ifFileGetDone => _isGetFileDone;
+  bool get isFileGetDone => _isGetFileDone;
 
   PublishSubject<bool> _logFileStatus = PublishSubject<bool>();
   PublishSubject<bool> _paramFileGetStatus = PublishSubject<bool>();

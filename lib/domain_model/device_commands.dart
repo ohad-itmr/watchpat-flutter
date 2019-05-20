@@ -47,8 +47,8 @@ class DeviceCommands {
   static const int CMD_OPCODE_GET_PATIENT_ID = 0x2500;
   static const int CMD_OPCODE_FW_UPGRADE_REQ = 0x30;
   static const int CMD_OPCODE_FW_UPGRADE_RES = 0x31;
-  static const int CMD_OPCODE_GET_LOG_FILE = 0x4400;
-  static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x4500;
+  static const int CMD_OPCODE_GET_LOG_FILE = 0x44;
+  static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x45;
   static const int CMD_OPCODE_UNKNOWN = 0x0F00;
 
   static const int ACK_STATUS_OK = 0x00;

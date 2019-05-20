@@ -178,5 +178,9 @@
   "vdd_voltage": "VDD voltage: ",
   "ir_led_status": "IR LED status: ",
   "red_led_status": "Red LED status: ",
-  "pat_led_status": "PAT LED status: "
+  "pat_led_status": "PAT LED status: ",
+  "getting_log_file": "Getting device log file",
+  "getting_log_file_fail": "Getting device log file failed",
+  "getting_log_file_success": "Getting device log file success"
+
 }

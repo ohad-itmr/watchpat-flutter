@@ -62,7 +62,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       _progressBarShowing = true;
       showDialog(
           context: context,
-          barrierDismissible: false,
+//          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(msg),
@@ -374,7 +374,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(title: "Get technical status", action: _performTechStatuReport),
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
-      ServiceOption(title: "Extract log file from device", action: null),
+      ServiceOption(title: "Extract log file from device", action: _manager.getLogFileFromDevice),
       ServiceOption(title: "Reset main device", action: null),
       ServiceOption(title: "Ignore device errors", action: null),
       ServiceOption(title: "Reset application", action: null),

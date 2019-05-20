@@ -79,10 +79,13 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   // SERVICE OPERATIONS RESULTS STREAM
   PublishSubject<int> _bitResponse = PublishSubject<int>();
-  PublishSubject<TechStatusPayload> _techStatusResponse = PublishSubject<TechStatusPayload>();
+  PublishSubject<TechStatusPayload> _techStatusResponse =
+      PublishSubject<TechStatusPayload>();
 
   Observable<int> get bitResponse => _bitResponse.stream;
-  Observable<TechStatusPayload> get techStatusResponse => _techStatusResponse.stream;
+
+  Observable<TechStatusPayload> get techStatusResponse =>
+      _techStatusResponse.stream;
 
   void startPacketAnalysis() {
     _testStartTimer.startTimer();
@@ -206,7 +209,6 @@ class IncomingPacketHandlerService extends ManagerBase {
             Log.info(TAG, "### start session confirm: device serial saved");
 
             if (PrefsProvider.getIsFirstDeviceConnection()) {
-
               // Set external configuration if necessary
               sl<WelcomeActivityManager>().configureApplication();
 
@@ -216,11 +218,14 @@ class IncomingPacketHandlerService extends ManagerBase {
 
               //todo Firmwarer upgrado
 
-              final bool isUpToDate = await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
+              final bool isUpToDate = await sl<FirmwareUpgrader>()
+                  .isDeviceFirmwareVersionUpToDate();
               if (isUpToDate) {
-                Log.info(TAG, "### start session confirm: device FW version check END");
+                Log.info(TAG,
+                    "### start session confirm: device FW version check END");
                 Log.info(TAG, "device FW up to date");
-                 sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
+                sl<SystemStateManager>()
+                    .setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
               } else {
                 Log.info(TAG, "device FW outdated");
                 sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
@@ -256,7 +261,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_TECHNICAL_STATUS_REPORT:
           Log.info(TAG, "packet received (TECHNICAL_STATUS_REPORT)");
-          _techStatusResponse.sink.add(receivedPacket.extractTechStatusPayload());
+          _techStatusResponse.sink
+              .add(receivedPacket.extractTechStatusPayload());
           // send tech-status-report packet ACK
           sl<CommandTaskerManager>().addAck(
             DeviceCommands.getAckCmd(
@@ -301,8 +307,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           // fw-response packet received
           // TODO implement getFirmwareUpgrader
           sl<FirmwareUpgrader>().responseReceived();
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           break;
         case DeviceCommands.CMD_OPCODE_AFE_REGISTERS_VALUES:
@@ -327,23 +333,24 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
+
         case DeviceCommands.CMD_OPCODE_GET_LOG_FILE_RESPONSE:
           Log.info(
               TAG,
               "packet received (LOG_FILE_RESPONSE): " +
                   ConvertFormats.bytesToHex(receivedPacket.bytes));
           final int payloadSize = receivedPacket.extractLogFileSize();
-          Log.info(TAG, ">> log chunk size: $payloadSize");
-          // todo implement write to file
-//          _logFileByteStream.write(
-//              receivedPacket.extractParameterFilePayload(), 0, payloadSize);
-//          if (payloadSize < ServiceActivity.LOG_FILE_DATA_CHUNK) {
-//            Log.info(TAG,">> log EOF!");
-//            getParameterFileHandler().getLogFileResponse(false);
-//            _logFileByteStream.reset();
-//          } else {
-//            getParameterFileHandler().getLogFileResponse(true);
-//          }
+          print(">> log file chunk size: $payloadSize");
+          File f = await sl<FileSystemService>().deviceLogFile;
+          f.writeAsBytesSync(receivedPacket.extractParameterFilePayload(),
+              mode: FileMode.append, flush: true);
+
+          if (payloadSize < ParameterFileHandler.LOG_FILE_DATA_CHUNK) {
+            Log.info(TAG, ">> log EOF!");
+            sl<ParameterFileHandler>().getLogFileResponse(false);
+          } else {
+            sl<ParameterFileHandler>().getLogFileResponse(true);
+          }
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
@@ -351,7 +358,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (PARAMETERS_FILE)");
 
           final int payloadSize = receivedPacket.extractParamFileSize();
-          print("PAYLOAD SIZE $payloadSize");
+          print(">> parameters file chunk size: $payloadSize");
           final List<int> payload =
               receivedPacket.extractParameterFilePayload();
 

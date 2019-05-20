@@ -52,6 +52,7 @@ class DefaultSettings {
   static String resourceACCFileName = "watchpat_accregs_resource.bin";
   static String watchpatDirEEPROMFileName = "watchpat_eeprom.bin";
   static String resourceEEPROMFileName = "watchpat_eeprom_resource.bin";
+  static String deviceLogFileName = "main_device_log.txt";
 
 
   static Map<String, dynamic> settingsToMap() {

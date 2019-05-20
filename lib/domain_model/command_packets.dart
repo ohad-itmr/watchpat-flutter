@@ -291,8 +291,8 @@ class GetLogFilePacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    final offset = ConvertFormats.longToByteList(_offset, size: 2);
-    final length = ConvertFormats.longToByteList(_length, size: 2);
+    final offset = ConvertFormats.longToByteList(_offset, size: 4, reversed: false);
+    final length = ConvertFormats.longToByteList(_length, size: 4, reversed: false);
 
     List<int> buffer = ListCombainer.combain([_header.bytes, offset, length],
         requiredLength: _packetSize);

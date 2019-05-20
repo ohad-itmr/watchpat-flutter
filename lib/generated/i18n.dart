@@ -106,6 +106,9 @@ class S implements WidgetsLocalizations {
   String get fw_upgrade_succeed => "Main device firmware upgraded successfully";
   String get get => "get";
   String get get_tech_status_timeout => "Get tech status: timeout";
+  String get getting_log_file => "Getting device log file";
+  String get getting_log_file_fail => "Getting device log file failed";
+  String get getting_log_file_success => "Getting device log file success";
   String get getting_param_file => "Getting parameter file";
   String get getting_param_file_fail => "Getting parameter file: failed";
   String get getting_param_file_success => "Getting parameter file: success";
@@ -215,6 +218,8 @@ class fr extends S {
   @override
   String get cancel => "Cancel";
   @override
+  String get getting_log_file => "Getting device log file";
+  @override
   String get welcomeTitle => "Bonjour-r-r-r-r";
   @override
   String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
@@ -272,6 +277,8 @@ class fr extends S {
   String get id_in => "ID in";
   @override
   String get retrieving_stored_test_data => "Retrieving stored test data";
+  @override
+  String get getting_log_file_success => "Getting device log file success";
   @override
   String get customer_service_mode => "Customer service mode";
   @override
@@ -454,6 +461,8 @@ class fr extends S {
   String get fw_check_version => "Please wait while we check device firmware version";
   @override
   String get set_led_color_success => "Set LED color: success";
+  @override
+  String get getting_log_file_fail => "Getting device log file failed";
   @override
   String get critical_hw_failure => "Critical hardware failure";
   @override

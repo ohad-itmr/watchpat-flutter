@@ -156,10 +156,14 @@
   "afe_registers_get_fail": "AFE registers retrieve failed",
   "afe_registers_written_successfully": "AFE registers written successfully",
   "afe_registers_write_failed": "AFE registers write failed",
-
   "acc_registers": "ACC registers",
   "acc_registers_get_success": "ACC registers retrieved successfully",
   "acc_registers_get_fail": "ACC registers retrieve failed",
   "acc_registers_written_successfully": "ACC registers written successfully",
-  "acc_registers_write_failed": "ACC registers write failed"
+  "acc_registers_write_failed": "ACC registers write failed",
+  "upat_eeprom": "UPAT EEPROM",
+  "eeprom_get_success": "EEPROM data retrieved successfully",
+  "eeprom_get_fail": "EEPROM data retrieve failed",
+  "eeprom_written_successfully": "Device EEPROM written successfully",
+  "eeprom_write_failed": "Device EEPROM write failed"
 }

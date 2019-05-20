@@ -259,6 +259,60 @@ class ServiceScreenManager extends ManagerBase {
     });
   }
 
+  // Handle EEPROM values
+  void getEEPROMvalues() {
+    Log.info(TAG, "Get device EEPROM");
+    final AckCallback callback =
+    AckCallback(action: () => _showToast(_loc.eeprom_get_success));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getGetEEPROMCmd(),
+        listener: callback);
+
+    final Timer timer =
+    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) {
+        _showToast(_loc.eeprom_get_fail);
+      }
+    });
+  }
+
+  void setEEPROMValues() async {
+    Log.info(TAG, "Set device EEPROM");
+    List<int> bytes;
+
+    File dirFile = await sl<FileSystemService>().watchpatDirEEPROMFile;
+    File resourceFile = await sl<FileSystemService>().resourceEEPROMFile;
+
+    // load data
+    if (dirFile.existsSync() && dirFile.lengthSync() != 0) {
+      Log.info(
+          TAG, "Set EEPROM values from WatchPatDir file, received from device");
+      bytes = dirFile.readAsBytesSync();
+    } else if (resourceFile.lengthSync() != 0) {
+      Log.info(TAG, "Set EEPROM values from resource file");
+      bytes = resourceFile.readAsBytesSync();
+    } else {
+      Log.shout(TAG, "EEPROM file not found!");
+      _showToast(_loc.eeprom_write_failed);
+      return;
+    }
+
+    // send command and handle response
+    final AckCallback callback = AckCallback(
+        action: () => _showToast(_loc.eeprom_written_successfully));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getSetEEPROMCmd(bytes),
+        listener: callback);
+
+    // handle timeout
+    final Timer timer =
+    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) _showToast(_loc.eeprom_write_failed);
+    });
+  }
+
   _hideProgressbarWithMessage(String message) {
     _progressBar.sink.add("");
     _toasts.sink.add(message);
@@ -276,6 +330,7 @@ class ServiceScreenManager extends ManagerBase {
     _toasts.close();
     _progressBar.close();
   }
+
 }
 
 class ServiceOption {

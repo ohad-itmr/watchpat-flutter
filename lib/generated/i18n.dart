@@ -74,6 +74,10 @@ class S implements WidgetsLocalizations {
   String get digits => "digits";
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";
   String get disconnected => "Disconnected";
+  String get eeprom_get_fail => "EEPROM data retrieve failed";
+  String get eeprom_get_success => "EEPROM data retrieved successfully";
+  String get eeprom_write_failed => "Device EEPROM write failed";
+  String get eeprom_written_successfully => "Device EEPROM written successfully";
   String get english => "English";
   String get enter_id => "ID:";
   String get enter_new_serial => "Enter main device new serial number";
@@ -167,6 +171,7 @@ class S implements WidgetsLocalizations {
   String get thankYouTitle => "Thank You";
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during authentication, please contact support";
+  String get upat_eeprom => "UPAT EEPROM";
   String get upgrade_file_ver_name => "UpgradeFileVersion";
   String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
   String get uploadingTitle => "Good Morning";
@@ -261,6 +266,8 @@ class fr extends S {
   @override
   String get myPAT_connect_to_server_fail => "myPAT connection to SFTP server failure";
   @override
+  String get acc_registers => "ACC registers";
+  @override
   String get bt_not_available_shutdown => "Bluetooth is not available on this device";
   @override
   String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
@@ -303,6 +310,10 @@ class fr extends S {
   @override
   String get select_language => "Choisir la langue";
   @override
+  String get eeprom_get_success => "EEPROM data retrieved successfully";
+  @override
+  String get eeprom_written_successfully => "Device EEPROM written successfully";
+  @override
   String get thankYouTitle => "Thank You";
   @override
   String get strapWristContent => "You will be putting the WatchPAT on your non-dominant hand. \nPlace the WatchPAT on a flat surface. \nInsert your hand and close the strap, making sure its snug but not too  tight.";
@@ -327,11 +338,15 @@ class fr extends S {
   @override
   String get afe_registers_write_failed => "AFE registers write failed";
   @override
+  String get upat_eeprom => "UPAT EEPROM";
+  @override
   String get invalid_technician_password => "Invalid technician password";
   @override
   String get log_email_subject => "myPAT device log file";
   @override
   String get no_inet_connection => "Internet connection not available";
+  @override
+  String get acc_registers_get_fail => "ACC registers retrieve failed";
   @override
   String get afe_registers_description => "AFE registers";
   @override
@@ -365,7 +380,11 @@ class fr extends S {
   @override
   String get incorrect_pin => "Incorrect PIN, please try again";
   @override
+  String get acc_registers_get_success => "ACC registers retrieved successfully";
+  @override
   String get btnMore => "More";
+  @override
+  String get acc_registers_write_failed => "ACC registers write failed";
   @override
   String get enter_id => "ID:";
   @override
@@ -386,6 +405,8 @@ class fr extends S {
   String get all_data_transmitted_successfully => "All data transmitted successfully";
   @override
   String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
+  @override
+  String get acc_registers_written_successfully => "ACC registers written successfully";
   @override
   String get parameters_file_write_failed => "Parameters file write failed";
   @override
@@ -447,11 +468,15 @@ class fr extends S {
   @override
   String get err_used_device => "Used main device";
   @override
+  String get eeprom_write_failed => "Device EEPROM write failed";
+  @override
   String get upgrade_file_ver_name => "UpgradeFileVersion";
   @override
   String get firmware_alert_title => "Device firmware upgrade";
   @override
   String get ready => "Ready";
+  @override
+  String get eeprom_get_fail => "EEPROM data retrieve failed";
   @override
   String get please_insert_finger => "Please insert the finger and press OK";
   @override

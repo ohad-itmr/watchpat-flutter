@@ -269,8 +269,27 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ));
   }
 
-  _showBadThing() {
-    MyPatToast.show("We are not quite here yet...", context);
+  // Hanlde device EEPROM
+  _showEepromDialog() {
+    _showServiceDialog(ServiceDialog(
+      title: Text(_loc.upat_eeprom),
+      actions: [
+        _buildPopButton(_loc.cancel.toUpperCase()),
+        Container(width: _screenWidth / 15),
+        _buildActionButton(
+            text: _loc.get.toUpperCase(),
+            action: () {
+              _manager.getEEPROMvalues();
+              Navigator.pop(context);
+            }),
+        _buildActionButton(
+            text: _loc.set.toUpperCase(),
+            action: () {
+              _manager.setEEPROMValues();
+              Navigator.pop(context);
+            })
+      ],
+    ));
   }
 
   _initServiceOptions() {
@@ -282,7 +301,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
       ServiceOption(
-          title: "Upgrade main device firmware", action: _showBadThing),
+          title: "Upgrade main device firmware", action: null),
       ServiceOption(
           title: "Handle parameters file", action: _showParametersFileDialog)
     ];
@@ -290,7 +309,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
     _technicianServiceOptions = [
       ServiceOption(title: "Handle AFE registers", action: _showAfeRegistersDialog),
       ServiceOption(title: "Handle ACC registers", action: _showAccRegistersDialog),
-      ServiceOption(title: "Handle main devide EEPROM", action: null),
+      ServiceOption(title: "Handle main devide EEPROM", action: _showEepromDialog),
       ServiceOption(title: "Set device serial", action: null),
       ServiceOption(title: "Sel LED indication", action: null),
       ServiceOption(title: "Get technical status", action: null),

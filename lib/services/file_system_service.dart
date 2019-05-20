@@ -25,6 +25,8 @@ class FileSystemService {
   final String resourceDirAFEFileName = DefaultSettings.resourceAFEFileName;
   final String watchpatDirACCFileName = DefaultSettings.watchpatDirACCFileName;
   final String resourceDirACCFileName = DefaultSettings.resourceACCFileName;
+  final String watchpatDirEEPROMFileName = DefaultSettings.watchpatDirEEPROMFileName;
+  final String resourceDirEEPROMFileName = DefaultSettings.resourceEEPROMFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -118,6 +120,22 @@ class FileSystemService {
         flush: true);
   }
 
+  Future<File> get watchpatDirEEPROMFile async {
+    final path = await localPath;
+    return File('$path/$watchpatDirEEPROMFileName');
+  }
+
+  Future<File> get resourceEEPROMFile async {
+    final path = await localPath;
+    final ByteData bytes =
+    await rootBundle.load('assets/raw/$resourceDirEEPROMFileName');
+    final buffer = bytes.buffer;
+    File f = await File('$path/$resourceDirEEPROMFileName').create();
+    return f.writeAsBytes(
+        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+        flush: true);
+  }
+
   Future<Response> allocateSpace() async {
     File localFile = await localDataFile;
     TestStates testState = sl<SystemStateManager>().testState;
@@ -172,6 +190,8 @@ class FileSystemService {
       if (afeFile.existsSync()) afeFile.deleteSync();
       File accFile = await watchpatDirACCFile;
       if (accFile.existsSync()) accFile.deleteSync();
+      File eepromFile = await watchpatDirEEPROMFile;
+      if (eepromFile.existsSync()) eepromFile.deleteSync();
       Log.info(TAG, "Deleted stored files previously received form device");
 
       return Response(success: true);

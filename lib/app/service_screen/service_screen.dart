@@ -339,6 +339,15 @@ class _ServiceScreenState extends State<ServiceScreen> {
     );
   }
 
+  // Tech status report
+  _performTechStatuReport() async {
+    final String res = await _manager.techStatusReport();
+    _showServiceDialog(ServiceDialog(
+      content: Text(res),
+      actions: [_buildPopButton(_loc.ok.toUpperCase())]
+    ));
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -362,7 +371,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(
           title: "Set device serial", action: _showDeviceSerialDialog),
       ServiceOption(title: "Sel LED indication", action: _showSetLedDialog),
-      ServiceOption(title: "Get technical status", action: null),
+      ServiceOption(title: "Get technical status", action: _performTechStatuReport),
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
       ServiceOption(title: "Extract log file from device", action: null),

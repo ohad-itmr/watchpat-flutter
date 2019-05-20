@@ -359,6 +359,13 @@ class BleManager extends ManagerBase {
               }
             });
             break;
+          case AppModes.TECH:
+            sl<CommandTaskerManager>().addCommandWithNoCb(
+                DeviceCommands.getStartSessionCmd(
+                    0x0000,
+                    DeviceCommands.SESSION_START_USE_TYPE_PRODUCTION,
+                    [0, 0, 0, 1]));
+            break;
           default:
             break;
         }

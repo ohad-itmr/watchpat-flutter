@@ -40,6 +40,7 @@ class S implements WidgetsLocalizations {
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
   String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT™ ONE and remove the battery.";
   String get batteryTitle => "Insert Battery";
+  String get battery_voltage => "Battery voltage: ";
   String get bt_initiation_error => "Bluetooth initiation error";
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth on.";
   String get bt_not_available_shutdown => "Bluetooth is not available on this device";
@@ -104,6 +105,7 @@ class S implements WidgetsLocalizations {
   String get fw_upgrade_failed => "Main device firmware upgrade failed.\n\nPlease contact Itamar Medical support.";
   String get fw_upgrade_succeed => "Main device firmware upgraded successfully";
   String get get => "get";
+  String get get_tech_status_timeout => "Get tech status: timeout";
   String get getting_param_file => "Getting parameter file";
   String get getting_param_file_fail => "Getting parameter file: failed";
   String get getting_param_file_success => "Getting parameter file: success";
@@ -114,6 +116,7 @@ class S implements WidgetsLocalizations {
   String get insufficient_storage_space_on_smartphone => "Insufficient storage space on smartphone, shutting down";
   String get invalid_id => "Invalid ID";
   String get invalid_technician_password => "Invalid technician password";
+  String get ir_led_status => "IR LED status: ";
   String get loading => "Loading";
   String get log_email_subject => "myPAT device log file";
   String get low_power => "Low power alert";
@@ -128,6 +131,7 @@ class S implements WidgetsLocalizations {
   String get parameters_file_title => "Parameters file";
   String get parameters_file_write_failed => "Parameters file write failed";
   String get parameters_file_written_successfully => "Parameters file written successfully";
+  String get pat_led_status => "PAT LED status: ";
   String get patient_msg1 => "You are advised to leave the charger plugged in during the entire test procedure and close unused applications before starting test procedure";
   String get patient_msg2 => "Please don't close myPAT application during test procedure";
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
@@ -140,9 +144,11 @@ class S implements WidgetsLocalizations {
   String get ready => "Ready";
   String get recordingTitle => "Good Night";
   String get red => "Red";
+  String get red_led_status => "Red LED status: ";
   String get remote_server => "Remote Server";
   String get removeJewelryContent => "Remove tight cloths, watches and jewelry.\nEnsure that the finger nail is trimmed.\nRemove artificial nail or colored nail polish from the monitored finger.\nUse the MORE button to see more details.";
   String get removeJewelryTitle => "Remove Jewelry";
+  String get requesting_technical_status => "Requesting technical status";
   String get retrieve_stored_data => "Retrieve stored data";
   String get retrieve_stored_data_from_device => "Retrieve stored data from main device?";
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
@@ -183,6 +189,7 @@ class S implements WidgetsLocalizations {
   String get uploadingTitle => "Good Morning";
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   String get user_mode => "User mode";
+  String get vdd_voltage => "VDD voltage: ";
   String get welcomeContent => "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician.\nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.";
   String get welcomeTitle => "Welcome";
   String get welcome_to_mypat => "Welcome to myPAT";
@@ -268,6 +275,8 @@ class fr extends S {
   @override
   String get customer_service_mode => "Customer service mode";
   @override
+  String get battery_voltage => "Battery voltage: ";
+  @override
   String get parameters_file_title => "Parameters file";
   @override
   String get fatal_error => "Fatal error";
@@ -313,6 +322,8 @@ class fr extends S {
   String get chestSensorContent => "Pull the Chest Sensor along your non dominant hand, and up to the neck opening. \nPeel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.";
   @override
   String get welcome_to_mypat => "Welcome to myPAT";
+  @override
+  String get requesting_technical_status => "Requesting technical status";
   @override
   String get set => "set";
   @override
@@ -368,6 +379,8 @@ class fr extends S {
   @override
   String get err_probe_photo => "Probe photo";
   @override
+  String get vdd_voltage => "VDD voltage: ";
+  @override
   String get finger_not_detected => "Finger not detected alert";
   @override
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
@@ -399,6 +412,8 @@ class fr extends S {
   String get acc_registers_write_failed => "ACC registers write failed";
   @override
   String get enter_id => "ID:";
+  @override
+  String get ir_led_status => "IR LED status: ";
   @override
   String get exit_service_mode => "Exit service mode";
   @override
@@ -466,6 +481,8 @@ class fr extends S {
   @override
   String get thankYouContent => "The data has been successfully uploaded and the test is over.\nPlease dispose the product by your local guidance's.";
   @override
+  String get get_tech_status_timeout => "Get tech status: timeout";
+  @override
   String get insufficient_storage_space_on_smartphone => "Insufficient storage space on smartphone, shutting down";
   @override
   String get server_comm_error => "Server communication error, please contact support";
@@ -516,6 +533,8 @@ class fr extends S {
   @override
   String get btnPreview => "Preview";
   @override
+  String get red_led_status => "Red LED status: ";
+  @override
   String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.";
   @override
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
@@ -527,6 +546,8 @@ class fr extends S {
   String get device_log_file_description => "Device log file";
   @override
   String get select_led_color => "Select LED color";
+  @override
+  String get pat_led_status => "PAT LED status: ";
   @override
   String get removeJewelryTitle => "Remove Jewelry";
   @override

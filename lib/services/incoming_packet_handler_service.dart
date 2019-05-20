@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:my_pat/domain_model/device_commands.dart';
+import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
@@ -78,8 +79,10 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   // SERVICE OPERATIONS RESULTS STREAM
   PublishSubject<int> _bitResponse = PublishSubject<int>();
+  PublishSubject<TechStatusPayload> _techStatusResponse = PublishSubject<TechStatusPayload>();
 
   Observable<int> get bitResponse => _bitResponse.stream;
+  Observable<TechStatusPayload> get techStatusResponse => _techStatusResponse.stream;
 
   void startPacketAnalysis() {
     _testStartTimer.startTimer();
@@ -253,11 +256,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_TECHNICAL_STATUS_REPORT:
           Log.info(TAG, "packet received (TECHNICAL_STATUS_REPORT)");
-          // tech-status-report packet received
-          // TODO implement technician mode
-//          broadcastTechStatusReceived(
-//            receivedPacket.extractTechStatusPayload(),
-//          );
+          _techStatusResponse.sink.add(receivedPacket.extractTechStatusPayload());
           // send tech-status-report packet ACK
           sl<CommandTaskerManager>().addAck(
             DeviceCommands.getAckCmd(

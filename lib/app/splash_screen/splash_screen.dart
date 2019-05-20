@@ -132,9 +132,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         sl<SystemStateManager>().setAppMode(AppModes.TECH);
-                        sl<SystemStateManager>()
-                            .changeState
-                            .add(StateChangeActions.APP_MODE_CHANGED);
+                        sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) =>
                                 ServiceScreen(mode: ServiceMode.technician)));

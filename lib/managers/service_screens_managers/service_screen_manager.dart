@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
+import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -358,6 +359,39 @@ class ServiceScreenManager extends ManagerBase {
         Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.set_led_color_timeout);
     });
+  }
+
+  // handle technical status report
+  Future<String> techStatusReport() async {
+    Log.info(TAG, "Requesting technical status");
+
+    final AckCallback callback = AckCallback();
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getGetTechnicalStatusCmd(),
+        listener: callback);
+    _showToast(_loc.requesting_technical_status);
+
+    // handle timeout
+    final Timer timer =
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) _showToast(_loc.get_tech_status_timeout);
+    });
+
+    // subscibe to result
+    TechStatusPayload techStatusPayload =
+        await sl<IncomingPacketHandlerService>().techStatusResponse.first;
+
+    var responseMsg = StringBuffer();
+    responseMsg
+        .write("${_loc.battery_voltage}${techStatusPayload.batteryVoltage}\n");
+    responseMsg.write("${_loc.vdd_voltage}${techStatusPayload.vddVoltage}\n");
+    responseMsg
+        .write("${_loc.ir_led_status}${techStatusPayload.irLedStatus}\n");
+    responseMsg
+        .write("${_loc.red_led_status}${techStatusPayload.redLedStatus}\n");
+    responseMsg
+        .write("${_loc.pat_led_status}${techStatusPayload.patLedStatus}\n");
+    return responseMsg.toString();
   }
 
   _hideProgressbarWithMessage(String message) {

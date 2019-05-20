@@ -32,6 +32,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
   bool _progressBarShowing = false;
   bool _operationInProgress = false;
 
+  // device serial prompt
+  final _serialFormKey = GlobalKey<FormState>();
+  final _serialInputController = TextEditingController();
+
   @override
   void initState() {
     _toastSub =
@@ -86,37 +90,39 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.mode.toString()),
-          flexibleSpace: AppBarDecoration(),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-          leading: _operationInProgress
-              ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: CircularProgressIndicator(
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Colors.white)))
-              : Container(),
+      appBar: AppBar(
+        title: Text(widget.mode.toString()),
+        flexibleSpace: AppBarDecoration(),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+        leading: _operationInProgress
+            ? Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CircularProgressIndicator(
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Colors.white)))
+            : Container(),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/gears_primary.png'),
+            colorFilter: ColorFilter.mode(
+                Color.fromRGBO(255, 255, 255, 0.2), BlendMode.modulate),
+          ),
         ),
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/gears_primary.png'),
-              colorFilter: ColorFilter.mode(
-                  Color.fromRGBO(255, 255, 255, 0.2), BlendMode.modulate),
-            ),
-          ),
-          child: ListView.separated(
-            itemCount: _serviceOptions[widget.mode].length,
-            itemBuilder: _buildOptionTile,
-            separatorBuilder: (_, __) => Divider(),
-          ),
-        ));
+        child: ListView.separated(
+          itemCount: _serviceOptions[widget.mode].length,
+          itemBuilder: _buildOptionTile,
+          separatorBuilder: (_, __) => Divider(),
+        ),
+      ),
+      resizeToAvoidBottomPadding: false,
+    );
   }
 
   Widget _buildOptionTile(BuildContext context, int i) {
@@ -292,6 +298,38 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ));
   }
 
+  // Set device serial
+  _showDeviceSerialDialog() {
+    _showServiceDialog(ServiceDialog(
+        title: Text(_loc.set_serial),
+        content: Form(
+          key: _serialFormKey,
+          child: TextFormField(
+            controller: _serialInputController,
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value.length != 9) {
+                _serialFormKey.currentState.reset();
+                return 'Serial should contain 9 digits';
+              }
+            },
+          ),
+        ),
+        actions: [
+          _buildPopButton(_loc.cancel.toUpperCase()),
+          _buildActionButton(
+              text: _loc.set.toUpperCase(),
+              action: () {
+                if (_serialFormKey.currentState.validate()) {
+                  _manager.setDeviceSerial(_serialInputController.value.text);
+                  _serialInputController.clear();
+                  Navigator.pop(context);
+                }
+              }),
+        ]));
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -300,17 +338,20 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Retrieve test data from device and upload it to server",
           action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
-      ServiceOption(
-          title: "Upgrade main device firmware", action: null),
+      ServiceOption(title: "Upgrade main device firmware", action: null),
       ServiceOption(
           title: "Handle parameters file", action: _showParametersFileDialog)
     ];
 
     _technicianServiceOptions = [
-      ServiceOption(title: "Handle AFE registers", action: _showAfeRegistersDialog),
-      ServiceOption(title: "Handle ACC registers", action: _showAccRegistersDialog),
-      ServiceOption(title: "Handle main devide EEPROM", action: _showEepromDialog),
-      ServiceOption(title: "Set device serial", action: null),
+      ServiceOption(
+          title: "Handle AFE registers", action: _showAfeRegistersDialog),
+      ServiceOption(
+          title: "Handle ACC registers", action: _showAccRegistersDialog),
+      ServiceOption(
+          title: "Handle main devide EEPROM", action: _showEepromDialog),
+      ServiceOption(
+          title: "Set device serial", action: _showDeviceSerialDialog),
       ServiceOption(title: "Sel LED indication", action: null),
       ServiceOption(title: "Get technical status", action: null),
       ServiceOption(

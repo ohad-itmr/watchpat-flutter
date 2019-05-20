@@ -154,6 +154,9 @@ class S implements WidgetsLocalizations {
   String get send => "Send";
   String get server_comm_error => "Server communication error, please contact support";
   String get set => "set";
+  String get set_device_serial_success => "Set device serial: success";
+  String get set_device_serial_timeout => "Set device serial: timeout";
+  String get set_serial => "Set device serial";
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
   String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
   String get startRecordingTitle => "Start Recording";
@@ -206,6 +209,8 @@ class fr extends S {
   @override
   String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
   @override
+  String get set_serial => "Set device serial";
+  @override
   String get err_flash_test => "Flash test";
   @override
   String get connection_to_main_device_lost => "Connection to Main Device is lost";
@@ -249,6 +254,8 @@ class fr extends S {
   String get please_plug_charger => "Please plug in a charger";
   @override
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";
+  @override
+  String get set_device_serial_timeout => "Set device serial: timeout";
   @override
   String get fw_connection_failed => "Connection with main device failed. Test will be terminated.\n\nPlease contact Itamar Medical support.";
   @override
@@ -389,6 +396,8 @@ class fr extends S {
   String get enter_id => "ID:";
   @override
   String get exit_service_mode => "Exit service mode";
+  @override
+  String get set_device_serial_success => "Set device serial: success";
   @override
   String get stepperOf => "of";
   @override

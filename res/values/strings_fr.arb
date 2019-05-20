@@ -162,5 +162,8 @@
   "eeprom_get_success": "EEPROM data retrieved successfully",
   "eeprom_get_fail": "EEPROM data retrieve failed",
   "eeprom_written_successfully": "Device EEPROM written successfully",
-  "eeprom_write_failed": "Device EEPROM write failed"
+  "eeprom_write_failed": "Device EEPROM write failed",
+  "set_serial": "Set device serial",
+  "set_device_serial_success": "Set device serial: success",
+  "set_device_serial_timeout": "Set device serial: timeout"
 }

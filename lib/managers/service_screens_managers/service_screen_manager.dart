@@ -209,14 +209,14 @@ class ServiceScreenManager extends ManagerBase {
   void getAccRegisters() {
     Log.info(TAG, "Get ACC registers");
     final AckCallback callback =
-    AckCallback(action: () => _showToast(_loc.acc_registers_get_success));
+        AckCallback(action: () => _showToast(_loc.acc_registers_get_success));
 
     sl<CommandTaskerManager>().addCommandWithCb(
         DeviceCommands.getGetACCRegistersCmd(),
         listener: callback);
 
     final Timer timer =
-    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) {
         _showToast(_loc.acc_registers_get_fail);
       }
@@ -254,7 +254,7 @@ class ServiceScreenManager extends ManagerBase {
 
     // handle timeout
     final Timer timer =
-    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.acc_registers_write_failed);
     });
   }
@@ -263,14 +263,13 @@ class ServiceScreenManager extends ManagerBase {
   void getEEPROMvalues() {
     Log.info(TAG, "Get device EEPROM");
     final AckCallback callback =
-    AckCallback(action: () => _showToast(_loc.eeprom_get_success));
+        AckCallback(action: () => _showToast(_loc.eeprom_get_success));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getGetEEPROMCmd(),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getGetEEPROMCmd(), listener: callback);
 
     final Timer timer =
-    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) {
         _showToast(_loc.eeprom_get_fail);
       }
@@ -299,8 +298,8 @@ class ServiceScreenManager extends ManagerBase {
     }
 
     // send command and handle response
-    final AckCallback callback = AckCallback(
-        action: () => _showToast(_loc.eeprom_written_successfully));
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.eeprom_written_successfully));
 
     sl<CommandTaskerManager>().addCommandWithCb(
         DeviceCommands.getSetEEPROMCmd(bytes),
@@ -308,8 +307,27 @@ class ServiceScreenManager extends ManagerBase {
 
     // handle timeout
     final Timer timer =
-    Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.eeprom_write_failed);
+    });
+  }
+
+  // Handle setting device serial
+  void setDeviceSerial(String serial) {
+    Log.info(TAG, "Setting device serial to $serial");
+
+    // send command and handle response
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.set_device_serial_success));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getSetDeviceSerialCmd(int.parse(serial)),
+        listener: callback);
+
+    // handle timeout
+    final Timer timer =
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) _showToast(_loc.set_device_serial_timeout);
     });
   }
 
@@ -330,7 +348,6 @@ class ServiceScreenManager extends ManagerBase {
     _toasts.close();
     _progressBar.close();
   }
-
 }
 
 class ServiceOption {

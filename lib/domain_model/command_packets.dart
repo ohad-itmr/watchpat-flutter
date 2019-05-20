@@ -204,7 +204,7 @@ class SetDeviceSerialCommandPacket extends CommandPacket {
 
   @override
   List<List<int>> prepare() {
-    final serial = ConvertFormats.longToByteList(_serial, size: 4);
+    final serial = ConvertFormats.longToByteList(_serial, size: 4, reversed: false);
 
     List<int> buffer = ListCombainer.combain([_header.bytes, serial],
         requiredLength: _packetSize);

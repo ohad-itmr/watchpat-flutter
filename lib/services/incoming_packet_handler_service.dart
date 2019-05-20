@@ -214,7 +214,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               //todo Firmwarer upgrado
 
               final bool isUpToDate = await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
-              if (!isUpToDate && PrefsProvider.getIsFirstDeviceConnection()) {
+              if (isUpToDate) {
                 Log.info(TAG, "### start session confirm: device FW version check END");
                 Log.info(TAG, "device FW up to date");
                  sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
@@ -308,6 +308,12 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_AFE_REGISTERS_VALUES:
           Log.info(TAG, "packet received (AFE_REGISTERS_VALUES)");
+
+          // store received AFE file to documents folder
+          File f = await sl<FileSystemService>().watchpatDirAFEFile;
+          f.createSync();
+          f.writeAsBytesSync(receivedPacket.bytes, mode: FileMode.write);
+
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
@@ -344,9 +350,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           final List<int> payload =
               receivedPacket.extractParameterFilePayload();
 
-          // todo implement
           File f = await sl<FileSystemService>().watchpatDirParametersFile;
-          f.writeAsBytesSync(payload, mode: FileMode.append);
+          f.writeAsBytesSync(payload, mode: FileMode.append, flush: true);
           if (payloadSize < ParameterFileHandler.PARAM_FILE_DATA_CHUNK) {
             Log.info(TAG, ">> param EOF!");
             sl<ParameterFileHandler>().getParamFileResponse(false);

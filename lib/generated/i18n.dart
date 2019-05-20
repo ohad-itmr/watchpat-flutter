@@ -23,6 +23,10 @@ class S implements WidgetsLocalizations {
 
   String get acc_registers_description => "ACC registers";
   String get afe_registers_description => "AFE registers";
+  String get afe_registers_get_fail => "AFE registers retrieve failed";
+  String get afe_registers_get_success => "AFE registers retrieved successfully";
+  String get afe_registers_write_failed => "AFE registers write failed";
+  String get afe_registers_written_successfully => "AFE registers written successfully";
   String get all_data_transmitted_successfully => "All data transmitted successfully";
   String get app_log_file_text => "Are you sure you want to send application log file to";
   String get app_log_file_title => "Application log file";
@@ -316,6 +320,8 @@ class fr extends S {
   @override
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   @override
+  String get afe_registers_write_failed => "AFE registers write failed";
+  @override
   String get invalid_technician_password => "Invalid technician password";
   @override
   String get log_email_subject => "myPAT device log file";
@@ -325,6 +331,8 @@ class fr extends S {
   String get afe_registers_description => "AFE registers";
   @override
   String get writing_param_file => "Writing parameter file";
+  @override
+  String get afe_registers_written_successfully => "AFE registers written successfully";
   @override
   String get err_probe_photo => "Probe photo";
   @override

@@ -46,6 +46,9 @@ class DefaultSettings {
   static var btScanTimeout = 5000;
   static var dispatchersUrls = List<String>();
 
+  static String watchpatDirAFEFileName = 'watchpat_aferegs.bin';
+  static String resourceAFEFileName = 'watchpat_aferegs_resource.bin';
+
   static Map<String, dynamic> settingsToMap() {
     return <String, dynamic>{
       'uploadDataChunkMaxSize': uploadDataChunkMaxSize,

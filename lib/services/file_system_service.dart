@@ -17,8 +17,12 @@ class FileSystemService {
   final String logMainFileName = DefaultSettings.logMainFileName;
   final String logOutputFileName = DefaultSettings.logOutputFileName;
   final String parametersFileName = DefaultSettings.parametersFileName;
-  final String resourceParameterFileName = DefaultSettings.resourceParametersFileName;
+  final String resourceParameterFileName =
+      DefaultSettings.resourceParametersFileName;
   final String resourceFWFileName = DefaultSettings.resourceFWFileName;
+
+  final String watchpatDirAFEFileName = DefaultSettings.watchpatDirAFEFileName;
+  final String resourceDirAFEFileName = DefaultSettings.resourceAFEFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -52,28 +56,48 @@ class FileSystemService {
 
   Future<File> get resourceParametersFile async {
     final path = await localPath;
-    final ByteData bytes = await rootBundle.load('assets/raw/$parametersFileName');
+    final ByteData bytes =
+        await rootBundle.load('assets/raw/$parametersFileName');
     final buffer = bytes.buffer;
-    return File('$path/$resourceParameterFileName')
-        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+    return File('$path/$resourceParameterFileName').writeAsBytes(
+        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 
   Future<File> get resourceFWFile async {
     final path = await localPath;
-    final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
+    final ByteData bytes =
+        await rootBundle.load('assets/raw/$resourceFWFileName');
     final buffer = bytes.buffer;
-    return File('$path/$resourceFWFileName')
-        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
+    return File('$path/$resourceFWFileName').writeAsBytes(
+        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+        flush: true);
   }
 
   Future<bool> get resourceFWFileExists async {
     try {
-      final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
+      final ByteData bytes =
+          await rootBundle.load('assets/raw/$resourceFWFileName');
       return bytes.elementSizeInBytes != 0;
     } catch (e) {
       Log.shout(TAG, "fw upgrade file not found in resources, ${e.toString()}");
       return false;
     }
+  }
+
+  Future<File> get watchpatDirAFEFile async {
+    final path = await localPath;
+    return File('$path/$watchpatDirAFEFileName');
+  }
+
+  Future<File> get resourceAFEFile async {
+    final path = await localPath;
+    final ByteData bytes =
+        await rootBundle.load('assets/raw/$resourceDirAFEFileName');
+    final buffer = bytes.buffer;
+    File f = await File('$path/$resourceDirAFEFileName').create();
+    return f.writeAsBytes(
+        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+        flush: true);
   }
 
   Future<Response> allocateSpace() async {
@@ -92,7 +116,7 @@ class FileSystemService {
       Log.info(TAG, 'checking sufficient local storage space...,');
 
       try {
-        var spaceToAllocate = GlobalSettings.minStorageSpaceMB * 1024;
+        var spaceToAllocate = GlobalSettings.minStorageSpaceMB * 1024 * 1000;
         Log.info(TAG, 'Free storage space: $spaceToAllocate required');
         RandomAccessFile file = await localFile.open(mode: FileMode.write);
         file.truncateSync(spaceToAllocate);
@@ -122,8 +146,14 @@ class FileSystemService {
       File logOutFile = await logInputFile;
       logOutFile.create();
       Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
+
+      // delete filed previously received from device
       File paramFile = await watchpatDirParametersFile;
       if (paramFile.existsSync()) paramFile.deleteSync();
+      File afeFile = await watchpatDirAFEFile;
+      if (afeFile.existsSync()) afeFile.deleteSync();
+      Log.info(TAG, "Deleted stored files previously received form device");
+
       return Response(success: true);
     } catch (e) {
       Log.warning(TAG, 'FILES PREPARATION ERROR: ${e.toString()}');

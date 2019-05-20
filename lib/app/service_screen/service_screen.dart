@@ -213,6 +213,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   // Reset application
 
+  // Send log file by email
   _sendLogFileByEmail() async {
     Navigator.pop(context);
     setState(() => _operationInProgress = true);
@@ -220,6 +221,29 @@ class _ServiceScreenState extends State<ServiceScreen> {
     MyPatToast.show(
         "Log file sending: ${result ? 'SUCCESS' : 'FAILED'}", context);
     setState(() => _operationInProgress = false);
+  }
+
+  // Handle AFE registers
+  _showAfeRegistersDialog() {
+    _showServiceDialog(ServiceDialog(
+      title: Text(_loc.afe_registers_description),
+      actions: [
+        _buildPopButton(_loc.cancel.toUpperCase()),
+        Container(width: _screenWidth / 15),
+        _buildActionButton(
+            text: _loc.get.toUpperCase(),
+            action: () {
+              _manager.getAfeRegisters();
+              Navigator.pop(context);
+            }),
+        _buildActionButton(
+            text: _loc.set.toUpperCase(),
+            action: () {
+              _manager.setAfeRegisters();
+              Navigator.pop(context);
+            })
+      ],
+    ));
   }
 
   _showBadThing() {
@@ -241,7 +265,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ];
 
     _technicianServiceOptions = [
-      ServiceOption(title: "Handle AFE registers", action: null),
+      ServiceOption(title: "Handle AFE registers", action: _showAfeRegistersDialog),
       ServiceOption(title: "Handle ACC registers", action: null),
       ServiceOption(title: "Handle main devide EEPROM", action: null),
       ServiceOption(title: "Set device serial", action: null),

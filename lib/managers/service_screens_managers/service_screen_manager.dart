@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
@@ -146,6 +147,59 @@ class ServiceScreenManager extends ManagerBase {
       if (isDone)
         _hideProgressbarWithMessage(_loc.param_file_written_successfully);
       _paramFileSetStatusSub.cancel();
+    });
+  }
+
+  getAfeRegisters() {
+    Log.info(TAG, "Get AFE registers");
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.afe_registers_get_success));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getGetAFERegistersCmd(),
+        listener: callback);
+
+    final Timer timer =
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) {
+        _showToast(_loc.afe_registers_get_fail);
+      }
+    });
+  }
+
+  setAfeRegisters() async {
+    Log.info(TAG, "Set AFE registers");
+    List<int> bytes;
+
+    File dirFile = await sl<FileSystemService>().watchpatDirAFEFile;
+    File resourceFile = await sl<FileSystemService>().resourceAFEFile;
+
+    // load data
+    if (dirFile.existsSync() && dirFile.lengthSync() != 0) {
+      Log.info(
+          TAG, "Set AFE registers from WatchPatDir file, received from device");
+      bytes = dirFile.readAsBytesSync();
+    } else if (resourceFile.lengthSync() != 0) {
+      Log.info(TAG, "Set AFE registers from resource file");
+      bytes = resourceFile.readAsBytesSync();
+    } else {
+      Log.shout(TAG, "AFE file not found!");
+      _showToast(_loc.afe_registers_write_failed);
+      return;
+    }
+
+    // send command and handle response
+    final AckCallback callback = AckCallback(
+        action: () => _showToast(_loc.afe_registers_written_successfully));
+
+    sl<CommandTaskerManager>().addCommandWithCb(
+        DeviceCommands.getSetAFERegistersCmd(bytes),
+        listener: callback);
+
+    // handle timeout
+    final Timer timer =
+        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+      if (!callback.ackReceived) _showToast(_loc.afe_registers_write_failed);
     });
   }
 

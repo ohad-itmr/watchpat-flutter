@@ -311,11 +311,13 @@ class SetAFERegistersPacket extends CommandPacket {
   List<int> _regData;
 
   SetAFERegistersPacket(int packetID, List<int> regData)
-      : super(DeviceCommands.CMD_OPCODE_SET_AFE_REGISTERS, 0, packetID,
+      : _regData = regData,
+        super(DeviceCommands.CMD_OPCODE_SET_AFE_REGISTERS, 0, packetID,
             regData.length);
 
   @override
   List<List<int>> prepare() {
+    print("ASASAS ${_header.bytes}, ${_regData}");
     List<int> buffer = ListCombainer.combain([_header.bytes, _regData],
         requiredLength: _packetSize);
 

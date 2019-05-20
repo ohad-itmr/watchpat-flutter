@@ -409,6 +409,38 @@ class ServiceScreenManager extends ManagerBase {
     return responseMsg.toString();
   }
 
+  // Reset main device
+  List<ResetOption> get resetOptions => [
+        ResetOption(
+            type: ResetType.shut_reset,
+            title: "Shut and reset",
+            value: RESET_TYPE_SHUT_AND_RESET),
+        ResetOption(
+            type: ResetType.reset_clock,
+            title: "Reset clock",
+            value: RESET_TYPE_CLOCK_RESET),
+        ResetOption(
+            type: ResetType.clear_data,
+            title: "Clear all data",
+            value: RESET_TYPE_CLEAR_DATA),
+        ResetOption(
+            type: ResetType.load_factory_defaults,
+            title: "Load factory defaults",
+            value: RESET_TYPE_FACTORY_DEFAULTS),
+        ResetOption(
+            type: ResetType.warm_version_change,
+            title: "Warm version change",
+            value: RESET_TYPE_WARM_VERSION_CHANGE),
+      ];
+
+  resetMainDevice(ResetType type) {
+    Log.info(TAG, "Resetting main device...");
+    final ResetOption option =
+        resetOptions.firstWhere((ResetOption opt) => opt.type == type);
+    sl<CommandTaskerManager>()
+        .addCommandWithNoCb(DeviceCommands.getResetDeviceCmd(option.value));
+  }
+
   _hideProgressbarWithMessage(String message) {
     _progressBar.sink.add("");
     _toasts.sink.add(message);
@@ -466,4 +498,20 @@ class LedOption {
   final int value;
 
   LedOption({this.color, this.title, this.value});
+}
+
+enum ResetType {
+  shut_reset,
+  reset_clock,
+  clear_data,
+  load_factory_defaults,
+  warm_version_change
+}
+
+class ResetOption {
+  final ResetType type;
+  final String title;
+  final int value;
+
+  ResetOption({this.type, this.title, this.value});
 }

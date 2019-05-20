@@ -152,6 +152,7 @@ class S implements WidgetsLocalizations {
   String get removeJewelryContent => "Remove tight cloths, watches and jewelry.\nEnsure that the finger nail is trimmed.\nRemove artificial nail or colored nail polish from the monitored finger.\nUse the MORE button to see more details.";
   String get removeJewelryTitle => "Remove Jewelry";
   String get requesting_technical_status => "Requesting technical status";
+  String get reset => "Reset";
   String get retrieve_stored_data => "Retrieve stored data";
   String get retrieve_stored_data_from_device => "Retrieve stored data from main device?";
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
@@ -161,6 +162,7 @@ class S implements WidgetsLocalizations {
   String get select_bit_type => "Select BIT mode";
   String get select_language => "Select language";
   String get select_led_color => "Select LED color";
+  String get select_reset_type => "Select reset type";
   String get send => "Send";
   String get server_comm_error => "Server communication error, please contact support";
   String get set => "set";
@@ -268,6 +270,8 @@ class fr extends S {
   @override
   String get please_plug_charger => "Please plug in a charger";
   @override
+  String get reset => "Reset";
+  @override
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";
   @override
   String get set_device_serial_timeout => "Set device serial: timeout";
@@ -287,6 +291,8 @@ class fr extends S {
   String get parameters_file_title => "Parameters file";
   @override
   String get fatal_error => "Fatal error";
+  @override
+  String get select_reset_type => "Select reset type";
   @override
   String get fw_upgrade_succeed => "Main device firmware upgraded successfully";
   @override

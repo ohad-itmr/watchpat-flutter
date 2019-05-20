@@ -181,6 +181,7 @@
   "pat_led_status": "PAT LED status: ",
   "getting_log_file": "Getting device log file",
   "getting_log_file_fail": "Getting device log file failed",
-  "getting_log_file_success": "Getting device log file success"
-
+  "getting_log_file_success": "Getting device log file success",
+  "select_reset_type": "Select reset type",
+  "reset": "Reset"
 }

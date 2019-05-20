@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/service_screen/led_indicators_dialog.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
+import 'package:my_pat/app/service_screen/reset_device_dialog.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
 import 'package:my_pat/widgets/mypat_toast.dart';
@@ -62,7 +63,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       _progressBarShowing = true;
       showDialog(
           context: context,
-//          barrierDismissible: false,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text(msg),
@@ -348,6 +349,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ));
   }
 
+  // Reset main device
+  _showResetDeviceDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => ResetDeviceDialog()
+    );
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -375,7 +384,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
       ServiceOption(title: "Extract log file from device", action: _manager.getLogFileFromDevice),
-      ServiceOption(title: "Reset main device", action: null),
+      ServiceOption(title: "Reset main device", action: _showResetDeviceDialog),
       ServiceOption(title: "Ignore device errors", action: null),
       ServiceOption(title: "Reset application", action: null),
     ];

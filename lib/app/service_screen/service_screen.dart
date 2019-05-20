@@ -31,9 +31,12 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   StreamSubscription _toastSub;
   StreamSubscription _progressSub;
+  StreamSubscription _deviceBtStateSub;
   double _screenWidth;
   bool _progressBarShowing = false;
   bool _operationInProgress = false;
+
+  DeviceStates _deviceBtState;
 
   // device serial prompt
   final _serialFormKey = GlobalKey<FormState>();
@@ -45,6 +48,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
         _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
     _progressSub =
         _manager.progressBar.listen((String msg) => _handleProgressBar(msg));
+    _deviceBtStateSub = sl<SystemStateManager>()
+        .deviceCommStateStream
+        .listen(_handleBtStateChange);
     _initServiceOptions();
     super.initState();
   }
@@ -54,6 +60,13 @@ class _ServiceScreenState extends State<ServiceScreen> {
     _toastSub.cancel();
     _progressSub.cancel();
     super.deactivate();
+  }
+
+  void _handleBtStateChange(DeviceStates state) {
+    setState(() => _deviceBtState = state);
+    MyPatToast.show(
+        "Main device ${state == DeviceStates.CONNECTED ? 'CONNECTED' : 'DISCONNECTED'}",
+        context);
   }
 
   void _handleProgressBar(String msg) {
@@ -133,7 +146,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
     return ListTile(
       title: Text(option.title),
       trailing: Icon(Icons.keyboard_arrow_right),
-      onTap: () => option.action(),
+      onTap: _deviceBtState == DeviceStates.CONNECTED ? () => option.action() : () => MyPatToast.show("Main device disconnected", context),
     );
   }
 
@@ -335,35 +348,24 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   // Set LED indicators
   _showSetLedDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => LedIndicatorsDialog()
-    );
+    showDialog(context: context, builder: (_) => LedIndicatorsDialog());
   }
 
   // Tech status report
   _performTechStatuReport() async {
     final String res = await _manager.techStatusReport();
     _showServiceDialog(ServiceDialog(
-      content: Text(res),
-      actions: [_buildPopButton(_loc.ok.toUpperCase())]
-    ));
+        content: Text(res), actions: [_buildPopButton(_loc.ok.toUpperCase())]));
   }
 
   // Reset main device
   _showResetDeviceDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => ResetDeviceDialog()
-    );
+    showDialog(context: context, builder: (_) => ResetDeviceDialog());
   }
 
   // Ignore device errors
   _showIgnoreDeviceErrorsDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => IgnoreDeviceErrorsDialog()
-    );
+    showDialog(context: context, builder: (_) => IgnoreDeviceErrorsDialog());
   }
 
   _initServiceOptions() {
@@ -389,12 +391,16 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(
           title: "Set device serial", action: _showDeviceSerialDialog),
       ServiceOption(title: "Sel LED indication", action: _showSetLedDialog),
-      ServiceOption(title: "Get technical status", action: _performTechStatuReport),
+      ServiceOption(
+          title: "Get technical status", action: _performTechStatuReport),
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
-      ServiceOption(title: "Extract log file from device", action: _manager.getLogFileFromDevice),
+      ServiceOption(
+          title: "Extract log file from device",
+          action: _manager.getLogFileFromDevice),
       ServiceOption(title: "Reset main device", action: _showResetDeviceDialog),
-      ServiceOption(title: "Ignore device errors", action: _showIgnoreDeviceErrorsDialog),
+      ServiceOption(
+          title: "Ignore device errors", action: _showIgnoreDeviceErrorsDialog),
 //      ServiceOption(title: "Reset application", action: null),
     ];
     _serviceOptions = {
@@ -406,4 +412,3 @@ class _ServiceScreenState extends State<ServiceScreen> {
     };
   }
 }
-

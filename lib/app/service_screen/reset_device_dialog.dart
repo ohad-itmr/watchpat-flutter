@@ -29,15 +29,15 @@ class _ResetDeviceDialogState extends State<ResetDeviceDialog> {
         ),
         actions: <Widget>[
           FlatButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(_loc.cancel.toUpperCase()),
+          ),
+          FlatButton(
             onPressed: () {
               _manager.resetMainDevice(_selectedType);
               Navigator.pop(context);
             },
             child: Text(_loc.reset.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          FlatButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(_loc.cancel.toUpperCase()),
           )
         ],
       );

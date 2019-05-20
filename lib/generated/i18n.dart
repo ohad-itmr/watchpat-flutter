@@ -114,6 +114,7 @@ class S implements WidgetsLocalizations {
   String get getting_param_file_success => "Getting parameter file: success";
   String get green => "green";
   String get id_in => "ID in";
+  String get ignore_device_errors => "Ignore all device generated errors?";
   String get incorrect_pin => "Incorrect PIN, please try again";
   String get inet_unavailable => "Internet access unavailable";
   String get insufficient_storage_space_on_smartphone => "Insufficient storage space on smartphone, shutting down";
@@ -491,6 +492,8 @@ class fr extends S {
   String get send => "Send";
   @override
   String get chestSensorTitle => "Attach Chest Sensor";
+  @override
+  String get ignore_device_errors => "Ignore all device generated errors?";
   @override
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   @override

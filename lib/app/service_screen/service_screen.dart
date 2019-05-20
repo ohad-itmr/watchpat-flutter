@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:my_pat/app/service_screen/ignore_errors_dialog.dart';
 import 'package:my_pat/app/service_screen/led_indicators_dialog.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
 import 'package:my_pat/app/service_screen/reset_device_dialog.dart';
@@ -357,6 +358,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
     );
   }
 
+  // Ignore device errors
+  _showIgnoreDeviceErrorsDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => IgnoreDeviceErrorsDialog()
+    );
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -385,8 +394,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Export log file by email", action: _showLogSendingDialog),
       ServiceOption(title: "Extract log file from device", action: _manager.getLogFileFromDevice),
       ServiceOption(title: "Reset main device", action: _showResetDeviceDialog),
-      ServiceOption(title: "Ignore device errors", action: null),
-      ServiceOption(title: "Reset application", action: null),
+      ServiceOption(title: "Ignore device errors", action: _showIgnoreDeviceErrorsDialog),
+//      ServiceOption(title: "Reset application", action: null),
     ];
     _serviceOptions = {
       ServiceMode.customer: _customerServiceOptions,

@@ -220,7 +220,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
               final bool isUpToDate = await sl<FirmwareUpgrader>()
                   .isDeviceFirmwareVersionUpToDate();
-              if (isUpToDate) {
+              if (!isUpToDate && PrefsProvider.getIsFirstDeviceConnection()) {
                 Log.info(TAG,
                     "### start session confirm: device FW version check END");
                 Log.info(TAG, "device FW up to date");
@@ -305,10 +305,12 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (FW_UPGRADE_RES)");
 
           // fw-response packet received
-          // TODO implement getFirmwareUpgrader
-          sl<FirmwareUpgrader>().responseReceived();
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+
+          // TODO implement getFirmwareUpgrader
+          await Future.delayed(Duration(milliseconds: 100));
+          sl<FirmwareUpgrader>().responseReceived();
 
           break;
         case DeviceCommands.CMD_OPCODE_AFE_REGISTERS_VALUES:

@@ -48,7 +48,7 @@ class FirmwareUpgrader {
   }
 
   _startTimer() {
-    _timeoutTimer = RestartableTimer(Duration(seconds: 6), () {
+    _timeoutTimer = RestartableTimer(Duration(seconds: 10), () {
       if (_retransmissionRetries > 0) {
         _retransmissionRetries--;
         _timeoutTimer.reset();
@@ -75,7 +75,7 @@ class FirmwareUpgrader {
           .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
       Log.shout(TAG, "Firmware upgrade failed: " + e.toString());
     }
-    Log.info(TAG, "Firmware upgrade cycle succeeded");
+    Log.info(TAG, "Firmware upgrade chunk sent to write");
   }
 
   void responseReceived() {

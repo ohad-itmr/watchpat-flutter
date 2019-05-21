@@ -216,12 +216,9 @@ class IncomingPacketHandlerService extends ManagerBase {
               Log.info(TAG,
                   "### start session confirm: device FW version check START");
 
-              //todo Firmwarer upgrado
-
               final bool isUpToDate = await sl<FirmwareUpgrader>()
                   .isDeviceFirmwareVersionUpToDate();
-              // For upgrader check
-//            if (!isUpToDate && PrefsProvider.getIsFirstDeviceConnection()) {
+
               if (isUpToDate) {
                 Log.info(TAG,
                     "### start session confirm: device FW version check END");
@@ -229,6 +226,7 @@ class IncomingPacketHandlerService extends ManagerBase {
                 sl<SystemStateManager>()
                     .setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
               } else {
+                await Future.delayed(Duration(seconds: 1));
                 Log.info(TAG, "device FW outdated");
                 sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
               }
@@ -310,7 +308,6 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
-          // TODO implement getFirmwareUpgrader
           await Future.delayed(Duration(milliseconds: 100));
           sl<FirmwareUpgrader>().responseReceived();
 

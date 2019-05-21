@@ -220,7 +220,9 @@ class IncomingPacketHandlerService extends ManagerBase {
 
               final bool isUpToDate = await sl<FirmwareUpgrader>()
                   .isDeviceFirmwareVersionUpToDate();
-              if (!isUpToDate && PrefsProvider.getIsFirstDeviceConnection()) {
+              // For upgrader check
+//            if (!isUpToDate && PrefsProvider.getIsFirstDeviceConnection()) {
+              if (isUpToDate) {
                 Log.info(TAG,
                     "### start session confirm: device FW version check END");
                 Log.info(TAG, "device FW up to date");

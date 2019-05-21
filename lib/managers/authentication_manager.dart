@@ -2,7 +2,6 @@ import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/services/sftp_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum PatientAuthState {
@@ -18,14 +17,16 @@ class AuthenticationManager extends ManagerBase {
 
   String _pin = '';
 
+  static List<int> _pinNumberList = List<int>(4);
+
   final PublishSubject<String> _inputSubject = PublishSubject<String>();
   final BehaviorSubject<PatientAuthState> _authStateSubject =
       BehaviorSubject<PatientAuthState>.seeded(PatientAuthState.NotStarted);
-  final BehaviorSubject<String> _resultSubject =
-      BehaviorSubject<String>.seeded('');
+  final BehaviorSubject<List<int>> _resultSubject =
+      BehaviorSubject<List<int>>.seeded(_pinNumberList);
   final BehaviorSubject<bool> _pinIsValid = BehaviorSubject<bool>.seeded(false);
 
-  Observable<String> get pinStream => _resultSubject.stream;
+  Observable<List<int>> get pinStream => _resultSubject.stream;
 
   Observable<PatientAuthState> get authStateStream => _authStateSubject.stream;
 
@@ -34,7 +35,8 @@ class AuthenticationManager extends ManagerBase {
   String get pin => _pin;
 
   void onPinChange(int value) {
-    print('onPinChange $value');
+    print('onPinChange, value: $value');
+
     var newPin = '';
     if (value >= 0) {
       if (_pin.length < 4) {
@@ -42,6 +44,8 @@ class AuthenticationManager extends ManagerBase {
         print('onPinChange newPin $newPin');
 
         _inputSubject.add(newPin);
+      } else {
+        newPin = _pin;
       }
     } else {
       if (_pin.length > 0) {
@@ -49,6 +53,15 @@ class AuthenticationManager extends ManagerBase {
         print('onPinChange newPin $newPin');
 
         _inputSubject.add(newPin);
+      }
+    }
+
+    for (int i = 0; i < 4; i++) {
+      if (newPin.length > i) {
+        final String char = newPin.substring(i, i + 1);
+        _pinNumberList[i] = int.parse(char);
+      } else {
+        _pinNumberList[i] = null;
       }
     }
   }
@@ -65,7 +78,7 @@ class AuthenticationManager extends ManagerBase {
       sl<SystemStateManager>()
           .setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
       resetPin();
-      if (data.message == '1') {
+      if (data.message == '96') {
         _authStateSubject.add(PatientAuthState.FailedTryAgain);
       } else {
         _authStateSubject.add(PatientAuthState.FailedClose);
@@ -84,16 +97,17 @@ class AuthenticationManager extends ManagerBase {
   }
 
   resetPin() {
+    _pinNumberList = [null, null, null, null];
     _inputSubject.add('');
-    _resultSubject.add('');
   }
 
   AuthenticationManager() {
     _inputSubject
         .map((newVal) => _pin = '$newVal')
-        .listen((value) => _resultSubject.add(value));
+        .listen((value) => _resultSubject.add(_pinNumberList));
 
-    _resultSubject.listen((value) => _pinIsValid.add(value.length == 4));
+    _resultSubject.listen(
+        (value) => _pinIsValid.add(value.where((n) => n != null).length == 4));
   }
 
   dispose() {

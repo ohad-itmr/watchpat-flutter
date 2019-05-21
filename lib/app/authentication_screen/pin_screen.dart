@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/authentication_screen/pin_inputs.dart';
 import 'package:my_pat/app/authentication_screen/pin_keyboard.dart';
 import 'package:my_pat/app/screens.dart';
@@ -75,9 +76,12 @@ class PinScreen extends StatelessWidget {
   _enterBtnBuilder(
       BuildContext context, AsyncSnapshot<PatientAuthState> snapshot) {
     if (snapshot.hasData && snapshot.data == PatientAuthState.InProgress) {
+      final double size  = prefix0.MediaQuery.of(context).size.width;
       return Container(
-          padding: EdgeInsets.only(bottom: 20.0),
-          child: CircularProgressIndicator());
+        padding: EdgeInsets.only(bottom: size / 15),
+        child: Center(
+            child: CircularProgressIndicator()),
+      );
     }
     return StreamBuilder(
       stream: pinManager.pinIsValid,
@@ -86,8 +90,9 @@ class PinScreen extends StatelessWidget {
         BuildContext context,
         AsyncSnapshot<bool> pinSnapshot,
       ) {
+        final double size  = prefix0.MediaQuery.of(context).size.width;
         return Container(
-          padding: EdgeInsets.only(bottom: 20.0),
+          padding: EdgeInsets.only(bottom: size / 15),
           child: ButtonsBlock(
             nextActionButton: ButtonModel(
               disabled: !pinSnapshot.data,
@@ -120,14 +125,26 @@ class PinScreen extends StatelessWidget {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _authStateErrorsBuilder(context, snapshot),
-                    Expanded(child: PinInputs()),
-                    TextBlock(
-                      title: loc.pinTitle,
-                      contentTextAlign: TextAlign.center,
-                      content: [loc.pinContent],
+                    Expanded(
+                      flex: 1,
+                      child: _authStateErrorsBuilder(context, snapshot),
                     ),
-                    _enterBtnBuilder(context, snapshot)
+                    Expanded(
+                      flex: 2,
+                      child: PinInputs(),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: TextBlock(
+                        title: loc.pinTitle,
+                        contentTextAlign: TextAlign.center,
+                        content: [loc.pinContent],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: _enterBtnBuilder(context, snapshot),
+                    )
                   ],
                 );
               },

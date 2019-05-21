@@ -27,6 +27,7 @@ dependencies:
   mailer: ^2.3.0
   fluttertoast: ^3.0.4
   transparent_image: ^1.0.0
+  url_launcher: ^5.0.2
 
 #  battery:
 #    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/

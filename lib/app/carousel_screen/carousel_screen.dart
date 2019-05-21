@@ -15,28 +15,22 @@ class CarouselScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
     return MainTemplate(
       showBack: true,
       showMenu: false,
-      body: _buildScreen(context),
-    );
-  }
-
-  Widget _buildScreen(BuildContext ctx) {
-    return StreamBuilder<CarouselSnapshot>(
-      stream: carouselManager.carouselSnapshot,
-      builder: (BuildContext ctx, AsyncSnapshot<CarouselSnapshot> snapshot) {
-        if (snapshot.hasData && !snapshot.hasError) {
-          return CarouselDialog(
-            image: snapshot.data.content.image,
-            text: snapshot.data.content.text,
-            leftBtnAction: snapshot.data.actionPrev,
-            rightBtnAction: snapshot.data.actionNext,
-          );
-        } else {
-          return Container(height: 0.0, width: 0.0);
-        }
-      },
+      body: Container(
+        color: Colors.black.withOpacity(0.75),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth / 20, vertical: screenWidth / 8),
+          child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.white),
+              child: CarouselDialog()),
+        ),
+      ),
     );
   }
 }

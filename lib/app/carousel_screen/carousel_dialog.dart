@@ -2,48 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/carousel_screen/carousel_button_bar.dart';
 import 'package:my_pat/app/carousel_screen/carousel_buttons.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../service_locator.dart';
 
 class CarouselDialog extends StatelessWidget {
-  final String image;
-  final String text;
-  final Function leftBtnAction;
-  final Function rightBtnAction;
-
-  const CarouselDialog(
-      {Key key,
-        @required this.image,
-        @required this.text,
-        this.leftBtnAction,
-        this.rightBtnAction})
-      : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-
-    return Container(
-      color: Colors.black.withOpacity(0.75),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth / 20, vertical: screenWidth / 8),
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0), color: Colors.white),
-          child: Column(
+    return StreamBuilder<CarouselSnapshot>(
+      stream: sl<CarouselManager>().carouselSnapshot,
+      builder: (BuildContext ctx, AsyncSnapshot<CarouselSnapshot> snapshot) {
+        if (snapshot.hasData && !snapshot.hasError) {
+          return Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               CarouselBar(
                 position: CarouselBarPosition.top,
-                content: IconButton(
-                    icon: Icon(Icons.close, color: Colors.white),
-                    onPressed: () => Navigator.pop(context)),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.live_tv, color: Colors.white),
+                        onPressed: () => launch(
+                            'https://www.youtube.com/watch?v=uSVzmhoNUdA')),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                ),
               ),
               Expanded(
                 child: ConstrainedBox(
                   constraints: BoxConstraints.expand(),
                   child: FadeInImage(
                     placeholder: MemoryImage(kTransparentImage),
-                    image: AssetImage(image),
+                    image: AssetImage(snapshot.data.content.image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -54,7 +48,7 @@ class CarouselDialog extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, top: 16.0),
-                      child: Text(text),
+                      child: Text(snapshot.data.content.text),
                     )
                   ],
                 ),
@@ -62,14 +56,16 @@ class CarouselDialog extends StatelessWidget {
               CarouselBar(
                 position: CarouselBarPosition.bottom,
                 content: CarouselButtonBlock(
-                  leftBtnCallback: leftBtnAction,
-                  rightBtnCallback: rightBtnAction,
+                  leftBtnCallback: snapshot.data.actionPrev,
+                  rightBtnCallback: snapshot.data.actionNext,
                 ),
               )
             ],
-          ),
-        ),
-      ),
+          );
+        } else {
+          return Container(height: 0.0, width: 0.0);
+        }
+      },
     );
   }
 }

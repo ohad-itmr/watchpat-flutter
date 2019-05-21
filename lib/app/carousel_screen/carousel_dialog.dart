@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/carousel_screen/carousel_button_bar.dart';
 import 'package:my_pat/app/carousel_screen/carousel_buttons.dart';
+import 'package:transparent_image/transparent_image.dart';
+
 
 class CarouselDialog extends StatelessWidget {
   final String image;
@@ -39,7 +41,8 @@ class CarouselDialog extends StatelessWidget {
               Expanded(
                 child: ConstrainedBox(
                   constraints: BoxConstraints.expand(),
-                  child: Image(
+                  child: FadeInImage(
+                    placeholder: MemoryImage(kTransparentImage),
                     image: AssetImage(image),
                     fit: BoxFit.cover,
                   ),

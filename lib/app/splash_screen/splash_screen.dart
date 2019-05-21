@@ -55,34 +55,40 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     _navigationSub = Observable.combineLatest2(
-            _systemStateManager.btStateStream,
-            _systemStateManager.testStateStream,
-            (BtStates btState, TestStates testState) =>
-                {_BT_MAP_KEY: btState, _TEST_MAP_KEY: testState})
-        .where((Map<String, dynamic> data) =>
-            this.mounted && data[_BT_MAP_KEY] == BtStates.ENABLED)
-        .listen((Map<String, dynamic> data) {
-      if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
-        sl<WelcomeActivityManager>().initConnectivityListener();
-        Navigator.of(context).pushNamed(RecordingScreen.PATH);
-        _navigationSub.cancel();
-      } else {
-        Navigator.of(context).pushNamed(WelcomeScreen.PATH);
-        _navigationSub.cancel();
+        _systemStateManager.btStateStream,
+        _systemStateManager.testStateStream,
+        (BtStates btState, TestStates testState) => {
+              _BT_MAP_KEY: btState,
+              _TEST_MAP_KEY: testState
+            }).listen((Map<String, dynamic> data) {
+      _handleBtState(data[_BT_MAP_KEY]);
+      if (data[_BT_MAP_KEY] == BtStates.ENABLED) {
+        if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+          sl<WelcomeActivityManager>().initConnectivityListener();
+          Navigator.of(context).pushNamed(RecordingScreen.PATH);
+          _navigationSub.cancel();
+        } else {
+          Navigator.of(context).pushNamed(WelcomeScreen.PATH);
+          _navigationSub.cancel();
+        }
       }
     });
 
-    _systemStateManager.btStateStream.listen((BtStates state) {
-      if (state == BtStates.NOT_AVAILABLE && !_btWarningShow) {
-        _showBTWarning();
-        _btWarningShow = true;
-      } else if (state == BtStates.ENABLED && _btWarningShow) {
-        Navigator.of(context, rootNavigator: true).pop('dialog');
-        _btWarningShow = false;
-      }
-    });
+    _systemStateManager.btStateStream
+        .where((BtStates state) => state != BtStates.NONE)
+        .listen(_handleBtState);
 
     super.initState();
+  }
+
+  void _handleBtState(BtStates state) {
+    if (state == BtStates.NOT_AVAILABLE && !_btWarningShow) {
+      _showBTWarning();
+      _btWarningShow = true;
+    } else if (state == BtStates.ENABLED && _btWarningShow) {
+      Navigator.of(context).pop();
+      _btWarningShow = false;
+    }
   }
 
   void _showServicePasswordPrompt() {
@@ -92,8 +98,8 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (_) => ServicePasswordPrompt());
   }
 
-  void _showBTWarning() async {
-    return showDialog<void>(
+  void _showBTWarning() {
+    showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {

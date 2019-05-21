@@ -59,6 +59,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   void deactivate() {
     _toastSub.cancel();
     _progressSub.cancel();
+    _deviceBtStateSub.cancel();
     super.deactivate();
   }
 
@@ -233,8 +234,6 @@ class _ServiceScreenState extends State<ServiceScreen> {
     ));
   }
 
-  // Reset application
-
   // Send log file by email
   _sendLogFileByEmail() async {
     Navigator.pop(context);
@@ -352,7 +351,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 
   // Tech status report
-  _performTechStatuReport() async {
+  _performTechStatusReport() async {
     final String res = await _manager.techStatusReport();
     _showServiceDialog(ServiceDialog(
         content: Text(res), actions: [_buildPopButton(_loc.ok.toUpperCase())]));
@@ -392,7 +391,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Set device serial", action: _showDeviceSerialDialog),
       ServiceOption(title: "Sel LED indication", action: _showSetLedDialog),
       ServiceOption(
-          title: "Get technical status", action: _performTechStatuReport),
+          title: "Get technical status", action: _performTechStatusReport),
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
       ServiceOption(

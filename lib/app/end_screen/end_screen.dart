@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:date_format/date_format.dart' as prefix1;
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
@@ -10,7 +8,10 @@ class EndScreen extends StatelessWidget {
   static const String TAG = 'EndScreen';
   static const String PATH = '/end';
 
-  EndScreen({Key key}) : super(key: key);
+  final String title;
+  final String content;
+
+  EndScreen({Key key, @required this.title, @required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +22,8 @@ class EndScreen extends StatelessWidget {
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.text,
-          title: S.of(context).thankYouTitle,
-          content: [S.of(context).thankYouContent],
+          title: title,
+          content: [content],
           textTopPadding: true,
         ),
         bottomBlock: Column(

@@ -10,6 +10,7 @@ class PrefsNames {
   static const String FIRST_TIME_RUN_KEY =
       DefaultSettings.appName + ".firsttimerun";
   static const String IS_TEST_STARTED = ".isteststarted";
+  static const String IS_TEST_COMPLETE = ".is.test.complete";
   static const String TEST_ELAPSED_TIME = ".testelapsedtime";
   static const String WRITING_KEY = DefaultSettings.appName + ".writing";
   static const String USER_PIN_CODE = DefaultSettings.appName + ".userpincode";
@@ -170,6 +171,17 @@ class PrefsProvider {
   }
 
   //
+  // save if test is complete
+  //
+  static Future<void> setTestComplete(bool value) async {
+    await PrefsService.prefs.setBool(PrefsNames.IS_TEST_COMPLETE, value);
+  }
+
+  static bool getTestComplete() {
+    return PrefsService.prefs.get(PrefsNames.IS_TEST_COMPLETE) ?? false;
+  }
+
+  //
   // is first device connection
   //
   static void setIsFirstDeviceConnection(state) async {
@@ -290,15 +302,6 @@ class PrefsProvider {
   static Future<void> saveTestDataUploadingOffset(int offset) async {
     await PrefsService.prefs
         .setInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET, offset);
-  }
-
-  static String loadTestDataFilename() {
-    return PrefsService.prefs.getString(PrefsNames.TEST_DATA_FILENAME) ??
-        DefaultSettings.serverDataFileName;
-  }
-
-  static Future<void> saveTestDataFilename(String filename) async {
-    await PrefsService.prefs.setString(PrefsNames.TEST_DATA_FILENAME, filename);
   }
 
   //

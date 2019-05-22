@@ -5,6 +5,7 @@ import 'package:my_pat/app/service_screen/ignore_errors_dialog.dart';
 import 'package:my_pat/app/service_screen/led_indicators_dialog.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
 import 'package:my_pat/app/service_screen/reset_device_dialog.dart';
+import 'package:my_pat/app/welcome_sreen/welcome_screen.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
 import 'package:my_pat/widgets/mypat_toast.dart';
@@ -108,22 +109,23 @@ class _ServiceScreenState extends State<ServiceScreen> {
     _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.mode.toString()),
-        flexibleSpace: AppBarDecoration(),
-        actions: <Widget>[
-          IconButton(
+          title: Text(widget.mode == ServiceMode.customer
+              ? "Customer service mode"
+              : "Technician mode"),
+          flexibleSpace: AppBarDecoration(),
+          leading: IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () => Navigator.pop(context),
-          )
-        ],
-        leading: _operationInProgress
-            ? Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(
-                    valueColor:
-                        new AlwaysStoppedAnimation<Color>(Colors.white)))
-            : Container(),
-      ),
+          ),
+          actions: <Widget>[
+            _operationInProgress
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(Colors.white)))
+                : Container()
+          ]),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -147,10 +149,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
     return ListTile(
       title: Text(option.title),
       trailing: Icon(Icons.keyboard_arrow_right),
-//      onTap: _deviceBtState == DeviceStates.CONNECTED
-//          ? () => option.action()
-//          : () => MyPatToast.show("Main device disconnected", context),
-      onTap: () => option.action()
+      onTap: _deviceBtState == DeviceStates.CONNECTED || option.action == _showResetApplicationDialog
+          ? () => option.action()
+          : () => MyPatToast.show("Main device disconnected", context),
     );
   }
 
@@ -386,6 +387,23 @@ class _ServiceScreenState extends State<ServiceScreen> {
         ]));
   }
 
+  _showResetApplicationDialog() {
+    _showServiceDialog(ServiceDialog(
+        title: Text(S.of(context).reset_application_title),
+        content: Text(S.of(context).reset_application_prompt),
+        actions: [
+          _buildPopButton(S.of(context).cancel.toUpperCase()),
+          _buildActionButton(
+              text: S.of(context).reset.toUpperCase(),
+              action: () {
+                _manager.resetApplication();
+                Navigator.popUntil(
+                    context, (Route<dynamic> route) => route.isFirst);
+                Navigator.of(context).pushNamed(WelcomeScreen.PATH);
+              })
+        ]));
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -420,7 +438,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(title: "Reset main device", action: _showResetDeviceDialog),
       ServiceOption(
           title: "Ignore device errors", action: _showIgnoreDeviceErrorsDialog),
-//      ServiceOption(title: "Reset application", action: null),
+      ServiceOption(
+          title: "Reset application", action: _showResetApplicationDialog),
     ];
     _serviceOptions = {
       ServiceMode.customer: _customerServiceOptions,

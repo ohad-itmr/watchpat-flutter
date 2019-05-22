@@ -56,25 +56,34 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
 
-    _navigationSub = Observable.combineLatest2(
-        _systemStateManager.btStateStream,
-        _systemStateManager.testStateStream,
-        (BtStates btState, TestStates testState) => {
-              _BT_MAP_KEY: btState,
-              _TEST_MAP_KEY: testState
-            }).listen((Map<String, dynamic> data) {
-      _handleBtState(data[_BT_MAP_KEY]);
-      if (data[_BT_MAP_KEY] == BtStates.ENABLED) {
-        if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
-          sl<WelcomeActivityManager>().initConnectivityListener();
-          Navigator.of(context).pushNamed(RecordingScreen.PATH);
-          _navigationSub.cancel();
-        } else {
-          Navigator.of(context).pushNamed(WelcomeScreen.PATH);
-          _navigationSub.cancel();
+    if (!PrefsProvider.getTestComplete()) {
+      _navigationSub = Observable.combineLatest2(
+          _systemStateManager.btStateStream,
+          _systemStateManager.testStateStream,
+          (BtStates btState, TestStates testState) => {
+                _BT_MAP_KEY: btState,
+                _TEST_MAP_KEY: testState
+              }).listen((Map<String, dynamic> data) {
+        _handleBtState(data[_BT_MAP_KEY]);
+        if (data[_BT_MAP_KEY] == BtStates.ENABLED) {
+          if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+            sl<WelcomeActivityManager>().initConnectivityListener();
+            Navigator.of(context).pushNamed(RecordingScreen.PATH);
+            _navigationSub.cancel();
+          } else {
+            Navigator.of(context).pushNamed(WelcomeScreen.PATH);
+            _navigationSub.cancel();
+          }
         }
-      }
-    });
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => EndScreen(
+                    title: S.of(context).thankYouTitle,
+                    content: S.of(context).test_is_complete,
+                  ))));
+    }
 
     _systemStateManager.btStateStream
         .where((BtStates state) => state != BtStates.NONE)

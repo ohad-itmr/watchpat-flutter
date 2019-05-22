@@ -29,7 +29,8 @@ dependencies:
   transparent_image: ^1.0.0
   url_launcher: ^5.0.2
 
-#  battery:
+
+  #  battery:
 #    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/
   battery:
     git:
@@ -49,7 +50,16 @@ dev_dependencies:
     sdk: flutter
   intl_translation: ^0.17.1
 
+  # Generating launcher images
+#  flutter_launcher_icons: "^0.7.0"
 
+#flutter_icons:
+#  android: false
+#  ios: true
+#  image_path: "assets/logo/itamar_plus_logo_bg.png"
+
+#dependency_overrides:
+#  image: 2.0.7
 
 flutter:
 

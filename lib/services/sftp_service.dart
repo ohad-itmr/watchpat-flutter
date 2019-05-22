@@ -85,7 +85,10 @@ class SftpService {
 
   _handleDataTransferState(DataTransferStates state) {
     _currentTransferState = state;
-    if (state == DataTransferStates.ALL_TRANSFERRED) _closeConnection();
+    if (state == DataTransferStates.ALL_TRANSFERRED) {
+      PrefsProvider.setTestComplete(true);
+      _closeConnection();
+    }
   }
 
   Future<void> _initService() async {

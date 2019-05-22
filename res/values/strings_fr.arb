@@ -186,5 +186,8 @@
   "upgrade": "Upgrade",
   "firmware_upgrading": "Upgrading main device firmware, please don't close the application",
   "firmware_upgrade_success": "Firmware update completed successfully",
-  "firmware_upgrade_failed": "Firmware update failed"
+  "firmware_upgrade_failed": "Firmware update failed",
+  "reset_application_title": "Reset application",
+  "reset_application_prompt" : "Are you sure you want to delete all application stored preferences and files?",
+  "test_is_complete": "Application was successfully used to perform the test. Please reset application to use it again."
 }

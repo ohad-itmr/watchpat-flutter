@@ -1,4 +1,4 @@
-package com.example.mypatapp;
+package com.itamarmedical.watchpat.ios;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

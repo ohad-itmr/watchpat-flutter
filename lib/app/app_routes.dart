@@ -26,11 +26,6 @@ var chestSensorRouteHandler = Handler(
   return ChestSensorScreen();
 });
 
-var endRouteHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return EndScreen();
-});
-
 var fingerProbeRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return FingerProbeScreen();
@@ -107,8 +102,6 @@ class AppRoutes {
     router.define(ChestSensorScreen.PATH,
         handler: chestSensorRouteHandler,
         transitionType: TransitionType.native);
-    router.define(EndScreen.PATH,
-        handler: endRouteHandler, transitionType: TransitionType.native);
     router.define(FingerProbeScreen.PATH,
         handler: fingerProbeRouteHandler,
         transitionType: TransitionType.native);

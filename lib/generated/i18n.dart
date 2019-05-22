@@ -158,6 +158,8 @@ class S implements WidgetsLocalizations {
   String get removeJewelryTitle => "Remove Jewelry";
   String get requesting_technical_status => "Requesting technical status";
   String get reset => "Reset";
+  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files?";
+  String get reset_application_title => "Reset application";
   String get retrieve_stored_data => "Retrieve stored data";
   String get retrieve_stored_data_from_device => "Retrieve stored data from main device?";
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
@@ -189,6 +191,7 @@ class S implements WidgetsLocalizations {
   String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close myPAT application  Close anyway?";
   String get test_data_transmit_in_progress => "Test data transmit in progress";
   String get test_in_progress => "Test in progress";
+  String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
   String get thankYouContent => "The data has been successfully uploaded and the test is over.\nPlease dispose the product by your local guidance's.";
   String get thankYouTitle => "Thank You";
   String get title_led_color_alert => "Choose LED color";
@@ -299,6 +302,8 @@ class fr extends S {
   String get customer_service_mode => "Customer service mode";
   @override
   String get battery_voltage => "Battery voltage: ";
+  @override
+  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files?";
   @override
   String get parameters_file_title => "Parameters file";
   @override
@@ -416,6 +421,8 @@ class fr extends S {
   @override
   String get btnReturnToApp => "Return To App";
   @override
+  String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
+  @override
   String get parameters_file_description => "Parameters file";
   @override
   String get bt_initiation_error => "Bluetooth initiation error";
@@ -435,6 +442,8 @@ class fr extends S {
   String get btnMore => "More";
   @override
   String get acc_registers_write_failed => "ACC registers write failed";
+  @override
+  String get reset_application_title => "Reset application";
   @override
   String get enter_id => "ID:";
   @override

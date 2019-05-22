@@ -26,8 +26,10 @@ class FileSystemService {
   final String resourceDirAFEFileName = DefaultSettings.resourceAFEFileName;
   final String watchpatDirACCFileName = DefaultSettings.watchpatDirACCFileName;
   final String resourceDirACCFileName = DefaultSettings.resourceACCFileName;
-  final String watchpatDirEEPROMFileName = DefaultSettings.watchpatDirEEPROMFileName;
-  final String resourceDirEEPROMFileName = DefaultSettings.resourceEEPROMFileName;
+  final String watchpatDirEEPROMFileName =
+      DefaultSettings.watchpatDirEEPROMFileName;
+  final String resourceDirEEPROMFileName =
+      DefaultSettings.resourceEEPROMFileName;
   final String deviceLogFileName = DefaultSettings.deviceLogFileName;
 
   Future<String> get localPath async {
@@ -119,7 +121,7 @@ class FileSystemService {
   Future<File> get resourceACCFile async {
     final path = await localPath;
     final ByteData bytes =
-    await rootBundle.load('assets/raw/$resourceDirACCFileName');
+        await rootBundle.load('assets/raw/$resourceDirACCFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirACCFileName').create();
     return f.writeAsBytes(
@@ -135,7 +137,7 @@ class FileSystemService {
   Future<File> get resourceEEPROMFile async {
     final path = await localPath;
     final ByteData bytes =
-    await rootBundle.load('assets/raw/$resourceDirEEPROMFileName');
+        await rootBundle.load('assets/raw/$resourceDirEEPROMFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirEEPROMFileName').create();
     return f.writeAsBytes(
@@ -152,7 +154,7 @@ class FileSystemService {
     File localFile = await localDataFile;
     TestStates testState = sl<SystemStateManager>().testState;
 
-    if (testState == TestStates.NOT_STARTED) {
+    if (testState == TestStates.NOT_STARTED && !PrefsProvider.getTestComplete()) {
       if (await localFile.exists()) {
         Log.info(TAG, "data file from previous session is found, deleting...");
         try {
@@ -180,20 +182,25 @@ class FileSystemService {
   }
 
   Future<Response> init() async {
+    TestStates testState = sl<SystemStateManager>().testState;
     try {
-      Log.info(TAG, 'Attempt to prepare initial files...');
-      File mainLogFile = await logMainFile;
-      await mainLogFile.create();
-      Log.info(TAG, 'MAIN_LOG_FILE CREATED');
-      File localFile = await localDataFile;
-      await localFile.create();
-      Log.info(TAG, 'LOCAL_DATA_FILE CREATED');
-      File logInFile = await logInputFile;
-      logInFile.create();
-      Log.info(TAG, 'LOG_INBOUND_FILE CREATED');
-      File logOutFile = await logInputFile;
-      logOutFile.create();
-      Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
+      // create new log files in case of first app launch
+      if (!PrefsProvider.getTestComplete() &&
+          testState != TestStates.INTERRUPTED) {
+        Log.info(TAG, 'Attempt to prepare initial files...');
+        File mainLogFile = await logMainFile;
+        await mainLogFile.create();
+        Log.info(TAG, 'MAIN_LOG_FILE CREATED');
+        File localFile = await localDataFile;
+        await localFile.create();
+        Log.info(TAG, 'LOCAL_DATA_FILE CREATED');
+        File logInFile = await logInputFile;
+        await logInFile.create();
+        Log.info(TAG, 'LOG_INBOUND_FILE CREATED');
+        File logOutFile = await logInputFile;
+        await logOutFile.create();
+        Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
+      }
 
       // delete filed previously received from device
       File paramFile = await watchpatDirParametersFile;
@@ -204,7 +211,7 @@ class FileSystemService {
       if (accFile.existsSync()) accFile.deleteSync();
       File eepromFile = await watchpatDirEEPROMFile;
       if (eepromFile.existsSync()) eepromFile.deleteSync();
-      Log.info(TAG, "Deleted stored files previously received form device");
+      Log.info(TAG, "Deleted stored files previously received from device");
 
       return Response(success: true);
     } catch (e) {

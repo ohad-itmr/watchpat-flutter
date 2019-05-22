@@ -20,6 +20,7 @@ class FileSystemService {
   final String resourceParameterFileName =
       DefaultSettings.resourceParametersFileName;
   final String resourceFWFileName = DefaultSettings.resourceFWFileName;
+  final String watchpatDirFWFileName = DefaultSettings.watchpatDirFWFileName;
 
   final String watchpatDirAFEFileName = DefaultSettings.watchpatDirAFEFileName;
   final String resourceDirAFEFileName = DefaultSettings.resourceAFEFileName;
@@ -76,6 +77,11 @@ class FileSystemService {
     return File('$path/$resourceFWFileName').writeAsBytes(
         buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
         flush: true);
+  }
+
+  Future<File> get watchpatDirFWFile async {
+    final path = await localPath;
+    return File('$path/$watchpatDirFWFileName');
   }
 
   Future<bool> get resourceFWFileExists async {

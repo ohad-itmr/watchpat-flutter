@@ -147,7 +147,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
     return ListTile(
       title: Text(option.title),
       trailing: Icon(Icons.keyboard_arrow_right),
-      onTap: _deviceBtState == DeviceStates.CONNECTED ? () => option.action() : () => MyPatToast.show("Main device disconnected", context),
+//      onTap: _deviceBtState == DeviceStates.CONNECTED
+//          ? () => option.action()
+//          : () => MyPatToast.show("Main device disconnected", context),
+      onTap: () => option.action()
     );
   }
 
@@ -367,6 +370,22 @@ class _ServiceScreenState extends State<ServiceScreen> {
     showDialog(context: context, builder: (_) => IgnoreDeviceErrorsDialog());
   }
 
+  // Firmware upgrade from documents directory
+  _showFWUpgradeDialog() {
+    _showServiceDialog(ServiceDialog(
+        content: Text(
+            S.of(context).make_sure_watchpat_bin_is_placed_in_watchpat_dir),
+        actions: [
+          _buildPopButton(S.of(context).cancel.toUpperCase()),
+          _buildActionButton(
+              text: S.of(context).upgrade.toUpperCase(),
+              action: () {
+                _manager.upgradeFirmware();
+                Navigator.pop(context);
+              })
+        ]));
+  }
+
   _initServiceOptions() {
     _customerServiceOptions = [
       ServiceOption(
@@ -375,7 +394,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Retrieve test data from device and upload it to server",
           action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
-      ServiceOption(title: "Upgrade main device firmware", action: null),
+      ServiceOption(
+          title: "Upgrade main device firmware", action: _showFWUpgradeDialog),
       ServiceOption(
           title: "Handle parameters file", action: _showParametersFileDialog)
     ];

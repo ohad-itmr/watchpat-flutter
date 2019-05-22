@@ -17,7 +17,7 @@ class DefaultSettings {
   static final parametersFileName = 'watchpat_params.ini';
   static final resourceParametersFileName = 'watchpat_params_resource.ini';
   static final resourceFWFileName = 'watchpat_resource.bin';
-
+  static final watchpatDirFWFileName = 'watchpat.bin';
 
   static const String SERVICE_UID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
   static const String TX_CHAR_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';

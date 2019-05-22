@@ -102,19 +102,12 @@ class WelcomeActivityManager extends ManagerBase {
     });
   }
 
-  Observable<bool> get initialChecksComplete => Observable.combineLatest4(
+  Observable<bool> get initialChecksComplete => Observable.combineLatest3(
         sl<SystemStateManager>().bleScanStateStream,
         sl<SystemStateManager>().bleScanResultStream,
-        sl<SystemStateManager>().firmwareStateStream,
         _initFiles(),
-        (ScanStates scanState, ScanResultStates scanResultState,
-            FirmwareUpgradeStates fwState, Response initFilesResponse) {
-          print(scanState);
+        (ScanStates scanState, ScanResultStates scanResultState, Response initFilesResponse) {
           if (scanState != ScanStates.COMPLETE) {
-            return false;
-          }
-
-          if (fwState != FirmwareUpgradeStates.UP_TO_DATE) {
             return false;
           }
 
@@ -142,8 +135,8 @@ class WelcomeActivityManager extends ManagerBase {
 
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
-    sl<BleManager>().startScan(
-        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+//    sl<BleManager>().startScan(
+//        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     initConnectivityListener();
   }
 

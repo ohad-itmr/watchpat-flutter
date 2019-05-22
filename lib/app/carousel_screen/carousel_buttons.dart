@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CarouselButtonBlock extends StatelessWidget {
   final Function leftBtnCallback;
@@ -15,12 +16,24 @@ class CarouselButtonBlock extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
+          flex: 3,
           child: CarouselButton(
             title: loc.btnPrevious.toUpperCase(),
             onPressed: leftBtnCallback,
           ),
         ),
         Expanded(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: IconButton(
+                icon: Icon(Icons.live_tv, color: Colors.white.withOpacity(0.8)),
+                onPressed: () =>
+                    launch('https://www.youtube.com/watch?v=uSVzmhoNUdA')),
+          ),
+        ),
+        Expanded(
+          flex: 3,
           child: CarouselButton(
             title: loc.btnNext.toUpperCase(),
             onPressed: rightBtnCallback,

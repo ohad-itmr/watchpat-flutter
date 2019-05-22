@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/carousel_screen/carousel_button_bar.dart';
 import 'package:my_pat/app/carousel_screen/carousel_buttons.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../service_locator.dart';
 
@@ -19,12 +18,8 @@ class CarouselDialog extends StatelessWidget {
               CarouselBar(
                 position: CarouselBarPosition.top,
                 content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.live_tv, color: Colors.white),
-                        onPressed: () => launch(
-                            'https://www.youtube.com/watch?v=uSVzmhoNUdA')),
                     IconButton(
                       icon: Icon(Icons.close, color: Colors.white),
                       onPressed: () => Navigator.pop(context),

@@ -6,10 +6,11 @@ import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/convert_formats.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'log/log.dart';
 
-class FirmwareUpgrader {
+class FirmwareUpgrader extends ManagerBase {
   static const String TAG = "FirmwareUpgrader";
 
   // FW version offsets
@@ -29,6 +30,9 @@ class FirmwareUpgrader {
   bool _isUpgradeDone;
 
   RestartableTimer _timeoutTimer;
+
+  BehaviorSubject<double> _updateProgress = BehaviorSubject<double>();
+  Observable<double> get updateProgressStream => _updateProgress.stream;
 
   Future<bool> isDeviceFirmwareVersionUpToDate() async {
     final DeviceConfigPayload config = sl<DeviceConfigManager>().deviceConfig;
@@ -95,6 +99,7 @@ class FirmwareUpgrader {
       }
       _firmwareUpgrade();
     } else {
+      _reportProgress(_upgradeData.length);
       Log.info(TAG, "Device firmware upgrade finished, resetting main device");
       _timeoutTimer.cancel();
       sl<SystemStateManager>()
@@ -107,18 +112,12 @@ class FirmwareUpgrader {
   }
 
   void _reportProgress(final int progress) {
-    print("PROGRESS ------------------> $progress");
-//    Intent intent = new Intent(ACTION_FIRMWARE_UPGRADE_PROGRESS);
-//    intent.putExtra(watchPATApp.EXTRA_FW_UPDATE_TOTAL, _upgradeData.length)
-//        .putExtra(watchPATApp.EXTRA_FW_UPDATE_VALUE, progress);
-//
-//    _appContext.sendBroadcast(intent);
+    print("Update progress $progress / ${_upgradeData.length}");
+    _updateProgress.sink.add(progress / _upgradeData.length);
   }
 
   void upgradeDeviceFirmwareFromResources() async {
     Log.info(TAG, "upgrading device fw from resources");
-    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UPGRADING);
-
     if (_upgradeData == null) {
       Log.warning(
           TAG, "upgradeData not loaded. trying to load from resources...");
@@ -139,8 +138,7 @@ class FirmwareUpgrader {
     }
 
     File resource = await sl<FileSystemService>().resourceFWFile;
-    _upgradeData =
-        resource.readAsBytesSync();
+    _upgradeData = resource.readAsBytesSync();
     if (_upgradeData.isEmpty) {
       return false;
     }
@@ -160,34 +158,30 @@ class FirmwareUpgrader {
         "UpgradeFileVersion");
   }
 
-//
-//  void upgradeDeviceFirmwareFromWatchPATDir() {
-//    Log.info(TAG, "upgrading device fw from watchPAT dir");
-//    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UPGRADING);
-//
-//    if (!_loadFWUpgradeFileFromWatchPATDir(
-//        _appContext.getString(R.string.fw_upgrade_file_name))) {
-//      sl<SystemStateManager>()
-//          .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
-//      return;
-//    }
-//    _startFWUpgrade();
-//  }
-//
+  void upgradeDeviceFirmwareFromWatchPATDir() async {
+    Log.info(TAG, "upgrading device fw from watchPAT dir");
 
-//
-//  bool _loadFWUpgradeFileFromWatchPATDir(final String fileName) {
-//    File upgradeFile = new File(getExternalWatchPATDir(), fileName);
-//    if (!upgradeFile.exists()) {
-//      Log.e(TAG, "FW upgrade file not found");
-//      return false;
-//    }
-//
-//    _upgradeData = loadBinaryFile(upgradeFile, FW_UPGRADE_LOAD_DATA_CHUNK);
-//    return true;
-//  }
-//
+    final bool fileExists = await _loadFWUpgradeFileFromWatchPATDir();
+    if (!fileExists) {
+      sl<SystemStateManager>()
+          .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+      return;
+    }
+    _startFWUpgrade();
+  }
+
+  Future<bool> _loadFWUpgradeFileFromWatchPATDir() async {
+    final File upgradeFile = await sl<FileSystemService>().watchpatDirFWFile;
+    if (!upgradeFile.existsSync()) {
+      Log.shout(TAG, "FW upgrade file not found");
+      return false;
+    }
+    _upgradeData = upgradeFile.readAsBytesSync();
+    return true;
+  }
+
   void _startFWUpgrade() {
+    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UPGRADING);
     Log.info(TAG,
         "starting firmware upgrade (upgrade file size: ${_upgradeData.length})");
     _upgradeDataOffset = 0;
@@ -196,5 +190,10 @@ class FirmwareUpgrader {
 
     _startTimer();
     _firmwareUpgrade();
+  }
+
+  @override
+  void dispose() {
+    _updateProgress.close();
   }
 }

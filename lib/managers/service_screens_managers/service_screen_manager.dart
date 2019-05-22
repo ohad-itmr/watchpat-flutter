@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/FirmwareUpgrader.dart';
 import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
@@ -374,6 +375,11 @@ class ServiceScreenManager extends ManagerBase {
         Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.set_led_color_timeout);
     });
+  }
+
+  // upgrade firmware
+  void upgradeFirmware() async {
+    sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromWatchPATDir();
   }
 
   // handle technical status report

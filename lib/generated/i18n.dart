@@ -96,6 +96,9 @@ class S implements WidgetsLocalizations {
   String get fingerProbeTitle => "Wear Finger Probe";
   String get finger_not_detected => "Finger not detected alert";
   String get firmware_alert_title => "Device firmware upgrade";
+  String get firmware_upgrade_failed => "Firmware update failed";
+  String get firmware_upgrade_success => "Firmware update completed successfully";
+  String get firmware_upgrading => "Upgrading main device firmware, please don't close the application";
   String get firmware_version => "Firmware version";
   String get flash_full => "Device flash is full";
   String get french => "French";
@@ -124,6 +127,7 @@ class S implements WidgetsLocalizations {
   String get loading => "Loading";
   String get log_email_subject => "myPAT device log file";
   String get low_power => "Low power alert";
+  String get make_sure_watchpat_bin_is_placed_in_watchpat_dir => "Make sure watchpat.bin is placed to internal directory";
   String get myPAT_connect_to_server_fail => "myPAT connection to SFTP server failure";
   String get mypat_device => "myPAT Device";
   String get no_inet_connection => "Internet connection not available";
@@ -190,6 +194,7 @@ class S implements WidgetsLocalizations {
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during authentication, please contact support";
   String get upat_eeprom => "UPAT EEPROM";
+  String get upgrade => "Upgrade";
   String get upgrade_file_ver_name => "UpgradeFileVersion";
   String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
   String get uploadingTitle => "Good Morning";
@@ -241,6 +246,8 @@ class fr extends S {
   @override
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
   @override
+  String get firmware_upgrade_success => "Firmware update completed successfully";
+  @override
   String get patient_msg1 => "You are advised to leave the charger plugged in during the entire test procedure and close unused applications before starting test procedure";
   @override
   String get english => "Anglais";
@@ -256,6 +263,8 @@ class fr extends S {
   String get french => "Français";
   @override
   String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
+  @override
+  String get upgrade => "Upgrade";
   @override
   String get btnNext => "Next";
   @override
@@ -276,6 +285,8 @@ class fr extends S {
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";
   @override
   String get set_device_serial_timeout => "Set device serial: timeout";
+  @override
+  String get make_sure_watchpat_bin_is_placed_in_watchpat_dir => "Make sure watchpat.bin is placed to internal directory";
   @override
   String get fw_connection_failed => "Connection with main device failed. Test will be terminated.\n\nPlease contact Itamar Medical support.";
   @override
@@ -449,6 +460,8 @@ class fr extends S {
   @override
   String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
   @override
+  String get firmware_upgrading => "Upgrading main device firmware, please don't close the application";
+  @override
   String get acc_registers_written_successfully => "ACC registers written successfully";
   @override
   String get parameters_file_write_failed => "Parameters file write failed";
@@ -536,6 +549,8 @@ class fr extends S {
   String get title_led_color_alert => "Choose LED color";
   @override
   String get green => "green";
+  @override
+  String get firmware_upgrade_failed => "Firmware update failed";
   @override
   String get acc_registers_description => "ACC registers";
   @override

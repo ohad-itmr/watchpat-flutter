@@ -3,6 +3,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:date_format/date_format.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
+import 'package:my_pat/app/service_screen/firmware_upgrade_dialog.dart';
 import 'package:my_pat/app/service_screen/service_password_prompt.dart';
 import 'package:my_pat/app/service_screen/service_screen.dart';
 import 'package:my_pat/service_locator.dart';
@@ -24,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // dialogs states
   bool _btWarningShow = false;
+  bool _fwUpgradeShow = false;
 
   StreamSubscription _navigationSub;
 
@@ -78,7 +80,22 @@ class _SplashScreenState extends State<SplashScreen> {
         .where((BtStates state) => state != BtStates.NONE)
         .listen(_handleBtState);
 
+    _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
+
     super.initState();
+  }
+
+  void _handleUpgradeProgress(FirmwareUpgradeStates state) {
+    if (state == FirmwareUpgradeStates.UPGRADING && !_fwUpgradeShow) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) => FirmwareUpgradeDialog());
+      _fwUpgradeShow = true;
+    } else if (_fwUpgradeShow) {
+      Navigator.of(context).pop();
+      _fwUpgradeShow = false;
+    }
   }
 
   void _handleBtState(BtStates state) {

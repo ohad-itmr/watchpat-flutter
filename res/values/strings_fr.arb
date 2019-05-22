@@ -181,5 +181,10 @@
   "getting_log_file_success": "Getting device log file success",
   "select_reset_type": "Select reset type",
   "reset": "Reset",
-  "ignore_device_errors": "Ignore all device generated errors?"
+  "ignore_device_errors": "Ignore all device generated errors?",
+  "make_sure_watchpat_bin_is_placed_in_watchpat_dir": "Make sure watchpat.bin is placed to internal directory",
+  "upgrade": "Upgrade",
+  "firmware_upgrading": "Upgrading main device firmware, please don't close the application",
+  "firmware_upgrade_success": "Firmware update completed successfully",
+  "firmware_upgrade_failed": "Firmware update failed"
 }

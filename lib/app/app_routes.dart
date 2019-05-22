@@ -1,6 +1,5 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/app/pairing_issues_screens/pairing_issue_screen.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
@@ -75,8 +74,7 @@ var carouselRouteHandler = Handler(
 
 var errorRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return ErrorScreen(
-      error: ErrorScreenErrors.getTextFromEnumStringValue(params["error"][0]));
+  return ErrorScreen(error: params["error"][0]);
 });
 
 var pairingIssueHandle = Handler(

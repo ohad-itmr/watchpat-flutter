@@ -13,8 +13,8 @@ void main() async {
   // todo for development purpose only
 //  await PrefsProvider.setTestStarted(false);
 //  PrefsProvider.setIsFirstDeviceConnection(true);
-  PrefsProvider.setIgnoreDeviceErrors(true);
-  PrefsProvider.setTestComplete(true);
+//  PrefsProvider.setIgnoreDeviceErrors(true);
+//  PrefsProvider.setTestComplete(true);
 
 
   await setupServices();

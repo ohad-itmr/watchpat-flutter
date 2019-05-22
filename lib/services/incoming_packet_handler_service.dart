@@ -431,8 +431,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   bool _checkStartSessionErrors(final int opcodeDependant) {
     Log.info(TAG, ">>> opcodeDependant: $opcodeDependant");
 
-    if (PrefsProvider.getIgnoreDeviceErrors() != null &&
-        PrefsProvider.getIgnoreDeviceErrors()) {
+    if (PrefsProvider.getIgnoreDeviceErrors()) {
       Log.info(TAG, ">>> device errors ignored");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return true;

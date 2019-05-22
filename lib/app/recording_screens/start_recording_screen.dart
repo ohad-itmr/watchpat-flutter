@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
@@ -38,7 +37,7 @@ class StartRecordingScreen extends StatelessWidget {
                 Navigator.pushNamed(context, RecordingScreen.PATH);
               } else {
                 Navigator.pushNamed(context,
-                    "${ErrorScreen.PATH}/${ErrorScreenError.BATTERY_LOW_LEVEL_NOT_CHARGING}");
+                    "${ErrorScreen.PATH}/${S.of(context).battery_level_error}");
               }
             },
             text: loc.btnStartRecording,

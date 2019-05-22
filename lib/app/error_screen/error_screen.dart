@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_pat/app/error_screen/error_screen_errors.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 

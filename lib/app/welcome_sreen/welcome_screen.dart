@@ -31,8 +31,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final ScanResultStates state =
         await _systemStateManager.bleScanResultStream.first;
     if (welcomeManager.getInitialErrors().length > 0) {
-      // TODO show errors list
-      print('HAVE ERRORS');
+      Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${welcomeManager.getInitialErrors()}");
+      _nextIsPressed = false;
+    } else if (sl<SystemStateManager>().deviceErrorState != DeviceErrorStates.NO_ERROR) {
+      Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
+      _nextIsPressed = false;
     } else if (state == ScanResultStates.NOT_LOCATED) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
       _nextIsPressed = false;

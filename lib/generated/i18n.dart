@@ -40,6 +40,7 @@ class S implements WidgetsLocalizations {
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
   String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT™ ONE and remove the battery.";
   String get batteryTitle => "Insert Battery";
+  String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
   String get bt_initiation_error => "Bluetooth initiation error";
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth on.";
@@ -522,6 +523,8 @@ class fr extends S {
   String get thankYouContent => "The data has been successfully uploaded and the test is over.\nPlease dispose the product by your local guidance's.";
   @override
   String get get_tech_status_timeout => "Get tech status: timeout";
+  @override
+  String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
   @override
   String get insufficient_storage_space_on_smartphone => "Insufficient storage space on smartphone, shutting down";
   @override

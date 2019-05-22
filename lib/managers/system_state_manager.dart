@@ -394,7 +394,9 @@ class SystemStateManager extends ManagerBase {
 
   DeviceStates get deviceCommState => _deviceCommState.value;
 
-  DeviceErrorStates get deviceErrors => _deviceErrorState.value;
+  DeviceErrorStates get deviceErrorState => _deviceErrorState.value;
+
+  String get deviceErrors => _deviceErrors;
 
   ServerStates get serverCommState => _serverCommState.value;
 

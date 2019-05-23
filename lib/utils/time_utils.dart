@@ -7,7 +7,6 @@ import 'package:my_pat/utils/log/log.dart';
 import 'package:date_format/date_format.dart';
 import 'package:sprintf/sprintf.dart';
 
-
 abstract class TimerCallback {
   void callback();
 }
@@ -23,9 +22,14 @@ class TimeUtils {
   static void packetCounterTick() async {
     PrefsProvider.incTestPacketCount();
     final int testPacketCount = PrefsProvider.loadTestPacketCount();
-    if (testPacketCount > GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
+    if (testPacketCount >
+            GlobalSettings.minTestLengthSeconds *
+                (GlobalSettings.dataTransferRate / 60) &&
+        sl<SystemStateManager>().testState != TestStates.STOPPED) {
       sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
-    } else if (testPacketCount > GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
+    } else if (testPacketCount >
+        GlobalSettings.maxTestLengthSeconds *
+            (GlobalSettings.dataTransferRate / 60)) {
 //      sl<SystemStateManager>().setTestState(TestStates.ENDED);
 
     }
@@ -52,7 +56,7 @@ class TimeUtils {
     double s = seconds % 60;
     double m = (seconds / 60) % 60;
     double h = (seconds / (60 * 60)) % 24;
-    return sprintf("%02d:%02d:%02d", [h.toInt(),m.toInt(),s.toInt()]);
+    return sprintf("%02d:%02d:%02d", [h.toInt(), m.toInt(), s.toInt()]);
   }
 }
 
@@ -100,8 +104,6 @@ class WatchPATTimer {
     stopTimer();
     startTimer();
   }
-
-
 
   WatchPATTimer(this._name, this._interval, this._timeoutCallback) {
     _startCallback = null;

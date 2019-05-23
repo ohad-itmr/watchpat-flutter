@@ -78,7 +78,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             setState(() => _nextIsPressed = true);
             _handleNext();
 
-
 //            Navigator.of(context).pushNamed(PinScreen.PATH);
           },
         ),

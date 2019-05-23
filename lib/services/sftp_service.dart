@@ -246,6 +246,7 @@ class SftpService {
     Log.info(TAG,
         "Uploading of test data complete, closing sftp connection and informing dispatcher");
     sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
+    sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     sftpConnectionStateStream.close();
   }
 

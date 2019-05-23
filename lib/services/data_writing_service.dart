@@ -56,7 +56,7 @@ class DataWritingService {
   }
 
   Future<void> _initializeFileWriting() async {
-    Log.info(TAG, "Initializing data file for writing");
+    Log.info(TAG, "Opening data file for writing");
     _dataFile = await sl<FileSystemService>().localDataFile;
     _raf = await _dataFile.open(mode: FileMode.write);
   }

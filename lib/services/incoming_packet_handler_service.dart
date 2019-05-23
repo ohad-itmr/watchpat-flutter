@@ -128,9 +128,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
-      print("RECEIVED PACKET ${receivedPacket.bytes}");
-      Log.info(TAG,
-          "Received packet, length: ${receivedPacket.bytes.length}, content: ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
+//      print("RECEIVED PACKET ${receivedPacket.bytes}");
+      print("Received packet, length: ${receivedPacket.bytes.length}, content: ${receivedPacket.bytes}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -300,6 +299,10 @@ class IncomingPacketHandlerService extends ManagerBase {
           PrefsProvider.setTestStarted(false);
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+
+          // disconnect from device
+          sl<BleService>().disconnect();
+
           break;
         case DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES:
           Log.info(TAG, "packet received (FW_UPGRADE_RES)");

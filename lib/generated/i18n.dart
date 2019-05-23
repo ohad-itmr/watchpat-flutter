@@ -90,6 +90,7 @@ class S implements WidgetsLocalizations {
   String get err_probe_photo => "Probe photo";
   String get err_sbp => "SBP";
   String get err_used_device => "Used main device";
+  String get error => "Error";
   String get error_state => "ERROR STATE";
   String get exit_service_mode => "Exit service mode";
   String get fatal_error => "Fatal error";
@@ -535,6 +536,8 @@ class fr extends S {
   String get technician_mode => "Technician mode";
   @override
   String get strapWristTitle => "Strap Wrist Device";
+  @override
+  String get error => "Error";
   @override
   String get connect_to_charger => "Connect the phone to a charger";
   @override

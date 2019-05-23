@@ -30,18 +30,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         .firstWhere((bool isComplete) => isComplete);
     final ScanResultStates state =
         await _systemStateManager.bleScanResultStream.first;
+    final bool hasErrors = await sl<SystemStateManager>().deviceHasErrors;
+    _nextIsPressed = false;
     if (welcomeManager.getInitialErrors().length > 0) {
-      Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${welcomeManager.getInitialErrors()}");
-      _nextIsPressed = false;
-    } else if (sl<SystemStateManager>().deviceErrorState != DeviceErrorStates.NO_ERROR) {
-      Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
-      _nextIsPressed = false;
+      Navigator.of(context).pushNamed(
+          "${ErrorScreen.PATH}/${welcomeManager.getInitialErrors()}");
+    } else if (hasErrors) {
+      Navigator.of(context).pushNamed(
+          "${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
     } else if (state == ScanResultStates.NOT_LOCATED) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
-      _nextIsPressed = false;
     } else {
       Navigator.of(context).pushNamed(RemoveJewelryScreen.PATH);
-      _nextIsPressed = false;
     }
   }
 

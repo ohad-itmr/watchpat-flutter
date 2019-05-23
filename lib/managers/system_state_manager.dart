@@ -3,9 +3,15 @@ import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 enum BtStates { NONE, NOT_AVAILABLE, BLE_NOT_SUPPORTED, DISABLED, ENABLED }
-enum ScanResultStates { NOT_LOCATED, LOCATED_SINGLE, LOCATED_MULTIPLE }
+enum ScanResultStates {
+  NOT_STARTED,
+  NOT_LOCATED,
+  LOCATED_SINGLE,
+  LOCATED_MULTIPLE
+}
 enum ScanStates { NOT_STARTED, SCANNING, COMPLETE }
 enum DeviceStates { DISCONNECTED, CONNECTING, CONNECTED }
 enum DeviceErrorStates {
@@ -80,6 +86,7 @@ class SystemStateManager extends ManagerBase {
 
   // SCAN RESULT STATES
   static List<String> _scanResults = [
+    "Not started",
     "Not located",
     "Located single",
     "Located multiple"
@@ -280,7 +287,7 @@ class SystemStateManager extends ManagerBase {
     Log.info(TAG, "initializing all system states");
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
-    setBleScanResult(ScanResultStates.NOT_LOCATED);
+    setBleScanResult(ScanResultStates.NOT_STARTED);
     setDeviceCommState(DeviceStates.DISCONNECTED);
     setAppMode(AppModes.USER);
     setTestState(PrefsProvider.getTestStarted()
@@ -442,5 +449,20 @@ class SystemStateManager extends ManagerBase {
     _dispatcherState.close();
     _stateChangeSubject.close();
     _inetConnectionState.close();
+  }
+
+  Future<bool> get deviceHasErrors {
+    if (PrefsProvider.getIgnoreDeviceErrors() ||
+        bleScanResult == ScanResultStates.NOT_LOCATED)
+      return Future.value(false);
+    return Observable.combineLatest2<DeviceStates, DeviceErrorStates, Tuple2>(
+            deviceCommStateStream,
+            deviceErrorStateStream,
+            (DeviceStates deviceState, DeviceErrorStates errorState) =>
+                Tuple2(deviceState, errorState))
+        .firstWhere((Tuple2 values) =>
+            values.item1 == DeviceStates.CONNECTED &&
+            values.item2 != DeviceErrorStates.UNKNOWN)
+        .then((Tuple2 values) => values.item2 != DeviceErrorStates.NO_ERROR);
   }
 }

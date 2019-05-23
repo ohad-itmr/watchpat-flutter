@@ -106,16 +106,17 @@ class WelcomeActivityManager extends ManagerBase {
         sl<SystemStateManager>().bleScanStateStream,
         sl<SystemStateManager>().bleScanResultStream,
         _initFiles(),
-        (ScanStates scanState, ScanResultStates scanResultState, Response initFilesResponse) {
-          if (scanState != ScanStates.COMPLETE) {
-            return false;
-          }
-
+        (ScanStates scanState, ScanResultStates scanResultState,
+            Response initFilesResponse) {
           _initErrorsSubject.add(List());
+
           if (!initFilesResponse.success) {
             addInitialErrors(initFilesResponse.error);
           }
 
+          if (scanState != ScanStates.COMPLETE) {
+            return false;
+          }
           return true;
         },
       );

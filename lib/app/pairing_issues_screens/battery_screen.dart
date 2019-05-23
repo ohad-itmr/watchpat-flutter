@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
 
   StreamSubscription _deviceConnectionSub;
   bool _deviceConnected = false;
+  bool _nextIsPressed = false;
 
   @override
   void initState() {
@@ -40,6 +42,48 @@ class _BatteryScreenState extends State<BatteryScreen> {
   void deactivate() {
     _deviceConnectionSub.cancel();
     super.deactivate();
+  }
+
+  _handleNext() async {
+    await sl<SystemStateManager>()
+        .bleScanStateStream
+        .firstWhere((ScanStates s) => s == ScanStates.COMPLETE);
+    final bool deviceConnected = await sl<SystemStateManager>()
+        .deviceCommStateStream
+        .firstWhere((DeviceStates s) => s != DeviceStates.CONNECTING)
+        .then((DeviceStates s) => s == DeviceStates.CONNECTED);
+
+    if (deviceConnected) {
+      final bool hasErrors = await sl<SystemStateManager>().deviceHasErrors;
+      if (hasErrors) {
+        Navigator.of(context).pushNamed(
+            "${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
+      } else {
+        Navigator.pushNamed(context, RemoveJewelryScreen.PATH);
+      }
+    } else {
+      _showNotFoundDialog();
+    }
+    setState(() => _nextIsPressed = false);
+  }
+
+  Widget _buildButtonsBlock() {
+    if (_nextIsPressed) {
+      return CircularProgressIndicator();
+    } else {
+      return ButtonsBlock(
+        nextActionButton: ButtonModel(
+          action: () async {
+            setState(() => _nextIsPressed = true);
+            _handleNext();
+          },
+        ),
+        moreActionButton: ButtonModel(
+          action: () => Navigator.of(context)
+              .pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
+        ),
+      );
+    }
   }
 
   @override
@@ -72,22 +116,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
                       ],
               );
             }),
-        buttons: ButtonsBlock(
-          nextActionButton: ButtonModel(
-            action: () {
-//              Navigator.pushNamed(context, _deviceConnected ? RemoveJewelryScreen.PATH : PairingIssueScreen.PATH);
-              if (_deviceConnected) {
-                Navigator.pushNamed(context, RemoveJewelryScreen.PATH);
-              } else {
-                _showNotFoundDialog();
-              }
-            },
-          ),
-          moreActionButton: ButtonModel(
-            action: () => Navigator.of(context)
-                .pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
-          ),
-        ),
+        buttons: _buildButtonsBlock(),
         showSteps: true,
         current: 1,
         total: 6,

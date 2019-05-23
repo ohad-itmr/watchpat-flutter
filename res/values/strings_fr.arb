@@ -56,6 +56,7 @@
   "err_sbp": "SBP",
   "err_used_device": "Used main device",
   "error_state": "ERROR STATE",
+  "error": "Error",
   "exit_service_mode": "Exit service mode",
   "fingerProbeTitle": "Wear Finger Probe",
   "fingerProbeContent": "Insert any finger, except your thumb, all the way into the probe.  \nThe sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (like a table) and pull the TOP tab toward you to remove it from the probe.",

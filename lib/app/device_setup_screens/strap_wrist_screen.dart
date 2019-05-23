@@ -1,24 +1,13 @@
 import 'package:battery/battery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
-class StrapWristScreen extends StatefulWidget {
+class StrapWristScreen extends StatelessWidget {
   static const String PATH = '/device_set_up_1';
-  final S loc = sl<S>();
   static const String TAG = 'StrapWristScreen';
-
-  @override
-  _StrapWristScreenState createState() => _StrapWristScreenState();
-}
-
-class _StrapWristScreenState extends State<StrapWristScreen> {
-  @override
-  void initState() {
-    _showDialogIfNotCharging(context);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +21,8 @@ class _StrapWristScreenState extends State<StrapWristScreen> {
         ),
         bottomBlock: BlockTemplate(
           type: BlockType.text,
-          title: widget.loc.strapWristTitle,
-          content: [
-            widget.loc.strapWristContent,
-          ],
+          title: S.of(context).strapWristTitle,
+          content: [S.of(context).strapWristContent],
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
@@ -52,27 +39,6 @@ class _StrapWristScreenState extends State<StrapWristScreen> {
         current: 3,
         total: 6,
       ),
-    );
-  }
-
-  void _showDialogIfNotCharging(BuildContext context) async {
-    final BatteryState state = await sl<BatteryManager>().getBatteryState();
-    if (state != BatteryState.charging) return;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(widget.loc.patient_msg1),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("OK"),
-            )
-          ],
-        );
-      },
     );
   }
 }

@@ -153,6 +153,7 @@ class SftpService {
   void _awaitForData() async {
     do {
       // Check for connections, if none start waiting
+      print("UPLOADING AVAIABLE $_uploadingAvailable");
       if (!_uploadingAvailable) {
         sl<SystemStateManager>()
             .setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
@@ -190,7 +191,7 @@ class SftpService {
     do {
       Log.info(TAG, "Waiting for connection");
       await Future.delayed(Duration(seconds: 3));
-    } while (_uploadingAvailable);
+    } while (!_uploadingAvailable);
   }
 
   Future<void> _uploadDataChunk({
@@ -229,8 +230,6 @@ class SftpService {
       }
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
-      sl<SystemStateManager>()
-          .setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
       await Future.delayed(Duration(seconds: 3));
     }
   }

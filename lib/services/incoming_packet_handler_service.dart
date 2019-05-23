@@ -301,6 +301,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           // disconnect from device
+          await Future.delayed(Duration(seconds: 2));
           sl<BleService>().disconnect();
 
           break;

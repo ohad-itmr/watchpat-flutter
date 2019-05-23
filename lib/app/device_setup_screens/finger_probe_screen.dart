@@ -1,3 +1,4 @@
+import 'package:battery/battery.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
@@ -32,6 +33,7 @@ class FingerProbeScreen extends StatelessWidget {
           nextActionButton: ButtonModel(
             action: () {
               Navigator.pushNamed(context, StartRecordingScreen.PATH);
+              _showDialogIfNotCharging(context);
             },
           ),
           moreActionButton: ButtonModel(
@@ -43,6 +45,27 @@ class FingerProbeScreen extends StatelessWidget {
         current: 5,
         total: 6,
       ),
+    );
+  }
+
+  void _showDialogIfNotCharging(BuildContext context) async {
+    final BatteryState state = await sl<BatteryManager>().getBatteryState();
+    if (state == BatteryState.charging) return;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(S.of(context).patient_msg1),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(S.of(context).ok.toUpperCase()),
+            )
+          ],
+        );
+      },
     );
   }
 }

@@ -117,9 +117,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
               );
             }),
         buttons: _buildButtonsBlock(),
-        showSteps: true,
-        current: 1,
-        total: 6,
+        showSteps: false,
       ),
     );
   }

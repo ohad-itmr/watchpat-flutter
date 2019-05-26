@@ -55,4 +55,15 @@ class EmailSenderService {
       return false;
     }
   }
+
+  // TEST
+  Future<bool> sendTestMail() async {
+    final message = Message()
+      ..from = Address(SMTP_USERNAME, 'Itamar Medical')
+      ..recipients.add('m.derzhavets@emg-soft.com')
+      ..subject = 'This shit is alive!!'
+      ..text = 'Go fuck yourself';
+
+    return await _sendMessage(message);
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -50,6 +51,11 @@ class SftpService {
     _initConnectionAvailabilityListener();
   }
 
+  void resumeDataUploading() async {
+    await _initService();
+    _restoreUploading();
+  }
+
   void _initConnectionAvailabilityListener() {
     Observable.combineLatest2(
         _systemState.inetConnectionStateStream,
@@ -96,16 +102,16 @@ class SftpService {
 
     UserAuthenticationService _authService = sl<UserAuthenticationService>();
     _client = SSHClient(
-        host: _authService.sftpHost,
-        port: _authService.sftpPort,
-        username: _authService.sftpUserName,
-        passwordOrKey: _authService.sftpPassword);
+        host: PrefsProvider.loadSftpHost(),
+        port: PrefsProvider.loadSftpPort(),
+        username: PrefsProvider.loadSftpUsername(),
+        passwordOrKey: PrefsProvider.loadSftpPassword());
 
     if (_currentTestState != TestStates.RESUMED) {
       await PrefsProvider.saveTestDataUploadingOffset(0);
     }
 
-    _sftpFilePath = _authService.sftPath;
+    _sftpFilePath = PrefsProvider.loadSftpPath();
     _sftpFileName = DefaultSettings.serverDataFileName;
     _tempDir = await getTemporaryDirectory();
 
@@ -172,11 +178,13 @@ class SftpService {
             recordingOffset: currentRecordingOffset);
 
         // Check if test ended and all data is uploaded
-        final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
+        final int newUploadingOffset =
+            PrefsProvider.loadTestDataUploadingOffset();
         if (currentRecordingOffset == newUploadingOffset &&
             _currentTestState == TestStates.ENDED) {
           _currentTransferState = DataTransferStates.ALL_TRANSFERRED;
           _systemState.setDataTransferState(DataTransferStates.ALL_TRANSFERRED);
+          BackgroundFetch.finish();
         }
       } else {
         _systemState.setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
@@ -198,7 +206,6 @@ class SftpService {
     @required int uploadingOffset,
     @required int recordingOffset,
   }) async {
-
     RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
     final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
         ? _dataChunkSize
@@ -215,15 +222,16 @@ class SftpService {
           toFilePath: '$_sftpFilePath/$_sftpFileName');
 
       if (result == SftpService.APPENDING_SUCCESS) {
-
         await PrefsProvider.saveTestDataUploadingOffset(
             uploadingOffset + bytes.length);
         Log.info(TAG,
             "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
 
         // todo test sftp offset
-        SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-        print("CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+        SFTPFile file = await _client.sftpFileInfo(
+            filePath: "$_sftpFilePath/$_sftpFileName");
+        print(
+            "CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
         print("CURRENT REMOTE FILE SIZE: ${file.size}");
         //
 
@@ -235,9 +243,15 @@ class SftpService {
   }
 
   void _restoreUploading() async {
-    final SFTPFile remoteFile =
-        await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-    await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
+    try {
+      Log.info(TAG, "Looking for previous sftp file");
+      final SFTPFile remoteFile =
+          await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+      await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
+    } catch (e) {
+      Log.info(TAG, "Sftp data file not found, will create new one");
+    }
+
     _awaitForData();
   }
 

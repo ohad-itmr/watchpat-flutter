@@ -308,10 +308,8 @@ class SystemStateManager extends ManagerBase {
   }
 
   void setBleScanState(ScanStates state) {
-    if (state != _bleScanState.value) {
-      Log.info(TAG, "setBleScanState: ${getScanStateName(state.index)}");
-      _bleScanState.sink.add(state);
-    }
+    Log.info(TAG, "setBleScanState: ${getScanStateName(state.index)}");
+    _bleScanState.sink.add(state);
   }
 
   void setBleScanResult(ScanResultStates state) {

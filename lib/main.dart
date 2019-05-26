@@ -16,10 +16,10 @@ void main() async {
 //  PrefsProvider.setIgnoreDeviceErrors(true);
 //  PrefsProvider.setTestComplete(true);
 
-
   await setupServices();
 
   runApp(AppComponent());
+//  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class AppComponent extends StatefulWidget {

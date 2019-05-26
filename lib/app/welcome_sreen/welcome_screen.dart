@@ -78,7 +78,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             setState(() => _nextIsPressed = true);
             _handleNext();
 
-//            Navigator.of(context).pushNamed(PinScreen.PATH);
+//            Navigator.of(context).push(MaterialPageRoute(
+//                builder: (context) => EndScreen(
+//                  title: S.of(context).thankYouTitle,
+//                  content: S.of(context).test_is_complete,
+//                )));
           },
         ),
         moreActionButton: ButtonModel(

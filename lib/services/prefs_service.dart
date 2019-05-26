@@ -231,7 +231,7 @@ class PrefsProvider {
   }
 
   static String loadSftpHost() {
-    return PrefsService.prefs.getString(PrefsNames.SFTP_HOST_KEY);
+    return PrefsService.prefs.getString(PrefsNames.SFTP_HOST_KEY) ?? "";
   }
 
   //
@@ -242,7 +242,7 @@ class PrefsProvider {
   }
 
   static int loadSftpPort() {
-    return PrefsService.prefs.getInt(PrefsNames.SFTP_PORT_KEY);
+    return PrefsService.prefs.getInt(PrefsNames.SFTP_PORT_KEY) ?? 0;
   }
 
   //
@@ -253,7 +253,7 @@ class PrefsProvider {
   }
 
   static String loadSftpUsername() {
-    return PrefsService.prefs.getString(PrefsNames.SFTP_USERNAME_KEY);
+    return PrefsService.prefs.getString(PrefsNames.SFTP_USERNAME_KEY) ?? "";
   }
 
   //
@@ -264,7 +264,7 @@ class PrefsProvider {
   }
 
   static String loadSftpPassword() {
-    return PrefsService.prefs.getString(PrefsNames.SFTP_PASSWORD_KEY);
+    return PrefsService.prefs.getString(PrefsNames.SFTP_PASSWORD_KEY) ?? "";
   }
 
   //
@@ -275,7 +275,7 @@ class PrefsProvider {
   }
 
   static String loadSftpPath() {
-    return PrefsService.prefs.getString(PrefsNames.SFTP_PATH_KEY);
+    return PrefsService.prefs.getString(PrefsNames.SFTP_PATH_KEY) ?? "";
   }
 
   //

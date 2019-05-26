@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:background_fetch/background_fetch.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class EndScreen extends StatelessWidget {
@@ -44,10 +46,12 @@ class EndScreen extends StatelessWidget {
             action: () async {
               if (sl<SystemStateManager>().dataTransferState !=
                   DataTransferStates.ALL_TRANSFERRED) {
-                _showUploadingDialog(context);
-              } else {
-                exit(0);
+                Log.info(TAG, "Data was not uploaded to sftp server. Registering background fetch task");
+                BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
+                initPlatformState();
               }
+              await Future.delayed(Duration(milliseconds: 300));
+//              exit(0);
             },
             text: S.of(context).btnCloseApp,
           ),
@@ -57,17 +61,34 @@ class EndScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  void _showUploadingDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Data not uploaded"),
-            content: Text(
-                "Test data collected by WatchPAT device was not uploaded to the server because of internet connection is not available. Please make sure to switch internet connection on and run application again."),
-          );
-        });
-  }
+void initPlatformState() async {
+  // Configure BackgroundFetch.
+  BackgroundFetch.configure(
+          BackgroundFetchConfig(
+              minimumFetchInterval: 15,
+              stopOnTerminate: false,
+              enableHeadless: true),
+          _backgroundFetchTask)
+      .then((int status) {
+    print('[BackgroundFetch] SUCCESS: $status');
+  }).catchError((e) {
+    print('[BackgroundFetch] ERROR: $e');
+  });
+}
+
+// Fetch-event callback.
+void _backgroundFetchTask() async {
+  final Connectivity _connectivity = Connectivity();
+  _connectivity.checkConnectivity().then((ConnectivityResult res) {
+    sl<EmailSenderService>().sendTestMail();
+    print("SFTP FOLDER: ${PrefsProvider.loadSftpPath()}");
+    PrefsProvider.saveTestDataRecordingOffset(5000000);
+    if (res != ConnectivityResult.none) {
+      sl<SystemStateManager>().setTestState(TestStates.RESUMED);
+    } else {
+      BackgroundFetch.finish();
+    }
+  });
 }

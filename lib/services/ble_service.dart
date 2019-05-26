@@ -91,38 +91,38 @@ class BleService {
     _readCharSubscription.cancel();
   }
 
-//  Future<void> writeCharacteristic(List<int> data) async {
-//    var status = 'success';
-//    try {
-//      await _device.writeCharacteristic(
-//        _charForWrite,
-//        data,
-//        type: CharacteristicWriteType.withResponse,
-//      );
-//    } catch (e) {
-//      status = 'failure ${e.toString()}';
-//    }
-//    print("Writing TX characteristic: ${data.toString()} $status");
-//  }
-
   Future<void> writeCharacteristic(List<int> data) async {
-    TxWritingStatus status = TxWritingStatus.fail;
-    int retries = 0;
-    do {
-      try {
-        await _device.writeCharacteristic(
-          _charForWrite,
-          data,
-          type: CharacteristicWriteType.withoutResponse,
-        );
-        status = TxWritingStatus.success;
-      } catch (e) {
-        retries++;
-        print("Writing TX chars failed, trying again");
-      }
-    } while (status != TxWritingStatus.success && retries < 5);
+    var status = 'success';
+    try {
+      await _device.writeCharacteristic(
+        _charForWrite,
+        data,
+        type: CharacteristicWriteType.withResponse,
+      );
+    } catch (e) {
+      status = 'failure ${e.toString()}';
+    }
     print("Writing TX characteristic: ${data.toString()} $status");
   }
+
+//  Future<void> writeCharacteristic(List<int> data) async {
+//    TxWritingStatus status = TxWritingStatus.fail;
+//    int retries = 0;
+//    do {
+//      try {
+//        await _device.writeCharacteristic(
+//          _charForWrite,
+//          data,
+//          type: CharacteristicWriteType.withoutResponse,
+//        );
+//        status = TxWritingStatus.success;
+//      } catch (e) {
+//        retries++;
+//        print("Writing TX chars failed, trying again");
+//      }
+//    } while (status != TxWritingStatus.success && retries < 5);
+//    print("Writing TX characteristic: ${data.toString()} $status");
+//  }
 }
 
 enum TxWritingStatus { success, fail }

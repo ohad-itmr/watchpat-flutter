@@ -207,9 +207,10 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             Log.info(TAG, "### start session confirm: device serial saved");
 
+            sl<WelcomeActivityManager>().configureApplication();
+
             if (PrefsProvider.getIsFirstDeviceConnection()) {
               // Set external configuration if necessary
-              sl<WelcomeActivityManager>().configureApplication();
 
               Log.info(TAG, "first connection to device");
               Log.info(TAG,

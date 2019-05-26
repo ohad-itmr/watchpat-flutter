@@ -29,7 +29,7 @@ class CarouselButtonBlock extends StatelessWidget {
             child: IconButton(
                 icon: Icon(Icons.live_tv, color: Colors.white.withOpacity(0.8)),
                 onPressed: () =>
-                    launch('https://www.youtube.com/watch?v=mMeqEDEfniA')),
+                    launch(GlobalSettings.demoUrl)),
           ),
         ),
         Expanded(

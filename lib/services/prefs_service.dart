@@ -48,6 +48,7 @@ class PrefsNames {
       DefaultSettings.appName + ".sftppassword";
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
   static const String LOCALE_CODE = "locale.code";
+  static const String SERVICE_EMAIL_CODE = "service.email";
 }
 
 class PrefsService {
@@ -323,5 +324,18 @@ class PrefsProvider {
   //
   static clearAll() {
     PrefsService.prefs.clear();
+  }
+
+  //
+  // Service email
+  //
+
+  static Future<void> saveServiceEmail(String email) async {
+    await PrefsService.prefs.setString(PrefsNames.SERVICE_EMAIL_CODE, email);
+  }
+
+  static String loadServiceEmail() {
+    return PrefsService.prefs.getString(PrefsNames.SERVICE_EMAIL_CODE) ??
+        DefaultSettings.emailService;
   }
 }

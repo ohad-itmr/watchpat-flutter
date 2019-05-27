@@ -77,6 +77,8 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       });
     } else {
+      sl<BleManager>().startScan(
+          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       WidgetsBinding.instance.addPostFrameCallback(
           (_) => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => EndScreen(

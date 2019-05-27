@@ -51,7 +51,7 @@ class EndScreen extends StatelessWidget {
                 initPlatformState();
               }
               await Future.delayed(Duration(milliseconds: 300));
-//              exit(0);
+              exit(0);
             },
             text: S.of(context).btnCloseApp,
           ),

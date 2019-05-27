@@ -21,7 +21,7 @@ class Log{
 
   static Future<void> _initLogFile() async {
     final File logFile = await sl<FileSystemService>().logMainFile;
-    _logFileSink = logFile.openWrite();
+    _logFileSink = logFile.openWrite(mode: FileMode.append);
   }
 
   static void writeLogToFile(String entry) {

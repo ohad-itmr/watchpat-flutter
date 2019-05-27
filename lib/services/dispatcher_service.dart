@@ -40,13 +40,13 @@ class DispatcherService {
 
   Future<bool> checkExternalConfig() async {
     Response response = await _dio.post(_checkExternalConfigEndpoint,
-        data: {"client": "WatchPAT", "version": "0.0.1"});
+        data: {"client": "iOS APP", "version": "1"});
     return ExternalConfigEnabledModel.fromJson(response.data).enabled;
   }
 
   Future<Map<String, dynamic>> getExternalConfig() async {
     Response response = await _dio.post(_getDefaultConfigEndpoint,
-        data: {"client": "WatchPAT", "version": "0.0.1"});
+        data: {"client": "iOS APP", "version": "1"});
     return response.data;
   }
 

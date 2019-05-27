@@ -449,8 +449,10 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   //reset application
-  resetApplication() {
+  resetApplication() async {
     PrefsProvider.clearAll();
+    await sl<FileSystemService>().clear();
+    sl<FileSystemService>().init();
     sl<SystemStateManager>().initAllStates();
     sl<SystemStateManager>().initAllBTStates();
     sl<BleManager>().initializeBT();

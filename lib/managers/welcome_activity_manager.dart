@@ -75,6 +75,7 @@ class WelcomeActivityManager extends ManagerBase {
         Log.info(TAG,
             "External config received from dispatcher, configuring application");
         GlobalSettings.setExternalConfiguration(response["config"]);
+        GlobalSettings.persistConfiguration(response["config"]);
       }
     }
   }

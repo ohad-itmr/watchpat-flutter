@@ -247,11 +247,13 @@ class FileSystemService {
   Future<Response> clear() async {
     try {
       File localFile = await localDataFile;
-      await localFile.delete();
+      if (localFile.existsSync()) localFile.deleteSync();
       File logInFile = await logInputFile;
-      logInFile.delete();
+      if (logInFile.existsSync()) logInFile.deleteSync();
       File logOutFile = await logInputFile;
-      logOutFile.delete();
+      if (logOutFile.existsSync()) logOutFile.deleteSync();
+      File mainLogFile = await logMainFile;
+      if (mainLogFile.existsSync()) mainLogFile.deleteSync();
       Log.info(TAG, 'FILES CLEARED');
       return Response(success: true);
     } catch (e) {

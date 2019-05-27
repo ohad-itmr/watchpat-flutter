@@ -20,7 +20,7 @@ class EmailSenderService {
   Future<bool> sendSftpFailureEmail({@required String error}) async {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
-      ..recipients.add(GlobalSettings.serviceEmailAddress)
+      ..recipients.add(PrefsProvider.loadServiceEmail())
       ..subject = 'SFTP server connection failed'
       ..text = 'Connection to SFTP server was failed.\n\n' +
           'Host: ${sl<UserAuthenticationService>().sftpHost}\n' +
@@ -35,7 +35,7 @@ class EmailSenderService {
     File logFile = await sl<FileSystemService>().logMainFile;
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
-      ..recipients.add(GlobalSettings.serviceEmailAddress)
+      ..recipients.add(PrefsProvider.loadServiceEmail())
       ..subject = 'Application log file'
       ..text = 'Received log file exported from WatchPAT application.\n\n' +
           'Time: ${DateTime.now().toIso8601String()}\n' +
@@ -48,10 +48,10 @@ class EmailSenderService {
   Future <bool> _sendMessage(Message msg) async {
     try {
       await send(msg, _smtpServer);
-      Log.info(TAG, "Successfully sent email message to ${GlobalSettings.serviceEmailAddress}, subject ${msg.subject}");
+      Log.info(TAG, "Successfully sent email message to ${PrefsProvider.loadServiceEmail()}, subject ${msg.subject}");
       return true;
     } catch (e) {
-      Log.shout(TAG, "Failed to send email message to ${GlobalSettings.serviceEmailAddress}, subject ${msg.subject}, error ${e.toString()}");
+      Log.shout(TAG, "Failed to send email message to ${PrefsProvider.loadServiceEmail()}, subject ${msg.subject}, error ${e.toString()}");
       return false;
     }
   }

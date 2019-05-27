@@ -1,5 +1,6 @@
 import 'package:my_pat/domain_model/global_settings_model.dart';
 import 'package:my_pat/config/default_settings.dart';
+import 'package:my_pat/service_locator.dart';
 
 class GlobalSettings {
   static const String TAG = 'GlobalSettings';
@@ -12,6 +13,13 @@ class GlobalSettings {
 
   static setExternalConfiguration(Map<String, dynamic> resource) {
     _configurationResource = resource;
+  }
+
+  static persistConfiguration(Map<String, dynamic> resource) {
+    final String email =
+        resource[GlobalSettingsModel.TAG_SERVICE_EMAIL_ADDRESS] ??
+            DefaultSettings.emailService;
+    PrefsProvider.saveServiceEmail(email);
   }
 
   static GlobalSettingsModel get _globalSettings =>
@@ -56,7 +64,7 @@ class GlobalSettings {
 
   static int get userPinCodeLength => _globalSettings.userPinCodeLength;
 
-  static String get serviceEmailAddress => _globalSettings.serviceEmailAddress;
+  static String get serviceEmailAddress => PrefsProvider.loadServiceEmail();
 
   static String get dispatcherLink => _globalSettings.dispatcherLink;
 

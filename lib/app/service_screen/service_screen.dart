@@ -119,8 +119,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
           ),
           actions: <Widget>[
             _operationInProgress
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
+                ? FlatButton(
+                    onPressed: null,
                     child: CircularProgressIndicator(
                         valueColor:
                             new AlwaysStoppedAnimation<Color>(Colors.white)))
@@ -149,7 +149,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
     return ListTile(
       title: Text(option.title),
       trailing: Icon(Icons.keyboard_arrow_right),
-      onTap: _deviceBtState == DeviceStates.CONNECTED || option.action == _showResetApplicationDialog
+      onTap: _deviceBtState == DeviceStates.CONNECTED ||
+              option.action == _showResetApplicationDialog ||
+              option.action == _showLogSendingDialog
           ? () => option.action()
           : () => MyPatToast.show("Main device disconnected", context),
     );

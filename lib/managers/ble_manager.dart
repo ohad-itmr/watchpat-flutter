@@ -163,49 +163,6 @@ class BleManager extends ManagerBase {
     return true;
   }
 
-  void _postScan() {
-    sl<SystemStateManager>().setBleScanState(ScanStates.COMPLETE);
-    final Map<DeviceIdentifier, ScanResult> _discoveredDevices =
-        _scanResultsSubject.value;
-    Log.info(TAG, 'Discovered ${_discoveredDevices.length} devices');
-    if (_discoveredDevices.isEmpty) {
-      Log.info(TAG, "no device discovered on scan");
-      sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
-
-      if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(
-            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-      }
-    } else if (_discoveredDevices.length == 1) {
-      Log.info(TAG, "discovered a SINGLE device on scan");
-      sl<SystemStateManager>()
-          .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
-      sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
-
-      final BluetoothDevice device =
-          _discoveredDevices.values.toList()[0].device;
-
-      if (PrefsProvider.getIsFirstDeviceConnection()) {
-        PrefsProvider.saveDeviceUUID(device.id.toString());
-        connect(device);
-      } else {
-        if (device.id.toString() == PrefsProvider.loadDeviceUUID()) {
-          Log.info(TAG, "Reconnecting to previously connected device");
-          connect(device);
-        } else {
-          Log.shout(TAG,
-              "Discovered device is not the same that was connected before. Connection cancelled.");
-          sl<SystemStateManager>()
-              .setBleScanResult(ScanResultStates.NOT_LOCATED);
-        }
-      }
-    } else {
-      Log.info(TAG, "discovered MULTIPLE devices on scan");
-      sl<SystemStateManager>()
-          .setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
-    }
-  }
-
   Future<dynamic> _sendCallback(CommandTaskerItem command) {
     print('_sendCallback ');
     try {
@@ -317,6 +274,49 @@ class BleManager extends ManagerBase {
     }
 
     _postScan();
+  }
+
+  void _postScan() {
+    sl<SystemStateManager>().setBleScanState(ScanStates.COMPLETE);
+    final Map<DeviceIdentifier, ScanResult> _discoveredDevices =
+        _scanResultsSubject.value;
+    Log.info(TAG, 'Discovered ${_discoveredDevices.length} devices');
+    if (_discoveredDevices.isEmpty) {
+      Log.info(TAG, "no device discovered on scan");
+      sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
+
+      if (sl<SystemStateManager>().isScanCycleEnabled) {
+        startScan(
+            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      }
+    } else if (_discoveredDevices.length == 1) {
+      Log.info(TAG, "discovered a SINGLE device on scan");
+      sl<SystemStateManager>()
+          .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
+      sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
+
+      final BluetoothDevice device =
+          _discoveredDevices.values.toList()[0].device;
+
+      if (PrefsProvider.getIsFirstDeviceConnection()) {
+        PrefsProvider.saveDeviceUUID(device.id.toString());
+        connect(device);
+      } else {
+        if (device.id.toString() == PrefsProvider.loadDeviceUUID()) {
+          Log.info(TAG, "Reconnecting to previously connected device");
+          connect(device);
+        } else {
+          Log.shout(TAG,
+              "Discovered device is not the same that was connected before. Connection cancelled.");
+          sl<SystemStateManager>()
+              .setBleScanResult(ScanResultStates.NOT_LOCATED);
+        }
+      }
+    } else {
+      Log.info(TAG, "discovered MULTIPLE devices on scan");
+      sl<SystemStateManager>()
+          .setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
+    }
   }
 
   void _systemStateHandler(StateChangeActions action) {

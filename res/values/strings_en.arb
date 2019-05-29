@@ -25,7 +25,7 @@
   "btnPreview": "PREVIEW",
   "btnReady": "READY",
   "btnReturnToApp": "Return To App",
-  "btnStartRecording": "START RECORNING",
+  "btnStartRecording": "START RECORDING",
   "bt_initiation_error": "Bluetooth initiation error",
   "bt_must_be_enabled": "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth ON.",
   "bt_not_available_shutdown": "Bluetooth is not available on this device",

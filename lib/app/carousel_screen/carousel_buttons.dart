@@ -24,13 +24,9 @@ class CarouselButtonBlock extends StatelessWidget {
         ),
         Expanded(
           flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: IconButton(
-                icon: Icon(Icons.live_tv, color: Colors.white.withOpacity(0.8)),
-                onPressed: () =>
-                    launch(GlobalSettings.demoUrl)),
-          ),
+          child: FlatButton(
+              child: Image(image: AssetImage("assets/carousel/play_video.png")),
+              onPressed: () => launch(GlobalSettings.demoUrl)),
         ),
         Expanded(
           flex: 3,

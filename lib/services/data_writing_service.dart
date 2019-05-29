@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:my_pat/utils/time_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DataWritingService {
@@ -27,6 +28,10 @@ class DataWritingService {
   int _remainingNecessaryPackets = 0;
   int _remainingReceivedPackets = 1;
   bool _testIsStopped = false;
+
+  int _currentProgress;
+  int _maxProgress;
+  int _numberOfSecondsToDownloadAllPackets;
 
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
@@ -86,21 +91,56 @@ class DataWritingService {
   void _reportRemainingDataProgress() {
     if (!_testIsStopped) return;
 
-    _remainingReceivedPackets++;
+    // calculate number of seconds left to download the data
+    _numberOfSecondsToDownloadAllPackets = TimeUtils.getPacketRealTimeDiffSec();
 
-    print(
-        "REMAINING PACKETS: $_remainingReceivedPackets / $_remainingNecessaryPackets");
+    // when time is growing then there is no communication with device.
+    // in this case update timer only and don't touch progress bar
+    if (_numberOfSecondsToDownloadAllPackets < _maxProgress) {
+      // time is decreasing, some packets has been transmitted so recalculate progress bar value now
+      int changeDelta = _maxProgress - _numberOfSecondsToDownloadAllPackets;
+      increaseProgress(changeDelta);
+    } else {
+      _maxProgress = _numberOfSecondsToDownloadAllPackets;
+    }
 
-    final int deltaPackets =
-        _remainingNecessaryPackets - _remainingReceivedPackets;
-    final int secondsToFullData =
-        deltaPackets ~/ (GlobalSettings.dataTransferRate ~/ 60);
-    _remainingDataSeconds.sink
-        .add(secondsToFullData > 0 ? secondsToFullData : 0);
+//    _remainingReceivedPackets++;
+//
+//    print(
+//        "REMAINING PACKETS: $_remainingReceivedPackets / $_remainingNecessaryPackets");
+//
+//
+//
+//    final int deltaPackets =
+//        _remainingNecessaryPackets - _remainingReceivedPackets;
+//    final int secondsToFullData =
+//        deltaPackets ~/ (GlobalSettings.dataTransferRate ~/ 60);
+//    _remainingDataSeconds.sink
+//        .add(secondsToFullData > 0 ? secondsToFullData : 0);
+//
+//    final double fullDataProgress =
+//        _remainingReceivedPackets / _remainingNecessaryPackets;
+//    _remainingDataProgress.sink.add(fullDataProgress);
+  }
 
-    final double fullDataProgress =
-        _remainingReceivedPackets / _remainingNecessaryPackets;
-    _remainingDataProgress.sink.add(fullDataProgress);
+  void increaseProgress(final int delta) {
+    if (delta <= 0) {
+      return;
+    }
+
+    Log.info(TAG, "increasing progress: $delta");
+
+    int currentProgress = _remainingDataProgress.value.toInt();
+    int currentMax = 1;
+
+    // calculate new progress according to value
+    double newProgress = currentProgress +
+        ((currentMax - currentProgress) * delta /~ (_maxProgress - _currentProgress));
+
+    _remainingDataProgress.sink.add(newProgress);
+    _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets);
+
+    _currentProgress += delta;
   }
 
   void _closeFileWriting() async {

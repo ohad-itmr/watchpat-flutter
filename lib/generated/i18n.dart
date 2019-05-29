@@ -54,7 +54,7 @@ class S implements WidgetsLocalizations {
   String get btnPrevious => "PREVIOUS";
   String get btnReady => "READY";
   String get btnReturnToApp => "Return To App";
-  String get btnStartRecording => "START RECORNING";
+  String get btnStartRecording => "START RECORDING";
   String get cancel => "CANCEL";
   String get chestSensorContent => "Pull the Chest Sensor along your non dominant hand, and up to the neck opening. \nPeel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.";
   String get chestSensorTitle => "Attach Chest Sensor";

@@ -58,6 +58,11 @@ class TimeUtils {
     double h = (seconds / (60 * 60)) % 24;
     return sprintf("%02d:%02d:%02d", [h.toInt(), m.toInt(), s.toInt()]);
   }
+
+  static int getPacketRealTimeDiffSec() {
+    return PrefsProvider.loadTestElapsedTime() -
+        PrefsProvider.loadTestPacketCount();
+  }
 }
 
 class WatchPATTimer {

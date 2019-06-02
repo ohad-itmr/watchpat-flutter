@@ -191,6 +191,7 @@ class S implements WidgetsLocalizations {
   String get strapWristContent => "Attach the WatchPAT™ONE on your non-dominant hand. \n Secure the WatchPAT™ONE to your wrist ensuring it is snug but not too tight.";
   String get strapWristTitle => "ATTACH WRIST DEVICE";
   String get technician_mode => "Technician mode";
+  String get test_data_from_previous_session_still_uploading => "Test data from previous session still uploading to server";
   String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close WatchPAT™ application  Close anyway?";
   String get test_data_transmit_in_progress => "Test data transmit in progress";
   String get test_in_progress => "Test in progress";
@@ -234,23 +235,11 @@ class fr extends S {
   @override
   String get getting_log_file => "Getting device log file";
   @override
-  String get welcomeTitle => "Bonjour-r-r-r-r";
-  @override
   String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
-  @override
-  String get set_serial => "Set device serial";
-  @override
-  String get err_flash_test => "Flash test";
   @override
   String get connection_to_main_device_lost => "Connection to Main Device is lost";
   @override
-  String get none => "None";
-  @override
-  String get fw_need_upgrade => "Main device new firmware version is available. It will not take long.\n\nPlease wait while we upgrade it&#8230;";
-  @override
   String get patient_msg2 => "Please don't close myPAT application during test procedure";
-  @override
-  String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
   @override
   String get firmware_upgrade_success => "Firmware update completed successfully";
   @override
@@ -260,29 +249,191 @@ class fr extends S {
   @override
   String get close_app => "Close App";
   @override
-  String get inet_unavailable => "Internet access unavailable";
-  @override
   String get retrieve_stored_data_from_device => "Retrieve stored data from main device?";
   @override
   String get getting_param_file => "Getting parameter file";
   @override
-  String get french => "Français";
-  @override
-  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
-  @override
   String get upgrade => "Upgrade";
-  @override
-  String get btnNext => "Next";
-  @override
-  String get loading => "Loading";
-  @override
-  String get test_data_transmit_in_progress => "Test data transmit in progress";
   @override
   String get connecting_to_device => "Connecting to a device";
   @override
   String get scanning_device => "Scanning for device";
   @override
   String get stepperStep => "Step";
+  @override
+  String get fw_connection_failed => "Connection with main device failed. Test will be terminated.\n\nPlease contact Itamar Medical support.";
+  @override
+  String get getting_log_file_success => "Getting device log file success";
+  @override
+  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files?";
+  @override
+  String get parameters_file_title => "Parameters file";
+  @override
+  String get fatal_error => "Fatal error";
+  @override
+  String get fw_upgrade_succeed => "Main device firmware upgraded successfully";
+  @override
+  String get myPAT_connect_to_server_fail => "myPAT connection to SFTP server failure";
+  @override
+  String get acc_registers => "ACC registers";
+  @override
+  String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
+  @override
+  String get btnReady => "Ready";
+  @override
+  String get unknown_error => "Unknown error occurred during authentication, please contact support";
+  @override
+  String get connected_to_device => "Connected to device";
+  @override
+  String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT™ ONE and remove the battery.";
+  @override
+  String get auth_fail => "Authentication failed";
+  @override
+  String get welcome_to_mypat => "Welcome to myPAT";
+  @override
+  String get set => "set";
+  @override
+  String get select_language => "Choisir la langue";
+  @override
+  String get eeprom_written_successfully => "Device EEPROM written successfully";
+  @override
+  String get connected => "Connected";
+  @override
+  String get err_battery_low => "Battery low voltage";
+  @override
+  String get start_test => "Start Test";
+  @override
+  String get pleaseWait => "Please Wait";
+  @override
+  String get test_in_progress => "Test in progress";
+  @override
+  String get digits => "digits";
+  @override
+  String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
+  @override
+  String get log_email_subject => "myPAT device log file";
+  @override
+  String get no_inet_connection => "Internet connection not available";
+  @override
+  String get afe_registers_description => "AFE registers";
+  @override
+  String get err_probe_photo => "Probe photo";
+  @override
+  String get vdd_voltage => "VDD voltage: ";
+  @override
+  String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
+  @override
+  String get btnReturnToApp => "Return To App";
+  @override
+  String get parameters_file_description => "Parameters file";
+  @override
+  String get red => "Red";
+  @override
+  String get incorrect_pin => "Incorrect PIN, please try again";
+  @override
+  String get acc_registers_get_success => "ACC registers retrieved successfully";
+  @override
+  String get acc_registers_write_failed => "ACC registers write failed";
+  @override
+  String get reset_application_title => "Reset application";
+  @override
+  String get ir_led_status => "IR LED status: ";
+  @override
+  String get exit_service_mode => "Exit service mode";
+  @override
+  String get set_device_serial_success => "Set device serial: success";
+  @override
+  String get btnEndRecording => "End Recording";
+  @override
+  String get select_bit_type => "Select BIT mode";
+  @override
+  String get app_log_file_text => "Are you sure you want to send application log file to";
+  @override
+  String get error_state => "ERROR STATE";
+  @override
+  String get all_data_transmitted_successfully => "All data transmitted successfully";
+  @override
+  String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
+  @override
+  String get device_ver_name => "DeviceFWVersion";
+  @override
+  String get mypat_device => "myPAT Device";
+  @override
+  String get critical_hw_failure => "Critical hardware failure";
+  @override
+  String get invalid_id => "Invalid ID";
+  @override
+  String get fw_upgrade_failed => "Main device firmware upgrade failed.\n\nPlease contact Itamar Medical support.";
+  @override
+  String get pinTitle => "Enter Pin";
+  @override
+  String get btnCloseApp => "Close App";
+  @override
+  String get chestSensorTitle => "Attach Chest Sensor";
+  @override
+  String get ignore_device_errors => "Ignore all device generated errors?";
+  @override
+  String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
+  @override
+  String get server_comm_error => "Server communication error, please contact support";
+  @override
+  String get err_actigraph_test => "Actigraph test";
+  @override
+  String get technician_mode => "Technician mode";
+  @override
+  String get batteryTitle => "Insert Battery";
+  @override
+  String get parameters_file_written_successfully => "Parameters file written successfully";
+  @override
+  String get err_used_device => "Used main device";
+  @override
+  String get eeprom_write_failed => "Device EEPROM write failed";
+  @override
+  String get upgrade_file_ver_name => "UpgradeFileVersion";
+  @override
+  String get green => "green";
+  @override
+  String get firmware_upgrade_failed => "Firmware update failed";
+  @override
+  String get acc_registers_description => "ACC registers";
+  @override
+  String get app_log_file_title => "Application log file";
+  @override
+  String get btnStartRecording => "Start Recording";
+  @override
+  String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.";
+  @override
+  String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
+  @override
+  String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close myPAT application  Close anyway?";
+  @override
+  String get device_log_file_description => "Device log file";
+  @override
+  String get select_led_color => "Select LED color";
+  @override
+  String get welcomeTitle => "Bonjour-r-r-r-r";
+  @override
+  String get set_serial => "Set device serial";
+  @override
+  String get err_flash_test => "Flash test";
+  @override
+  String get none => "None";
+  @override
+  String get fw_need_upgrade => "Main device new firmware version is available. It will not take long.\n\nPlease wait while we upgrade it&#8230;";
+  @override
+  String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
+  @override
+  String get inet_unavailable => "Internet access unavailable";
+  @override
+  String get french => "Français";
+  @override
+  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
+  @override
+  String get btnNext => "Next";
+  @override
+  String get loading => "Loading";
+  @override
+  String get test_data_transmit_in_progress => "Test data transmit in progress";
   @override
   String get please_plug_charger => "Please plug in a charger";
   @override
@@ -294,37 +445,17 @@ class fr extends S {
   @override
   String get make_sure_watchpat_bin_is_placed_in_watchpat_dir => "Make sure watchpat.bin is placed to internal directory";
   @override
-  String get fw_connection_failed => "Connection with main device failed. Test will be terminated.\n\nPlease contact Itamar Medical support.";
-  @override
   String get id_in => "ID in";
   @override
   String get retrieving_stored_test_data => "Retrieving stored test data";
-  @override
-  String get getting_log_file_success => "Getting device log file success";
   @override
   String get customer_service_mode => "Customer service mode";
   @override
   String get battery_voltage => "Battery voltage: ";
   @override
-  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files?";
-  @override
-  String get parameters_file_title => "Parameters file";
-  @override
-  String get fatal_error => "Fatal error";
-  @override
   String get select_reset_type => "Select reset type";
   @override
-  String get fw_upgrade_succeed => "Main device firmware upgraded successfully";
-  @override
-  String get myPAT_connect_to_server_fail => "myPAT connection to SFTP server failure";
-  @override
-  String get acc_registers => "ACC registers";
-  @override
   String get bt_not_available_shutdown => "Bluetooth is not available on this device";
-  @override
-  String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
-  @override
-  String get btnReady => "Ready";
   @override
   String get scan_again => "Scan again";
   @override
@@ -332,19 +463,11 @@ class fr extends S {
   @override
   String get getting_param_file_success => "Getting parameter file: success";
   @override
-  String get unknown_error => "Unknown error occurred during authentication, please contact support";
-  @override
   String get connected_to_used_device => "Connected to a used device";
-  @override
-  String get connected_to_device => "Connected to device";
-  @override
-  String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT™ ONE and remove the battery.";
   @override
   String get get => "get";
   @override
   String get please_replace_battery => "Please replace the battery in the device";
-  @override
-  String get auth_fail => "Authentication failed";
   @override
   String get welcomeContent => "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician.\nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.";
   @override
@@ -354,43 +477,21 @@ class fr extends S {
   @override
   String get chestSensorContent => "Pull the Chest Sensor along your non dominant hand, and up to the neck opening. \nPeel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.";
   @override
-  String get welcome_to_mypat => "Welcome to myPAT";
-  @override
   String get requesting_technical_status => "Requesting technical status";
   @override
-  String get set => "set";
-  @override
   String get retrieve_stored_data => "Retrieve stored data";
-  @override
-  String get select_language => "Choisir la langue";
   @override
   String get eeprom_get_success => "EEPROM data retrieved successfully";
   @override
   String get set_led_color_timeout => "Set LED color: timeout";
   @override
-  String get eeprom_written_successfully => "Device EEPROM written successfully";
-  @override
   String get thankYouTitle => "Thank You";
   @override
   String get strapWristContent => "You will be putting the WatchPAT on your non-dominant hand. \nPlace the WatchPAT on a flat surface. \nInsert your hand and close the strap, making sure its snug but not too  tight.";
   @override
-  String get connected => "Connected";
-  @override
-  String get err_battery_low => "Battery low voltage";
-  @override
-  String get start_test => "Start Test";
-  @override
   String get fingerProbeContent => "Insert any finger, except your thumb, all the way into the probe.  \nThe sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (like a table) and pull the TOP tab toward you to remove it from the probe.";
   @override
-  String get pleaseWait => "Please Wait";
-  @override
-  String get test_in_progress => "Test in progress";
-  @override
   String get recordingTitle => "Good Night";
-  @override
-  String get digits => "digits";
-  @override
-  String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   @override
   String get afe_registers_write_failed => "AFE registers write failed";
   @override
@@ -398,79 +499,35 @@ class fr extends S {
   @override
   String get invalid_technician_password => "Invalid technician password";
   @override
-  String get log_email_subject => "myPAT device log file";
-  @override
-  String get no_inet_connection => "Internet connection not available";
-  @override
   String get acc_registers_get_fail => "ACC registers retrieve failed";
-  @override
-  String get afe_registers_description => "AFE registers";
   @override
   String get writing_param_file => "Writing parameter file";
   @override
   String get afe_registers_written_successfully => "AFE registers written successfully";
   @override
-  String get err_probe_photo => "Probe photo";
-  @override
-  String get vdd_voltage => "VDD voltage: ";
-  @override
   String get finger_not_detected => "Finger not detected alert";
-  @override
-  String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
   @override
   String get stop_test => "Stop Test";
   @override
   String get device_connection_failed => "Connection with main device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
   @override
-  String get btnReturnToApp => "Return To App";
-  @override
   String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
-  @override
-  String get parameters_file_description => "Parameters file";
   @override
   String get bt_initiation_error => "Bluetooth initiation error";
   @override
   String get device_not_found => "Device is not found";
   @override
-  String get red => "Red";
-  @override
   String get enter_new_serial => "Enter main device new serial number";
   @override
   String get disconnected => "Disconnected";
   @override
-  String get incorrect_pin => "Incorrect PIN, please try again";
-  @override
-  String get acc_registers_get_success => "ACC registers retrieved successfully";
-  @override
   String get btnMore => "More";
-  @override
-  String get acc_registers_write_failed => "ACC registers write failed";
-  @override
-  String get reset_application_title => "Reset application";
   @override
   String get enter_id => "ID:";
   @override
-  String get ir_led_status => "IR LED status: ";
-  @override
-  String get exit_service_mode => "Exit service mode";
-  @override
-  String get set_device_serial_success => "Set device serial: success";
-  @override
   String get stepperOf => "of";
   @override
-  String get btnEndRecording => "End Recording";
-  @override
-  String get select_bit_type => "Select BIT mode";
-  @override
-  String get app_log_file_text => "Are you sure you want to send application log file to";
-  @override
   String get uploadingTitle => "Good Morning";
-  @override
-  String get error_state => "ERROR STATE";
-  @override
-  String get all_data_transmitted_successfully => "All data transmitted successfully";
-  @override
-  String get not_enough_test_data => "Application has not collected enough test data. You can stop test in:";
   @override
   String get firmware_upgrading => "Upgrading main device firmware, please don't close the application";
   @override
@@ -480,7 +537,7 @@ class fr extends S {
   @override
   String get product_reuse => "Product reuse attempt";
   @override
-  String get device_ver_name => "DeviceFWVersion";
+  String get test_data_from_previous_session_still_uploading => "Test data from previous session still uploading to server";
   @override
   String get remote_server => "Remote Server";
   @override
@@ -488,37 +545,21 @@ class fr extends S {
   @override
   String get user_mode => "User mode";
   @override
-  String get mypat_device => "myPAT Device";
-  @override
   String get fw_check_version => "Please wait while we check device firmware version";
   @override
   String get set_led_color_success => "Set LED color: success";
   @override
   String get getting_log_file_fail => "Getting device log file failed";
   @override
-  String get critical_hw_failure => "Critical hardware failure";
-  @override
-  String get invalid_id => "Invalid ID";
-  @override
   String get close_mypat_app_q => "Close myPAT Application?";
-  @override
-  String get fw_upgrade_failed => "Main device firmware upgrade failed.\n\nPlease contact Itamar Medical support.";
   @override
   String get removeJewelryContent => "Remove tight cloths, watches and jewelry.\nEnsure that the finger nail is trimmed.\nRemove artificial nail or colored nail polish from the monitored finger.\nUse the MORE button to see more details.";
   @override
   String get fingerProbeTitle => "Wear Finger Probe";
   @override
-  String get pinTitle => "Enter Pin";
-  @override
-  String get btnCloseApp => "Close App";
-  @override
   String get flash_full => "Device flash is full";
   @override
   String get send => "Send";
-  @override
-  String get chestSensorTitle => "Attach Chest Sensor";
-  @override
-  String get ignore_device_errors => "Ignore all device generated errors?";
   @override
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   @override
@@ -526,31 +567,13 @@ class fr extends S {
   @override
   String get get_tech_status_timeout => "Get tech status: timeout";
   @override
-  String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
-  @override
   String get insufficient_storage_space_on_smartphone => "Insufficient storage space on smartphone, shutting down";
-  @override
-  String get server_comm_error => "Server communication error, please contact support";
-  @override
-  String get err_actigraph_test => "Actigraph test";
-  @override
-  String get technician_mode => "Technician mode";
   @override
   String get strapWristTitle => "Strap Wrist Device";
   @override
   String get error => "Error";
   @override
   String get connect_to_charger => "Connect the phone to a charger";
-  @override
-  String get batteryTitle => "Insert Battery";
-  @override
-  String get parameters_file_written_successfully => "Parameters file written successfully";
-  @override
-  String get err_used_device => "Used main device";
-  @override
-  String get eeprom_write_failed => "Device EEPROM write failed";
-  @override
-  String get upgrade_file_ver_name => "UpgradeFileVersion";
   @override
   String get firmware_alert_title => "Device firmware upgrade";
   @override
@@ -564,37 +587,17 @@ class fr extends S {
   @override
   String get title_led_color_alert => "Choose LED color";
   @override
-  String get green => "green";
-  @override
-  String get firmware_upgrade_failed => "Firmware update failed";
-  @override
-  String get acc_registers_description => "ACC registers";
-  @override
   String get btnEnter => "Enter";
   @override
   String get getting_param_file_fail => "Getting parameter file: failed";
   @override
-  String get app_log_file_title => "Application log file";
-  @override
   String get err_probe_leds => "Probe LEDs";
-  @override
-  String get btnStartRecording => "Start Recording";
   @override
   String get btnPreview => "Preview";
   @override
   String get red_led_status => "Red LED status: ";
   @override
-  String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.";
-  @override
-  String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
-  @override
   String get err_sbp => "SBP";
-  @override
-  String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close myPAT application  Close anyway?";
-  @override
-  String get device_log_file_description => "Device log file";
-  @override
-  String get select_led_color => "Select LED color";
   @override
   String get pat_led_status => "PAT LED status: ";
   @override
@@ -602,9 +605,9 @@ class fr extends S {
   @override
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth on.";
   @override
-  String status(String status) => "Status: $status";
-  @override
   String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
+  @override
+  String status(String status) => "Status: $status";
   @override
   String device_sn(String sn) => "Main Device serial number $sn";
   @override

@@ -92,7 +92,6 @@ class SftpService {
   _handleDataTransferState(DataTransferStates state) {
     _currentTransferState = state;
     if (state == DataTransferStates.ALL_TRANSFERRED) {
-      PrefsProvider.setTestComplete(true);
       _closeConnection();
     }
   }

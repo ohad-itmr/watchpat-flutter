@@ -11,12 +11,6 @@ class EndScreen extends StatelessWidget {
   static const String TAG = 'EndScreen';
   static const String PATH = '/end';
 
-  final String title;
-  final String content;
-
-  EndScreen({Key key, @required this.title, @required this.content})
-      : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -26,8 +20,8 @@ class EndScreen extends StatelessWidget {
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.text,
-          title: title,
-          content: [content],
+          title: S.of(context).thankYouTitle,
+          content: [S.of(context).thankYouContent],
           textTopPadding: true,
         ),
         bottomBlock: Column(
@@ -46,9 +40,13 @@ class EndScreen extends StatelessWidget {
             action: () async {
               if (sl<SystemStateManager>().dataTransferState !=
                   DataTransferStates.ALL_TRANSFERRED) {
-                Log.info(TAG, "Data was not uploaded to sftp server. Registering background fetch task");
+                Log.info(TAG,
+                    "Data was not uploaded to sftp server. Registering background fetch task");
+                PrefsProvider.setDataUploadingIncomplete();
                 BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
                 initPlatformState();
+              } else {
+                PrefsProvider.clearAll();
               }
               await Future.delayed(Duration(milliseconds: 300));
               exit(0);
@@ -84,7 +82,7 @@ void _backgroundFetchTask() async {
   _connectivity.checkConnectivity().then((ConnectivityResult res) {
     sl<EmailSenderService>().sendTestMail();
     print("SFTP FOLDER: ${PrefsProvider.loadSftpPath()}");
-    PrefsProvider.saveTestDataRecordingOffset(5000000);
+//    PrefsProvider.saveTestDataRecordingOffset(5000000);
     if (res != ConnectivityResult.none) {
       sl<SystemStateManager>().setTestState(TestStates.RESUMED);
     } else {

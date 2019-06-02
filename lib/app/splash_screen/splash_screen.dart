@@ -22,9 +22,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   static const _BT_MAP_KEY = "bt";
   static const _TEST_MAP_KEY = "test";
+  static const _INET_MAP_KEY = "internet";
 
   // dialogs states
   bool _btWarningShow = false;
+  bool _noInternetShow = false;
   bool _fwUpgradeShow = false;
 
   StreamSubscription _navigationSub;
@@ -35,13 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-//    _systemStateManager.inetConnectionStateStream
-//        .where((_) => this.mounted)
-//        .listen((ConnectivityResult state) {
-//      if (state == ConnectivityResult.none) {
-//        _showNoInternetWarning(context);
-//      }
-//    });
+    _systemStateManager.inetConnectionStateStream
+        .where((_) => this.mounted)
+        .listen(_handleInternetState);
 
     _serviceManager.serviceModesStream.listen((mode) {
       if (mode == ServiceMode.customer) {
@@ -56,40 +54,45 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
 
-    if (!PrefsProvider.getTestComplete()) {
-      _navigationSub = Observable.combineLatest2(
-          _systemStateManager.btStateStream,
-          _systemStateManager.testStateStream,
-          (BtStates btState, TestStates testState) => {
-                _BT_MAP_KEY: btState,
-                _TEST_MAP_KEY: testState
-              }).listen((Map<String, dynamic> data) {
-        _handleBtState(data[_BT_MAP_KEY]);
-        if (data[_BT_MAP_KEY] == BtStates.ENABLED) {
-          if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
-            sl<WelcomeActivityManager>().initConnectivityListener();
-            Navigator.of(context).pushNamed(RecordingScreen.PATH);
-            _navigationSub.cancel();
-          } else {
-            Navigator.of(context).pushNamed(WelcomeScreen.PATH);
-            _navigationSub.cancel();
-          }
-        }
-      });
-    } else {
-      sl<BleManager>().startScan(
-          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => EndScreen(
-                    title: S.of(context).thankYouTitle,
-                    content: S.of(context).test_is_complete,
-                  ))));
-    }
+    if (!PrefsProvider.getDataUploadingIncomplete()) {}
 
-    _systemStateManager.btStateStream
-        .where((BtStates state) => state != BtStates.NONE)
-        .listen(_handleBtState);
+    _navigationSub = Observable.combineLatest3(
+        _systemStateManager.btStateStream,
+        _systemStateManager.testStateStream,
+        _systemStateManager.inetConnectionStateStream,
+        (BtStates btState, TestStates testState,
+                ConnectivityResult inetState) =>
+            {
+              _BT_MAP_KEY: btState,
+              _TEST_MAP_KEY: testState,
+              _INET_MAP_KEY: inetState
+            }).listen((Map<String, dynamic> data) async {
+      if (PrefsProvider.getDataUploadingIncomplete()) {
+        _showUploadingInProgress();
+        Navigator.of(context).pushNamed(WelcomeScreen.PATH);
+        return;
+      }
+
+      _handleBtState(data[_BT_MAP_KEY]);
+
+      if (data[_BT_MAP_KEY] == BtStates.ENABLED) {
+        if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+          sl<WelcomeActivityManager>().initConnectivityListener();
+          Navigator.of(context).pushNamed(RecordingScreen.PATH);
+          _navigationSub.cancel();
+        } else {
+          await _handleInternetState(data[_INET_MAP_KEY]);
+          Navigator.of(context).pushNamed(WelcomeScreen.PATH);
+          _navigationSub.cancel();
+        }
+      }
+    });
+
+    if (!PrefsProvider.getDataUploadingIncomplete()) {
+      _systemStateManager.btStateStream
+          .where((BtStates state) => state != BtStates.NONE)
+          .listen(_handleBtState);
+    }
 
     _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
 
@@ -109,6 +112,13 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  void _showServicePasswordPrompt() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => ServicePasswordPrompt());
+  }
+
   void _handleBtState(BtStates state) {
     if (state == BtStates.NOT_AVAILABLE && !_btWarningShow) {
       _showBTWarning();
@@ -119,13 +129,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void _showServicePasswordPrompt() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => ServicePasswordPrompt());
-  }
-
   void _showBTWarning() {
     showDialog(
       context: context,
@@ -133,6 +136,58 @@ class _SplashScreenState extends State<SplashScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(S.of(context).bt_initiation_error),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(S.of(context).bt_must_be_enabled),
+                Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    )),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _handleInternetState(ConnectivityResult state) async {
+    if (state == ConnectivityResult.none && !_noInternetShow) {
+      await _showNoInternetWarning();
+      _noInternetShow = true;
+    } else if (state != ConnectivityResult.none) {
+      _noInternetShow = false;
+    }
+  }
+
+  Future<void> _showNoInternetWarning() async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(S.of(context).no_inet_connection),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                return;
+              },
+              child: Text(S.of(context).ok.toUpperCase()),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _showUploadingInProgress() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[

@@ -28,11 +28,7 @@ class _UploadingScreenState extends State<UploadingScreen> {
         .firstWhere((TestStates s) => s == TestStates.ENDED)
         .then((_) async {
       await Future.delayed(Duration(seconds: 3));
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => EndScreen(
-                title: S.of(context).thankYouTitle,
-                content: S.of(context).thankYouContent,
-              )));
+      Navigator.of(context).pushNamed(EndScreen.PATH);
     });
   }
 

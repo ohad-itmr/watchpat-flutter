@@ -47,7 +47,7 @@ class PinScreen extends StatelessWidget {
           return Container(
             padding: EdgeInsets.all(10),
             child: Text(
-              sl<S>().incorrect_pin,
+              S.of(context).incorrect_pin,
               style: TextStyle(
                 color: Colors.redAccent,
                 fontWeight: FontWeight.bold,
@@ -58,7 +58,18 @@ class PinScreen extends StatelessWidget {
           return Container(
             padding: EdgeInsets.all(10),
             child: Text(
-              sl<S>().auth_fail,
+              S.of(context).auth_fail,
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        case PatientAuthState.FailedNoInternet:
+          return Container(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              S.of(context).inet_unavailable,
               style: TextStyle(
                 color: Colors.redAccent,
                 fontWeight: FontWeight.bold,

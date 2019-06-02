@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_pat/config/default_settings.dart';
 
@@ -49,6 +48,7 @@ class PrefsNames {
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
   static const String LOCALE_CODE = "locale.code";
   static const String SERVICE_EMAIL_CODE = "service.email";
+  static const String DATA_UPLOADING_NOT_FINISHED = "test.data.uploaded";
 }
 
 class PrefsService {
@@ -171,16 +171,16 @@ class PrefsProvider {
     return PrefsService.prefs.get(PrefsNames.IS_TEST_STARTED) ?? false;
   }
 
-  //
-  // save if test is complete
-  //
-  static Future<void> setTestComplete(bool value) async {
-    await PrefsService.prefs.setBool(PrefsNames.IS_TEST_COMPLETE, value);
-  }
-
-  static bool getTestComplete() {
-    return PrefsService.prefs.get(PrefsNames.IS_TEST_COMPLETE) ?? false;
-  }
+//  //
+//  // save if test is complete
+//  //
+//  static Future<void> setTestComplete(bool value) async {
+//    await PrefsService.prefs.setBool(PrefsNames.IS_TEST_COMPLETE, value);
+//  }
+//
+//  static bool getTestComplete() {
+//    return PrefsService.prefs.get(PrefsNames.IS_TEST_COMPLETE) ?? false;
+//  }
 
   //
   // is first device connection
@@ -221,7 +221,7 @@ class PrefsProvider {
   }
 
   static bool getIgnoreDeviceErrors() {
-    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY);
+    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ?? true;
   }
 
   //
@@ -337,5 +337,13 @@ class PrefsProvider {
   static String loadServiceEmail() {
     return PrefsService.prefs.getString(PrefsNames.SERVICE_EMAIL_CODE) ??
         DefaultSettings.emailService;
+  }
+
+  static Future<void> setDataUploadingIncomplete({bool value = true}) async {
+    return PrefsService.prefs.setBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED, value);
+  }
+
+  static bool getDataUploadingIncomplete() {
+    return PrefsService.prefs.getBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED) ?? false;
   }
 }

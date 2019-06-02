@@ -154,7 +154,7 @@ class FileSystemService {
     File localFile = await localDataFile;
     TestStates testState = sl<SystemStateManager>().testState;
 
-    if (testState == TestStates.NOT_STARTED && !PrefsProvider.getTestComplete()) {
+    if (testState == TestStates.NOT_STARTED) {
       if (await localFile.exists()) {
         Log.info(TAG, "data file from previous session is found, deleting...");
         try {
@@ -185,8 +185,7 @@ class FileSystemService {
     TestStates testState = sl<SystemStateManager>().testState;
     try {
       // create new log files in case of first app launch
-      if (!PrefsProvider.getTestComplete() &&
-          testState != TestStates.INTERRUPTED) {
+      if (testState != TestStates.INTERRUPTED) {
         Log.info(TAG, 'Attempt to prepare initial files...');
         File mainLogFile = await logMainFile;
         await mainLogFile.create();

@@ -59,7 +59,7 @@ class DispatcherService {
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
       String serialNumber, String pin) async {
     Response response = await _dio
-        .post("$_authenticationEndPoint/$serialNumber", data: {"pin" : pin, "client": "WatchPAT", "version": "0.0.1"});
+        .post("$_authenticationEndPoint/$serialNumber", data: {"pin" : pin, "client": "iOS APP", "version": "1"});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 

@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/managers/manager_base.dart';
@@ -9,7 +10,8 @@ enum PatientAuthState {
   InProgress,
   Authenticated,
   FailedTryAgain,
-  FailedClose
+  FailedClose,
+  FailedNoInternet
 }
 
 class AuthenticationManager extends ManagerBase {
@@ -67,6 +69,15 @@ class AuthenticationManager extends ManagerBase {
   }
 
   authenticatePatient() async {
+    ConnectivityResult inetState =
+        await sl<SystemStateManager>().inetConnectionStateStream.first;
+    if (inetState == ConnectivityResult.none) {
+      sl<SystemStateManager>()
+          .setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
+      _authStateSubject.add(PatientAuthState.FailedNoInternet);
+      return;
+    }
+
     _authStateSubject.add(PatientAuthState.InProgress);
 
     AuthenticateUserResponseModel data = await sl<DispatcherService>()

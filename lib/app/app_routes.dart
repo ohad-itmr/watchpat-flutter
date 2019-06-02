@@ -67,6 +67,11 @@ var uploadingRouteHandler = Handler(
   return UploadingScreen();
 });
 
+var endRouteHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return EndScreen();
+});
+
 var carouselRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return CarouselScreen(params["tag"][0]);
@@ -121,5 +126,6 @@ class AppRoutes {
         handler: errorRouteHandler, transitionType: TransitionType.native);
     router.define(PairingIssueScreen.PATH,
         handler: pairingIssueHandle, transitionType: TransitionType.native);
+    router.define(EndScreen.PATH, handler: endRouteHandler);
   }
 }

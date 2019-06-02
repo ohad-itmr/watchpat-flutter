@@ -74,9 +74,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     } else {
       return ButtonsBlock(
         nextActionButton: ButtonModel(
+          text: S.of(context).ready.toUpperCase(),
           action: () {
             setState(() => _nextIsPressed = true);
             _handleNext();
+
+//            Navigator.of(context)
+//                .pushNamed(UploadingScreen.PATH);
 
 //            Navigator.of(context).push(MaterialPageRoute(
 //                builder: (context) => EndScreen(
@@ -86,6 +90,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           },
         ),
         moreActionButton: ButtonModel(
+          text: S.of(context).btnPreview.toUpperCase(),
             action: () => Navigator.of(context)
                 .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
       );

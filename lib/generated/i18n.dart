@@ -161,7 +161,7 @@ class S implements WidgetsLocalizations {
   String get removeJewelryTitle => "REMOVE JEWELRY";
   String get requesting_technical_status => "Requesting technical status";
   String get reset => "Reset";
-  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files?";
+  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files? You will need to launch application again.";
   String get reset_application_title => "Reset application";
   String get retrieve_stored_data => "Retrieve stored data";
   String get retrieve_stored_data_from_device => "Retrieve stored data from the device?";
@@ -265,7 +265,7 @@ class fr extends S {
   @override
   String get getting_log_file_success => "Getting device log file success";
   @override
-  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files?";
+  String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files? You will need to launch application again.";
   @override
   String get parameters_file_title => "Parameters file";
   @override

@@ -459,6 +459,7 @@ class ServiceScreenManager extends ManagerBase {
 
     // todo TEST ONLY
     PrefsProvider.setIgnoreDeviceErrors(true);
+    exit(0);
   }
 
   _hideProgressbarWithMessage(String message) {

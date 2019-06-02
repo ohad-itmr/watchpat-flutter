@@ -96,7 +96,35 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
 
+    sl<IncomingPacketHandlerService>()
+        .isPairedResponseStream
+        .listen((bool isPaired) => _handleIsPaired);
+
+    sl<WelcomeActivityManager>().configureApplication();
+
     super.initState();
+  }
+
+  void _handleIsPaired(bool isPaired) {
+    if (!isPaired) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          title: Text(S.of(context).error),
+          content: Text(S.of(context).device_is_paired_error),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(S.of(context).ok),
+              onPressed: () {
+                sl<ServiceScreenManager>().resetApplication();
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 
   void _handleUpgradeProgress(FirmwareUpgradeStates state) {

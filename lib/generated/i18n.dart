@@ -69,6 +69,7 @@ class S implements WidgetsLocalizations {
   String get critical_hw_failure => "Critical hardware failure";
   String get customer_service_mode => "Customer service mode";
   String get device_connection_failed => "Connection with the device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
+  String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   String get device_log_file_description => "Device log file";
   String get device_not_found => "Device is not found";
   String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned. If not, verify that you placed a new battery and check it is properly positioned.";
@@ -572,6 +573,8 @@ class fr extends S {
   String get strapWristTitle => "Strap Wrist Device";
   @override
   String get error => "Error";
+  @override
+  String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   @override
   String get connect_to_charger => "Connect the phone to a charger";
   @override

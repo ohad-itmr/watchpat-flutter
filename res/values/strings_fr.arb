@@ -192,5 +192,6 @@
   "reset_application_prompt" : "Are you sure you want to delete all application stored preferences and files?",
   "test_is_complete": "Application was successfully used to perform the test. Please reset application to use it again.",
   "battery_level_error": "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.",
-  "test_data_from_previous_session_still_uploading": "Test data from previous session still uploading to server"
+  "test_data_from_previous_session_still_uploading": "Test data from previous session still uploading to server",
+  "device_is_paired_error": "Device was already paired, please reset device and start the process again"
 }

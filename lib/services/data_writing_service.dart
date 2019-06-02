@@ -135,7 +135,9 @@ class DataWritingService {
 
     // calculate new progress according to value
     double newProgress = currentProgress +
-        ((currentMax - currentProgress) * delta /~ (_maxProgress - _currentProgress));
+        ((currentMax - currentProgress) *
+            delta /
+            ~(_maxProgress - _currentProgress));
 
     _remainingDataProgress.sink.add(newProgress);
     _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets);

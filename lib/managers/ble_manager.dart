@@ -19,6 +19,9 @@ class BleManager extends ManagerBase {
   StreamSubscription _scanSubscription;
   StreamSubscription deviceStateSubscription;
 
+  bool _isFirstConnection = true;
+  BluetoothDevice _device;
+
   BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
       BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
 
@@ -41,9 +44,6 @@ class BleManager extends ManagerBase {
   Observable<BluetoothDeviceState> get deviceState =>
       _deviceStateSubject.stream;
 
-  // Device name to match regarding of whether this is first connection or not
-  String _deviceNameToMatch;
-
   BleManager() {
     lang = sl<S>();
     _incomingPacketHandler = sl<IncomingPacketHandlerService>();
@@ -65,6 +65,7 @@ class BleManager extends ManagerBase {
   }
 
   void connect(BluetoothDevice d) {
+    _device = d;
     sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
   }
 
@@ -83,13 +84,29 @@ class BleManager extends ManagerBase {
       await sl<BleService>().setNotification(_incomingPacketHandler);
 
       if (sysStateManager.testState == TestStates.INTERRUPTED) {
-        Log.info(TAG, '### Successfully reconnected to device');
+        Log.info(TAG, "### reconnected to device");
         return;
+      }
+
+      if (_isFirstConnection || !_isFirstConnection && _device.name.endsWith("N")) {
+        Log.info(TAG,
+            "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device ${_device.name}, checking 'paired' flag");
+        sl<CommandTaskerManager>()
+            .addCommandWithNoCb(DeviceCommands.getIsPairedCMD());
+        final bool isPaired = await sl<IncomingPacketHandlerService>()
+            .isPairedResponseStream
+            .first;
+
+        if (isPaired) {
+          Log.shout(TAG,
+              "Device was already paired, connection cancelled");
+          return;
+        }
       }
 
       _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
 
-      if (PrefsProvider.getIsFirstDeviceConnection()) {
+      if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
     } else if (state == BluetoothDeviceState.disconnected) {
@@ -118,6 +135,7 @@ class BleManager extends ManagerBase {
 
   void _disconnect() {
     Log.info(TAG, 'Remove all value changed listeners');
+    _device = null;
     sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     deviceStateSubscription?.cancel();
     deviceStateSubscription = null;
@@ -205,27 +223,27 @@ class BleManager extends ManagerBase {
   void _sendStartSession(int useType) {
     Log.info(TAG, "### sending start session ");
     sl<CommandTaskerManager>().addCommandWithNoCb(
-        DeviceCommands.getStartSessionCmd(0x0000, useType, [55, 46, 49, 46, 50]));
+        DeviceCommands.getStartSessionCmd(
+            0x0000, useType, [55, 46, 49, 46, 50]));
   }
 
   void forgetDeviceAndRestartScan() {
     sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
-    PrefsProvider.setIsFirstDeviceConnection(true);
-    PrefsProvider.saveDeviceUUID("");
+    PrefsProvider.clearDeviceName();
     startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
   }
 
   void startScan(
       {int time, @required bool connectToFirstDevice, String deviceName}) {
     Log.info(TAG, '## START SCAN');
-    final bool isFirstConnection = PrefsProvider.getIsFirstDeviceConnection();
+    _isFirstConnection = PrefsProvider.loadDeviceName() == null;
 
     Log.info(
         TAG,
-        isFirstConnection
-            ? "First connection to device. Looking for ITAMAR_UART"
-            : "Device was already connected, looking for device with UUID: ${PrefsProvider.loadDeviceUUID()}");
+        _isFirstConnection
+            ? "First connection to device"
+            : "Device was already connected, looking for device: ${PrefsProvider.loadDeviceName()}");
 
     if (!_preScanChecks()) {
       return;
@@ -253,11 +271,17 @@ class BleManager extends ManagerBase {
         Log.info(TAG,
             ">>> name on scan: ${scanResult.advertisementData.localName} | name local: ${PrefsProvider.loadDeviceName()}");
 
-        Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
-        var currentResults = _scanResultsSubject.value;
-        currentResults[scanResult.device.id] = scanResult;
+        if (_isFirstConnection ||
+            !_isFirstConnection &&
+                scanResult.advertisementData.localName
+                    .contains(PrefsProvider.loadDeviceName())) {
+          Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
+          var currentResults = _scanResultsSubject.value;
+          currentResults[scanResult.device.id] = scanResult;
 
-        _scanResultsSubject.sink.add(currentResults);
+          _scanResultsSubject.sink.add(currentResults);
+        }
+
         if (connectToFirstDevice) {
           stopScan();
           return;
@@ -276,7 +300,7 @@ class BleManager extends ManagerBase {
     _postScan();
   }
 
-  void _postScan() {
+  void _postScan() async {
     sl<SystemStateManager>().setBleScanState(ScanStates.COMPLETE);
     final Map<DeviceIdentifier, ScanResult> _discoveredDevices =
         _scanResultsSubject.value;
@@ -293,25 +317,13 @@ class BleManager extends ManagerBase {
       Log.info(TAG, "discovered a SINGLE device on scan");
       sl<SystemStateManager>()
           .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
+
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
 
       final BluetoothDevice device =
           _discoveredDevices.values.toList()[0].device;
 
-      if (PrefsProvider.getIsFirstDeviceConnection()) {
-        PrefsProvider.saveDeviceUUID(device.id.toString());
-        connect(device);
-      } else {
-        if (device.id.toString() == PrefsProvider.loadDeviceUUID()) {
-          Log.info(TAG, "Reconnecting to previously connected device");
-          connect(device);
-        } else {
-          Log.shout(TAG,
-              "Discovered device is not the same that was connected before. Connection cancelled.");
-          sl<SystemStateManager>()
-              .setBleScanResult(ScanResultStates.NOT_LOCATED);
-        }
-      }
+      connect(device);
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
       sl<SystemStateManager>()

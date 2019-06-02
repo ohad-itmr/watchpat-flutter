@@ -51,6 +51,8 @@ class DeviceCommands {
   static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x45;
   static const int CMD_OPCODE_UNKNOWN = 0x0F00;
 
+  static const int OP_CODES_IS_DEVICE_PAIRED = 0x2A;
+
   static const int ACK_STATUS_OK = 0x00;
   static const int ACK_STATUS_CRC_FAIL = 0x01;
   static const int ACK_STATUS_ILLEGAL_OPCODE = 0x02;
@@ -302,5 +304,10 @@ class DeviceCommands {
     String result = '';
     bytes.forEach((byte) => result = result + byte.toRadixString(16));
     return result;
+  }
+
+  static CommandTask getIsPairedCMD() {
+    // todo Implemented getting is paired CMD
+    return CommandTask("", 0, 0, []);
   }
 }

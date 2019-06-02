@@ -87,6 +87,11 @@ class IncomingPacketHandlerService extends ManagerBase {
   Observable<TechStatusPayload> get techStatusResponse =>
       _techStatusResponse.stream;
 
+  // Is paired response stream to show warning
+  PublishSubject<bool> _isPairedResponse = PublishSubject<bool>();
+
+  Observable<bool> get isPairedResponseStream => _isPairedResponse.stream;
+
   void startPacketAnalysis() {
     _testStartTimer.startTimer();
   }
@@ -129,7 +134,8 @@ class IncomingPacketHandlerService extends ManagerBase {
       final int packetType = receivedPacket.packetType;
 
 //      print("RECEIVED PACKET ${receivedPacket.bytes}");
-      print("Received packet, length: ${receivedPacket.bytes.length}, content: ${receivedPacket.bytes}");
+      print(
+          "Received packet, length: ${receivedPacket.bytes.length}, content: ${receivedPacket.bytes}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -207,11 +213,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             Log.info(TAG, "### start session confirm: device serial saved");
 
-            sl<WelcomeActivityManager>().configureApplication();
-
-            if (PrefsProvider.getIsFirstDeviceConnection()) {
-              // Set external configuration if necessary
-
+            if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
               Log.info(TAG,
                   "### start session confirm: device FW version check START");
@@ -237,7 +239,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           }
 
           final String deviceName =
-              "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial}";
+              "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
           Log.info(TAG, "device new name: $deviceName");
           PrefsProvider.saveDeviceName(deviceName);
           Log.info(TAG, "### start session confirm: END");
@@ -385,6 +387,14 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
+        case DeviceCommands.OP_CODES_IS_DEVICE_PAIRED:
+          Log.info(TAG, "packet received (IS_DEVICE_PAIRED)");
+
+          // todo Implement checking if paired
+          final bool isPaired = false;
+          _isPairedResponse.sink.add(isPaired);
+
+          break;
         default:
           break;
       }
@@ -511,6 +521,9 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   @override
   void dispose() {
+    _isPairedResponse.close();
+    _bitResponse.close();
+    _techStatusResponse.close();
     // TODO: implement dispose
   }
 }

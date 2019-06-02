@@ -17,7 +17,7 @@ class MainTemplate extends StatelessWidget {
       this.showBack = true,
       this.showMenu = false,
       this.backgroundColor,
-      this.title = 'WatchPAT\u1d40\u1d39  ONE'});
+      this.title = 'WatchPAT\u2122  ONE'});
 
   @override
   Widget build(BuildContext context) {

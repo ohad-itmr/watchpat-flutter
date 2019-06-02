@@ -36,9 +36,9 @@ class S implements WidgetsLocalizations {
   String get app_log_file_text => "Are you sure you want to send application log file to";
   String get app_log_file_title => "Application log file";
   String get auth_fail => "Authentication failed";
-  String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT™ONE, and change the battery.";
+  String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and change the battery.";
   String get batteryContent_2 => " The flat side of the battery faces the MINUS sign.";
-  String get batteryContent_many_2 => " Open the battery compartment's cover, located on  the back of the irrelevant WatchPAT™ ONE and remove the battery.";
+  String get batteryContent_many_2 => " Open the battery compartment's cover, located on  the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.";
   String get batteryTitle => "INSERT BATTERY ";
   String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
@@ -59,7 +59,7 @@ class S implements WidgetsLocalizations {
   String get chestSensorContent => "Pull the Chest Sensor along your non dominant hand, and up to the neck opening. \nPeel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.";
   String get chestSensorTitle => "Attach Chest Sensor";
   String get close_app => "CLOSE APP";
-  String get close_mypat_app_q => "Close WatchPAT™ Application?";
+  String get close_mypat_app_q => "Close WatchPAT\u2122 Application?";
   String get connect_to_charger => "Connect the phone to a charger";
   String get connected => "Connected";
   String get connected_to_device => "Connected to device";
@@ -71,7 +71,7 @@ class S implements WidgetsLocalizations {
   String get device_connection_failed => "Connection with the device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
   String get device_log_file_description => "Device log file";
   String get device_not_found => "Device is not found";
-  String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned. If not, verify that you placed a new battery and check it is properly positioned.";
+  String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned. If not, verify that you placed a new battery and check it is properly positioned.";
   String get device_ver_name => "DeviceFWVersion";
   String get digits => "digits";
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";
@@ -122,17 +122,17 @@ class S implements WidgetsLocalizations {
   String get ignore_device_errors => "Ignore all device generated errors?";
   String get incorrect_pin => "Incorrect PIN, please try again";
   String get inet_unavailable => "Internet access unavailable";
-  String get insert_battery_desc1 => "Open the battery compartment's cover, located on  the back of the WatchPAT™ONE, and insert the provided battery";
+  String get insert_battery_desc1 => "Open the battery compartment's cover, located on  the back of the WatchPAT\u2122ONE, and insert the provided battery";
   String get insufficient_storage_space_on_smartphone => " There is insufficient free memory on your smart phone, shutting down the Application";
   String get invalid_id => "Invalid ID";
   String get invalid_technician_password => "Invalid technician password";
   String get ir_led_status => "IR LED status: ";
   String get loading => "Loading";
-  String get log_email_subject => "WatchPAT™ device log file";
+  String get log_email_subject => "WatchPAT\u2122 device log file";
   String get low_power => "Low power alert";
   String get make_sure_watchpat_bin_is_placed_in_watchpat_dir => "Make sure watchpat.bin is placed to internal directory";
-  String get myPAT_connect_to_server_fail => "WatchPAT™ connection to SFTP server failure";
-  String get mypat_device => "WatchPAT™ Device";
+  String get myPAT_connect_to_server_fail => "WatchPAT\u2122 connection to SFTP server failure";
+  String get mypat_device => "WatchPAT\u2122 Device";
   String get no_inet_connection => "Internet connection is not available";
   String get none => "None";
   String get not_enough_test_data => "The Application has not collected enough test data. You can stop test in:";
@@ -144,7 +144,7 @@ class S implements WidgetsLocalizations {
   String get parameters_file_written_successfully => "Parameters file written successfully";
   String get pat_led_status => "PAT LED status: ";
   String get patient_msg1 => "Leave the charger plugged in during the entire test procedure. \nClose unused phone applications before starting test procedure ";
-  String get patient_msg2 => "Please don't close WatchPAT™ application during test procedure";
+  String get patient_msg2 => "Please don't close WatchPAT\u2122 application during test procedure";
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   String get pinTitle => "Enter PIN";
   String get pleaseWait => "Please Wait";
@@ -182,17 +182,17 @@ class S implements WidgetsLocalizations {
   String get set_led_color_timeout => "Set LED color: timeout";
   String get set_serial => "Set device serial";
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
-  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\n Leave the phone behind, connected to the charger.";
+  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\n Leave the phone behind, connected to the charger.";
   String get startRecordingTitle => "START RECORDING";
   String get start_test => "START TEST";
   String get stepperOf => "of";
   String get stepperStep => "Step";
   String get stop_test => "STOP TEST";
-  String get strapWristContent => "Attach the WatchPAT™ONE on your non-dominant hand. \n Secure the WatchPAT™ONE to your wrist ensuring it is snug but not too tight.";
+  String get strapWristContent => "Attach the WatchPAT\u2122ONE on your non-dominant hand. \n Secure the WatchPAT\u2122ONE to your wrist ensuring it is snug but not too tight.";
   String get strapWristTitle => "ATTACH WRIST DEVICE";
   String get technician_mode => "Technician mode";
   String get test_data_from_previous_session_still_uploading => "Test data from previous session still uploading to server";
-  String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close WatchPAT™ application  Close anyway?";
+  String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close WatchPAT\u2122 application  Close anyway?";
   String get test_data_transmit_in_progress => "Test data transmit in progress";
   String get test_in_progress => "Test in progress";
   String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
@@ -208,9 +208,9 @@ class S implements WidgetsLocalizations {
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   String get user_mode => "User mode";
   String get vdd_voltage => "VDD voltage: ";
-  String get welcomeContent => "Welcome to WatchPAT™ONE. This application sends your sleep data to your doctor.\n First we need to do a few things to ensure everything is set up properly. If you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
+  String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor.\n First we need to do a few things to ensure everything is set up properly. If you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
   String get welcomeTitle => "WELCOME";
-  String get welcome_to_mypat => "Welcome to WatchPAT™";
+  String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";
   String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   String device_sn(String sn) => "Device serial number $sn";
@@ -235,7 +235,7 @@ class fr extends S {
   @override
   String get getting_log_file => "Getting device log file";
   @override
-  String get device_not_located => "Device is not located. Please check if WatchPAT™ ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
+  String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
   @override
   String get connection_to_main_device_lost => "Connection to Main Device is lost";
   @override
@@ -285,7 +285,7 @@ class fr extends S {
   @override
   String get connected_to_device => "Connected to device";
   @override
-  String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT™ ONE and remove the battery.";
+  String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT\u2122 ONE and remove the battery.";
   @override
   String get auth_fail => "Authentication failed";
   @override
@@ -401,7 +401,7 @@ class fr extends S {
   @override
   String get btnStartRecording => "Start Recording";
   @override
-  String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT™ and insert the provided battery.";
+  String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT\u2122 and insert the provided battery.";
   @override
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
   @override
@@ -427,7 +427,7 @@ class fr extends S {
   @override
   String get french => "Français";
   @override
-  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT™ is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
+  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
   @override
   String get btnNext => "Next";
   @override

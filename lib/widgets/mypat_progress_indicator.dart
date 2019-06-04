@@ -5,12 +5,11 @@ import 'package:my_pat/services/services.dart';
 import '../service_locator.dart';
 
 class MyPatProgressIndicator extends StatelessWidget {
-  final DataWritingService _dataWritingService = sl<DataWritingService>();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _dataWritingService.remainingDataProgressStream,
+      stream: sl<TestingManager>().remainingDataProgressStream,
       initialData: 0.0,
       builder: (context, AsyncSnapshot<double> snapshot) {
         return CustomPaint(

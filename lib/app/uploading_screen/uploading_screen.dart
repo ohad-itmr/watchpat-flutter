@@ -19,7 +19,6 @@ class UploadingScreen extends StatefulWidget {
 
 class _UploadingScreenState extends State<UploadingScreen> {
   final _systemState = sl<SystemStateManager>();
-  final _dataWritingService = sl<DataWritingService>();
 
   @override
   void initState() {
@@ -62,7 +61,7 @@ class _UploadingScreenState extends State<UploadingScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
               child: StreamBuilder(
-                stream: _dataWritingService.remainingDataSecondsStream,
+                stream: sl<TestingManager>().remainingDataSecondsStream,
                 initialData: 0,
                 builder: (_, AsyncSnapshot<int> snapshot) {
                   return Text(

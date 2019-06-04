@@ -6,23 +6,43 @@ import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:my_pat/utils/time_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TestingManager extends ManagerBase {
   static const String TAG = 'RecordingManager';
+  static const int PROGRESS_BAR_UPDATE_PERIOD = 100;
   BatteryManager _batteryManager;
   SystemStateManager _systemStateManager;
 
   // Timer of test data amount
   BehaviorSubject<int> _dataTimerState = BehaviorSubject<int>();
+
   Observable<int> get dataTimerStream => _dataTimerState.stream;
 
   // Timer of elapsed test time
   BehaviorSubject<int> _elapsedTimerState = BehaviorSubject<int>();
+
   Observable<int> get elapsedTimeStream => _elapsedTimerState.stream;
+
+  // remaining data receiving streams
+  BehaviorSubject<int> _remainingDataSeconds = BehaviorSubject<int>.seeded(0);
+
+  Observable<int> get remainingDataSecondsStream =>
+      _remainingDataSeconds.stream;
+
+  BehaviorSubject<double> _remainingDataProgress =
+      BehaviorSubject<double>.seeded(0.0);
+
+  Observable<double> get remainingDataProgressStream =>
+      _remainingDataProgress.stream;
 
   Timer _elapsedTimer;
   int _elapsedTimerValue = 0;
+
+  int _numberOfSecondsToDownloadAllPackets;
+  int _currentProgress;
+  int _maxProgress;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
@@ -32,7 +52,8 @@ class TestingManager extends ManagerBase {
   Future<bool> get canStartTesting async {
     final BatteryState state = await _batteryManager.getBatteryState();
     final int level = await _batteryManager.getBatteryLevel();
-    return level >= DefaultSettings.minBatteryRequiredLevel || state == BatteryState.charging;
+    return level >= DefaultSettings.minBatteryRequiredLevel ||
+        state == BatteryState.charging;
   }
 
   void startTesting() {
@@ -53,7 +74,8 @@ class TestingManager extends ManagerBase {
     int secondsToEnoughData;
     do {
       final int receivedPackets = PrefsProvider.loadTestPacketCount();
-      final int necessaryPackets = GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate ~/ 60);
+      final int necessaryPackets = GlobalSettings.minTestLengthSeconds *
+          (GlobalSettings.dataTransferRate ~/ 60);
       final int delta = necessaryPackets - receivedPackets;
       secondsToEnoughData = delta ~/ (GlobalSettings.dataTransferRate ~/ 60);
       _dataTimerState.sink.add(secondsToEnoughData > 0 ? delta : 0);
@@ -76,6 +98,7 @@ class TestingManager extends ManagerBase {
           .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
       _systemStateManager.setTestState(TestStates.STOPPED);
 //      sl<DataWritingService>().startRemainingPacketsTimer();
+      _initDataProgress();
       _elapsedTimer.cancel();
       return true;
     } else {
@@ -83,9 +106,64 @@ class TestingManager extends ManagerBase {
     }
   }
 
+  void _initDataProgress() {
+    _numberOfSecondsToDownloadAllPackets = TimeUtils.getPacketRealTimeDiffSec();
+    _currentProgress = 0;
+    _maxProgress = _numberOfSecondsToDownloadAllPackets;
+    _startDataProgress();
+  }
+
+  void _startDataProgress() async {
+    do {
+      // calculate number of seconds left to download the data
+      _numberOfSecondsToDownloadAllPackets =
+          TimeUtils.getPacketRealTimeDiffSec();
+
+      // when time is growing then there is no communication with device.
+      // in this case update timer only and don't touch progress bar
+      if (_numberOfSecondsToDownloadAllPackets < _maxProgress) {
+        // time is decreasing, some packets has been transmitted so recalculate progress bar value now
+        int changeDelta = _maxProgress - _numberOfSecondsToDownloadAllPackets;
+        updateProgressBar(changeDelta);
+      } else {
+        _maxProgress = _numberOfSecondsToDownloadAllPackets;
+      }
+      updateProgressTime();
+      await Future.delayed(Duration(milliseconds: PROGRESS_BAR_UPDATE_PERIOD));
+    } while (sl<SystemStateManager>().testState != TestStates.ENDED);
+  }
+
+  void updateProgressBar(int changeDelta) {
+    if (changeDelta <= 0) return;
+
+    Log.info(TAG, "increasing progress: $changeDelta");
+
+    double currentProgress = _remainingDataProgress.value;
+    double currentMax = 100;
+
+    // calculate new progress according to value
+    double newProgress = currentProgress +
+        ((currentMax - currentProgress) *
+            changeDelta /
+            (_maxProgress - _currentProgress));
+
+    print("---> SO THE NEW PROGRESS IS: $newProgress");
+
+    _remainingDataProgress.sink.add(newProgress);
+
+    _currentProgress += changeDelta;
+  }
+
+  void updateProgressTime() {
+    print("---> SECONDS ARE: $_numberOfSecondsToDownloadAllPackets");
+    _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets);
+  }
+
   @override
   void dispose() {
     _dataTimerState.close();
     _elapsedTimerState.close();
+    _remainingDataSeconds.close();
+    _remainingDataProgress.close();
   }
 }

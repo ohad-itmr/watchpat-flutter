@@ -55,15 +55,14 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### Sending START aquisition command");
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
-    _startElapsedTimer();
   }
 
   void restartTimers() {
     _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
-    _startElapsedTimer();
+    startElapsedTimer();
   }
 
-  void _startElapsedTimer() {
+  void startElapsedTimer() {
     _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       _elapsedTimerState.sink.add(++_elapsedTimerValue);
       PrefsProvider.saveTestElapsedTime(_elapsedTimerValue);
@@ -114,9 +113,12 @@ class TestingManager extends ManagerBase {
 
     // calculate new progress according to value
     double newProgress = currentProgress +
-        ((currentMax - currentProgress) * changeDelta / (_maxProgress - _currentProgress));
+        ((currentMax - currentProgress) *
+            changeDelta /
+            (_maxProgress - _currentProgress));
 
-    newProgress = newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
+    newProgress =
+        newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
 
     print("PROGRESS: ${currentProgress / 100} / ${newProgress / 100}");
 
@@ -126,7 +128,8 @@ class TestingManager extends ManagerBase {
   }
 
   void updateProgressTime() {
-    _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets);
+    _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets > 0
+        ? _numberOfSecondsToDownloadAllPackets : 0);
   }
 
   @override

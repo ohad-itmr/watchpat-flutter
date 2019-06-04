@@ -129,7 +129,8 @@ class IncomingPacketHandlerService extends ManagerBase {
       final int packetType = receivedPacket.packetType;
 
 //      print("RECEIVED PACKET ${receivedPacket.bytes}");
-      print("Received packet, length: ${receivedPacket.bytes.length}, content: ${receivedPacket.bytes}");
+      print(
+          "Received packet, length: ${receivedPacket.bytes.length}, content: ${receivedPacket.bytes}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -163,11 +164,13 @@ class IncomingPacketHandlerService extends ManagerBase {
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
             final currentTestState = sl<SystemStateManager>().testState;
+
             if (currentTestState == TestStates.NOT_STARTED) {
               sl<SystemStateManager>().setTestState(TestStates.STARTED);
               sl<SystemStateManager>()
                   .changeState
                   .add(StateChangeActions.TEST_STATE_CHANGED);
+              sl<TestingManager>().startElapsedTimer();
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
               sl<TestingManager>().restartTimers();

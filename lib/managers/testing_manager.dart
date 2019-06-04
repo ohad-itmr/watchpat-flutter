@@ -97,7 +97,6 @@ class TestingManager extends ManagerBase {
       sl<CommandTaskerManager>()
           .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
       _systemStateManager.setTestState(TestStates.STOPPED);
-//      sl<DataWritingService>().startRemainingPacketsTimer();
       _initDataProgress();
       _elapsedTimer.cancel();
       return true;
@@ -136,9 +135,7 @@ class TestingManager extends ManagerBase {
   void updateProgressBar(int changeDelta) {
     if (changeDelta <= 0) return;
 
-    Log.info(TAG, "increasing progress: $changeDelta");
-
-    double currentProgress = _remainingDataProgress.value;
+    double currentProgress = _remainingDataProgress.value * 100;
     double currentMax = 100;
 
     // calculate new progress according to value
@@ -147,15 +144,12 @@ class TestingManager extends ManagerBase {
             changeDelta /
             (_maxProgress - _currentProgress));
 
-    print("---> SO THE NEW PROGRESS IS: $newProgress");
-
-    _remainingDataProgress.sink.add(newProgress);
+    _remainingDataProgress.sink.add(newProgress / 100);
 
     _currentProgress += changeDelta;
   }
 
   void updateProgressTime() {
-    print("---> SECONDS ARE: $_numberOfSecondsToDownloadAllPackets");
     _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets);
   }
 

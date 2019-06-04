@@ -158,7 +158,6 @@ class SftpService {
   void _awaitForData() async {
     do {
       // Check for connections, if none start waiting
-      print("UPLOADING AVAIABLE $_uploadingAvailable");
       if (!_uploadingAvailable) {
         sl<SystemStateManager>()
             .setDataTransferState(DataTransferStates.WAITING_FOR_DATA);

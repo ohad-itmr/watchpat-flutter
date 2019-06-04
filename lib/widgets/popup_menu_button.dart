@@ -20,10 +20,6 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       child: Text("Select language"),
     ),
     PopupMenuItem(
-      value: PopupOption.email,
-      child: Text("Send email"),
-    ),
-    PopupMenuItem(
       value: PopupOption.forget,
       child: Text("Forget device"),
     ),

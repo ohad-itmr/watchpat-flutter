@@ -121,6 +121,7 @@ class S implements WidgetsLocalizations {
   String get id_in => "ID in";
   String get ignore_device_errors => "Ignore all device generated errors?";
   String get incorrect_pin => "Incorrect PIN, please try again";
+  String get inet_initiation_error => "Internet initiation error";
   String get inet_unavailable => "Internet access unavailable";
   String get insert_battery_desc1 => "Open the battery compartment's cover, located on  the back of the WatchPAT\u2122ONE, and insert the provided battery";
   String get insufficient_storage_space_on_smartphone => " There is insufficient free memory on your smart phone, shutting down the Application";
@@ -133,7 +134,7 @@ class S implements WidgetsLocalizations {
   String get make_sure_watchpat_bin_is_placed_in_watchpat_dir => "Make sure watchpat.bin is placed to internal directory";
   String get myPAT_connect_to_server_fail => "WatchPAT\u2122 connection to SFTP server failure";
   String get mypat_device => "WatchPAT\u2122 Device";
-  String get no_inet_connection => "Internet connection is not available";
+  String get no_inet_connection => "Internet must be enabled to start test procedure.\nPlease turn Internet ON.";
   String get none => "None";
   String get not_enough_test_data => "The Application has not collected enough test data. You can stop test in:";
   String get ok => "OK";
@@ -313,7 +314,7 @@ class fr extends S {
   @override
   String get log_email_subject => "myPAT device log file";
   @override
-  String get no_inet_connection => "Internet connection not available";
+  String get no_inet_connection => "Internet must be enabled to start test procedure.\nPlease turn Internet ON.";
   @override
   String get afe_registers_description => "AFE registers";
   @override
@@ -400,6 +401,8 @@ class fr extends S {
   String get app_log_file_title => "Application log file";
   @override
   String get btnStartRecording => "Start Recording";
+  @override
+  String get inet_initiation_error => "Internet initiation error";
   @override
   String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT\u2122 and insert the provided battery.";
   @override

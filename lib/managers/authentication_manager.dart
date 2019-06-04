@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/managers/manager_base.dart';
@@ -95,10 +96,14 @@ class AuthenticationManager extends ManagerBase {
         _authStateSubject.add(PatientAuthState.FailedClose);
       }
     } else {
+      // set up sftp
       sl<UserAuthenticationService>().setSftpParams(data.credentials);
       _authStateSubject.add(PatientAuthState.Authenticated);
       sl<SystemStateManager>()
           .setDispatcherState(DispatcherStates.AUTHENTICATED);
+
+      // disable internet warning
+      internetWarningSub.cancel();
 
       // update pin and save device config to a local file for further upload to sftp
       DeviceConfigPayload config = sl<DeviceConfigManager>().deviceConfig;

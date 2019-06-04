@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    _systemStateManager.inetConnectionStateStream
+    internetWarningSub = _systemStateManager.inetConnectionStateStream
         .where((_) => this.mounted)
         .listen(_handleInternetState);
 
@@ -74,14 +74,15 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       _handleBtState(data[_BT_MAP_KEY]);
+      _handleInternetState(data[_INET_MAP_KEY]);
 
-      if (data[_BT_MAP_KEY] == BtStates.ENABLED) {
+      if (data[_BT_MAP_KEY] == BtStates.ENABLED &&
+          data[_INET_MAP_KEY] != ConnectivityResult.none) {
         if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
           sl<WelcomeActivityManager>().initConnectivityListener();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
           _navigationSub.cancel();
         } else {
-          await _handleInternetState(data[_INET_MAP_KEY]);
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);
           _navigationSub.cancel();
         }
@@ -129,6 +130,16 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  void _handleInternetState(ConnectivityResult state) {
+    if (state == ConnectivityResult.none && !_noInternetShow) {
+      _showNoInternetWarning();
+      _noInternetShow = true;
+    } else if (state != ConnectivityResult.none && _noInternetShow) {
+      Navigator.of(context).pop();
+      _noInternetShow = false;
+    }
+  }
+
   void _showBTWarning() {
     showDialog(
       context: context,
@@ -153,31 +164,25 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future<void> _handleInternetState(ConnectivityResult state) async {
-    if (state == ConnectivityResult.none && !_noInternetShow) {
-      await _showNoInternetWarning();
-      _noInternetShow = true;
-    } else if (state != ConnectivityResult.none) {
-      _noInternetShow = false;
-    }
-  }
-
-  Future<void> _showNoInternetWarning() async {
-    await showDialog(
+  void _showNoInternetWarning() {
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(S.of(context).no_inet_connection),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-                return;
-              },
-              child: Text(S.of(context).ok.toUpperCase()),
-            )
-          ],
+          title: Text(S.of(context).inet_initiation_error),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(S.of(context).no_inet_connection),
+                Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    )),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -191,7 +196,9 @@ class _SplashScreenState extends State<SplashScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(S.of(context).bt_must_be_enabled),
+                Text(S
+                    .of(context)
+                    .test_data_from_previous_session_still_uploading),
                 Container(
                     padding: EdgeInsets.all(20.0),
                     child: Center(
@@ -222,3 +229,5 @@ class _SplashScreenState extends State<SplashScreen> {
     )));
   }
 }
+
+StreamSubscription internetWarningSub;

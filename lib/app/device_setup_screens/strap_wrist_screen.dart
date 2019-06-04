@@ -24,9 +24,7 @@ class StrapWristScreen extends StatelessWidget {
         ),
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
-            action: () {
-              Navigator.pushNamed(context, ChestSensorScreen.PATH);
-            },
+            action: () => Navigator.pushNamed(context, ChestSensorScreen.PATH),
           ),
           moreActionButton: ButtonModel(
             action: () => Navigator.of(context)

@@ -5,13 +5,6 @@ import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
-  void _checkTestState(BuildContext context) {
-    if (sl<TestingManager>().stopTesting()) {
-      Navigator.pushNamed(context, UploadingScreen.PATH);
-    } else {
-      _showTestIncompleteDialog(context);
-    }
-  }
 
   RecordingControl() {
     WidgetsBinding.instance.addObserver(this);
@@ -25,54 +18,6 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
       sl<NotificationsService>().showLocalNotification("Test in progress");
     }
     super.didChangeAppLifecycleState(state);
-  }
-
-  void _showTestIncompleteDialog(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(S.of(context).not_enough_test_data),
-                StreamBuilder(
-                  stream: sl<TestingManager>().dataTimerStream,
-                  initialData: GlobalSettings.minTestLengthSeconds,
-                  builder: (context, AsyncSnapshot<int> snapshot) {
-                    if (snapshot.hasData && snapshot.data == 0) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        Navigator.of(context).pop();
-                      });
-                      return Container(height: 0, width: 0);
-                    } else {
-                      return Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Center(
-                          child: Text(
-                            '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
-                            style: Theme.of(context).textTheme.title,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(S.of(context).ok.toUpperCase()),
-            )
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -106,13 +51,23 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
                 }
               },
             )),
-        ButtonsBlock(
-          moreActionButton: null,
-          nextActionButton: ButtonModel(
-            action: () => _checkTestState(context),
-            text: S.of(context).btnEndRecording,
-          ),
-        )
+        StreamBuilder(
+          stream: sl<SystemStateManager>().testStateStream,
+          builder: (BuildContext context, AsyncSnapshot<TestStates> snapshot) {
+            return ButtonsBlock(
+              moreActionButton: null,
+              nextActionButton: ButtonModel(
+                action: snapshot.data == TestStates.MINIMUM_PASSED
+                    ? () {
+                        sl<TestingManager>().stopTesting();
+                        Navigator.pushNamed(context, UploadingScreen.PATH);
+                      }
+                    : null,
+                text: S.of(context).btnEndRecording,
+              ),
+            );
+          },
+        ),
       ],
     );
   }

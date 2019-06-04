@@ -15,11 +15,6 @@ class TestingManager extends ManagerBase {
   BatteryManager _batteryManager;
   SystemStateManager _systemStateManager;
 
-  // Timer of test data amount
-  BehaviorSubject<int> _dataTimerState = BehaviorSubject<int>();
-
-  Observable<int> get dataTimerStream => _dataTimerState.stream;
-
   // Timer of elapsed test time
   BehaviorSubject<int> _elapsedTimerState = BehaviorSubject<int>();
 
@@ -60,27 +55,12 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### Sending START aquisition command");
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
-    _startDataTimer();
     _startElapsedTimer();
   }
 
   void restartTimers() {
-    _startDataTimer();
     _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
     _startElapsedTimer();
-  }
-
-  void _startDataTimer() async {
-    int secondsToEnoughData;
-    do {
-      final int receivedPackets = PrefsProvider.loadTestPacketCount();
-      final int necessaryPackets = GlobalSettings.minTestLengthSeconds *
-          (GlobalSettings.dataTransferRate ~/ 60);
-      final int delta = necessaryPackets - receivedPackets;
-      secondsToEnoughData = delta ~/ (GlobalSettings.dataTransferRate ~/ 60);
-      _dataTimerState.sink.add(secondsToEnoughData > 0 ? delta : 0);
-      await Future.delayed(Duration(seconds: 1));
-    } while (secondsToEnoughData > 0);
   }
 
   void _startElapsedTimer() {
@@ -90,19 +70,13 @@ class TestingManager extends ManagerBase {
     });
   }
 
-  bool stopTesting() {
-    final TestStates testState = _systemStateManager.testState;
-    if (testState == TestStates.MINIMUM_PASSED) {
-      Log.info(TAG, "### Sending STOP aquisition command");
-      sl<CommandTaskerManager>()
-          .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
-      _systemStateManager.setTestState(TestStates.STOPPED);
-      _initDataProgress();
-      _elapsedTimer.cancel();
-      return true;
-    } else {
-      return false;
-    }
+  void stopTesting() {
+    Log.info(TAG, "### Sending STOP aquisition command");
+    sl<CommandTaskerManager>()
+        .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
+    _systemStateManager.setTestState(TestStates.STOPPED);
+    _initDataProgress();
+    _elapsedTimer.cancel();
   }
 
   void _initDataProgress() {
@@ -140,9 +114,11 @@ class TestingManager extends ManagerBase {
 
     // calculate new progress according to value
     double newProgress = currentProgress +
-        ((currentMax - currentProgress) *
-            changeDelta /
-            (_maxProgress - _currentProgress));
+        ((currentMax - currentProgress) * changeDelta / (_maxProgress - _currentProgress));
+
+    newProgress = newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
+
+    print("PROGRESS: ${currentProgress / 100} / ${newProgress / 100}");
 
     _remainingDataProgress.sink.add(newProgress / 100);
 
@@ -155,7 +131,6 @@ class TestingManager extends ManagerBase {
 
   @override
   void dispose() {
-    _dataTimerState.close();
     _elapsedTimerState.close();
     _remainingDataSeconds.close();
     _remainingDataProgress.close();

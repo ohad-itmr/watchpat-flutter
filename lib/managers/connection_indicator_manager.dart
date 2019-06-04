@@ -54,7 +54,8 @@ class ConnectionIndicatorManager extends ManagerBase {
 
   _setSftpLedBlinking() {
     if (_sftpLedTimer == null) {
-      _sftpLedTimer = Timer.periodic(Duration(milliseconds: 250), (Timer timer) {
+      _sftpLedTimer =
+          Timer.periodic(Duration(milliseconds: 250), (Timer timer) {
         _sftpLit = !_sftpLit;
         _sftpLitState.sink.add(_sftpLit);
       });
@@ -71,7 +72,10 @@ class ConnectionIndicatorManager extends ManagerBase {
 
   _handleBTState(DeviceStates btState, TestStates testState) {
     if (btState == DeviceStates.CONNECTED &&
-        (testState == TestStates.STARTED || testState == TestStates.RESUMED || testState == TestStates.MINIMUM_PASSED)) {
+        (testState == TestStates.STARTED ||
+            testState == TestStates.RESUMED ||
+            testState == TestStates.MINIMUM_PASSED ||
+            testState == TestStates.STOPPED)) {
       _setBtLedBlinking();
     } else if (btState == DeviceStates.CONNECTED) {
       _setBtLedLit(true);

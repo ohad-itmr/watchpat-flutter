@@ -27,7 +27,8 @@ class ProgressPainter extends CustomPainter {
   int _barsCount;
 
   ProgressPainter({@required this.progress, @required this.color}) {
-    final int count = progress * 10 ~/ 1.6666;
+    final double checkedProgress = progress < 0 ? 0.0 : progress;
+    final int count = checkedProgress * 10 ~/ 1.6666;
     _barsCount = count < 7 ? count : 6;
   }
 

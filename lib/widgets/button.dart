@@ -14,7 +14,7 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: !disabled ? action : null,
-      disabledColor: Colors.grey[300],
+      disabledColor: Theme.of(context).primaryColor.withOpacity(0.3),
       child: Text(text),
       textColor: Colors.white,
       color: type == ButtonType.moreBtn

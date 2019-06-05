@@ -76,11 +76,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         nextActionButton: ButtonModel(
           text: S.of(context).ready.toUpperCase(),
           action: () {
-            setState(() => _nextIsPressed = true);
-            _handleNext();
+//            setState(() => _nextIsPressed = true);
+//            _handleNext();
 
-//            Navigator.of(context)
-//                .pushNamed(UploadingScreen.PATH);
+            Navigator.of(context)
+                .pushNamed(RecordingScreen.PATH);
 
 //            Navigator.of(context).push(MaterialPageRoute(
 //                builder: (context) => EndScreen(

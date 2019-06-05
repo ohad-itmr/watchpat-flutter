@@ -28,18 +28,18 @@ class RecordingScreen extends StatelessWidget {
               flex: 7,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 35, 35, 35),
                   image: DecorationImage(
-                    image: AssetImage('assets/sleepgif.gif'),
-                    fit: BoxFit.cover,
+                    image: AssetImage('assets/animation_recording.gif'),
+                    fit: BoxFit.fitHeight,
                   ),
                 ),
               ),
             ),
             Flexible(
-              flex: 2,
+              flex: 3,
               child: Container(
-                decoration: BoxDecoration(color: Colors.black),
+                decoration: BoxDecoration(color: Color.fromARGB(255, 35, 35, 35)),
                 child: RecordingControl(),
               ),
             )

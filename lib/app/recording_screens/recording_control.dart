@@ -23,7 +23,9 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
+        Spacer(),
         Container(
           margin: EdgeInsets.only(bottom: 10.0),
           child: Text(
@@ -42,15 +44,16 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   return Text(
-                    '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
+                    '${S.of(context).elapsed_time}: ${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
                     style: TextStyle(
                       fontSize: Theme.of(context).textTheme.title.fontSize,
-                      color: Colors.white,
+                      color: Colors.white.withOpacity(0.9),
                     ),
                   );
                 }
               },
             )),
+        Spacer(),
         StreamBuilder(
           stream: sl<SystemStateManager>().testStateStream,
           builder: (BuildContext context, AsyncSnapshot<TestStates> snapshot) {
@@ -68,6 +71,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
             );
           },
         ),
+        Spacer(flex: 2)
       ],
     );
   }

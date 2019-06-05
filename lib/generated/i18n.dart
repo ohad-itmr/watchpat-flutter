@@ -69,6 +69,7 @@ class S implements WidgetsLocalizations {
   String get critical_hw_failure => "Critical hardware failure";
   String get customer_service_mode => "Customer service mode";
   String get device_connection_failed => "Connection with the device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
+  String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   String get device_log_file_description => "Device log file";
   String get device_not_found => "Device is not found";
   String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned. If not, verify that you placed a new battery and check it is properly positioned.";
@@ -80,6 +81,7 @@ class S implements WidgetsLocalizations {
   String get eeprom_get_success => "EEPROM data retrieved successfully";
   String get eeprom_write_failed => "Device EEPROM write failed";
   String get eeprom_written_successfully => "Device EEPROM written successfully";
+  String get elapsed_time => "Elapsed time";
   String get english => "English";
   String get enter_id => "ID:";
   String get enter_new_serial => "Enter device’s new serial number";
@@ -576,6 +578,8 @@ class fr extends S {
   @override
   String get error => "Error";
   @override
+  String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
+  @override
   String get connect_to_charger => "Connect the phone to a charger";
   @override
   String get firmware_alert_title => "Device firmware upgrade";
@@ -583,6 +587,8 @@ class fr extends S {
   String get ready => "Ready";
   @override
   String get eeprom_get_fail => "EEPROM data retrieve failed";
+  @override
+  String get elapsed_time => "Elapsed time";
   @override
   String get please_insert_finger => "Please insert the finger and press OK";
   @override

@@ -51,7 +51,8 @@ class DeviceCommands {
   static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x45;
   static const int CMD_OPCODE_UNKNOWN = 0x0F00;
 
-  static const int OP_CODES_IS_DEVICE_PAIRED = 0x2A;
+  static const int CMD_OPCODE_IS_DEVICE_PAIRED = 0x2A;
+  static const int CMD_OPCODE_IS_DEVICE_PAIRED_RES = 0x2B;
 
   static const int ACK_STATUS_OK = 0x00;
   static const int ACK_STATUS_CRC_FAIL = 0x01;
@@ -294,6 +295,14 @@ class DeviceCommands {
         "FWUpgradeRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
+  static CommandTask getIsDevicePairedCmd() {
+    final int packetID = getPacketIdentifier();
+    CommandPacket cmdPacket =
+        CommandPacket(CMD_OPCODE_IS_DEVICE_PAIRED, 0, packetID, 0);
+    return CommandTask(
+        "IsDevicePaired", packetID, cmdPacket.opCode, cmdPacket.prepare());
+  }
+
   //
   // MISC
   //
@@ -306,8 +315,4 @@ class DeviceCommands {
     return result;
   }
 
-  static CommandTask getIsPairedCMD() {
-    // todo Implemented getting is paired CMD
-    return CommandTask("", 0, 0, []);
-  }
 }

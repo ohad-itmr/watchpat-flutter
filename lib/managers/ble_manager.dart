@@ -84,7 +84,13 @@ class BleManager extends ManagerBase {
       await sl<BleService>().setNotification(_incomingPacketHandler);
 
       if (sysStateManager.testState == TestStates.INTERRUPTED) {
-        Log.info(TAG, "### reconnected to device");
+        Log.info(TAG, "### reconnected to device after test started");
+        final Timer timer = Timer(Duration(seconds: 2), () {
+          if (sysStateManager.testState != TestStates.RESUMED) {
+            sl<CommandTaskerManager>()
+                .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
+          }
+        });
         return;
       }
 
@@ -92,19 +98,24 @@ class BleManager extends ManagerBase {
         Log.info(TAG,
             "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device ${_device.name}, checking 'paired' flag");
         sl<CommandTaskerManager>()
-            .addCommandWithNoCb(DeviceCommands.getIsPairedCMD());
-        final bool isPaired = await sl<IncomingPacketHandlerService>()
-            .isPairedResponseStream
-            .first;
-
-        if (isPaired) {
-          Log.shout(TAG,
-              "Device was already paired, connection cancelled");
+            .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
+//        final bool isPaired = await sl<IncomingPacketHandlerService>()
+//            .isPairedResponseStream
+//            .first;
+//
+//        if (isPaired) {
+//          Log.shout(TAG,
+//              "Device isPaired TRUE, connection cancelled");
           return;
-        }
+//        } else {
+//          Log.info(TAG, "Device isParied FALSE, continue flow");
+//        }
       }
 
-      _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
+      // start session
+      sl<SystemStateManager>().setAppMode(AppModes.USER);
+      sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+//      _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
 
       if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
@@ -352,12 +363,13 @@ class BleManager extends ManagerBase {
           case AppModes.USER:
             Log.info(TAG, "### sending start session");
             // todo add real SW ID
-            sl<CommandTaskerManager>()
-                .addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
-              0x0000,
-              DeviceCommands.SESSION_START_USE_TYPE_PATIENT,
-              [0, 0, 0, 1],
-            ));
+//            sl<CommandTaskerManager>()
+//                .addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
+//              0x0000,
+//              DeviceCommands.SESSION_START_USE_TYPE_PATIENT,
+//              [0, 0, 0, 1],
+//            ));
+            _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
             break;
           case AppModes.CS:
             Future.delayed(Duration(milliseconds: 2000), () {

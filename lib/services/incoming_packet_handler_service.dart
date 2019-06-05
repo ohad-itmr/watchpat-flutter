@@ -387,11 +387,50 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
-        case DeviceCommands.OP_CODES_IS_DEVICE_PAIRED:
+        case DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED:
           Log.info(TAG, "packet received (IS_DEVICE_PAIRED)");
+          Log.info(TAG,">>> opCodeDependent: ${receivedPacket.opCode}");
 
           // todo Implement checking if paired
-          final bool isPaired = false;
+
+          bool isPaired;
+          if (sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
+            if (PrefsProvider.loadDeviceName() == null) {
+              // fresh pairing - no saved device serial
+              if (receivedPacket.opCodeDependent == 0) {
+                // device response - not paired device
+                Log.info(TAG, ">>> fresh pairing / unpaired device");
+                isPaired = false;
+                sl<SystemStateManager>().setAppMode(AppModes.USER);
+                sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+              } else {
+                // device response - already paired device
+                Log.info(TAG, ">>> fresh pairing / paired device - ERROR");
+                isPaired = true;
+              }
+            } else {
+              // reconnection pairing - saved device serial located
+              if (receivedPacket.opCodeDependent == 0) {
+                // device response - not paired device
+                Log.info(TAG, ">>> reconnection pairing / unpaired device - ERROR");
+                isPaired = false;
+              } else {
+                // device response - already paired device
+                Log.info(TAG, ">>> reconnection pairing / paired device");
+                isPaired = true;
+                sl<SystemStateManager>().setAppMode(AppModes.USER);
+                sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+              }
+            }
+          } else {
+            // test in progress/ended
+            if (receivedPacket.opCodeDependent == 0) {
+              // device response - not paired device
+              isPaired = false;
+              sl<SystemStateManager>().setTestState(TestStates.ENDED);
+            }
+          }
+
           _isPairedResponse.sink.add(isPaired);
 
           break;

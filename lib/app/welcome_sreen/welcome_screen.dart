@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String TAG = 'WelcomeScreen';
@@ -58,13 +60,36 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         bottomBlock: BlockTemplate(
           type: BlockType.text,
           title: S.of(context).welcomeTitle,
-          content: [
-            loc.welcomeContent,
-          ],
+          content: [loc.welcomeContent],
+          additionalTextContent: _buildTextWithLink(),
         ),
         buttons: _buildButtonsBlock(),
         showSteps: false,
       ),
+    );
+  }
+
+  Widget _buildTextWithLink() {
+    return Row(
+      children: <Widget>[
+        Text(
+          "${S.of(context).for_help_video}: ",
+          style: TextStyle(
+            height: 1.3,
+            color: Theme.of(context).textTheme.title.color,
+          ),
+        ),
+        GestureDetector(
+          child: Text(
+            S.of(context).instructions_video,
+            style: TextStyle(
+                height: 1.3,
+                color: Theme.of(context).textTheme.title.color,
+                decoration: prefix0.TextDecoration.underline),
+          ),
+          onTap: () => launch(GlobalSettings.demoUrl),
+        )
+      ],
     );
   }
 
@@ -76,21 +101,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         nextActionButton: ButtonModel(
           text: S.of(context).ready.toUpperCase(),
           action: () {
-//            setState(() => _nextIsPressed = true);
-//            _handleNext();
+            setState(() => _nextIsPressed = true);
+            _handleNext();
 
-            Navigator.of(context)
-                .pushNamed(RecordingScreen.PATH);
-
-//            Navigator.of(context).push(MaterialPageRoute(
-//                builder: (context) => EndScreen(
-//                  title: S.of(context).thankYouTitle,
-//                  content: S.of(context).test_is_complete,
-//                )));
+//            Navigator.of(context)
+//                .pushNamed(RecordingScreen.PATH);
           },
         ),
         moreActionButton: ButtonModel(
-          text: S.of(context).btnPreview.toUpperCase(),
+            text: S.of(context).btnPreview.toUpperCase(),
             action: () => Navigator.of(context)
                 .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
       );

@@ -12,6 +12,7 @@ class BlockTemplate extends StatelessWidget {
   final Widget customChild;
   final Color textColor;
   final bool textTopPadding;
+  final Widget additionalTextContent;
 
   BlockTemplate(
       {this.type,
@@ -20,7 +21,8 @@ class BlockTemplate extends StatelessWidget {
       this.content,
       this.customChild,
       this.textColor,
-      this.textTopPadding = false});
+      this.textTopPadding = false,
+      this.additionalTextContent});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class BlockTemplate extends StatelessWidget {
           content: content,
           textColor: textColor,
           topPadding: textTopPadding,
+          additionalContent: additionalTextContent,
         );
       case BlockType.custom:
         return customChild;

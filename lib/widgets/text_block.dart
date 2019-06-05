@@ -6,13 +6,15 @@ class TextBlock extends StatelessWidget {
   final TextAlign contentTextAlign;
   final Color textColor;
   final bool topPadding;
+  final Widget additionalContent;
 
   TextBlock(
       {this.title,
       this.content,
       this.contentTextAlign = TextAlign.left,
       this.textColor,
-      this.topPadding = false});
+      this.topPadding = false,
+      this.additionalContent});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,8 @@ class TextBlock extends StatelessWidget {
         children.add(Text(''));
       });
     }
+
+    if (additionalContent != null) children.add(additionalContent);
 
     return Column(
       children: children,

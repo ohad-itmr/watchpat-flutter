@@ -105,6 +105,7 @@ class S implements WidgetsLocalizations {
   String get firmware_upgrading => "Upgrading main device firmware, please don't close the application";
   String get firmware_version => "Firmware version";
   String get flash_full => "Device flash is full";
+  String get for_help_video => "For help video press this link";
   String get french => "French";
   String get fw_check_version => "Please wait while we check device firmware version";
   String get fw_connection_failed => "Connection with device failed. Test will be terminated.\n\nPlease contact Itamar Medical support.";
@@ -126,6 +127,7 @@ class S implements WidgetsLocalizations {
   String get inet_initiation_error => "Internet initiation error";
   String get inet_unavailable => "Internet access unavailable";
   String get insert_battery_desc1 => "Open the battery compartment's cover, located on  the back of the WatchPAT\u2122ONE, and insert the provided battery";
+  String get instructions_video => "Instructions video";
   String get insufficient_storage_space_on_smartphone => " There is insufficient free memory on your smart phone, shutting down the Application";
   String get invalid_id => "Invalid ID";
   String get invalid_technician_password => "Invalid technician password";
@@ -211,7 +213,7 @@ class S implements WidgetsLocalizations {
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   String get user_mode => "User mode";
   String get vdd_voltage => "VDD voltage: ";
-  String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor.\n First we need to do a few things to ensure everything is set up properly. If you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
+  String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly. \n\nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
   String get welcomeTitle => "WELCOME";
   String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";
@@ -398,6 +400,8 @@ class fr extends S {
   @override
   String get firmware_upgrade_failed => "Firmware update failed";
   @override
+  String get instructions_video => "Instruction video";
+  @override
   String get acc_registers_description => "ACC registers";
   @override
   String get app_log_file_title => "Application log file";
@@ -474,7 +478,7 @@ class fr extends S {
   @override
   String get please_replace_battery => "Please replace the battery in the device";
   @override
-  String get welcomeContent => "You are using an Application that works with the WatchPAT® device in collecting your sleep data for your physician.\nYou are about to start a few minutes of pre-sleep setup activities, after which the WatchPAT  will start its role, and you can start you good night sleep.";
+  String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly. \n\nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
   @override
   String get btnPrevious => "Previous";
   @override
@@ -549,6 +553,8 @@ class fr extends S {
   String get startRecordingTitle => "Start Recording";
   @override
   String get user_mode => "User mode";
+  @override
+  String get for_help_video => "For help video press this link";
   @override
   String get fw_check_version => "Please wait while we check device firmware version";
   @override

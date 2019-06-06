@@ -36,10 +36,6 @@ class ReceivedPacket {
         opCode = ConvertFormats.twoBytesToInt(
             byte1: bytes[PACKET_OPCODE_STARTING_BYTE],
             byte2: bytes[PACKET_OPCODE_STARTING_BYTE + 1]),
-//        opCode = ConvertFormats.byteArrayToHex([
-//          bytes[PACKET_OPCODE_STARTING_BYTE + 1],
-//          bytes[PACKET_OPCODE_STARTING_BYTE]
-//        ]),
         identifier = ConvertFormats.fourBytesToInt(bytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
                 PACKET_IDENTIFIER_STARTING_BYTE + 4)
@@ -126,6 +122,10 @@ class ReceivedPacket {
 
     if (opCode == DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES) {
       return DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES;
+    }
+
+    if (opCode == DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES) {
+      return DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES;
     }
 
     Log.shout(TAG, "unknown packet type: $opCode");

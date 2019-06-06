@@ -96,7 +96,7 @@ class AckCommandPacket extends CommandPacket {
   prepare() {
     final length = ConvertFormats.longToByteList(_length, size: 2);
     final status = ConvertFormats.longToByteList(_status, size: 1);
-    final opCode = ConvertFormats.longToByteList(_reqOpcode, size: 2);
+    final opCode = ConvertFormats.longToByteList(_reqOpcode, size: 2, reversed: false);
 
     List<int> buffer = ListCombainer.combain(
         [_header.bytes, opCode, status, length],

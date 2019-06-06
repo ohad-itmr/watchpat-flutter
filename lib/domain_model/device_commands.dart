@@ -44,12 +44,15 @@ class DeviceCommands {
   static const int CMD_OPCODE_SET_BRACELET_ID = 0x2200;
   static const int CMD_OPCODE_LEDS_CONTROL = 0x23;
   static const int CMD_OPCODE_SET_SERIAL_NUMBER = 0x24;
-  static const int CMD_OPCODE_GET_PATIENT_ID = 0x2500;
+  static const int CMD_OPCODE_GET_PATIENT_ID = 0x25;
   static const int CMD_OPCODE_FW_UPGRADE_REQ = 0x30;
   static const int CMD_OPCODE_FW_UPGRADE_RES = 0x31;
   static const int CMD_OPCODE_GET_LOG_FILE = 0x44;
   static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x45;
-  static const int CMD_OPCODE_UNKNOWN = 0x0F00;
+  static const int CMD_OPCODE_UNKNOWN = 0x0F;
+
+  static const int CMD_OPCODE_IS_DEVICE_PAIRED = 0x2A;
+  static const int CMD_OPCODE_IS_DEVICE_PAIRED_RES = 0x2B;
 
   static const int ACK_STATUS_OK = 0x00;
   static const int ACK_STATUS_CRC_FAIL = 0x01;
@@ -292,6 +295,14 @@ class DeviceCommands {
         "FWUpgradeRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
+  static CommandTask getIsDevicePairedCmd() {
+    final int packetID = getPacketIdentifier();
+    CommandPacket cmdPacket =
+        CommandPacket(CMD_OPCODE_IS_DEVICE_PAIRED, 0, packetID, 0);
+    return CommandTask(
+        "IsDevicePaired", packetID, cmdPacket.opCode, cmdPacket.prepare());
+  }
+
   //
   // MISC
   //
@@ -303,4 +314,5 @@ class DeviceCommands {
     bytes.forEach((byte) => result = result + byte.toRadixString(16));
     return result;
   }
+
 }

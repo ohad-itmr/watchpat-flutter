@@ -148,7 +148,7 @@ class DeviceConfigPayload {
 
   String get deviceSerial => _deviceSerial.toString();
 
-  String get deviceHexSerial => _deviceSerial.toRadixString(16);
+  String get deviceHexSerial => _deviceSerial.toRadixString(16).padLeft(8, "0");
 
   List<int> get payloadBytes => _configPayloadBytes;
 
@@ -170,8 +170,9 @@ class DeviceConfigPayload {
     final List<int> serialBytes = bytesConfig.sublist(
         OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
 
-    _deviceSerial =
-        ConvertFormats.byteArrayToHex(serialBytes.reversed.toList());
+//    _deviceSerial =
+//        ConvertFormats.byteArrayToHex(serialBytes.reversed.toList());
+    _deviceSerial = ConvertFormats.fourBytesToInt(serialBytes.toList());
   }
 
   static void updateSmartPhoneInfo(List<int> bytes) {

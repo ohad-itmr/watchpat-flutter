@@ -389,7 +389,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES:
           Log.info(TAG, "packet received (IS_DEVICE_PAIRED)");
-          Log.info(TAG,">>> opCodeDependent: ${receivedPacket.opCode}");
+          Log.info(TAG,">>> opCodeDependent: ${receivedPacket.opCodeDependent}");
 
           // todo Implement checking if paired
 

@@ -75,6 +75,7 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   void _sendCommandQueueHandler() async {
+    await _synchronizeQueueHandling();
     _sndCmdHandlerState = ThreadState.ACTIVE;
     while (_lstCommandQueue.isNotEmpty) {
       CommandTaskerItem nextItem = _lstCommandQueue.removeLast();
@@ -86,12 +87,19 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   void _sendAckQueueHandler() async {
+    await _synchronizeQueueHandling();
     _ackHandlerState = ThreadState.ACTIVE;
     while (_lstAckQueue.isNotEmpty) {
       CommandTaskerItem nextAck = _lstAckQueue.removeLast();
       await _sendCommand(nextAck);
     }
     _ackHandlerState = ThreadState.NON_ACTIVE;
+  }
+
+  Future<void> _synchronizeQueueHandling() async {
+    while (_sndCmdHandlerState != ThreadState.NON_ACTIVE) {
+      await Future.delayed(Duration(milliseconds: 100));
+    }
   }
 
   bool addCommandWithCb(CommandTask commandTask, {OnAckListener listener}) {

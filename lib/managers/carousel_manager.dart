@@ -80,7 +80,7 @@ class CarouselManager extends ManagerBase {
       RemoveJewelryScreen.TAG: [
         CarouselData(
             text:
-                "Remove all jewelry and hand cream Make sure the fingernails are trimmed.",
+                "Remove all jewelry and hand cream. Make sure the fingernails are trimmed.",
             image: "assets/carousel/carousel_prepare_1.jpg"),
         CarouselData(
             text: "Take off the watch. Do not apply any hand cream.",

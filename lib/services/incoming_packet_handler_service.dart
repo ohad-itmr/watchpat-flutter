@@ -170,7 +170,6 @@ class IncomingPacketHandlerService extends ManagerBase {
               sl<SystemStateManager>()
                   .changeState
                   .add(StateChangeActions.TEST_STATE_CHANGED);
-              sl<TestingManager>().startElapsedTimer();
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
               sl<TestingManager>().restartTimers();
@@ -210,10 +209,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             Log.info(TAG, "### start session confirm: device serial saved");
 
-            sl<WelcomeActivityManager>().configureApplication();
-
             if (PrefsProvider.getIsFirstDeviceConnection()) {
-              // Set external configuration if necessary
 
               Log.info(TAG, "first connection to device");
               Log.info(TAG,

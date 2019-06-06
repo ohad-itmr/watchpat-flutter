@@ -55,14 +55,15 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### Sending START aquisition command");
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
+    _startElapsedTimer();
   }
 
   void restartTimers() {
     _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
-    startElapsedTimer();
+    _startElapsedTimer();
   }
 
-  void startElapsedTimer() {
+  void _startElapsedTimer() {
     _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       _elapsedTimerState.sink.add(++_elapsedTimerValue);
       PrefsProvider.saveTestElapsedTime(_elapsedTimerValue);

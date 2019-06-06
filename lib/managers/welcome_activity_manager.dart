@@ -57,7 +57,7 @@ class WelcomeActivityManager extends ManagerBase {
         : FileCreationState.DONE_FAILED);
   }
 
-  Future<void> configureApplication() async {
+  Future<void> _configureApplication() async {
     // Check in external config is enabled
     final bool configEnabled =
         await sl<DispatcherService>().checkExternalConfig();
@@ -142,6 +142,9 @@ class WelcomeActivityManager extends ManagerBase {
         time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
 
     initConnectivityListener();
+
+    // Set external configuration if necessary
+    _configureApplication();
   }
 
   initConnectivityListener() {

@@ -44,12 +44,12 @@ class DeviceCommands {
   static const int CMD_OPCODE_SET_BRACELET_ID = 0x2200;
   static const int CMD_OPCODE_LEDS_CONTROL = 0x23;
   static const int CMD_OPCODE_SET_SERIAL_NUMBER = 0x24;
-  static const int CMD_OPCODE_GET_PATIENT_ID = 0x2500;
+  static const int CMD_OPCODE_GET_PATIENT_ID = 0x25;
   static const int CMD_OPCODE_FW_UPGRADE_REQ = 0x30;
   static const int CMD_OPCODE_FW_UPGRADE_RES = 0x31;
   static const int CMD_OPCODE_GET_LOG_FILE = 0x44;
   static const int CMD_OPCODE_GET_LOG_FILE_RESPONSE = 0x45;
-  static const int CMD_OPCODE_UNKNOWN = 0x0F00;
+  static const int CMD_OPCODE_UNKNOWN = 0x0F;
 
   static const int CMD_OPCODE_IS_DEVICE_PAIRED = 0x2A;
   static const int CMD_OPCODE_IS_DEVICE_PAIRED_RES = 0x2B;

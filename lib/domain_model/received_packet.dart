@@ -128,6 +128,10 @@ class ReceivedPacket {
       return DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES;
     }
 
+    if (opCode == DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES) {
+      return DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES;
+    }
+
     Log.shout(TAG, "unknown packet type: $opCode");
     return DeviceCommands.CMD_OPCODE_UNKNOWN;
   }

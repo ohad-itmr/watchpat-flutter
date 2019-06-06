@@ -387,7 +387,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
-        case DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED:
+        case DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES:
           Log.info(TAG, "packet received (IS_DEVICE_PAIRED)");
           Log.info(TAG,">>> opCodeDependent: ${receivedPacket.opCode}");
 

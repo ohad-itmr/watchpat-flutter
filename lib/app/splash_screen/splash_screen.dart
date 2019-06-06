@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:date_format/date_format.dart' as prefix0;
 import 'package:flutter/material.dart';
@@ -98,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     sl<IncomingPacketHandlerService>()
         .isPairedResponseStream
-        .listen((bool isPaired) => _handleIsPaired);
+        .listen(_handleIsPaired);
 
     sl<WelcomeActivityManager>().configureApplication();
 
@@ -107,25 +108,28 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _handleIsPaired(bool isPaired) {
     final bool isFirstConnection = PrefsProvider.loadDeviceName() == null;
-    if (isFirstConnection && !isPaired || !isFirstConnection && isPaired) return;
+    if (isFirstConnection && !isPaired || !isFirstConnection && isPaired)
+      return;
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        return AlertDialog(
-          title: Text(S.of(context).error),
-          content: Text(S.of(context).device_is_paired_error),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(S.of(context).ok),
-              onPressed: () {
-                sl<ServiceScreenManager>().resetApplication();
-              },
-            )
-          ],
-        );
-      }
-    );
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(S.of(context).error),
+            content: Text(isFirstConnection
+                ? S.of(context).device_is_paired_error
+                : S.of(context).device_is_not_paired_error),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(S.of(context).ok),
+                onPressed: () {
+                  sl<ServiceScreenManager>().resetApplication();
+                  exit(0);
+                },
+              )
+            ],
+          );
+        });
   }
 
   void _handleUpgradeProgress(FirmwareUpgradeStates state) {

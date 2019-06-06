@@ -99,23 +99,12 @@ class BleManager extends ManagerBase {
             "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device ${_device.name}, checking 'paired' flag");
         sl<CommandTaskerManager>()
             .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
-//        final bool isPaired = await sl<IncomingPacketHandlerService>()
-//            .isPairedResponseStream
-//            .first;
-//
-//        if (isPaired) {
-//          Log.shout(TAG,
-//              "Device isPaired TRUE, connection cancelled");
           return;
-//        } else {
-//          Log.info(TAG, "Device isParied FALSE, continue flow");
-//        }
       }
 
       // start session
       sl<SystemStateManager>().setAppMode(AppModes.USER);
       sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
-//      _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
 
       if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);

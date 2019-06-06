@@ -153,6 +153,12 @@ class S implements WidgetsLocalizations {
   String get patient_msg2 => "Please don't close WatchPAT\u2122 application during test procedure";
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   String get pinTitle => "Enter PIN";
+  String get pin_type_cc => "the last four digits of your credit card";
+  String get pin_type_hic => "the last four digits of your health insurer card";
+  String get pin_type_mn => "the last four digits of your mobile phone number";
+  String get pin_type_plain => "four digits that were provided to you by the doctor’s staff";
+  String get pin_type_pn => "four digits that were provided to you by the doctor’s staff";
+  String get pin_type_ss => "the last four digits of your Social Security number";
   String get pleaseWait => "Please Wait";
   String get please_insert_finger => "Please insert the finger and press OK";
   String get please_plug_charger => "Please plug in a charger";
@@ -220,6 +226,7 @@ class S implements WidgetsLocalizations {
   String get writing_param_file => "Writing parameter file";
   String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   String device_sn(String sn) => "Device serial number $sn";
+  String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
   String status(String status) => "Status: $status";
   String stepper(String step, String total) => "Step $step of $total";
   String test_length(String time) => "Test Time: $time";
@@ -624,6 +631,8 @@ class fr extends S {
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth on.";
   @override
   String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
+  @override
+  String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
   @override
   String status(String status) => "Status: $status";
   @override

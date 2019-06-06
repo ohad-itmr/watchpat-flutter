@@ -18,7 +18,7 @@ class PatientPolicyModel {
   PatientPolicyModel.fromJson(Map<String, dynamic> json)
       : _errorHandler = json['errorHandler'],
         _numberOfRetries = json['numberOfRetries'],
-        _pinType = json['pinTipe'],
+        _pinType = json['pinType'],
         _dataTimeLogging = json['dataTimeLogging'],
         _timeTillTheEnd = json['timeTillTheEnd'];
 }

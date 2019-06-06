@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
-import 'package:my_pat/domain_model/patient_credentials_model.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/utils/http/http_exception.dart';
 import 'package:my_pat/utils/log/dio_logger.dart';
 
 class DispatcherService {
@@ -27,10 +25,13 @@ class DispatcherService {
 
   static final String _dispatcherUrl = GlobalSettings.dispatcherLink;
   final String _testEndpoint = '$_dispatcherUrl/test';
-  final String _checkExternalConfigEndpoint = '$_dispatcherUrl/watchpat/isConfigEnabled';
-  final String _getDefaultConfigEndpoint = '$_dispatcherUrl/watchpat/getDefaultConfig';
-  final String _getConfigEndpoint = '$_dispatcherUrl/api/getConfiguration';
-  final String _authenticationEndPoint = '$_dispatcherUrl/watchpat/authenticate';
+  final String _checkExternalConfigEndpoint =
+      '$_dispatcherUrl/watchpat/isConfigEnabled';
+  final String _getDefaultConfigEndpoint =
+      '$_dispatcherUrl/watchpat/getDefaultConfig';
+  final String _getPatientPolicy = '$_dispatcherUrl/watchpat/policy';
+  final String _authenticationEndPoint =
+      '$_dispatcherUrl/watchpat/authenticate';
   final String _testCompleteEndpoint = '$_dispatcherUrl/test/done';
 
   Future<bool> checkDispatcherAlive() async {
@@ -50,16 +51,17 @@ class DispatcherService {
     return response.data;
   }
 
-//  void sendGetConfig(String serialNumber) async {
-//    Response response = await _dio.get('$_getConfigEndpoint/$serialNumber');
-//    sl<UserAuthenticationService>()
-//        .setConfigParams(GetConfigurationResponseModel.fromJson(response.data));
-//  }
+  void getPatientPolicy(String serialNumber) async {
+    Response response = await _dio.post('$_getPatientPolicy/$serialNumber',
+        data: {"client": "iOS APP", "version": "1"});
+    sl<UserAuthenticationService>().setPatientPolicy(response.data);
+  }
 
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
       String serialNumber, String pin) async {
-    Response response = await _dio
-        .post("$_authenticationEndPoint/$serialNumber", data: {"pin" : pin, "client": "iOS APP", "version": "1"});
+    Response response = await _dio.post(
+        "$_authenticationEndPoint/$serialNumber",
+        data: {"pin": pin, "client": "iOS APP", "version": "1"});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 

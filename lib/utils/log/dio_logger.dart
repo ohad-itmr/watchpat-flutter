@@ -4,7 +4,7 @@ import 'log.dart';
 class DioLogger {
   static void onSend(String tag, RequestOptions options) {
     Log.info(tag, 'Request Path : [${options.method}] ${options.baseUrl}${options.path}');
-    Log.info(tag, 'Request Data : ${options.data.toString()}');
+    Log.info(tag, 'Request Data : ${options.data}');
   }
 
   static void onSuccess(String tag, Response response) {

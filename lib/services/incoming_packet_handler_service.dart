@@ -214,10 +214,12 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             Log.info(TAG, "### start session confirm: device serial saved");
 
+            Log.info(TAG, "getting patient policty");
+            sl<DispatcherService>().getPatientPolicy(PrefsProvider.loadDeviceSerial());
+
             if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
-              Log.info(TAG,
-                  "### start session confirm: device FW version check START");
+              Log.info(TAG, "### start session confirm: device FW version check START");
 
               final bool isUpToDate = await sl<FirmwareUpgrader>()
                   .isDeviceFirmwareVersionUpToDate();

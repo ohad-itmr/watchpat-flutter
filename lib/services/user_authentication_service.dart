@@ -31,21 +31,12 @@ class UserAuthenticationService {
 
   String get sftPath => PrefsProvider.loadSftpPath();
 
-  void setConfigParams(GetConfigurationResponseModel resp) {
-    try {
-      if (!resp.error) {
-        Log.info(TAG, "setting config params");
-        _patientPolicy = resp.policy;
-        sl<SystemStateManager>()
-            .setDispatcherState(DispatcherStates.CONFIG_RECEIVED);
-      } else {
-        Log.info(TAG, "config params error: user not registered");
-        sl<SystemStateManager>()
-            .setDispatcherState(DispatcherStates.CONFIG_ERROR);
-      }
-    } catch (e) {
-      Log.shout(TAG, "config params parsing failed");
-      sl<SystemStateManager>().setDispatcherState(DispatcherStates.FAILURE);
+  void setPatientPolicy(Map<String, dynamic> response) {
+    if (!response['error']) {
+      _patientPolicy = PatientPolicyModel.fromJson(response['policy']);
+      Log.info(TAG, 'Patient policy successfully set up');
+    } else {
+      Log.shout(TAG, "Failed to get patient policty: ${response['message']}");
     }
   }
 
@@ -57,7 +48,9 @@ class UserAuthenticationService {
     PrefsProvider.saveSftpUsername(credentials.username);
     PrefsProvider.saveSftpPath(credentials.root);
 
-    Log.info(TAG, "SFTP PARAMS \n -------------------- \n"
+    Log.info(
+        TAG,
+        "SFTP PARAMS \n -------------------- \n"
         "HOST: ${credentials.host} \n"
         "PORT: ${credentials.port} \n"
         "USERNAME: ${credentials.username} \n"

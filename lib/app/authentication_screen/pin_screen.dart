@@ -15,6 +15,16 @@ class PinScreen extends StatelessWidget {
 
   PinScreen({Key key}) : super(key: key);
 
+  final Map<String, String Function(BuildContext context)>
+      _localizedPinDefinitions = {
+    "PN": (BuildContext context) => S.of(context).pin_type_pn,
+    "SS": (BuildContext context) => S.of(context).pin_type_ss,
+    "CC": (BuildContext context) => S.of(context).pin_type_cc,
+    "MN": (BuildContext context) => S.of(context).pin_type_mn,
+    "HIC": (BuildContext context) => S.of(context).pin_type_hic,
+    "PLAIN": (BuildContext context) => S.of(context).pin_type_plain,
+  };
+
   _checkPin() {
     print('PIN is ${pinManager.pin}');
     pinManager.authStateStream.listen((state) {
@@ -87,11 +97,10 @@ class PinScreen extends StatelessWidget {
   _enterBtnBuilder(
       BuildContext context, AsyncSnapshot<PatientAuthState> snapshot) {
     if (snapshot.hasData && snapshot.data == PatientAuthState.InProgress) {
-      final double size  = prefix0.MediaQuery.of(context).size.width;
+      final double size = prefix0.MediaQuery.of(context).size.width;
       return Container(
         padding: EdgeInsets.only(bottom: size / 15),
-        child: Center(
-            child: CircularProgressIndicator()),
+        child: Center(child: CircularProgressIndicator()),
       );
     }
     return StreamBuilder(
@@ -101,7 +110,7 @@ class PinScreen extends StatelessWidget {
         BuildContext context,
         AsyncSnapshot<bool> pinSnapshot,
       ) {
-        final double size  = prefix0.MediaQuery.of(context).size.width;
+        final double size = prefix0.MediaQuery.of(context).size.width;
         return Container(
           padding: EdgeInsets.only(bottom: size / 15),
           child: ButtonsBlock(
@@ -117,8 +126,27 @@ class PinScreen extends StatelessWidget {
     );
   }
 
+  _showPinHint(BuildContext context) {
+    String pinType = sl<UserAuthenticationService>().pinType.toUpperCase();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text(S.of(context).pin_number_assigned_to_you(
+                _localizedPinDefinitions[pinType](context))),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(S.of(context).ok.toUpperCase()),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size.width;
     return MainTemplate(
       showBack: true,
       showMenu: false,
@@ -146,10 +174,23 @@ class PinScreen extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 2,
-                      child: TextBlock(
-                        title: loc.pinTitle,
-                        contentTextAlign: TextAlign.center,
-                        content: [loc.pinContent],
+                      child: Stack(
+                        children: <Widget>[
+                          TextBlock(
+                            title: loc.pinTitle,
+                            contentTextAlign: TextAlign.center,
+                            content: [loc.pinContent],
+                          ),
+                          Positioned(
+                            right: size / 3.7,
+                            top: -size / 35,
+                            child: IconButton(
+                              icon: Icon(Icons.help_outline,
+                                  color: Theme.of(context).accentColor),
+                              onPressed: () => _showPinHint(context),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(

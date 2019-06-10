@@ -287,7 +287,8 @@ class SystemStateManager extends ManagerBase {
   // normally, not restored after started test
   //
   _initPersistentState() {
-    if (testState != TestStates.INTERRUPTED) {
+    if (testState != TestStates.INTERRUPTED &&
+        testState != TestStates.STOPPED) {
       PrefsProvider.resetPersistentState();
     }
   }
@@ -307,9 +308,6 @@ class SystemStateManager extends ManagerBase {
     setBleScanResult(ScanResultStates.NOT_STARTED);
     setDeviceCommState(DeviceStates.DISCONNECTED);
     setAppMode(AppModes.USER);
-    setTestState(PrefsProvider.getTestStarted()
-        ? TestStates.INTERRUPTED
-        : TestStates.NOT_STARTED);
     setDataTransferState(DataTransferState.NOT_STARTED);
     setDeviceErrorState(DeviceErrorStates.UNKNOWN);
     setServerCommState(ServerStates.DISCONNECTED);
@@ -317,6 +315,20 @@ class SystemStateManager extends ManagerBase {
     setDispatcherState(DispatcherStates.DISCONNECTED);
     setStartSessionState(StartSessionState.UNCONFIRMED);
     setSftpUploadingState(SftpUploadingState.NOT_STARTED);
+    _initTestState();
+  }
+
+  void _initTestState() {
+    TestStates currentTestState;
+    if (PrefsProvider.getTestStarted() &&
+        PrefsProvider.getTestStoppedByUser()) {
+      currentTestState = TestStates.STOPPED;
+    } else if (PrefsProvider.getTestStarted()) {
+      currentTestState = TestStates.INTERRUPTED;
+    } else {
+      currentTestState = TestStates.NOT_STARTED;
+    }
+    setTestState(currentTestState);
   }
 
   void setBtState(final BtStates state) {
@@ -372,8 +384,7 @@ class SystemStateManager extends ManagerBase {
 
   void setDataTransferState(DataTransferState state) {
     if (state != _dataTransferState.value) {
-      Log.info(TAG,
-          "setDataTransferState: ${state.toString()}");
+      Log.info(TAG, "setDataTransferState: ${state.toString()}");
       _dataTransferState.sink.add(state);
     }
   }

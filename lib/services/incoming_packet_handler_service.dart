@@ -314,6 +314,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
           PrefsProvider.setTestStarted(false);
+          PrefsProvider.setTestStoppedByUser(value: false);
 
           // set data transfer state
           sl<SystemStateManager>()

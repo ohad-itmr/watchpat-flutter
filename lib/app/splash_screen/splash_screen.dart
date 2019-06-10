@@ -83,6 +83,10 @@ class _SplashScreenState extends State<SplashScreen> {
           sl<WelcomeActivityManager>().initConnectivityListener();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
           _navigationSub.cancel();
+        } else if (data[_TEST_MAP_KEY] == TestStates.STOPPED) {
+          sl<WelcomeActivityManager>().initConnectivityListener();
+          Navigator.of(context).pushNamed(UploadingScreen.PATH);
+          _navigationSub.cancel();
         } else {
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);
           _navigationSub.cancel();

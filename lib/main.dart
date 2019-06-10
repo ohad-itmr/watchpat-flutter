@@ -11,6 +11,7 @@ void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();
 
   // todo for development purpose only
+//  PrefsProvider.setTestStoppedByUser(value: false);
 //  await PrefsProvider.setTestStarted(false);
 //  PrefsProvider.setIsFirstDeviceConnection(true);
 //  PrefsProvider.setIgnoreDeviceErrors(true);

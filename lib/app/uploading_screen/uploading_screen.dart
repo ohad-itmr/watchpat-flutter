@@ -22,13 +22,18 @@ class _UploadingScreenState extends State<UploadingScreen> {
 
   @override
   void initState() {
-    super.initState();
     _systemState.testStateStream
         .firstWhere((TestStates s) => s == TestStates.ENDED)
         .then((_) async {
       await Future.delayed(Duration(seconds: 3));
       Navigator.of(context).pushNamed(EndScreen.PATH);
     });
+
+    sl<SystemStateManager>().setScanCycleEnabled = true;
+    sl<BleManager>().startScan(
+        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+
+    super.initState();
   }
 
   @override

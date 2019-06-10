@@ -44,8 +44,6 @@ class SftpService {
   SftpService() {
     _systemState = sl<SystemStateManager>();
     _fileSystem = sl<FileSystemService>();
-//    _systemState.testStateStream.listen(_handleTestState);
-//    _systemState.dispatcherStateStream.listen(_handleDispatcherState);
     _systemState.dataTransferStateStream.listen(_handleDataTransferState);
     _systemState.sftpUploadingStateStream.listen(_handleSftpUploadingState);
 
@@ -61,18 +59,11 @@ class SftpService {
                 sftp != SftpConnectionState.DISCONNECTED).listen(null);
   }
 
-//  _handleDispatcherState(DispatcherStates state) {
-
-//  _handleTestState(TestStates state) async {
-
   _handleDataTransferState(DataTransferState state) {
     _currentDataTransferState = state;
     if (state == DataTransferState.TRANSFERRING) {
       _initService();
     }
-//    else if (state == DataTransferStates.STOPPED) {
-//      _closeConnection();
-//    }
   }
 
   _handleSftpUploadingState(SftpUploadingState state) {
@@ -91,9 +82,6 @@ class SftpService {
         username: PrefsProvider.loadSftpUsername(),
         passwordOrKey: PrefsProvider.loadSftpPassword());
 
-    if (sl<SystemStateManager>().testState == TestStates.STARTED) {
-      await PrefsProvider.saveTestDataUploadingOffset(0);
-    }
 
     _sftpFilePath = PrefsProvider.loadSftpPath();
     _sftpFileName = DefaultSettings.serverDataFileName;
@@ -103,6 +91,14 @@ class SftpService {
     _raf = await _dataFile.open(mode: FileMode.read);
 
     await _initSftpConnection();
+
+    // set up or restore uploading offset
+    if (sl<SystemStateManager>().testState == TestStates.STARTED) {
+      await PrefsProvider.saveTestDataUploadingOffset(0);
+    } else {
+      await _restoreUploadingOffset();
+    }
+
     _awaitForData();
   }
 
@@ -135,32 +131,6 @@ class SftpService {
     }
   }
 
-//    _currentTestState = state;
-//    switch (state) {
-//      case TestStates.STARTED:
-//        _systemState.setDataTransferState(DataTransferStates.TRANSFERRING);
-//        _awaitForData();
-//        break;
-//      case TestStates.RESUMED:
-//        await _initService();
-//        _restoreUploading();
-//        break;
-//      default:
-//    }
-//  }
-//      case DispatcherStates.AUTHENTICATED:
-//        _initService();
-//        break;
-//      default:
-//    }
-//  }
-//    switch (state) {
-
-  void resumeDataUploading() async {
-    await _initService();
-    _restoreUploading();
-  }
-
   void _startReconnectionTimer() {
     Log.shout(TAG,
         "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
@@ -191,7 +161,7 @@ class SftpService {
         final int newUploadingOffset =
             PrefsProvider.loadTestDataUploadingOffset();
         if (currentRecordingOffset == newUploadingOffset &&
-        _currentDataTransferState == DataTransferState.ENDED) {
+            _currentDataTransferState == DataTransferState.ENDED) {
           _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
           _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
           BackgroundFetch.finish();
@@ -252,7 +222,7 @@ class SftpService {
     }
   }
 
-  void _restoreUploading() async {
+  Future<void> _restoreUploadingOffset() async {
     try {
       Log.info(TAG, "Looking for previous sftp file");
       final SFTPFile remoteFile =
@@ -261,8 +231,6 @@ class SftpService {
     } catch (e) {
       Log.info(TAG, "Sftp data file not found, will create new one");
     }
-
-    _awaitForData();
   }
 
   void _closeConnection() {

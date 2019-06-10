@@ -47,6 +47,7 @@ class PrefsNames {
   static const String LOCALE_CODE = "locale.code";
   static const String SERVICE_EMAIL_CODE = "service.email";
   static const String DATA_UPLOADING_NOT_FINISHED = "test.data.uploaded";
+  static const String IS_TEST_STOPPED_BY_USER = "is.test.stopped";
 }
 
 class PrefsService {
@@ -158,16 +159,16 @@ class PrefsProvider {
     return PrefsService.prefs.get(PrefsNames.IS_TEST_STARTED) ?? false;
   }
 
-//  //
-//  // save if test is complete
-//  //
-//  static Future<void> setTestComplete(bool value) async {
-//    await PrefsService.prefs.setBool(PrefsNames.IS_TEST_COMPLETE, value);
-//  }
-//
-//  static bool getTestComplete() {
-//    return PrefsService.prefs.get(PrefsNames.IS_TEST_COMPLETE) ?? false;
-//  }
+  //
+  // persist if test was stopped by user
+  //
+  static Future<void> setTestStoppedByUser({bool value = true}) async {
+    await PrefsService.prefs.setBool(PrefsNames.IS_TEST_STOPPED_BY_USER, value);
+  }
+
+  static bool getTestStoppedByUser() {
+    return PrefsService.prefs.getBool(PrefsNames.IS_TEST_STOPPED_BY_USER) ?? false;
+  }
 
   //
   // is first device connection
@@ -212,7 +213,8 @@ class PrefsProvider {
   }
 
   static bool getIgnoreDeviceErrors() {
-    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ?? true;
+    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ??
+        true;
   }
 
   //
@@ -331,10 +333,12 @@ class PrefsProvider {
   }
 
   static Future<void> setDataUploadingIncomplete({bool value = true}) async {
-    return PrefsService.prefs.setBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED, value);
+    return PrefsService.prefs
+        .setBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED, value);
   }
 
   static bool getDataUploadingIncomplete() {
-    return PrefsService.prefs.getBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED) ?? false;
+    return PrefsService.prefs.getBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED) ??
+        false;
   }
 }

@@ -72,6 +72,7 @@ class TestingManager extends ManagerBase {
 
   void stopTesting() {
     Log.info(TAG, "### Sending STOP aquisition command");
+    PrefsProvider.setTestStoppedByUser();
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
     _systemStateManager.setTestState(TestStates.STOPPED);
@@ -121,7 +122,7 @@ class TestingManager extends ManagerBase {
     newProgress =
         newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
 
-    print("PROGRESS: ${currentProgress / 100} / ${newProgress / 100}");
+//    print("PROGRESS: ${currentProgress / 100} / ${newProgress / 100}");
 
     _remainingDataProgress.sink.add(newProgress / 100);
 

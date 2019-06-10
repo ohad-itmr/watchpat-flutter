@@ -203,6 +203,10 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
+          // set start session state to confirmed
+          sl<SystemStateManager>()
+              .setStartSessionState(StartSessionState.CONFIRMED);
+
           // start-session-confirm packet received
           sl<DeviceConfigManager>()
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
@@ -215,11 +219,13 @@ class IncomingPacketHandlerService extends ManagerBase {
             Log.info(TAG, "### start session confirm: device serial saved");
 
             Log.info(TAG, "getting patient policty");
-            sl<DispatcherService>().getPatientPolicy(PrefsProvider.loadDeviceSerial());
+            sl<DispatcherService>()
+                .getPatientPolicy(PrefsProvider.loadDeviceSerial());
 
             if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
-              Log.info(TAG, "### start session confirm: device FW version check START");
+              Log.info(TAG,
+                  "### start session confirm: device FW version check START");
 
               final bool isUpToDate = await sl<FirmwareUpgrader>()
                   .isDeviceFirmwareVersionUpToDate();
@@ -392,7 +398,8 @@ class IncomingPacketHandlerService extends ManagerBase {
           break;
         case DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES:
           Log.info(TAG, "packet received (IS_DEVICE_PAIRED)");
-          Log.info(TAG,">>> opCodeDependent: ${receivedPacket.opCodeDependent}");
+          Log.info(
+              TAG, ">>> opCodeDependent: ${receivedPacket.opCodeDependent}");
 
           // todo Implement checking if paired
 
@@ -405,7 +412,9 @@ class IncomingPacketHandlerService extends ManagerBase {
                 Log.info(TAG, ">>> fresh pairing / unpaired device");
                 isPaired = false;
                 sl<SystemStateManager>().setAppMode(AppModes.USER);
-                sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+                sl<SystemStateManager>()
+                    .changeState
+                    .add(StateChangeActions.APP_MODE_CHANGED);
               } else {
                 // device response - already paired device
                 Log.info(TAG, ">>> fresh pairing / paired device - ERROR");
@@ -415,14 +424,17 @@ class IncomingPacketHandlerService extends ManagerBase {
               // reconnection pairing - saved device serial located
               if (receivedPacket.opCodeDependent == 0) {
                 // device response - not paired device
-                Log.info(TAG, ">>> reconnection pairing / unpaired device - ERROR");
+                Log.info(
+                    TAG, ">>> reconnection pairing / unpaired device - ERROR");
                 isPaired = false;
               } else {
                 // device response - already paired device
                 Log.info(TAG, ">>> reconnection pairing / paired device");
                 isPaired = true;
                 sl<SystemStateManager>().setAppMode(AppModes.USER);
-                sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+                sl<SystemStateManager>()
+                    .changeState
+                    .add(StateChangeActions.APP_MODE_CHANGED);
               }
             }
           } else {

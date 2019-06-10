@@ -221,6 +221,7 @@ class BleManager extends ManagerBase {
   }
 
   void _sendStartSession(int useType) {
+    //todo add real SW id
     Log.info(TAG, "### sending start session ");
     sl<CommandTaskerManager>().addCommandWithNoCb(
         DeviceCommands.getStartSessionCmd(
@@ -350,14 +351,6 @@ class BleManager extends ManagerBase {
                 SystemStateManager.getAppModeName(mode.index));
         switch (mode) {
           case AppModes.USER:
-            Log.info(TAG, "### sending start session");
-            // todo add real SW ID
-//            sl<CommandTaskerManager>()
-//                .addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
-//              0x0000,
-//              DeviceCommands.SESSION_START_USE_TYPE_PATIENT,
-//              [0, 0, 0, 1],
-//            ));
             _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
             break;
           case AppModes.CS:

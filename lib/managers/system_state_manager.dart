@@ -70,6 +70,8 @@ enum StateChangeActions {
   NOTIFY_UPLOADING_TO_CLOUD_DONE
 }
 
+enum StartSessionState { UNCONFIRMED, CONFIRMED }
+
 class SystemStateManager extends ManagerBase {
   static const String TAG = 'SystemStateManager';
 
@@ -220,6 +222,9 @@ class SystemStateManager extends ManagerBase {
   PublishSubject<StateChangeActions> _stateChangeSubject =
       PublishSubject<StateChangeActions>();
 
+  BehaviorSubject<StartSessionState> _startSessionState =
+      BehaviorSubject<StartSessionState>();
+
   Observable<BtStates> get btStateStream => _btState.stream;
 
   Observable<ScanStates> get bleScanStateStream => _bleScanState.stream;
@@ -251,6 +256,9 @@ class SystemStateManager extends ManagerBase {
 
   Observable<StateChangeActions> get stateChangeStream =>
       _stateChangeSubject.stream;
+
+  Observable<StartSessionState> get startSessionStateStream =>
+      _startSessionState.stream;
 
   bool _isServiceModeEnabled = false;
   bool _isScanCycleEnabled = false;
@@ -298,6 +306,7 @@ class SystemStateManager extends ManagerBase {
     setServerCommState(ServerStates.DISCONNECTED);
     setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
     setDispatcherState(DispatcherStates.DISCONNECTED);
+    setStartSessionState(StartSessionState.UNCONFIRMED);
   }
 
   void setBtState(final BtStates state) {
@@ -381,6 +390,11 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
+  setStartSessionState(StartSessionState state) {
+    Log.info(TAG, "setStartSessionState: ${state.toString()}");
+    _startSessionState.sink.add(state);
+  }
+
   Sink<StateChangeActions> get changeState => _stateChangeSubject.sink;
 
   bool get isServiceModeEnabled => _isServiceModeEnabled;
@@ -415,6 +429,8 @@ class SystemStateManager extends ManagerBase {
 
   DispatcherStates get dispatcherState => _dispatcherState.value;
 
+  StartSessionState get startSessionState => _startSessionState.value;
+
   bool get isBTEnabled => btState == BtStates.ENABLED;
 
   bool get isConnectionToDevice =>
@@ -447,6 +463,7 @@ class SystemStateManager extends ManagerBase {
     _dispatcherState.close();
     _stateChangeSubject.close();
     _inetConnectionState.close();
+    _startSessionState.close();
   }
 
   Future<bool> get deviceHasErrors {

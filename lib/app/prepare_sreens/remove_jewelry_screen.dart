@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
@@ -30,7 +31,14 @@ class RemoveJewelryScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () {
-              Navigator.pushNamed(context, PinScreen.PATH);
+              if (sl<SystemStateManager>().deviceCommState ==
+                      DeviceStates.CONNECTED &&
+                  sl<SystemStateManager>().startSessionState ==
+                      StartSessionState.CONFIRMED) {
+                Navigator.pushNamed(context, PinScreen.PATH);
+              } else {
+                _showDisconnectedWarning(context);
+              }
             },
           ),
           moreActionButton: ButtonModel(
@@ -43,5 +51,22 @@ class RemoveJewelryScreen extends StatelessWidget {
         total: 6,
       ),
     );
+  }
+
+  _showDisconnectedWarning(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(S.of(context).device_not_found),
+            content: Text(S.of(context).device_not_located),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(S.of(context).ok),
+              ),
+            ],
+          );
+        });
   }
 }

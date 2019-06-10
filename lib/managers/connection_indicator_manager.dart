@@ -30,7 +30,7 @@ class ConnectionIndicatorManager extends ManagerBase {
     Observable.combineLatest3(
       _systemState.inetConnectionStateStream,
       sl<SftpService>().sftpConnectionStateStream,
-      _systemState.dataTransferStateStream,
+      _systemState.sftpUploadingStateStream,
       _handleSftpTransferState,
     ).listen(null);
   }
@@ -85,14 +85,14 @@ class ConnectionIndicatorManager extends ManagerBase {
   }
 
   _handleSftpTransferState(ConnectivityResult inetState,
-      SftpConnectionState sftpState, DataTransferStates transferState) {
+      SftpConnectionState sftpState, SftpUploadingState uploadingState) {
     if (inetState != ConnectivityResult.none &&
         sftpState == SftpConnectionState.CONNECTED &&
-        transferState == DataTransferStates.TRANSFERRING) {
+        uploadingState == SftpUploadingState.UPLOADING) {
       _setSftpLedBlinking();
     } else if (inetState != ConnectivityResult.none &&
         sftpState == SftpConnectionState.CONNECTED &&
-        transferState == DataTransferStates.WAITING_FOR_DATA) {
+        uploadingState == SftpUploadingState.WAITING_FOR_DATA) {
       _setSftpLedLit(true);
       _sftpLitState.sink.add(true);
     } else if (inetState != ConnectivityResult.none &&

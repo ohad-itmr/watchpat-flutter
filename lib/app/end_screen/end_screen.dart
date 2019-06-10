@@ -38,8 +38,8 @@ class EndScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () async {
-              if (sl<SystemStateManager>().dataTransferState !=
-                  DataTransferStates.ALL_TRANSFERRED) {
+              if (sl<SystemStateManager>().sftpUploadingState !=
+                  SftpUploadingState.ALL_UPLOADED) {
                 Log.info(TAG,
                     "Data was not uploaded to sftp server. Registering background fetch task");
                 PrefsProvider.setDataUploadingIncomplete();

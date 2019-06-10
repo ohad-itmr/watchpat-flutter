@@ -172,15 +172,19 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             if (currentTestState == TestStates.NOT_STARTED) {
               sl<SystemStateManager>().setTestState(TestStates.STARTED);
-              sl<SystemStateManager>()
-                  .changeState
-                  .add(StateChangeActions.TEST_STATE_CHANGED);
+//              sl<SystemStateManager>()
+//                  .changeState
+//                  .add(StateChangeActions.TEST_STATE_CHANGED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
               sl<TestingManager>().restartTimers();
             }
             PrefsProvider.setTestStarted(true);
           }
+
+          // set data transfer state
+          sl<SystemStateManager>()
+              .setDataTransferState(DataTransferState.TRANSFERRING);
 
           final int prevRemoteIdentifier =
               PrefsProvider.loadRemotePacketIdentifier();
@@ -304,11 +308,17 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
+
         case DeviceCommands.CMD_OPCODE_END_OF_TEST_DATA:
           Log.info(TAG, "packet received (END_OF_TEST_DATA)");
-          // end-of-test-data packet received
+
           sl<SystemStateManager>().setTestState(TestStates.ENDED);
           PrefsProvider.setTestStarted(false);
+
+          // set data transfer state
+          sl<SystemStateManager>()
+              .setDataTransferState(DataTransferState.ENDED);
+
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 

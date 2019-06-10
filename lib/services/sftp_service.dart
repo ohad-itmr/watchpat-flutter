@@ -36,24 +36,20 @@ class SftpService {
   Directory _tempDir;
   int _dataChunkSize = DefaultSettings.uploadDataChunkMaxSize;
   bool _uploadingAvailable = false;
-  TestStates _currentTestState;
-  DataTransferStates _currentTransferState;
+  SftpUploadingState _currentUploadingState;
+  DataTransferState _currentDataTransferState;
   int _reconnectionAttempts = 0;
   Timer _reconnectionTimer;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
     _fileSystem = sl<FileSystemService>();
-    _systemState.testStateStream.listen(_handleTestState);
-    _systemState.dispatcherStateStream.listen(_handleDispatcherState);
+//    _systemState.testStateStream.listen(_handleTestState);
+//    _systemState.dispatcherStateStream.listen(_handleDispatcherState);
     _systemState.dataTransferStateStream.listen(_handleDataTransferState);
+    _systemState.sftpUploadingStateStream.listen(_handleSftpUploadingState);
 
     _initConnectionAvailabilityListener();
-  }
-
-  void resumeDataUploading() async {
-    await _initService();
-    _restoreUploading();
   }
 
   void _initConnectionAvailabilityListener() {
@@ -65,33 +61,23 @@ class SftpService {
                 sftp != SftpConnectionState.DISCONNECTED).listen(null);
   }
 
-  _handleDispatcherState(DispatcherStates state) {
-    switch (state) {
-      case DispatcherStates.AUTHENTICATED:
-        _initService();
-        break;
-      default:
+//  _handleDispatcherState(DispatcherStates state) {
+
+//  _handleTestState(TestStates state) async {
+
+  _handleDataTransferState(DataTransferState state) {
+    _currentDataTransferState = state;
+    if (state == DataTransferState.TRANSFERRING) {
+      _initService();
     }
+//    else if (state == DataTransferStates.STOPPED) {
+//      _closeConnection();
+//    }
   }
 
-  _handleTestState(TestStates state) async {
-    _currentTestState = state;
-    switch (state) {
-      case TestStates.STARTED:
-        _systemState.setDataTransferState(DataTransferStates.TRANSFERRING);
-        _awaitForData();
-        break;
-      case TestStates.RESUMED:
-        await _initService();
-        _restoreUploading();
-        break;
-      default:
-    }
-  }
-
-  _handleDataTransferState(DataTransferStates state) {
-    _currentTransferState = state;
-    if (state == DataTransferStates.ALL_TRANSFERRED) {
+  _handleSftpUploadingState(SftpUploadingState state) {
+    _currentUploadingState = state;
+    if (state == SftpUploadingState.ALL_UPLOADED) {
       _closeConnection();
     }
   }
@@ -99,14 +85,13 @@ class SftpService {
   Future<void> _initService() async {
     Log.info(TAG, "Initializing SFTP service");
 
-    UserAuthenticationService _authService = sl<UserAuthenticationService>();
     _client = SSHClient(
         host: PrefsProvider.loadSftpHost(),
         port: PrefsProvider.loadSftpPort(),
         username: PrefsProvider.loadSftpUsername(),
         passwordOrKey: PrefsProvider.loadSftpPassword());
 
-    if (_currentTestState != TestStates.RESUMED) {
+    if (sl<SystemStateManager>().testState == TestStates.STARTED) {
       await PrefsProvider.saveTestDataUploadingOffset(0);
     }
 
@@ -118,6 +103,7 @@ class SftpService {
     _raf = await _dataFile.open(mode: FileMode.read);
 
     await _initSftpConnection();
+    _awaitForData();
   }
 
   Future<void> _initSftpConnection() async {
@@ -149,6 +135,32 @@ class SftpService {
     }
   }
 
+//    _currentTestState = state;
+//    switch (state) {
+//      case TestStates.STARTED:
+//        _systemState.setDataTransferState(DataTransferStates.TRANSFERRING);
+//        _awaitForData();
+//        break;
+//      case TestStates.RESUMED:
+//        await _initService();
+//        _restoreUploading();
+//        break;
+//      default:
+//    }
+//  }
+//      case DispatcherStates.AUTHENTICATED:
+//        _initService();
+//        break;
+//      default:
+//    }
+//  }
+//    switch (state) {
+
+  void resumeDataUploading() async {
+    await _initService();
+    _restoreUploading();
+  }
+
   void _startReconnectionTimer() {
     Log.shout(TAG,
         "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
@@ -160,7 +172,7 @@ class SftpService {
       // Check for connections, if none start waiting
       if (!_uploadingAvailable) {
         sl<SystemStateManager>()
-            .setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
+            .setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
         await _awaitForConnection();
       }
 
@@ -170,7 +182,7 @@ class SftpService {
           PrefsProvider.loadTestDataUploadingOffset();
 
       if (currentUploadingOffset < currentRecordingOffset) {
-        _systemState.setDataTransferState(DataTransferStates.TRANSFERRING);
+        _systemState.setSftpUploadingState(SftpUploadingState.UPLOADING);
         await _uploadDataChunk(
             uploadingOffset: currentUploadingOffset,
             recordingOffset: currentRecordingOffset);
@@ -179,18 +191,18 @@ class SftpService {
         final int newUploadingOffset =
             PrefsProvider.loadTestDataUploadingOffset();
         if (currentRecordingOffset == newUploadingOffset &&
-            _currentTestState == TestStates.ENDED) {
-          _currentTransferState = DataTransferStates.ALL_TRANSFERRED;
-          _systemState.setDataTransferState(DataTransferStates.ALL_TRANSFERRED);
+        _currentDataTransferState == DataTransferState.ENDED) {
+          _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
+          _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
           BackgroundFetch.finish();
         }
       } else {
-        _systemState.setDataTransferState(DataTransferStates.WAITING_FOR_DATA);
+        _systemState.setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
         Log.info(TAG,
             "Waiting for data: UPLOADING OFFSET: $currentUploadingOffset, RECORDING OFFSET: $currentRecordingOffset");
         await Future.delayed(Duration(seconds: 3));
       }
-    } while (_currentTransferState != DataTransferStates.ALL_TRANSFERRED);
+    } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
   }
 
   Future<void> _awaitForConnection() async {

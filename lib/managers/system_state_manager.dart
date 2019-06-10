@@ -23,6 +23,7 @@ enum DeviceErrorStates {
   HW_ERROR
 }
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
+
 enum TestStates {
   NOT_STARTED,
   STARTED,
@@ -32,14 +33,16 @@ enum TestStates {
   STOPPED,
   ENDED
 }
-enum DataTransferStates {
+
+enum DataTransferState { NOT_STARTED, TRANSFERRING, ENDED }
+
+enum SftpUploadingState {
   NOT_STARTED,
-  TRANSFERRING,
+  UPLOADING,
   WAITING_FOR_DATA,
-  UPLOADING_TO_SERVER,
-  STOPPED,
-  ALL_TRANSFERRED
+  ALL_UPLOADED
 }
+
 enum AppModes { USER, CS, TECH, BACKGROUND }
 enum FirmwareUpgradeStates { UNKNOWN, UPGRADING, UP_TO_DATE, UPDATE_FAILED }
 enum DispatcherStates {
@@ -209,8 +212,8 @@ class SystemStateManager extends ManagerBase {
   BehaviorSubject<ServerStates> _serverCommState =
       BehaviorSubject<ServerStates>();
   BehaviorSubject<TestStates> _testState = BehaviorSubject<TestStates>();
-  BehaviorSubject<DataTransferStates> _dataTransferState =
-      BehaviorSubject<DataTransferStates>();
+  BehaviorSubject<DataTransferState> _dataTransferState =
+      BehaviorSubject<DataTransferState>();
   BehaviorSubject<AppModes> _appMode = BehaviorSubject<AppModes>();
   BehaviorSubject<FirmwareUpgradeStates> _firmwareState =
       BehaviorSubject<FirmwareUpgradeStates>();
@@ -224,6 +227,9 @@ class SystemStateManager extends ManagerBase {
 
   BehaviorSubject<StartSessionState> _startSessionState =
       BehaviorSubject<StartSessionState>();
+
+  BehaviorSubject<SftpUploadingState> _sftpUploadingState =
+      BehaviorSubject<SftpUploadingState>();
 
   Observable<BtStates> get btStateStream => _btState.stream;
 
@@ -240,7 +246,7 @@ class SystemStateManager extends ManagerBase {
 
   Observable<TestStates> get testStateStream => _testState.stream;
 
-  Observable<DataTransferStates> get dataTransferStateStream =>
+  Observable<DataTransferState> get dataTransferStateStream =>
       _dataTransferState.stream;
 
   Observable<AppModes> get appModeStream => _appMode.stream;
@@ -259,6 +265,9 @@ class SystemStateManager extends ManagerBase {
 
   Observable<StartSessionState> get startSessionStateStream =>
       _startSessionState.stream;
+
+  Observable<SftpUploadingState> get sftpUploadingStateStream =>
+      _sftpUploadingState.stream;
 
   bool _isServiceModeEnabled = false;
   bool _isScanCycleEnabled = false;
@@ -301,12 +310,13 @@ class SystemStateManager extends ManagerBase {
     setTestState(PrefsProvider.getTestStarted()
         ? TestStates.INTERRUPTED
         : TestStates.NOT_STARTED);
-    setDataTransferState(DataTransferStates.NOT_STARTED);
+    setDataTransferState(DataTransferState.NOT_STARTED);
     setDeviceErrorState(DeviceErrorStates.UNKNOWN);
     setServerCommState(ServerStates.DISCONNECTED);
     setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
     setDispatcherState(DispatcherStates.DISCONNECTED);
     setStartSessionState(StartSessionState.UNCONFIRMED);
+    setSftpUploadingState(SftpUploadingState.NOT_STARTED);
   }
 
   void setBtState(final BtStates state) {
@@ -360,10 +370,10 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
-  void setDataTransferState(DataTransferStates state) {
+  void setDataTransferState(DataTransferState state) {
     if (state != _dataTransferState.value) {
       Log.info(TAG,
-          "setDataTransferState: ${getDataTransferStateName(state.index)}");
+          "setDataTransferState: ${state.toString()}");
       _dataTransferState.sink.add(state);
     }
   }
@@ -390,9 +400,16 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
-  setStartSessionState(StartSessionState state) {
+  void setStartSessionState(StartSessionState state) {
     Log.info(TAG, "setStartSessionState: ${state.toString()}");
     _startSessionState.sink.add(state);
+  }
+
+  void setSftpUploadingState(SftpUploadingState state) {
+    if (state != sftpUploadingState) {
+      Log.info(TAG, "setSftpUploadingState ${state.toString()}");
+      _sftpUploadingState.sink.add(state);
+    }
   }
 
   Sink<StateChangeActions> get changeState => _stateChangeSubject.sink;
@@ -421,7 +438,7 @@ class SystemStateManager extends ManagerBase {
 
   TestStates get testState => _testState.value;
 
-  DataTransferStates get dataTransferState => _dataTransferState.value;
+  DataTransferState get dataTransferState => _dataTransferState.value;
 
   AppModes get appMode => _appMode.value;
 
@@ -430,6 +447,8 @@ class SystemStateManager extends ManagerBase {
   DispatcherStates get dispatcherState => _dispatcherState.value;
 
   StartSessionState get startSessionState => _startSessionState.value;
+
+  SftpUploadingState get sftpUploadingState => _sftpUploadingState.value;
 
   bool get isBTEnabled => btState == BtStates.ENABLED;
 
@@ -443,10 +462,6 @@ class SystemStateManager extends ManagerBase {
 
   bool get isTestActive =>
       testState == TestStates.STARTED || testState == TestStates.MINIMUM_PASSED;
-
-  bool get isDataProcessing =>
-      dataTransferState == DataTransferStates.TRANSFERRING ||
-      dataTransferState == DataTransferStates.UPLOADING_TO_SERVER;
 
   @override
   void dispose() {
@@ -464,6 +479,7 @@ class SystemStateManager extends ManagerBase {
     _stateChangeSubject.close();
     _inetConnectionState.close();
     _startSessionState.close();
+    _sftpUploadingState.close();
   }
 
   Future<bool> get deviceHasErrors {

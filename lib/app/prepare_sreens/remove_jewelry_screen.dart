@@ -4,12 +4,34 @@ import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
-class RemoveJewelryScreen extends StatelessWidget {
+class RemoveJewelryScreen extends StatefulWidget {
   static const String PATH = '/prepare';
-  final S loc = sl<S>();
   static const String TAG = 'RemoveJewelryScreen';
 
   RemoveJewelryScreen({Key key}) : super(key: key);
+
+  @override
+  _RemoveJewelryScreenState createState() => _RemoveJewelryScreenState();
+}
+
+class _RemoveJewelryScreenState extends State<RemoveJewelryScreen> {
+  final S loc = sl<S>();
+  bool _nextIsPressed = false;
+
+  _handleNext() async {
+    if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
+      await sl<SystemStateManager>()
+          .startSessionStateStream
+          .where((StartSessionState st) => st == StartSessionState.CONFIRMED)
+          .first;
+      Navigator.pushNamed(context, PinScreen.PATH);
+    } else {
+      _showDisconnectedWarning(context);
+      setState(() {
+        _nextIsPressed = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,24 +50,20 @@ class RemoveJewelryScreen extends StatelessWidget {
             loc.removeJewelryContent,
           ],
         ),
-        buttons: ButtonsBlock(
-          nextActionButton: ButtonModel(
-            action: () {
-              if (sl<SystemStateManager>().deviceCommState ==
-                      DeviceStates.CONNECTED &&
-                  sl<SystemStateManager>().startSessionState ==
-                      StartSessionState.CONFIRMED) {
-                Navigator.pushNamed(context, PinScreen.PATH);
-              } else {
-                _showDisconnectedWarning(context);
-              }
-            },
-          ),
-          moreActionButton: ButtonModel(
-            action: () => Navigator.of(context)
-                .pushNamed("${CarouselScreen.PATH}/${RemoveJewelryScreen.TAG}"),
-          ),
-        ),
+        buttons: _nextIsPressed
+            ? CircularProgressIndicator()
+            : ButtonsBlock(
+                nextActionButton: ButtonModel(
+                  action: () {
+                    setState(() => _nextIsPressed = true);
+                    _handleNext();
+                  },
+                ),
+                moreActionButton: ButtonModel(
+                  action: () => Navigator.of(context).pushNamed(
+                      "${CarouselScreen.PATH}/${RemoveJewelryScreen.TAG}"),
+                ),
+              ),
         showSteps: true,
         current: 2,
         total: 6,

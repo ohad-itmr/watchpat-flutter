@@ -20,7 +20,8 @@ class BleManager extends ManagerBase {
   StreamSubscription deviceStateSubscription;
 
   bool _isFirstConnection = true;
-  BluetoothDevice _device;
+
+  String _deviceAdvName;
 
   BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
       BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
@@ -65,7 +66,6 @@ class BleManager extends ManagerBase {
   }
 
   void connect(BluetoothDevice d) {
-    _device = d;
     sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
   }
 
@@ -94,17 +94,21 @@ class BleManager extends ManagerBase {
         return;
       }
 
-      if (_isFirstConnection || !_isFirstConnection && _device.name.endsWith("N")) {
+      Log.info(TAG, "Device name: $_deviceAdvName");
+      if (_isFirstConnection ||
+          !_isFirstConnection && _deviceAdvName.endsWith("N")) {
         Log.info(TAG,
-            "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device ${_device.name}, checking 'paired' flag");
+            "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device $_deviceAdvName, checking 'paired' flag");
         sl<CommandTaskerManager>()
             .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
-          return;
+        return;
       }
 
       // start session
       sl<SystemStateManager>().setAppMode(AppModes.USER);
-      sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+      sl<SystemStateManager>()
+          .changeState
+          .add(StateChangeActions.APP_MODE_CHANGED);
 
       if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
@@ -135,7 +139,6 @@ class BleManager extends ManagerBase {
 
   void _disconnect() {
     Log.info(TAG, 'Remove all value changed listeners');
-    _device = null;
     sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     deviceStateSubscription?.cancel();
     deviceStateSubscription = null;
@@ -323,6 +326,8 @@ class BleManager extends ManagerBase {
 
       final BluetoothDevice device =
           _discoveredDevices.values.toList()[0].device;
+      _deviceAdvName =
+          _discoveredDevices.values.toList()[0].advertisementData.localName;
 
       connect(device);
     } else {

@@ -61,8 +61,8 @@ class EmailSenderService {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add('m.derzhavets@emg-soft.com')
-      ..subject = 'This shit is alive!!'
-      ..text = 'Go fuck yourself';
+      ..subject = 'This thing is alive!!'
+      ..text = 'Go fun yourself';
 
     return await _sendMessage(message);
   }

@@ -82,9 +82,8 @@ void _backgroundFetchTask() async {
   _connectivity.checkConnectivity().then((ConnectivityResult res) {
     sl<EmailSenderService>().sendTestMail();
     print("SFTP FOLDER: ${PrefsProvider.loadSftpPath()}");
-//    PrefsProvider.saveTestDataRecordingOffset(5000000);
     if (res != ConnectivityResult.none) {
-      sl<SystemStateManager>().setTestState(TestStates.RESUMED);
+      //todo launch sftp uploading while test is already ended
     } else {
       BackgroundFetch.finish();
     }

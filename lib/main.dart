@@ -72,9 +72,4 @@ class _AppComponentState extends State<AppComponent> {
       onGenerateRoute: router.generator,
     );
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

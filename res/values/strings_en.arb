@@ -204,7 +204,7 @@
   "test_data_from_previous_session_still_uploading": "Test data from previous session still uploading to server",
   "device_is_paired_error": "Device was already paired, please reset device and start the process again",
   "elapsed_time": "Elapsed time",
-  "device_is_not_paired_error": "Previously connected device acts as unpaired. We don't know what to do.",
+  "device_is_not_paired_error": "Main device pairing error. Please reset device and try again.",
   "pin_number_assigned_to_you" : "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.",
   "pin_type_pn" : "four digits that were provided to you by the doctor’s staff",
   "pin_type_ss": "the last four digits of your Social Security number",

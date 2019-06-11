@@ -412,9 +412,9 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(
               TAG, ">>> opCodeDependent: ${receivedPacket.opCodeDependent}");
 
-          // todo Implement checking if paired
-
           bool isPaired;
+
+          //
           if (sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
             if (PrefsProvider.loadDeviceName() == null) {
               // fresh pairing - no saved device serial
@@ -423,9 +423,7 @@ class IncomingPacketHandlerService extends ManagerBase {
                 Log.info(TAG, ">>> fresh pairing / unpaired device");
                 isPaired = false;
                 sl<SystemStateManager>().setAppMode(AppModes.USER);
-                sl<SystemStateManager>()
-                    .changeState
-                    .add(StateChangeActions.APP_MODE_CHANGED);
+                sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
               } else {
                 // device response - already paired device
                 Log.info(TAG, ">>> fresh pairing / paired device - ERROR");
@@ -436,16 +434,16 @@ class IncomingPacketHandlerService extends ManagerBase {
               if (receivedPacket.opCodeDependent == 0) {
                 // device response - not paired device
                 Log.info(
-                    TAG, ">>> reconnection pairing / unpaired device - ERROR");
+                    TAG, ">>> reconnection pairing / 'N' in name / unpaired device");
                 isPaired = false;
-              } else {
-                // device response - already paired device
-                Log.info(TAG, ">>> reconnection pairing / paired device");
-                isPaired = true;
                 sl<SystemStateManager>().setAppMode(AppModes.USER);
                 sl<SystemStateManager>()
                     .changeState
                     .add(StateChangeActions.APP_MODE_CHANGED);
+              } else {
+                // device response - already paired device
+                Log.info(TAG, ">>> reconnection pairing / 'N' in name / paired device - ERROR");
+                isPaired = true;
               }
             }
           } else {
@@ -589,6 +587,5 @@ class IncomingPacketHandlerService extends ManagerBase {
     _isPairedResponse.close();
     _bitResponse.close();
     _techStatusResponse.close();
-    // TODO: implement dispose
   }
 }

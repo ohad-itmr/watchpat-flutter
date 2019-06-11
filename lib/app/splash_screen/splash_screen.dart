@@ -114,7 +114,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _handleIsPaired(bool isPaired) {
     final bool isFirstConnection = PrefsProvider.loadDeviceName() == null;
     if (isFirstConnection && !isPaired ||
-        !isFirstConnection && isPaired ||
+        !isFirstConnection && !isPaired ||
         sl<SystemStateManager>().testState == TestStates.INTERRUPTED ||
         sl<SystemStateManager>().testState == TestStates.RESUMED) return;
     showDialog(

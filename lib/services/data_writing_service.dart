@@ -13,6 +13,7 @@ class DataWritingService {
   SystemStateManager _systemState;
   static File _dataFile;
   static RandomAccessFile _raf;
+  static IOSink _fileSink;
 
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
@@ -41,7 +42,14 @@ class DataWritingService {
   Future<void> _initializeFileWriting() async {
     Log.info(TAG, "Opening data file for writing");
     _dataFile = await sl<FileSystemService>().localDataFile;
+    print("DATA FILE BEFORE RAF OPEN: ${_dataFile.lengthSync()}");
     _raf = await _dataFile.open(mode: FileMode.write);
+
+    print("DATA FILE AFTER RAF OPEN: ${_dataFile.lengthSync()}");
+
+    // todo debug
+    _raf.closeSync();
+    print("DATA FILE AFTER RAF CLOSE: ${_dataFile.lengthSync()}");
   }
 
   void writeToLocalFile(List<int> bytes) {

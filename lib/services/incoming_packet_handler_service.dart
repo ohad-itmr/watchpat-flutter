@@ -452,6 +452,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               // device response - not paired device
               isPaired = false;
               sl<SystemStateManager>().setTestState(TestStates.ENDED);
+              sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
             }
           }
 

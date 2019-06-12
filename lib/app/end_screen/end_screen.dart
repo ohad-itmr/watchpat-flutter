@@ -83,6 +83,7 @@ void _backgroundFetchTask() async {
     sl<EmailSenderService>().sendTestMail();
     print("SFTP FOLDER: ${PrefsProvider.loadSftpPath()}");
     if (res != ConnectivityResult.none) {
+      sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
       //todo launch sftp uploading while test is already ended
     } else {
       BackgroundFetch.finish();

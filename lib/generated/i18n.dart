@@ -220,7 +220,7 @@ class S implements WidgetsLocalizations {
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   String get user_mode => "User mode";
   String get vdd_voltage => "VDD voltage: ";
-  String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly. \n\nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
+  String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly. \nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
   String get welcomeTitle => "WELCOME";
   String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";

@@ -5,7 +5,6 @@ import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
-
   RecordingControl() {
     WidgetsBinding.instance.addObserver(this);
   }
@@ -61,10 +60,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
               moreActionButton: null,
               nextActionButton: ButtonModel(
                 action: snapshot.data == TestStates.MINIMUM_PASSED
-                    ? () {
-                        sl<TestingManager>().stopTesting();
-                        Navigator.pushNamed(context, UploadingScreen.PATH);
-                      }
+                    ? () => sl<TestingManager>().stopTesting()
                     : null,
                 text: S.of(context).btnEndRecording,
               ),

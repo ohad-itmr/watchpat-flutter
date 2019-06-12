@@ -45,6 +45,8 @@ class BleManager extends ManagerBase {
   Observable<BluetoothDeviceState> get deviceState =>
       _deviceStateSubject.stream;
 
+  Timer _testInterruptedTimer;
+
   BleManager() {
     lang = sl<S>();
     _incomingPacketHandler = sl<IncomingPacketHandlerService>();
@@ -85,7 +87,7 @@ class BleManager extends ManagerBase {
 
       if (sysStateManager.testState == TestStates.INTERRUPTED) {
         Log.info(TAG, "### reconnected to device after test started");
-        final Timer timer = Timer(Duration(seconds: 2), () {
+        _testInterruptedTimer = Timer(Duration(seconds: 2), () {
           if (sysStateManager.testState != TestStates.RESUMED) {
             sl<CommandTaskerManager>()
                 .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());

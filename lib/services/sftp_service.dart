@@ -41,6 +41,8 @@ class SftpService {
   int _reconnectionAttempts = 0;
   Timer _reconnectionTimer;
 
+  bool _serviceInitialized = false;
+
   SftpService() {
     _systemState = sl<SystemStateManager>();
     _fileSystem = sl<FileSystemService>();
@@ -63,6 +65,8 @@ class SftpService {
     _currentDataTransferState = state;
     if (state == DataTransferState.TRANSFERRING) {
       _initService();
+    } else if (state == DataTransferState.ENDED && !_serviceInitialized) {
+      _initService();
     }
   }
 
@@ -74,6 +78,7 @@ class SftpService {
   }
 
   Future<void> _initService() async {
+    _serviceInitialized = true;
     Log.info(TAG, "Initializing SFTP service");
 
     _client = SSHClient(
@@ -82,12 +87,12 @@ class SftpService {
         username: PrefsProvider.loadSftpUsername(),
         passwordOrKey: PrefsProvider.loadSftpPassword());
 
-
     _sftpFilePath = PrefsProvider.loadSftpPath();
     _sftpFileName = DefaultSettings.serverDataFileName;
     _tempDir = await getTemporaryDirectory();
 
     _dataFile = await _fileSystem.localDataFile;
+    print("DATA FILE ${_dataFile.lengthSync()}");
     _raf = await _dataFile.open(mode: FileMode.read);
 
     await _initSftpConnection();
@@ -187,14 +192,20 @@ class SftpService {
     @required int recordingOffset,
   }) async {
     RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
+
+    print("RAF ${_raf.lengthSync()}");
+
     final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
         ? _dataChunkSize
         : recordingOffset - uploadingOffset;
 
     List<int> bytes = await rafWithOffset.read(lengthToRead);
 
+    print("BYTES $bytes");
     final File tempFile = File("${_tempDir.path}/$_sftpFileName");
     await tempFile.writeAsBytes(bytes);
+
+    print("FILE ${tempFile.readAsBytesSync()}");
 
     try {
       final String result = await _client.sftpAppendToFile(

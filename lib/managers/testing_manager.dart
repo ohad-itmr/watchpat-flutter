@@ -75,7 +75,10 @@ class TestingManager extends ManagerBase {
     PrefsProvider.setTestStoppedByUser();
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
-    _systemStateManager.setTestState(TestStates.STOPPED);
+
+    final packetDelta = TimeUtils.getPacketRealTimeDiffSec();
+    _systemStateManager
+        .setTestState(packetDelta > 5 ? TestStates.STOPPED : TestStates.ENDED);
     _initDataProgress();
     _elapsedTimer.cancel();
   }
@@ -131,7 +134,8 @@ class TestingManager extends ManagerBase {
 
   void updateProgressTime() {
     _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets > 0
-        ? _numberOfSecondsToDownloadAllPackets : 0);
+        ? _numberOfSecondsToDownloadAllPackets
+        : 0);
   }
 
   @override

@@ -105,7 +105,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             _handleNext();
 
 //            Navigator.of(context)
-//                .pushNamed(UploadingScreen.PATH);
+//                .pushNamed(StartRecordingScreen.PATH);
           },
         ),
         moreActionButton: ButtonModel(

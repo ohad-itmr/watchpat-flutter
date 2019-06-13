@@ -40,9 +40,13 @@ class StartRecordingScreen extends StatelessWidget {
                     "${ErrorScreen.PATH}/${S.of(context).battery_level_error}");
               }
             },
-            text: loc.btnStartRecording,
+            text: S.of(context).btnStartRecording,
           ),
-          moreActionButton: null,
+          moreActionButton: ButtonModel(
+            action: () => Navigator.of(context)
+                .pushNamed("${CarouselScreen.PATH}/${StartRecordingScreen.TAG}"),
+            text: S.of(context).btnMore
+          ),
         ),
         showSteps: true,
         current: 6,

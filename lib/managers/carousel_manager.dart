@@ -20,13 +20,17 @@ class CarouselManager extends ManagerBase {
   }
 
   loadCarouselData(String screenTAG) {
+    final bool hasNext =
+        screenTAG == WelcomeScreen.TAG || _scopedSlides[screenTAG].length != 1;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][0],
         actionPrev: null,
         actionNext: screenTAG == WelcomeScreen.TAG
             ? (_) => switchUnlimitedSlide(1)
-            : (_) => switchLimitedSlide(screenTAG, 1),
-        lastSlide: false);
+            : hasNext
+                ? (_) => switchLimitedSlide(screenTAG, 1)
+                : (ctx) => Navigator.pop(ctx),
+        lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
 
@@ -153,7 +157,7 @@ class CarouselManager extends ManagerBase {
             text: "… until fully removed.",
             image: "assets/carousel/carousel_finger_7.jpg"),
       ],
-      "SLEEP": [
+      StartRecordingScreen.TAG: [
         CarouselData(
             text: "WatchPAT is working properly and it is time to go to sleep.",
             image: "assets/carousel/carousel_sleep.jpg"),

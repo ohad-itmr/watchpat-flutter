@@ -44,6 +44,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
     return MainTemplate(
         showBack: false,
         showMenu: false,
+        backgroundColor: Color.fromARGB(255, 35, 35, 35),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[

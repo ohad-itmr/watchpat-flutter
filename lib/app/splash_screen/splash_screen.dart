@@ -106,7 +106,10 @@ class _SplashScreenState extends State<SplashScreen> {
         .isPairedResponseStream
         .listen(_handleIsPaired);
 
-    sl<WelcomeActivityManager>().configureApplication();
+    _systemStateManager.inetConnectionStateStream
+        .firstWhere(
+            (ConnectivityResult state) => state != ConnectivityResult.none)
+        .then((_) => sl<WelcomeActivityManager>().configureApplication());
 
     super.initState();
   }

@@ -63,22 +63,22 @@ class _UploadingScreenState extends State<UploadingScreen> {
               padding: const EdgeInsets.only(top: 10.0),
               child: Text("Please wait"),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: StreamBuilder(
-                stream: sl<TestingManager>().remainingDataSecondsStream,
-                initialData: 0,
-                builder: (_, AsyncSnapshot<int> snapshot) {
-                  return Text(
-                    '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
-                    style: Theme.of(context).textTheme.title,
-                  );
-                },
-              ),
-            )
+
           ],
         ),
-        buttons: Container(),
+        buttons:             Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: StreamBuilder(
+            stream: sl<TestingManager>().remainingDataSecondsStream,
+            initialData: 0,
+            builder: (_, AsyncSnapshot<int> snapshot) {
+              return Text(
+                '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
+                style: Theme.of(context).textTheme.title,
+              );
+            },
+          ),
+        ),
         showSteps: false,
       ),
     );

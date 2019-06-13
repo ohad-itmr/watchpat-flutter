@@ -24,8 +24,9 @@ class CarouselManager extends ManagerBase {
         content: _scopedSlides[screenTAG][0],
         actionPrev: null,
         actionNext: screenTAG == WelcomeScreen.TAG
-            ? () => switchUnlimitedSlide(1)
-            : () => switchLimitedSlide(screenTAG, 1));
+            ? (_) => switchUnlimitedSlide(1)
+            : (_) => switchLimitedSlide(screenTAG, 1),
+        lastSlide: false);
     _carouselDataState.sink.add(s);
   }
 
@@ -38,8 +39,9 @@ class CarouselManager extends ManagerBase {
             ? () => switchLimitedSlide(screenTAG, currentIndex - 1)
             : null,
         actionNext: hasNext
-            ? () => switchLimitedSlide(screenTAG, currentIndex + 1)
-            : null);
+            ? (_) => switchLimitedSlide(screenTAG, currentIndex + 1)
+            : (ctx) => Navigator.pop(ctx),
+        lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
 
@@ -50,8 +52,10 @@ class CarouselManager extends ManagerBase {
         content: _allSlides[currentIndex],
         actionPrev:
             hasPrev ? () => switchUnlimitedSlide(currentIndex - 1) : null,
-        actionNext:
-            hasNext ? () => switchUnlimitedSlide(currentIndex + 1) : null);
+        actionNext: hasNext
+            ? (_) => switchUnlimitedSlide(currentIndex + 1)
+            : (ctx) => Navigator.pop(ctx),
+        lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
 
@@ -180,9 +184,11 @@ class CarouselManager extends ManagerBase {
 class CarouselSnapshot {
   final CarouselData content;
   final Function actionPrev;
-  final Function actionNext;
+  final Function(BuildContext context) actionNext;
+  final bool lastSlide;
 
-  CarouselSnapshot({this.content, this.actionPrev, this.actionNext});
+  CarouselSnapshot(
+      {this.content, this.actionPrev, this.actionNext, this.lastSlide});
 }
 
 class CarouselData {

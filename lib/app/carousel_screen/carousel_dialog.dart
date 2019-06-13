@@ -53,6 +53,7 @@ class CarouselDialog extends StatelessWidget {
                 content: CarouselButtonBlock(
                   leftBtnCallback: snapshot.data.actionPrev,
                   rightBtnCallback: snapshot.data.actionNext,
+                  lastSlide: snapshot.data.lastSlide,
                 ),
               )
             ],

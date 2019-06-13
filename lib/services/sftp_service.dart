@@ -193,19 +193,14 @@ class SftpService {
   }) async {
     RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
 
-    print("RAF ${_raf.lengthSync()}");
-
     final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
         ? _dataChunkSize
         : recordingOffset - uploadingOffset;
 
     List<int> bytes = await rafWithOffset.read(lengthToRead);
 
-    print("BYTES $bytes");
     final File tempFile = File("${_tempDir.path}/$_sftpFileName");
     await tempFile.writeAsBytes(bytes);
-
-    print("FILE ${tempFile.readAsBytesSync()}");
 
     try {
       final String result = await _client.sftpAppendToFile(
@@ -221,8 +216,7 @@ class SftpService {
         // todo test sftp offset
         SFTPFile file = await _client.sftpFileInfo(
             filePath: "$_sftpFilePath/$_sftpFileName");
-        print(
-            "CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+        print("CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
         print("CURRENT REMOTE FILE SIZE: ${file.size}");
         //
 

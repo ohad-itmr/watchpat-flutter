@@ -48,6 +48,7 @@ class S implements WidgetsLocalizations {
   String get btnCloseApp => "CLOSE APP";
   String get btnEndRecording => "END RECORDING";
   String get btnEnter => "ENTER";
+  String get btnFinish => "Finish";
   String get btnMore => "MORE";
   String get btnNext => "NEXT";
   String get btnPreview => "PREVIEW";
@@ -351,6 +352,8 @@ class fr extends S {
   String get acc_registers_write_failed => "ACC registers write failed";
   @override
   String get reset_application_title => "Reset application";
+  @override
+  String get btnFinish => "Finish";
   @override
   String get ir_led_status => "IR LED status: ";
   @override

@@ -455,6 +455,8 @@ class IncomingPacketHandlerService extends ManagerBase {
               sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
             }
           }
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
+              DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           _isPairedResponse.sink.add(isPaired);
 

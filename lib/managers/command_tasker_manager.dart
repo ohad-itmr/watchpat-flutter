@@ -88,16 +88,16 @@ class CommandTaskerManager extends ManagerBase {
 
   void _sendAckQueueHandler() async {
     await _synchronizeQueueHandling();
-    _ackHandlerState = ThreadState.ACTIVE;
+    _sndCmdHandlerState = ThreadState.ACTIVE;
     while (_lstAckQueue.isNotEmpty) {
       CommandTaskerItem nextAck = _lstAckQueue.removeLast();
       await _sendCommand(nextAck);
     }
-    _ackHandlerState = ThreadState.NON_ACTIVE;
+    _sndCmdHandlerState = ThreadState.NON_ACTIVE;
   }
 
   Future<void> _synchronizeQueueHandling() async {
-    while (_sndCmdHandlerState != ThreadState.NON_ACTIVE) {
+    while (_sndCmdHandlerState == ThreadState.ACTIVE) {
       await Future.delayed(Duration(milliseconds: 100));
     }
   }
@@ -139,9 +139,9 @@ class CommandTaskerManager extends ManagerBase {
 
     CommandTaskerItem newCommand = new CommandTaskerItem(id, _ackOpCode, data, "Ack");
     _lstAckQueue.insert(0, newCommand);
-    if (_ackHandlerState == ThreadState.NON_ACTIVE) {
+//    if (_ackHandlerState == ThreadState.NON_ACTIVE) {
       _sendAckQueueHandler();
-    }
+//    }
   }
 
   void sendDirectCommand(CommandTask commandTask) {

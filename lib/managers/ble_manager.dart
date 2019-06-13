@@ -46,6 +46,7 @@ class BleManager extends ManagerBase {
       _deviceStateSubject.stream;
 
   Timer _testInterruptedTimer;
+  bool _scanInProgress = false;
 
   BleManager() {
     lang = sl<S>();
@@ -165,6 +166,7 @@ class BleManager extends ManagerBase {
 
   bool _preScanChecks() {
     Log.info(TAG, "performing pre-scan checks");
+
     if (!sl<SystemStateManager>().isBTEnabled) {
       Log.warning(TAG, "[preScanChecks] BT disabled, LE scan canceled");
       return false;
@@ -180,6 +182,11 @@ class BleManager extends ManagerBase {
     if (sl<SystemStateManager>().isConnectionToDevice) {
       Log.warning(
           TAG, "[preScanChecks] connection to device already in progress");
+      return false;
+    }
+
+    if (_scanInProgress) {
+      Log.warning(TAG, "[preScanChecks] Scan already in progress");
       return false;
     }
 
@@ -242,7 +249,13 @@ class BleManager extends ManagerBase {
 
   void startScan(
       {int time, @required bool connectToFirstDevice, String deviceName}) {
+
+    if (!_preScanChecks()) {
+      return;
+    }
+
     Log.info(TAG, '## START SCAN');
+    _scanInProgress = true;
     _isFirstConnection = PrefsProvider.loadDeviceName() == null;
 
     Log.info(
@@ -250,10 +263,6 @@ class BleManager extends ManagerBase {
         _isFirstConnection
             ? "First connection to device"
             : "Device was already connected, looking for device: ${PrefsProvider.loadDeviceName()}");
-
-    if (!_preScanChecks()) {
-      return;
-    }
 
     _scanResultsSubject.sink.add(Map());
     sl<SystemStateManager>().setBleScanState(ScanStates.SCANNING);
@@ -298,6 +307,7 @@ class BleManager extends ManagerBase {
 
   void stopScan() {
     Log.info(TAG, '## STOP SCAN');
+    _scanInProgress = false;
     if (_scanSubscription != null) {
       _scanSubscription.cancel();
       _scanSubscription = null;

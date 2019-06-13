@@ -24,7 +24,7 @@ class ConnectionIndicatorManager extends ManagerBase {
   ConnectionIndicatorManager() {
     Observable.combineLatest2(
       _systemState.deviceCommStateStream,
-      _systemState.testStateStream,
+      _systemState.dataTransferStateStream,
       _handleBTState,
     ).listen(null);
     Observable.combineLatest3(
@@ -70,12 +70,9 @@ class ConnectionIndicatorManager extends ManagerBase {
     _sftpLitState.sink.add(lit);
   }
 
-  _handleBTState(DeviceStates btState, TestStates testState) {
+  _handleBTState(DeviceStates btState, DataTransferState dataTransferState) {
     if (btState == DeviceStates.CONNECTED &&
-        (testState == TestStates.STARTED ||
-            testState == TestStates.RESUMED ||
-            testState == TestStates.MINIMUM_PASSED ||
-            testState == TestStates.STOPPED)) {
+        (dataTransferState == DataTransferState.TRANSFERRING)) {
       _setBtLedBlinking();
     } else if (btState == DeviceStates.CONNECTED) {
       _setBtLedLit(true);

@@ -73,12 +73,9 @@ class TestingManager extends ManagerBase {
   void stopTesting() {
     Log.info(TAG, "### Sending STOP aquisition command");
     PrefsProvider.setTestStoppedByUser();
+    _systemStateManager.setTestState(TestStates.STOPPED);
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
-
-    final packetDelta = TimeUtils.getPacketRealTimeDiffSec();
-    _systemStateManager
-        .setTestState(packetDelta > 5 ? TestStates.STOPPED : TestStates.ENDED);
     _initDataProgress();
     _elapsedTimer.cancel();
   }

@@ -31,7 +31,7 @@ class CarouselButtonBlock extends StatelessWidget {
           flex: 1,
           child: GestureDetector(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width / 60),
                 child:
                     Image(image: AssetImage("assets/carousel/play_video.png")),
               ),

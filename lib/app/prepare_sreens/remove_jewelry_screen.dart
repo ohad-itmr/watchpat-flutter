@@ -24,6 +24,7 @@ class _RemoveJewelryScreenState extends State<RemoveJewelryScreen> {
           .startSessionStateStream
           .where((StartSessionState st) => st == StartSessionState.CONFIRMED)
           .first;
+      _nextIsPressed = false;
       Navigator.pushNamed(context, PinScreen.PATH);
     } else {
       _showDisconnectedWarning(context);

@@ -6,8 +6,9 @@
   "batteryTitle": "Insert Battery",
   "batteryContent_1": "Open the battery door on the bottom side of  the WatchPAT\u2122 and insert the provided battery.",
   "batteryContent_2": "The flat side of the battery  goes to where the MINUS sign is depicted.",
-  "batteryContent_many_1": "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again",
-  "batteryContent_many_2": "Open the battery door on the bottom side of all irrelevant WatchPAT\u2122 ONE and remove the battery.",
+  "batteryContent_success": "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.",
+  "batteryContent_many_1": "Multiple devices are identified in this surrounding.\nPlease remove the battery from all irrelevant devices and try again.",
+  "batteryContent_many_2": " Open the battery compartment's cover, located on the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.",
   "btnCloseApp": "Close App",
   "btnEndRecording": "End Recording",
 

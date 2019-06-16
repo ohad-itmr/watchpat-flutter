@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,6 @@ class _BatteryScreenState extends State<BatteryScreen> {
   final S loc = sl<S>();
   final SystemStateManager systemStateManager = sl<SystemStateManager>();
 
-  StreamSubscription _deviceConnectionSub;
-  bool _deviceConnected = false;
   bool _nextIsPressed = false;
 
   @override
@@ -27,20 +26,13 @@ class _BatteryScreenState extends State<BatteryScreen> {
     systemStateManager.setScanCycleEnabled = true;
     bleManager.startScan(
         time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-    super.initState();
-    _deviceConnectionSub = sl<SystemStateManager>()
-        .deviceCommStateStream
-        .listen((DeviceStates state) {
-      if (state == DeviceStates.CONNECTED) {
-        setState(() => _deviceConnected = true);
-      }
-    });
-  }
 
-  @override
-  void deactivate() {
-    _deviceConnectionSub.cancel();
-    super.deactivate();
+    systemStateManager.bleScanResultStream
+        .firstWhere((ScanResultStates state) =>
+            state == ScanResultStates.LOCATED_MULTIPLE)
+        .then((_) => _showMultipleDeviceDialog());
+
+    super.initState();
   }
 
   _handleNext() async {
@@ -85,6 +77,20 @@ class _BatteryScreenState extends State<BatteryScreen> {
     }
   }
 
+  List<String> _buildText(ScanResultStates state) {
+    switch (state) {
+      case ScanResultStates.LOCATED_SINGLE:
+        return [S.of(context).batteryContent_success];
+      case ScanResultStates.LOCATED_MULTIPLE:
+        return [S.of(context).batteryContent_many_2];
+      default:
+        return [
+          S.of(context).batteryContent_1,
+          S.of(context).batteryContent_2,
+        ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -100,20 +106,11 @@ class _BatteryScreenState extends State<BatteryScreen> {
             builder: (BuildContext context,
                 AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
-                type: BlockType.text,
-                title: loc.batteryTitle,
-                content: !snapshot.hasData ||
-                        snapshot.data == ScanResultStates.NOT_LOCATED
-                    ? [
-                        loc.batteryContent_1,
-                        loc.batteryContent_2,
-                      ]
-                    : [
-                        loc.batteryContent_many_1(
-                            '${bleManager.scanResultsLength}'),
-                        loc.batteryContent_many_2,
-                      ],
-              );
+                  type: BlockType.text,
+                  title: loc.batteryTitle,
+                  content: _buildText(snapshot.hasData
+                      ? snapshot.data
+                      : ScanResultStates.NOT_LOCATED));
             }),
         buttons: _buildButtonsBlock(),
         showSteps: false,
@@ -133,6 +130,22 @@ class _BatteryScreenState extends State<BatteryScreen> {
                 onPressed: () => Navigator.pop(context),
                 child: Text(S.of(context).ok),
               ),
+            ],
+          );
+        });
+  }
+
+  _showMultipleDeviceDialog() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            content: Text(S.of(context).batteryContent_many_1),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(S.of(context).ok.toUpperCase()),
+                onPressed: () => Navigator.pop(context),
+              )
             ],
           );
         });

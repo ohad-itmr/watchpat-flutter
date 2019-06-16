@@ -38,7 +38,9 @@ class S implements WidgetsLocalizations {
   String get auth_fail => "Authentication failed";
   String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and change the battery.";
   String get batteryContent_2 => " The flat side of the battery faces the MINUS sign.";
-  String get batteryContent_many_2 => " Open the battery compartment's cover, located on  the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.";
+  String get batteryContent_many_1 => "Multiple devices are identified in this surrounding.\nPlease remove the battery from all irrelevant devices and try again.";
+  String get batteryContent_many_2 => " Open the battery compartment's cover, located on the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.";
+  String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   String get batteryTitle => "INSERT BATTERY ";
   String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
@@ -128,7 +130,7 @@ class S implements WidgetsLocalizations {
   String get incorrect_pin => "Incorrect PIN, please try again";
   String get inet_initiation_error => "Internet initiation error";
   String get inet_unavailable => "Internet access unavailable";
-  String get insert_battery_desc1 => "Open the battery compartment's cover, located on  the back of the WatchPAT\u2122ONE, and insert the provided battery";
+  String get insert_battery_desc1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and insert the provided battery";
   String get instructions_video => "Instructions video";
   String get insufficient_storage_space_on_smartphone => " There is insufficient free memory on your smart phone, shutting down the Application";
   String get invalid_id => "Invalid ID";
@@ -225,7 +227,6 @@ class S implements WidgetsLocalizations {
   String get welcomeTitle => "WELCOME";
   String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";
-  String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   String device_sn(String sn) => "Device serial number $sn";
   String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
   String status(String status) => "Status: $status";
@@ -301,7 +302,9 @@ class fr extends S {
   @override
   String get connected_to_device => "Connected to device";
   @override
-  String get batteryContent_many_2 => "Open the battery door on the bottom side of all irrelevant WatchPAT\u2122 ONE and remove the battery.";
+  String get batteryContent_many_2 => " Open the battery compartment's cover, located on the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.";
+  @override
+  String get batteryContent_many_1 => "Multiple devices are identified in this surrounding.\nPlease remove the battery from all irrelevant devices and try again.";
   @override
   String get auth_fail => "Authentication failed";
   @override
@@ -456,6 +459,8 @@ class fr extends S {
   String get loading => "Loading";
   @override
   String get test_data_transmit_in_progress => "Test data transmit in progress";
+  @override
+  String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   @override
   String get please_plug_charger => "Please plug in a charger";
   @override
@@ -632,8 +637,6 @@ class fr extends S {
   String get removeJewelryTitle => "Remove Jewelry";
   @override
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth on.";
-  @override
-  String batteryContent_many_1(String devices) => "Discovered $devices devices\nPlease disconnect all except the relevant one and scan again";
   @override
   String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
   @override

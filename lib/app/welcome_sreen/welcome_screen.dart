@@ -40,7 +40,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     } else if (hasErrors) {
       Navigator.of(context).pushNamed(
           "${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
-    } else if (state == ScanResultStates.NOT_LOCATED) {
+    } else if (state == ScanResultStates.NOT_LOCATED ||
+        state == ScanResultStates.LOCATED_MULTIPLE) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else {
       Navigator.of(context).pushNamed(RemoveJewelryScreen.PATH);
@@ -104,8 +105,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             setState(() => _nextIsPressed = true);
             _handleNext();
 
+//          sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
 //            Navigator.of(context)
-//                .pushNamed(StartRecordingScreen.PATH);
+//                .pushNamed(BatteryScreen.PATH);
           },
         ),
         moreActionButton: ButtonModel(

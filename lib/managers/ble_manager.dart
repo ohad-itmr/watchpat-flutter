@@ -249,7 +249,6 @@ class BleManager extends ManagerBase {
 
   void startScan(
       {int time, @required bool connectToFirstDevice, String deviceName}) {
-
     if (!_preScanChecks()) {
       return;
     }
@@ -286,15 +285,15 @@ class BleManager extends ManagerBase {
         Log.info(TAG,
             ">>> name on scan: ${scanResult.advertisementData.localName} | name local: ${PrefsProvider.loadDeviceName()}");
 
+        var currentResults = _scanResultsSubject.value;
+        currentResults[scanResult.device.id] = scanResult;
+        _scanResultsSubject.sink.add(currentResults);
+
         if (_isFirstConnection ||
             !_isFirstConnection &&
                 scanResult.advertisementData.localName
                     .contains(PrefsProvider.loadDeviceName())) {
           Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
-          var currentResults = _scanResultsSubject.value;
-          currentResults[scanResult.device.id] = scanResult;
-
-          _scanResultsSubject.sink.add(currentResults);
         }
 
         if (connectToFirstDevice) {
@@ -346,6 +345,10 @@ class BleManager extends ManagerBase {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
       sl<SystemStateManager>()
           .setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
+      if (sl<SystemStateManager>().isScanCycleEnabled) {
+        startScan(
+            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      }
     }
   }
 

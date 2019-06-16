@@ -70,8 +70,6 @@ class _PairingIssueScreenState extends State<PairingIssueScreen> {
                         snapshot.data == ScanResultStates.NOT_LOCATED
                     ? [loc.batteryContent_1, loc.batteryContent_2]
                     : [
-                        loc.batteryContent_many_1(
-                            '${bleManager.scanResultsLength}'),
                         loc.batteryContent_many_2
                       ],
               );

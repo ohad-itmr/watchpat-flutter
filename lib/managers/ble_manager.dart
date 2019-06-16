@@ -53,6 +53,7 @@ class BleManager extends ManagerBase {
     _incomingPacketHandler = sl<IncomingPacketHandlerService>();
     _initTasker();
     initializeBT();
+    _initStatesDependencies();
   }
 
   void _btStateHandler(BluetoothState s) {
@@ -61,10 +62,35 @@ class BleManager extends ManagerBase {
       case BluetoothState.unavailable:
       case BluetoothState.off:
         sl<SystemStateManager>().setBtState(BtStates.NOT_AVAILABLE);
+        sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
         break;
       default:
         sl<SystemStateManager>().setBtState(BtStates.ENABLED);
         break;
+    }
+  }
+
+  //
+  // handling situations when one state depends on one or more other states
+  //
+  _initStatesDependencies() {
+    // handle bt disabling during test
+    sl<SystemStateManager>()
+        .btStateStream
+        .where((_) => sl<SystemStateManager>().isTestActive)
+        .listen(_handleDisconnectAndReconnectDuringTest);
+  }
+
+  _handleDisconnectAndReconnectDuringTest(BtStates state) {
+    if (state == BtStates.NOT_AVAILABLE) {
+      sl<SystemStateManager>()
+          .setDataTransferState(DataTransferState.NOT_STARTED);
+      sl<SystemStateManager>().setTestState(TestStates.INTERRUPTED);
+      _disconnect();
+    } else if (state == BtStates.ENABLED) {
+      sl<SystemStateManager>().setScanCycleEnabled = true;
+      startScan(
+          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     }
   }
 

@@ -282,6 +282,7 @@ class SystemStateManager extends ManagerBase {
         .listen((result) => _inetConnectionState.sink.add(result));
   }
 
+
   //
   // Reset all the application persistent properties in case the app started
   // normally, not restored after started test
@@ -472,7 +473,7 @@ class SystemStateManager extends ManagerBase {
       serverCommState == ServerStates.CONNECTING;
 
   bool get isTestActive =>
-      testState == TestStates.STARTED || testState == TestStates.MINIMUM_PASSED;
+      testState != TestStates.NOT_STARTED && testState != TestStates.ENDED;
 
   @override
   void dispose() {

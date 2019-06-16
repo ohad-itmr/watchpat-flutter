@@ -63,7 +63,7 @@ class SftpService {
 
   _handleDataTransferState(DataTransferState state) {
     _currentDataTransferState = state;
-    if (state == DataTransferState.TRANSFERRING) {
+    if (state == DataTransferState.TRANSFERRING && !_serviceInitialized) {
       _initService();
     } else if (state == DataTransferState.ENDED && !_serviceInitialized) {
       _initService();

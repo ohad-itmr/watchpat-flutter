@@ -27,10 +27,12 @@ class _BatteryScreenState extends State<BatteryScreen> {
     bleManager.startScan(
         time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
 
-    systemStateManager.bleScanResultStream
-        .firstWhere((ScanResultStates state) =>
-            state == ScanResultStates.LOCATED_MULTIPLE)
-        .then((_) => _showMultipleDeviceDialog());
+    systemStateManager.bleScanResultStream.firstWhere((
+        ScanResultStates state) =>
+    state == ScanResultStates.LOCATED_MULTIPLE)
+        .then((_) =>
+        _showMultipleDeviceDialog()
+    );
 
     super.initState();
   }
@@ -70,8 +72,9 @@ class _BatteryScreenState extends State<BatteryScreen> {
           },
         ),
         moreActionButton: ButtonModel(
-          action: () => Navigator.of(context)
-              .pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
+          action: () =>
+              Navigator.of(context)
+                  .pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
         ),
       );
     }
@@ -80,13 +83,23 @@ class _BatteryScreenState extends State<BatteryScreen> {
   List<String> _buildText(ScanResultStates state) {
     switch (state) {
       case ScanResultStates.LOCATED_SINGLE:
-        return [S.of(context).batteryContent_success];
+        return [S
+            .of(context)
+            .batteryContent_success
+        ];
       case ScanResultStates.LOCATED_MULTIPLE:
-        return [S.of(context).batteryContent_many_2];
+        return [S
+            .of(context)
+            .batteryContent_many_2
+        ];
       default:
         return [
-          S.of(context).batteryContent_1,
-          S.of(context).batteryContent_2,
+          S
+              .of(context)
+              .batteryContent_1,
+          S
+              .of(context)
+              .batteryContent_2,
         ];
     }
   }
@@ -123,12 +136,18 @@ class _BatteryScreenState extends State<BatteryScreen> {
         context: context,
         builder: (_) {
           return AlertDialog(
-            title: Text(S.of(context).device_not_found),
-            content: Text(S.of(context).device_not_located),
+            title: Text(S
+                .of(context)
+                .device_not_found),
+            content: Text(S
+                .of(context)
+                .device_not_located),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(S.of(context).ok),
+                child: Text(S
+                    .of(context)
+                    .ok),
               ),
             ],
           );
@@ -140,10 +159,15 @@ class _BatteryScreenState extends State<BatteryScreen> {
         context: context,
         builder: (_) {
           return AlertDialog(
-            content: Text(S.of(context).batteryContent_many_1),
+            content: Text(S
+                .of(context)
+                .batteryContent_many_1),
             actions: <Widget>[
               FlatButton(
-                child: Text(S.of(context).ok.toUpperCase()),
+                child: Text(S
+                    .of(context)
+                    .ok
+                    .toUpperCase()),
                 onPressed: () => Navigator.pop(context),
               )
             ],

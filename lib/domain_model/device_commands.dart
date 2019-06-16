@@ -1,5 +1,6 @@
 import 'package:my_pat/domain_model/command_packets.dart';
 import 'package:my_pat/domain_model/command_task.dart';
+import 'package:my_pat/services/services.dart';
 
 class DeviceCommands {
   static const String TAG = 'DeviceCommands';
@@ -113,12 +114,15 @@ class DeviceCommands {
 
   static const int TECH_CMD_TIMEOUT = 3000;
 
-  static int _packetIdCounter = 0;
-
   static int getPacketIdentifier() {
-    final packetId = _packetIdCounter;
-    _packetIdCounter = _packetIdCounter + 1;
-    return packetId;
+    final int currentPacketId = PrefsProvider.loadPacketId();
+    final int newPacketId = currentPacketId + 1;
+    PrefsProvider.savePacketId(newPacketId);
+    return currentPacketId;
+
+//    final packetId = _packetIdCounter;
+//    _packetIdCounter = _packetIdCounter + 1;
+//    return packetId;
   }
 
   static CommandTask getAckCmd(int reqOpcode, int status, int packetID) {

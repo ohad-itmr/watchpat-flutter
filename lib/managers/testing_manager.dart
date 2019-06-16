@@ -71,7 +71,7 @@ class TestingManager extends ManagerBase {
   }
 
   void stopTesting() {
-    Log.info(TAG, "### Sending STOP aquisition command");
+    Log.info(TAG, "### Sending STOP acquisition command");
     PrefsProvider.setTestStoppedByUser();
     _systemStateManager.setTestState(TestStates.STOPPED);
     sl<CommandTaskerManager>()

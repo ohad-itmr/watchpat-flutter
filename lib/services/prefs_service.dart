@@ -48,6 +48,7 @@ class PrefsNames {
   static const String SERVICE_EMAIL_CODE = "service.email";
   static const String DATA_UPLOADING_NOT_FINISHED = "test.data.uploaded";
   static const String IS_TEST_STOPPED_BY_USER = "is.test.stopped";
+  static const String PACKET_ID_COUNTER_KEY = "packet.counter.key";
 }
 
 class PrefsService {
@@ -72,6 +73,7 @@ class PrefsProvider {
     saveRemotePacketIdentifier(0);
     saveTestPacketCount(0);
     saveTestDataRecordingOffset(0);
+    savePacketId(0);
   }
 
   //
@@ -311,6 +313,18 @@ class PrefsProvider {
         PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
     return Locale(code, "");
   }
+
+  //
+  // Packet id counter
+  //
+  static Future<void> savePacketId(int packetID) async {
+    await PrefsService.prefs.setInt(PrefsNames.PACKET_ID_COUNTER_KEY, packetID);
+  }
+
+  static int loadPacketId() {
+    return PrefsService.prefs.getInt(PrefsNames.PACKET_ID_COUNTER_KEY) ?? 0;
+  }
+
 
   //
   // Clear all saved preferences

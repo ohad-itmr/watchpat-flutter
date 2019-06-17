@@ -76,6 +76,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   bool _isFirstPacketOfDataReceived = false;
   bool _isDataReceiving = false;
+  String _errorString = "Device errors:\n\n";
 
   // SERVICE OPERATIONS RESULTS STREAM
   PublishSubject<int> _bitResponse = PublishSubject<int>();
@@ -216,15 +217,13 @@ class IncomingPacketHandlerService extends ManagerBase {
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
           Log.info(TAG, "### start session confirm: device configuration set");
 
-          if (_checkStartSessionErrors(receivedPacket.opCodeDependent)) {
+          if (_checkDeviceErrors(receivedPacket.opCodeDependent)) {
             PrefsProvider.saveDeviceSerial(
                 sl<DeviceConfigManager>().deviceConfig.deviceSerial);
 
             Log.info(TAG, "### start session confirm: device serial saved");
 
-            Log.info(TAG, "getting patient policty");
-            sl<DispatcherService>()
-                .getPatientPolicy(PrefsProvider.loadDeviceSerial());
+            _checkSessionErrors();
 
             if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
@@ -423,7 +422,9 @@ class IncomingPacketHandlerService extends ManagerBase {
                 Log.info(TAG, ">>> fresh pairing / unpaired device");
                 isPaired = false;
                 sl<SystemStateManager>().setAppMode(AppModes.USER);
-                sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+                sl<SystemStateManager>()
+                    .changeState
+                    .add(StateChangeActions.APP_MODE_CHANGED);
               } else {
                 // device response - already paired device
                 Log.info(TAG, ">>> fresh pairing / paired device - ERROR");
@@ -433,8 +434,8 @@ class IncomingPacketHandlerService extends ManagerBase {
               // reconnection pairing - saved device serial located
               if (receivedPacket.opCodeDependent == 0) {
                 // device response - not paired device
-                Log.info(
-                    TAG, ">>> reconnection pairing / 'N' in name / unpaired device");
+                Log.info(TAG,
+                    ">>> reconnection pairing / 'N' in name / unpaired device");
                 isPaired = false;
                 sl<SystemStateManager>().setAppMode(AppModes.USER);
                 sl<SystemStateManager>()
@@ -442,7 +443,8 @@ class IncomingPacketHandlerService extends ManagerBase {
                     .add(StateChangeActions.APP_MODE_CHANGED);
               } else {
                 // device response - already paired device
-                Log.info(TAG, ">>> reconnection pairing / 'N' in name / paired device - ERROR");
+                Log.info(TAG,
+                    ">>> reconnection pairing / 'N' in name / paired device - ERROR");
                 isPaired = true;
               }
             }
@@ -452,7 +454,8 @@ class IncomingPacketHandlerService extends ManagerBase {
               // device response - not paired device
               isPaired = false;
               sl<SystemStateManager>().setTestState(TestStates.ENDED);
-              sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+              sl<SystemStateManager>()
+                  .setDataTransferState(DataTransferState.ENDED);
             }
           }
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
@@ -509,7 +512,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     return _incomingPacketLength >= 0;
   }
 
-  bool _checkStartSessionErrors(final int opcodeDependant) {
+  bool _checkDeviceErrors(final int opcodeDependant) {
     Log.info(TAG, ">>> opcodeDependant: $opcodeDependant");
 
     if (PrefsProvider.getIgnoreDeviceErrors()) {
@@ -524,44 +527,53 @@ class IncomingPacketHandlerService extends ManagerBase {
       return true;
     }
 
-    String errorString = "Device errors:\n";
     DeviceErrorStates errorState;
 
     if ((opcodeDependant & _PATIENT_ERROR_DEVICE_USED) != 0) {
       Log.info(TAG, ">>> Used device");
       errorState = DeviceErrorStates.USED_DEVICE;
-      errorString += '- ${lang.err_used_device}\n';
+      _errorString += '- ${lang.err_used_device}\n';
     } else {
       Log.info(TAG, ">>>  NOT Used device");
     }
     if ((opcodeDependant & _PATIENT_ERROR_BATTERY_VOLTAGE_TEST) != 0) {
       errorState = DeviceErrorStates.CHANGE_BATTERY;
-      errorString += '- ${lang.err_battery_low}\n';
+      _errorString += '- ${lang.err_battery_low}\n';
     }
     if ((opcodeDependant & _PATIENT_ERROR_ACTIGRAPH_TEST) != 0) {
       errorState = DeviceErrorStates.HW_ERROR;
-      errorString += '- ${lang.err_actigraph_test}\n';
+      _errorString += '- ${lang.err_actigraph_test}\n';
     }
     if ((opcodeDependant & _PATIENT_ERROR_FLASH_TEST) != 0) {
       errorState = DeviceErrorStates.HW_ERROR;
-      errorString += '- ${lang.err_flash_test}\n';
+      _errorString += '- ${lang.err_flash_test}\n';
     }
     if ((opcodeDependant & _PATIENT_ERROR_PROBE_LEDS_TEST) != 0) {
       errorState = DeviceErrorStates.HW_ERROR;
-      errorString += '- ${lang.err_probe_leds}\n';
+      _errorString += '- ${lang.err_probe_leds}\n';
     }
     if ((opcodeDependant & _PATIENT_ERROR_PROBE_PHOTO_TEST) != 0) {
       errorState = DeviceErrorStates.HW_ERROR;
-      errorString += '- ${lang.err_probe_photo}\n';
+      _errorString += '- ${lang.err_probe_photo}\n';
     }
     if ((opcodeDependant & _PATIENT_ERROR_SBP_TEST) != 0) {
       errorState = DeviceErrorStates.HW_ERROR;
-      errorString += '- ${lang.err_sbp}\n';
+      _errorString += '- ${lang.err_sbp}\n';
     }
 
     sl<SystemStateManager>()
-        .setDeviceErrorState(errorState, errors: errorString.toString());
+        .setDeviceErrorState(errorState, errors: _errorString.toString());
     return false;
+  }
+
+  void _checkSessionErrors() async {
+    Log.info(TAG, "### Checking for session errors");
+    String errors = "Session errors:\n\n";
+    if (!await sl<DispatcherService>()
+        .getPatientPolicy(PrefsProvider.loadDeviceSerial())) {
+      errors += "Number of PIN retries exceeded";
+      sl<SystemStateManager>().setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
+    }
   }
 
   void _manageError(final int errorCode) {

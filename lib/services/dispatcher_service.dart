@@ -51,12 +51,11 @@ class DispatcherService {
     return response.data;
   }
 
-  void getPatientPolicy(String serialNumber) async {
+  Future<bool> getPatientPolicy(String serialNumber) async {
     Response response = await _dio.post('$_getPatientPolicy/$serialNumber',
         data: {"client": "iOS APP", "version": "1"});
-
-    //todo handle situation of exceeded PIN retries
     sl<UserAuthenticationService>().setPatientPolicy(response.data);
+    return !response.data["error"];
   }
 
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(

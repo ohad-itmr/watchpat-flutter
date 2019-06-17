@@ -90,7 +90,7 @@ class AuthenticationManager extends ManagerBase {
       sl<SystemStateManager>()
           .setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
       resetPin();
-      if (data.message == '96') {
+      if (data.message == '1') {
         _authStateSubject.add(PatientAuthState.FailedTryAgain);
       } else {
         _authStateSubject.add(PatientAuthState.FailedClose);

@@ -3,6 +3,7 @@ import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart' as prefix0;
 import 'package:tuple/tuple.dart';
 
 enum BtStates { NONE, NOT_AVAILABLE, BLE_NOT_SUPPORTED, DISABLED, ENABLED }
@@ -22,6 +23,8 @@ enum DeviceErrorStates {
   USED_DEVICE,
   HW_ERROR
 }
+enum SessionErrorState { UNKNOWN, NO_ERROR, PIN_ERROR }
+
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
 
 enum TestStates {
@@ -124,7 +127,8 @@ class SystemStateManager extends ManagerBase {
     "Change battery",
     "Insert finger",
     "Used device",
-    "Hardware error"
+    "Hardware error",
+    "PIN error"
   ];
 
   static String getDeviceErrorStateName(int state) => _deviceErrorStates[state];
@@ -209,6 +213,8 @@ class SystemStateManager extends ManagerBase {
       BehaviorSubject<DeviceStates>();
   BehaviorSubject<DeviceErrorStates> _deviceErrorState =
       BehaviorSubject<DeviceErrorStates>();
+  BehaviorSubject<SessionErrorState> _sessionErrorState =
+      BehaviorSubject<SessionErrorState>();
   BehaviorSubject<ServerStates> _serverCommState =
       BehaviorSubject<ServerStates>();
   BehaviorSubject<TestStates> _testState = BehaviorSubject<TestStates>();
@@ -242,6 +248,9 @@ class SystemStateManager extends ManagerBase {
   Observable<DeviceErrorStates> get deviceErrorStateStream =>
       _deviceErrorState.stream;
 
+  Observable<SessionErrorState> get sessionErrorStateStream =>
+      _sessionErrorState.stream;
+
   Observable<ServerStates> get serverCommStateStream => _serverCommState.stream;
 
   Observable<TestStates> get testStateStream => _testState.stream;
@@ -273,6 +282,7 @@ class SystemStateManager extends ManagerBase {
   bool _isScanCycleEnabled = false;
 
   String _deviceErrors = "";
+  String _sessionErrors = "";
 
   void _initInternetConnectivity() {
     _connectivity
@@ -281,7 +291,6 @@ class SystemStateManager extends ManagerBase {
     _connectivity.onConnectivityChanged
         .listen((result) => _inetConnectionState.sink.add(result));
   }
-
 
   //
   // Reset all the application persistent properties in case the app started
@@ -369,6 +378,16 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
+  void setSessionErrorState(SessionErrorState state, {String errors}) {
+    if (state != _sessionErrorState.value) {
+      Log.info(TAG, "Session error state: ${state.toString()}");
+      if (errors != null) {
+        _sessionErrors = errors;
+      }
+      _sessionErrorState.sink.add(state);
+    }
+  }
+
   void setServerCommState(ServerStates state) {
     if (state != _serverCommState.value) {
       Log.info(TAG, "setServerCommState: ${getServerStateName(state.index)}");
@@ -446,6 +465,8 @@ class SystemStateManager extends ManagerBase {
 
   String get deviceErrors => _deviceErrors;
 
+  String get sessionErrors => _sessionErrors;
+
   ServerStates get serverCommState => _serverCommState.value;
 
   TestStates get testState => _testState.value;
@@ -507,5 +528,13 @@ class SystemStateManager extends ManagerBase {
             values.item1 == DeviceStates.CONNECTED &&
             values.item2 != DeviceErrorStates.UNKNOWN)
         .then((Tuple2 values) => values.item2 != DeviceErrorStates.NO_ERROR);
+  }
+
+  Future<bool> get sessionHasErrors {
+    if (bleScanResult == ScanResultStates.NOT_LOCATED)
+      return Future.value(false);
+    return sessionErrorStateStream
+        .firstWhere((SessionErrorState st) => st != SessionErrorState.UNKNOWN)
+        .then((SessionErrorState state) => state != SessionErrorState.NO_ERROR);
   }
 }

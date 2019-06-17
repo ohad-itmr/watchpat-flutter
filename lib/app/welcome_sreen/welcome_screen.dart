@@ -35,7 +35,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors =
         await sl<SystemStateManager>().sessionHasErrors;
-    print("SESSION ERRORS $sessionHasErrors");
     _nextIsPressed = false;
     if (welcomeManager.getInitialErrors().length > 0) {
       Navigator.of(context).pushNamed(

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
+import 'package:flutter/services.dart';
 import 'package:my_pat/app/authentication_screen/pin_inputs.dart';
 import 'package:my_pat/app/authentication_screen/pin_keyboard.dart';
 import 'package:my_pat/app/screens.dart';
@@ -103,6 +106,21 @@ class PinScreen extends StatelessWidget {
         child: Center(child: CircularProgressIndicator()),
       );
     }
+
+    if (snapshot.hasData && snapshot.data == PatientAuthState.FailedClose) {
+      final double size = prefix0.MediaQuery.of(context).size.width;
+      return Container(
+        padding: EdgeInsets.only(bottom: size / 15),
+        child: ButtonsBlock(
+          nextActionButton: ButtonModel(
+            action: () => exit(0),
+            text: loc.close_app.toUpperCase(),
+          ),
+          moreActionButton: null,
+        ),
+      );
+    }
+
     return StreamBuilder(
       stream: pinManager.pinIsValid,
       initialData: false,

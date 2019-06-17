@@ -49,7 +49,6 @@ class _BatteryScreenState extends State<BatteryScreen> {
           await sl<SystemStateManager>().deviceHasErrors;
       final bool sessionHasErrors =
           await sl<SystemStateManager>().sessionHasErrors;
-      print("SESSION ERRORS $sessionHasErrors");
       if (deviceHasErrors) {
         Navigator.of(context).pushNamed(
             "${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");

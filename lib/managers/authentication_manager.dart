@@ -38,6 +38,7 @@ class AuthenticationManager extends ManagerBase {
   String get pin => _pin;
 
   void onPinChange(int value) {
+    if (_authStateSubject.value == PatientAuthState.FailedClose) return;
     print('onPinChange, value: $value');
 
     var newPin = '';

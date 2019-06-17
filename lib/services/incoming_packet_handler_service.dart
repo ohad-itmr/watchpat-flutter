@@ -566,14 +566,18 @@ class IncomingPacketHandlerService extends ManagerBase {
     return false;
   }
 
-  void _checkSessionErrors() async {
+  Future<bool> _checkSessionErrors() async {
     Log.info(TAG, "### Checking for session errors");
     String errors = "Session errors:\n\n";
     if (!await sl<DispatcherService>()
         .getPatientPolicy(PrefsProvider.loadDeviceSerial())) {
       errors += "Number of PIN retries exceeded";
-      sl<SystemStateManager>().setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
+      sl<SystemStateManager>()
+          .setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
+      return false;
     }
+    sl<SystemStateManager>().setSessionErrorState(SessionErrorState.NO_ERROR);
+    return true;
   }
 
   void _manageError(final int errorCode) {

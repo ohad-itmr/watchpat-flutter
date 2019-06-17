@@ -303,23 +303,22 @@ class BleManager extends ManagerBase {
 
   void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice,
       {String deviceName}) {
+    final String localName = scanResult.advertisementData.localName;
     if (deviceName != null) {
       // todo add implementation
 
     } else {
-      if (scanResult.advertisementData.localName.contains('ITAMAR')) {
+      if (localName.contains('ITAMAR')) {
         Log.info(TAG,
-            ">>> name on scan: ${scanResult.advertisementData.localName} | name local: ${PrefsProvider.loadDeviceName()}");
+            ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
 
-        var currentResults = _scanResultsSubject.value;
-        currentResults[scanResult.device.id] = scanResult;
-        _scanResultsSubject.sink.add(currentResults);
+        if ((_isFirstConnection && localName.endsWith("N")) ||
+            (!_isFirstConnection && localName.contains(PrefsProvider.loadDeviceName()))) {
 
-        if (_isFirstConnection ||
-            !_isFirstConnection &&
-                scanResult.advertisementData.localName
-                    .contains(PrefsProvider.loadDeviceName())) {
           Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
+          var currentResults = _scanResultsSubject.value;
+          currentResults[scanResult.device.id] = scanResult;
+          _scanResultsSubject.sink.add(currentResults);
         }
 
         if (connectToFirstDevice) {

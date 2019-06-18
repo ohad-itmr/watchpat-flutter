@@ -47,6 +47,7 @@ class CommandTaskerManager extends ManagerBase {
   int _sendAckDelay;
   int _maxCommandTimeout;
   int _ackOpCode;
+
 //  ThreadState _sndCmdHandlerState = ThreadState.NON_ACTIVE;
 //  ThreadState _ackHandlerState = ThreadState.NON_ACTIVE;
 
@@ -164,7 +165,7 @@ class CommandTaskerManager extends ManagerBase {
 //    if (_ackHandlerState == ThreadState.NON_ACTIVE) {
 //    _sendAckQueueHandler();
 //    }
-  _taskerItems.sink.add(newCommand);
+    _taskerItems.sink.add(newCommand);
   }
 
   void sendDirectCommand(CommandTask commandTask) {

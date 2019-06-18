@@ -59,6 +59,9 @@ void _initializeAllServices() {
   sl.registerSingleton<ServiceScreenManager>(ServiceScreenManager());
   sl.registerSingleton<BitOperationsManager>(BitOperationsManager());
 
+  sl.registerSingleton<TransactionManager>(TransactionManager());
+
+
 }
 
 void _initializeCrucialServices() {

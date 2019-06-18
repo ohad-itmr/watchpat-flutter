@@ -3,7 +3,6 @@ import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/rxdart.dart' as prefix0;
 import 'package:tuple/tuple.dart';
 
 enum BtStates { NONE, NOT_AVAILABLE, BLE_NOT_SUPPORTED, DISABLED, ENABLED }
@@ -14,7 +13,7 @@ enum ScanResultStates {
   LOCATED_MULTIPLE
 }
 enum ScanStates { NOT_STARTED, SCANNING, COMPLETE }
-enum DeviceStates { DISCONNECTED, CONNECTING, CONNECTED }
+enum DeviceStates { NOT_INITIALIZED, DISCONNECTED, CONNECTING, CONNECTED }
 enum DeviceErrorStates {
   UNKNOWN,
   NO_ERROR,
@@ -113,6 +112,7 @@ class SystemStateManager extends ManagerBase {
 
   // DEVICE STATES
   static List<String> _deviceStates = [
+    "Not Initialized",
     "Disconnected",
     "Connecting",
     "Connected"
@@ -202,6 +202,7 @@ class SystemStateManager extends ManagerBase {
     initAllStates();
     _initInternetConnectivity();
     _initPersistentState();
+    _initDependentStates();
   }
 
   // States
@@ -278,8 +279,7 @@ class SystemStateManager extends ManagerBase {
   Observable<SftpUploadingState> get sftpUploadingStateStream =>
       _sftpUploadingState.stream;
 
-  bool _isServiceModeEnabled = false;
-  bool _isScanCycleEnabled = false;
+  bool _isScanCycleEnabled = true;
 
   String _deviceErrors = "";
   String _sessionErrors = "";
@@ -303,12 +303,24 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
+  //
+  // Init subscriptions which should take care of the situation when
+  // changing one state leads to changing of another
+  //
+  _initDependentStates() {
+    // set proper TestState when device communication state has changed
+    deviceCommStateStream
+        .where(
+            (_) => isTestActive && deviceCommState == DeviceStates.DISCONNECTED)
+        .listen((_) => setTestState(TestStates.INTERRUPTED));
+  }
+
   void initAllBTStates() {
     Log.info(TAG, "initializing all BT states");
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
     setBleScanResult(ScanResultStates.NOT_LOCATED);
-    setDeviceCommState(DeviceStates.DISCONNECTED);
+    setDeviceCommState(DeviceStates.NOT_INITIALIZED);
   }
 
   void initAllStates() {
@@ -316,7 +328,7 @@ class SystemStateManager extends ManagerBase {
     setBtState(BtStates.NONE);
     setBleScanState(ScanStates.NOT_STARTED);
     setBleScanResult(ScanResultStates.NOT_STARTED);
-    setDeviceCommState(DeviceStates.DISCONNECTED);
+    setDeviceCommState(DeviceStates.NOT_INITIALIZED);
     setAppMode(AppModes.USER);
     setDataTransferState(DataTransferState.NOT_STARTED);
     setDeviceErrorState(DeviceErrorStates.UNKNOWN);
@@ -445,10 +457,6 @@ class SystemStateManager extends ManagerBase {
 
   Sink<StateChangeActions> get changeState => _stateChangeSubject.sink;
 
-  bool get isServiceModeEnabled => _isServiceModeEnabled;
-
-  set serviceModeEnabled(bool value) => _isServiceModeEnabled = value;
-
   set setScanCycleEnabled(bool value) => _isScanCycleEnabled = value;
 
   bool get isScanCycleEnabled => _isScanCycleEnabled;
@@ -513,6 +521,7 @@ class SystemStateManager extends ManagerBase {
     _inetConnectionState.close();
     _startSessionState.close();
     _sftpUploadingState.close();
+    _sessionErrorState.close();
   }
 
   Future<bool> get deviceHasErrors {

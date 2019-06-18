@@ -28,11 +28,6 @@ class _UploadingScreenState extends State<UploadingScreen> {
       await Future.delayed(Duration(seconds: 3));
       Navigator.of(context).pushNamed(EndScreen.PATH);
     });
-
-    sl<SystemStateManager>().setScanCycleEnabled = true;
-    sl<BleManager>().startScan(
-        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-
     super.initState();
   }
 

@@ -31,8 +31,6 @@ class PrefsNames {
       DefaultSettings.appName + ".packetidentifier";
   static const String PACKET_REMOTE_IDENTIFIER_KEY =
       DefaultSettings.appName + ".packetremoteidentifier";
-  static const String IS_FIRST_DEVICE_CONNECTION_KEY =
-      DefaultSettings.appName + ".isfirstdeviceconnection";
   static const String IS_FIRST_SFTP_CONNECTION_KEY =
       DefaultSettings.appName + ".isfirstsftpconnection";
   static const String IS_IGNORE_DEVICE_ERRORS_KEY =
@@ -170,20 +168,6 @@ class PrefsProvider {
 
   static bool getTestStoppedByUser() {
     return PrefsService.prefs.getBool(PrefsNames.IS_TEST_STOPPED_BY_USER) ?? false;
-  }
-
-  //
-  // is first device connection
-  //
-  static void setIsFirstDeviceConnection(state) async {
-    await PrefsService.prefs
-        .setBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY, state);
-  }
-
-  static bool getIsFirstDeviceConnection() {
-    return PrefsService.prefs
-            .getBool(PrefsNames.IS_FIRST_DEVICE_CONNECTION_KEY) ??
-        true;
   }
 
   //

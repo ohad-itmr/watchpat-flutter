@@ -171,6 +171,10 @@ class SftpService {
           _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
           BackgroundFetch.finish();
         }
+      } else if ((currentUploadingOffset == currentRecordingOffset) &&
+          _currentDataTransferState == DataTransferState.ENDED) {
+        _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
+        _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
       } else {
         _systemState.setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
         Log.info(TAG,
@@ -216,7 +220,8 @@ class SftpService {
         // todo test sftp offset
         SFTPFile file = await _client.sftpFileInfo(
             filePath: "$_sftpFilePath/$_sftpFileName");
-        print("CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+        print(
+            "CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
         print("CURRENT REMOTE FILE SIZE: ${file.size}");
         //
 

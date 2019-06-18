@@ -15,11 +15,6 @@ class RecordingScreen extends StatefulWidget {
 class _RecordingScreenState extends State<RecordingScreen> {
   @override
   void initState() {
-    if (sl<SystemStateManager>().testState == TestStates.INTERRUPTED) {
-      sl<SystemStateManager>().setScanCycleEnabled = true;
-      sl<BleManager>().startScan(
-          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-    }
     _subscribeToTestState();
     internetWarningSub.cancel();
     super.initState();

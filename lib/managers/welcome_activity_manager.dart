@@ -137,10 +137,6 @@ class WelcomeActivityManager extends ManagerBase {
 
   init() {
     _welcomeState.sink.add(WelcomeActivityState.WORKING);
-
-    sl<BleManager>().startScan(
-        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-
     initConnectivityListener();
   }
 

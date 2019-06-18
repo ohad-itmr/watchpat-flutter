@@ -23,10 +23,6 @@ class _BatteryScreenState extends State<BatteryScreen> {
 
   @override
   void initState() {
-    systemStateManager.setScanCycleEnabled = true;
-    bleManager.startScan(
-        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-
     systemStateManager.bleScanResultStream
         .firstWhere((ScanResultStates state) =>
             state == ScanResultStates.LOCATED_MULTIPLE)

@@ -30,9 +30,6 @@ class _PairingIssueScreenState extends State<PairingIssueScreen> {
 
   @override
   void initState() {
-    systemStateManager.setScanCycleEnabled = true;
-    bleManager.startScan(
-        time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     super.initState();
     _deviceConnectionSub = sl<SystemStateManager>()
         .deviceCommStateStream

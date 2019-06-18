@@ -72,12 +72,17 @@ class TestingManager extends ManagerBase {
 
   void stopTesting() {
     Log.info(TAG, "### Sending STOP acquisition command");
-    PrefsProvider.setTestStoppedByUser();
     _systemStateManager.setTestState(TestStates.STOPPED);
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
     _initDataProgress();
     _elapsedTimer.cancel();
+  }
+
+  void forceEndTesting() {
+    Log.info(TAG, "Forcing end test");
+    sl<SystemStateManager>().setTestState(TestStates.ENDED);
+    sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
   }
 
   void _initDataProgress() {

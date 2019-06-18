@@ -180,7 +180,6 @@ class IncomingPacketHandlerService extends ManagerBase {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
               sl<TestingManager>().restartTimers();
             }
-            PrefsProvider.setTestStarted(true);
           }
 
           // set data transfer state
@@ -217,14 +216,12 @@ class IncomingPacketHandlerService extends ManagerBase {
               .setDeviceConfiguration(receivedPacket.extractConfigBlock());
           Log.info(TAG, "### start session confirm: device configuration set");
 
-          if (_checkDeviceErrors(receivedPacket.opCodeDependent)) {
-            PrefsProvider.saveDeviceSerial(
-                sl<DeviceConfigManager>().deviceConfig.deviceSerial);
+          PrefsProvider.saveDeviceSerial(
+              sl<DeviceConfigManager>().deviceConfig.deviceSerial);
+          Log.info(TAG, "### start session confirm: device serial saved");
 
-            Log.info(TAG, "### start session confirm: device serial saved");
-
-            _checkSessionErrors();
-
+          if (_checkDeviceErrors(receivedPacket.opCodeDependent) &&
+              await _checkSessionErrors()) {
             if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
               Log.info(TAG,
@@ -244,9 +241,6 @@ class IncomingPacketHandlerService extends ManagerBase {
                 Log.info(TAG, "device FW outdated");
                 sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
               }
-
-              // Save that device was once already connected
-              PrefsProvider.setIsFirstDeviceConnection(false);
             }
           }
 
@@ -311,13 +305,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_END_OF_TEST_DATA:
           Log.info(TAG, "packet received (END_OF_TEST_DATA)");
 
-          sl<SystemStateManager>().setTestState(TestStates.ENDED);
-          PrefsProvider.setTestStarted(false);
-          PrefsProvider.setTestStoppedByUser(value: false);
-
-          // set data transfer state
-          sl<SystemStateManager>()
-              .setDataTransferState(DataTransferState.ENDED);
+          sl<TestingManager>().forceEndTesting();
 
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
@@ -414,7 +402,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           bool isPaired;
 
           //
-          if (sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
+          if (!sl<SystemStateManager>().isTestActive) {
             if (PrefsProvider.loadDeviceName() == null) {
               // fresh pairing - no saved device serial
               if (receivedPacket.opCodeDependent == 0) {
@@ -453,11 +441,12 @@ class IncomingPacketHandlerService extends ManagerBase {
             if (receivedPacket.opCodeDependent == 0) {
               // device response - not paired device
               isPaired = false;
-              sl<SystemStateManager>().setTestState(TestStates.ENDED);
-              sl<SystemStateManager>()
-                  .setDataTransferState(DataTransferState.ENDED);
+              sl<TestingManager>().forceEndTesting();
+            } else {
+              isPaired = true;
             }
           }
+
           sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType,
               DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 

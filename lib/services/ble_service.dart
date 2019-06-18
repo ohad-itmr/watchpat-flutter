@@ -85,8 +85,7 @@ class BleService {
     _readCharSubscription.cancel();
   }
 
-  void disconnect() {
-    sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
+  void clearDevice() {
     _device = null;
     _readCharSubscription.cancel();
   }

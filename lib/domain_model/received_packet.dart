@@ -30,7 +30,6 @@ class ReceivedPacket {
   int packetType;
 
   ReceivedPacket(this.bytes, this._commandTasker)
-//      : _signature = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]),
       : _signature =
             ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
         opCode = ConvertFormats.twoBytesToInt(
@@ -40,10 +39,9 @@ class ReceivedPacket {
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
                 PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
-        _len = ConvertFormats.byteArrayToHex(bytes
-            .sublist(PACKET_SIZE_STARTING_BYTE, PACKET_SIZE_STARTING_BYTE + 2)
-            .reversed
-            .toList()),
+        _len = ConvertFormats.twoBytesToInt(
+            byte1: bytes[PACKET_SIZE_STARTING_BYTE],
+            byte2: bytes[PACKET_SIZE_STARTING_BYTE + 1]),
         opCodeDependent = ConvertFormats.byteArrayToHex(bytes
             .sublist(PACKET_DEPENDENT_STARTING_BYTE,
                 PACKET_DEPENDENT_STARTING_BYTE + 4)

@@ -107,7 +107,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
       print("Handling new packet  $_packetState");
-      _packetState = PacketState.HANDLING_PACKET;
+      _setPacketState(PacketState.HANDLING_PACKET);
 
       if (_isValidSignature()) {
         if (!_setPacketSize()) {
@@ -173,9 +173,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
             if (currentTestState == TestStates.NOT_STARTED) {
               sl<SystemStateManager>().setTestState(TestStates.STARTED);
-//              sl<SystemStateManager>()
-//                  .changeState
-//                  .add(StateChangeActions.TEST_STATE_CHANGED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
               sl<TestingManager>().restartTimers();
@@ -312,7 +309,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // disconnect from device
           await Future.delayed(Duration(seconds: 2));
-          sl<BleService>().disconnect();
+          sl<BleManager>().disconnection();
 
           break;
         case DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES:
@@ -472,7 +469,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     }
 
     if (_incomingPacketLength == 0) {
-      _packetState = PacketState.PACKET_COMPLETE;
+      _setPacketState(PacketState.PACKET_COMPLETE);
     }
   }
 
@@ -480,7 +477,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     print('resetPacket');
     _receivedByteStream.clear();
     _incomingPacketLength = 0;
-    _packetState = PacketState.WAITING_FOR_NEW;
+    _setPacketState(PacketState.WAITING_FOR_NEW);
   }
 
   bool _isValidSignature() {
@@ -496,7 +493,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
     _incomingPacketLength = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]);
-    print('--------------------------->_setPacketSize $_incomingPacketLength');
+    print('---------------------------> setPacketSize $_incomingPacketLength');
 
     return _incomingPacketLength >= 0;
   }
@@ -595,5 +592,10 @@ class IncomingPacketHandlerService extends ManagerBase {
     _isPairedResponse.close();
     _bitResponse.close();
     _techStatusResponse.close();
+  }
+
+  void _setPacketState(PacketState state) {
+    print("SETTING PACKET STATE: ${state.toString()}" );
+    _packetState = state;
   }
 }

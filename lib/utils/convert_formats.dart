@@ -49,6 +49,16 @@ class ConvertFormats {
     return bdata.getInt32(0);
   }
 
+  static int threeBytesToInt({@required int byte1, @required int byte2, @required int byte3}) {
+    List<int> bytes = List.filled(4, 0, growable: false);
+    bytes[1] = byte3;
+    bytes[2] = byte2;
+    bytes[3] = byte1;
+    var buffer = new Uint8List.fromList(bytes).buffer;
+    var bdata = new ByteData.view(buffer);
+    return bdata.getInt32(0);
+  }
+
   static int twoBytesToInt({@required int byte1, @required int byte2}) {
     List<int> bytes = List.filled(4, 0, growable: false);
     bytes[2] = byte2;

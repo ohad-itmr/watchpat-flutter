@@ -53,7 +53,6 @@ class BleManager extends ManagerBase {
     _incomingPacketHandler = sl<IncomingPacketHandlerService>();
     _initTasker();
     initializeBT();
-//    _initStatesDependencies();
   }
 
   void _btStateHandler(BluetoothState s) {
@@ -63,6 +62,7 @@ class BleManager extends ManagerBase {
       case BluetoothState.off:
         sl<SystemStateManager>().setBtState(BtStates.NOT_AVAILABLE);
         sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
+        disconnection();
         break;
       default:
         sl<SystemStateManager>().setBtState(BtStates.ENABLED);
@@ -119,23 +119,24 @@ class BleManager extends ManagerBase {
       if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
-    } else if (state == BluetoothDeviceState.disconnected) {
-      Log.info(TAG, "disconnected from device");
-      sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-      if (!sl<SystemStateManager>().isTestActive) {
-        _incomingPacketHandler.resetPacket();
-        _disconnect();
-      }
     }
+//    else if (state == BluetoothDeviceState.disconnected) {
+//      Log.info(TAG, "disconnected from device");
+//      sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
+//      if (!sl<SystemStateManager>().isTestActive) {
+//        _incomingPacketHandler.resetPacket();
+//        disconnection();
+//      }
+//    }
   }
 
-  void _disconnect() {
+  void disconnection() {
     Log.info(TAG, 'Remove all value changed listeners');
     sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
     deviceStateSubscription?.cancel();
     deviceStateSubscription = null;
     _deviceConnection?.cancel();
-    sl<BleService>().disconnect();
+    sl<BleService>().clearDevice();
   }
 
   void initializeBT() {
@@ -198,7 +199,7 @@ class BleManager extends ManagerBase {
 
   _sendTimeoutCallback() {
     Log.info(TAG, ">>> CommandTasker timeout");
-    _disconnect();
+    disconnection();
     if (sl<SystemStateManager>().isBTEnabled) {
       if (sl<SystemStateManager>().isScanCycleEnabled) {
         startScan(

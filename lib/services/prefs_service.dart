@@ -313,8 +313,8 @@ class PrefsProvider {
   //
   // Clear all saved preferences
   //
-  static clearAll() {
-    PrefsService.prefs.clear();
+  static Future<bool> clearAll() async {
+    return PrefsService.prefs.clear();
   }
 
   //

@@ -46,7 +46,7 @@ class EndScreen extends StatelessWidget {
                 BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
                 initPlatformState();
               } else {
-                PrefsProvider.clearAll();
+                sl<ServiceScreenManager>().resetApplication();
               }
               await Future.delayed(Duration(milliseconds: 300));
               exit(0);

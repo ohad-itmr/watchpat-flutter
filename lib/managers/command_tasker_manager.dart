@@ -48,9 +48,6 @@ class CommandTaskerManager extends ManagerBase {
   int _maxCommandTimeout;
   int _ackOpCode;
 
-//  ThreadState _sndCmdHandlerState = ThreadState.NON_ACTIVE;
-//  ThreadState _ackHandlerState = ThreadState.NON_ACTIVE;
-
   Function _sendCmdCallback;
   Function _timeoutCallback;
   Map<int, OnAckListener> _mapAckListeners = HashMap();
@@ -93,35 +90,6 @@ class CommandTaskerManager extends ManagerBase {
     addCommandWithCb(commandTask, listener: null);
   }
 
-//  void _sendCommandQueueHandler() async {
-//    await _synchronizeQueueHandling();
-//    _sndCmdHandlerState = ThreadState.ACTIVE;
-//    while (_lstCommandQueue.isNotEmpty) {
-//      CommandTaskerItem nextItem = _lstCommandQueue.removeLast();
-//      await _sendCommand(nextItem);
-////      await Future.delayed(Duration(milliseconds: _sendCommandsDelay));
-//      await Future.delayed(
-//          Duration(milliseconds: _sendAckDelay), _synchronizeLists);
-//    }
-//    _sndCmdHandlerState = ThreadState.NON_ACTIVE;
-//  }
-
-//  void _sendAckQueueHandler() async {
-//    await _synchronizeQueueHandling();
-//    _sndCmdHandlerState = ThreadState.ACTIVE;
-//    while (_lstAckQueue.isNotEmpty) {
-//      CommandTaskerItem nextAck = _lstAckQueue.removeLast();
-//      await _sendCommand(nextAck);
-//    }
-//    _sndCmdHandlerState = ThreadState.NON_ACTIVE;
-//  }
-
-//  Future<void> _synchronizeQueueHandling() async {
-//    while (_sndCmdHandlerState == ThreadState.ACTIVE) {
-//      await Future.delayed(Duration(milliseconds: 100));
-//    }
-//  }
-
   bool addCommandWithCb(CommandTask commandTask, {OnAckListener listener}) {
     bool result = _addCommand(commandTask.packetIdentifier, commandTask.opCode,
         commandTask.byteList, commandTask.name);
@@ -143,9 +111,6 @@ class CommandTaskerManager extends ManagerBase {
     CommandTaskerItem newCommand =
         new CommandTaskerItem(id, opCode, data, name);
     _lstCommandQueue.insert(0, newCommand);
-//    if (_sndCmdHandlerState == ThreadState.NON_ACTIVE) {
-//      _sendCommandQueueHandler();
-//    }
     _taskerItems.sink.add(newCommand);
     return true;
   }
@@ -162,9 +127,6 @@ class CommandTaskerManager extends ManagerBase {
     CommandTaskerItem newCommand =
         new CommandTaskerItem(id, _ackOpCode, data, "Ack");
     _lstAckQueue.insert(0, newCommand);
-//    if (_ackHandlerState == ThreadState.NON_ACTIVE) {
-//    _sendAckQueueHandler();
-//    }
     _taskerItems.sink.add(newCommand);
   }
 
@@ -172,8 +134,7 @@ class CommandTaskerManager extends ManagerBase {
     Log.info(TAG, "sending DIRECT command");
     CommandTaskerItem item = CommandTaskerItem(commandTask.packetIdentifier,
         commandTask.opCode, commandTask.byteList, commandTask.name);
-//    _sendCmdCallback._sendCommand(item);
-    _sendCmdCallback(item);
+    _taskerItems.sink.add(item);
   }
 
   Future<void> _sendCommand(CommandTaskerItem item) async {
@@ -183,7 +144,6 @@ class CommandTaskerManager extends ManagerBase {
         item.firstSendTime = currentTime;
       }
       item.lastAttemptToSendTime = currentTime;
-//      _sendCmdCallback._sendCommand(item);
       await _sendCmdCallback(item);
     }
   }

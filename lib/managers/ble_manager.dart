@@ -70,30 +70,6 @@ class BleManager extends ManagerBase {
     }
   }
 
-  //
-  // handling situations when one state depends on one or more other states
-  //
-//  _initStatesDependencies() {
-//    // handle bt disabling during test
-//    sl<SystemStateManager>()
-//        .btStateStream
-//        .where((_) => sl<SystemStateManager>().isTestActive)
-//        .listen(_handleDisconnectAndReconnectDuringTest);
-//  }
-
-//  _handleDisconnectAndReconnectDuringTest(BtStates state) {
-//    if (state == BtStates.NOT_AVAILABLE) {
-//      sl<SystemStateManager>()
-//          .setDataTransferState(DataTransferState.NOT_STARTED);
-//      sl<SystemStateManager>().setTestState(TestStates.INTERRUPTED);
-//      _disconnect();
-//    } else if (state == BtStates.ENABLED) {
-//      sl<SystemStateManager>().setScanCycleEnabled = true;
-//      startScan(
-//          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-//    }
-//  }
-
   void connect(BluetoothDevice d) {
     sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
   }
@@ -146,24 +122,9 @@ class BleManager extends ManagerBase {
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
       sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-//      if (sysStateManager.testState == TestStates.STARTED ||
-////          sysStateManager.testState == TestStates.RESUMED ||
-////          sysStateManager.testState == TestStates.MINIMUM_PASSED) {
-////        sysStateManager.setTestState(TestStates.INTERRUPTED);
-////        sysStateManager.changeState.add(StateChangeActions.TEST_STATE_CHANGED);
       if (!sl<SystemStateManager>().isTestActive) {
         _incomingPacketHandler.resetPacket();
         _disconnect();
-//        if (sysStateManager.isBTEnabled) {
-////          if (sysStateManager.testState != TestStates.ENDED) {
-////            sl<SystemStateManager>().setScanCycleEnabled = true;
-////            startScan(
-////                time: GlobalSettings.btScanTimeout,
-////                connectToFirstDevice: false);
-////          }
-//        } else {
-//          Log.shout(TAG, "BT not enabled scan cycle not initiated $tag");
-//        }
       }
     }
   }
@@ -381,15 +342,6 @@ class BleManager extends ManagerBase {
 
   void _systemStateHandler(StateChangeActions action) {
     switch (action) {
-//      case StateChangeActions.TEST_STATE_CHANGED:
-//        final TestStates testState = sl<SystemStateManager>().testState;
-//        if (testState == TestStates.STARTED) {
-//          _incomingPacketHandler.startPacketAnalysis();
-//        } else if (testState == TestStates.INTERRUPTED) {
-//          Log.shout(TAG, "Test interrupted because of device connection lost");
-//          sl<BleService>().clearSubscriptions();
-//        }
-//        break;
       case StateChangeActions.APP_MODE_CHANGED:
         final AppModes mode = sl<SystemStateManager>().appMode;
         Log.info(

@@ -64,65 +64,65 @@ class TimeUtils {
         PrefsProvider.loadTestPacketCount();
   }
 }
-
-class WatchPATTimer {
-  static const String TAG = 'WatchPATTimer';
-
-  String _name;
-  int _interval;
-  Timer _timer;
-
-  Function _timeoutCallback;
-  Function _startCallback;
-
-  bool _isRunning;
-  bool _isCycle;
-
-  void onFinish() {
-    Log.info(TAG, "$_name triggered, $this");
-    _timeoutCallback();
-    _isRunning = false;
-    if (_isCycle) {
-      startTimer();
-    }
-  }
-
-  void startTimer() {
-    if (!_isRunning) {
-      if (_startCallback != null) {
-        Log.info(TAG, "$_name started");
-        _startCallback();
-      }
-      _isRunning = true;
-      _timer = Timer(Duration(milliseconds: _interval), _startCallback);
-    }
-  }
-
-  void stopTimer() {
-    if (_isRunning) {
-      _timer.cancel();
-      _isRunning = false;
-    }
-  }
-
-  void restart() {
-    stopTimer();
-    startTimer();
-  }
-
-  WatchPATTimer(this._name, this._interval, this._timeoutCallback) {
-    _startCallback = null;
-    _isRunning = false;
-    _isCycle = false;
-  }
-
-  WatchPATTimer.withStartCallback(
-    this._name,
-    this._interval,
-    this._timeoutCallback,
-    this._startCallback,
-    this._isCycle,
-  ) {
-    _isRunning = false;
-  }
-}
+//
+//class WatchPATTimer {
+//  static const String TAG = 'WatchPATTimer';
+//
+//  String _name;
+//  int _interval;
+//  Timer _timer;
+//
+//  Function _timeoutCallback;
+//  Function _startCallback;
+//
+//  bool _isRunning;
+//  bool _isCycle;
+//
+//  void onFinish() {
+//    Log.info(TAG, "$_name triggered, $this");
+//    _timeoutCallback();
+//    _isRunning = false;
+//    if (_isCycle) {
+//      startTimer();
+//    }
+//  }
+//
+//  void startTimer() {
+//    if (!_isRunning) {
+//      if (_startCallback != null) {
+//        Log.info(TAG, "$_name started");
+//        _startCallback();
+//      }
+//      _isRunning = true;
+//      _timer = Timer(Duration(milliseconds: _interval), _startCallback);
+//    }
+//  }
+//
+//  void stopTimer() {
+//    if (_isRunning) {
+//      _timer.cancel();
+//      _isRunning = false;
+//    }
+//  }
+//
+//  void restart() {
+//    stopTimer();
+//    startTimer();
+//  }
+//
+//  WatchPATTimer(this._name, this._interval, this._timeoutCallback) {
+//    _startCallback = null;
+//    _isRunning = false;
+//    _isCycle = false;
+//  }
+//
+//  WatchPATTimer.withStartCallback(
+//    this._name,
+//    this._interval,
+//    this._timeoutCallback,
+//    this._startCallback,
+//    this._isCycle,
+//  ) {
+//    _isRunning = false;
+//  }
+//}

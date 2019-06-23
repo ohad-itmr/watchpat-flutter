@@ -32,18 +32,18 @@ class IncomingPacketHandlerService extends ManagerBase {
     _receivedByteStream = [];
     _paramFileByteStream = [];
     _logFileByteStream = [];
-    _dataReceivedTimer = WatchPATTimer(
-        'DataReceivedTimeout', 3000, () => _isDataReceiving = false);
-    _packetAnalysisTimer = WatchPATTimer('PacketAnalysisTimer', 60 * 1000, () {
-      _isPacketAnalysis = false;
-      Log.info(TAG,
-          '>>>>>>>>>>>> PACKET ANALYSIS END.\n\n @@@packets received: $_packetAnalyzed, \n@@@bytes received: $_bytesAnalyzed');
-    });
-    _testStartTimer = WatchPATTimer('TestStartTimeout', 60 * 1000, () {
-      Log.info(TAG, ">>>>>>>>>>>> STARTING PACKET ANALYSIS ,$tag");
-      _packetAnalysisTimer.startTimer();
-      _isPacketAnalysis = true;
-    });
+//    _dataReceivedTimer = WatchPATTimer(
+//        'DataReceivedTimeout', 3000, () => _isDataReceiving = false);
+//    _packetAnalysisTimer = WatchPATTimer('PacketAnalysisTimer', 60 * 1000, () {
+//      _isPacketAnalysis = false;
+//      Log.info(TAG,
+//          '>>>>>>>>>>>> PACKET ANALYSIS END.\n\n @@@packets received: $_packetAnalyzed, \n@@@bytes received: $_bytesAnalyzed');
+//    });
+//    _testStartTimer = WatchPATTimer('TestStartTimeout', 60 * 1000, () {
+//      Log.info(TAG, ">>>>>>>>>>>> STARTING PACKET ANALYSIS ,$tag");
+//      _packetAnalysisTimer.startTimer();
+//      _isPacketAnalysis = true;
+//    });
 
     _packetAnalyzed = 0;
     _bytesAnalyzed = 0;
@@ -61,9 +61,9 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   static PacketState _packetState = PacketState.WAITING_FOR_NEW;
 
-  WatchPATTimer _dataReceivedTimer;
-  WatchPATTimer _testStartTimer;
-  WatchPATTimer _packetAnalysisTimer;
+//  WatchPATTimer _dataReceivedTimer;
+//  WatchPATTimer _testStartTimer;
+//  WatchPATTimer _packetAnalysisTimer;
 
   List<int> _receivedByteStream = [];
   List<int> _paramFileByteStream = [];
@@ -95,7 +95,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   Observable<bool> get isPairedResponseStream => _isPairedResponse.stream;
 
   void startPacketAnalysis() {
-    _testStartTimer.startTimer();
+//    _testStartTimer.startTimer();
   }
 
   bool isDataReceiving() {
@@ -157,7 +157,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (DATA_PACKET)");
           // data packet received - store to local file
           _isDataReceiving = true;
-          _dataReceivedTimer.restart();
+//          _dataReceivedTimer.restart();
 
           if (_isPacketAnalysis) {
             _packetAnalyzed++;

@@ -6,8 +6,11 @@ import 'package:my_pat/utils/log/dio_logger.dart';
 
 class DispatcherService {
   static const String TAG = 'DispatcherService';
+  static const String DISPATCHER_ERROR_STATUS = "666";
+  static const int DIO_CONNECT_TIMEOUT = 10000;
+  static const int DIO_RECEIVE_TIMEOUT = 5000;
 
-  Dio _dio = new Dio();
+  Dio _dio = new Dio(options);
 
   DispatcherService() {
     _dio.interceptors
@@ -19,7 +22,7 @@ class DispatcherService {
       return response;
     }, onError: (DioError error) {
       DioLogger.onError(TAG, error);
-      return _dio.resolve({"error": true, "message": error.message});
+      return _dio.resolve({"error": true, "message": DISPATCHER_ERROR_STATUS});
     }));
   }
 
@@ -51,11 +54,11 @@ class DispatcherService {
     return response.data;
   }
 
-  Future<bool> getPatientPolicy(String serialNumber) async {
+  Future<DispatcherResponse> getPatientPolicy(String serialNumber) async {
     Response response = await _dio.post('$_getPatientPolicy/$serialNumber',
         data: {"client": "iOS APP", "version": "1"});
     sl<UserAuthenticationService>().setPatientPolicy(response.data);
-    return !response.data["error"];
+    return GeneralResponse.fromJson(response.data);
   }
 
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
@@ -69,4 +72,7 @@ class DispatcherService {
   void sendTestComplete(String serialNumber) async {
     await _dio.get('$_testCompleteEndpoint/$serialNumber');
   }
+
+  static BaseOptions options = new BaseOptions(
+      connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);
 }

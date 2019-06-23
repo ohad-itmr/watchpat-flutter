@@ -52,10 +52,10 @@ class CommandTaskerManager extends ManagerBase {
   Function _timeoutCallback;
   Map<int, OnAckListener> _mapAckListeners = HashMap();
 
-  BehaviorSubject<CommandTaskerItem> _taskerItems =
+  static BehaviorSubject<CommandTaskerItem> _taskerItems =
       BehaviorSubject<CommandTaskerItem>();
 
-  Observable<CommandTaskerItem> get taskerItemStream => _taskerItems.stream;
+  static Observable<CommandTaskerItem> get taskerItemStream => _taskerItems.stream;
 
   set sendCmdCallback(Function cb) => _sendCmdCallback = cb;
 

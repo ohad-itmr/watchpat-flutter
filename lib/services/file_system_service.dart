@@ -210,7 +210,7 @@ class FileSystemService {
       if (accFile.existsSync()) accFile.deleteSync();
       File eepromFile = await watchpatDirEEPROMFile;
       if (eepromFile.existsSync()) eepromFile.deleteSync();
-      Log.info(TAG, "Deleted stored files previously received from device");
+      Log.info(TAG, "Deleted stored config files previously received from device");
 
       return Response(success: true);
     } catch (e) {

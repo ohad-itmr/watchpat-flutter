@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:my_pat/domain_model/device_commands.dart';
+import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
@@ -555,11 +556,18 @@ class IncomingPacketHandlerService extends ManagerBase {
   Future<bool> _checkSessionErrors() async {
     Log.info(TAG, "### Checking for session errors");
     String errors = "Session errors:\n\n";
-    if (!await sl<DispatcherService>()
-        .getPatientPolicy(PrefsProvider.loadDeviceSerial())) {
-      errors += "Number of PIN retries exceeded";
-      sl<SystemStateManager>()
-          .setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
+    GeneralResponse res = await sl<DispatcherService>()
+        .getPatientPolicy(PrefsProvider.loadDeviceSerial());
+    if (res.error) {
+      if (res.message == DispatcherService.DISPATCHER_ERROR_STATUS) {
+        errors += "- Connection to dispatcher failed";
+        sl<SystemStateManager>()
+            .setSessionErrorState(SessionErrorState.NO_DISPATCHER, errors: errors);
+      } else {
+        errors += "- Number of PIN retries exceeded";
+        sl<SystemStateManager>()
+            .setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
+      }
       return false;
     }
     sl<SystemStateManager>().setSessionErrorState(SessionErrorState.NO_ERROR);
@@ -595,7 +603,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void _setPacketState(PacketState state) {
-    print("SETTING PACKET STATE: ${state.toString()}" );
+    print("SETTING PACKET STATE: ${state.toString()}");
     _packetState = state;
   }
 }

@@ -17,7 +17,7 @@ class BleManager extends ManagerBase {
 
   //#region Scanning
   StreamSubscription _scanSubscription;
-  StreamSubscription deviceStateSubscription;
+  StreamSubscription _deviceStateSubscription;
 
   bool _isFirstConnection = true;
 
@@ -71,7 +71,8 @@ class BleManager extends ManagerBase {
   }
 
   void connect(BluetoothDevice d) {
-    sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
+    _deviceStateSubscription =
+        sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
   }
 
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
@@ -119,22 +120,22 @@ class BleManager extends ManagerBase {
       if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
       }
+    } else if (state == BluetoothDeviceState.disconnected) {
+      Log.info(TAG, "disconnected from device");
+      sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
+      disconnection();
+      if (!sl<SystemStateManager>().isTestActive) {
+        _incomingPacketHandler.resetPacket();
+      }
     }
-//    else if (state == BluetoothDeviceState.disconnected) {
-//      Log.info(TAG, "disconnected from device");
-//      sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-//      if (!sl<SystemStateManager>().isTestActive) {
-//        _incomingPacketHandler.resetPacket();
-//        disconnection();
-//      }
-//    }
   }
 
   void disconnection() {
     Log.info(TAG, 'Remove all value changed listeners');
     sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
-    deviceStateSubscription?.cancel();
-    deviceStateSubscription = null;
+    sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
+    _deviceStateSubscription?.cancel();
+    _deviceStateSubscription = null;
     _deviceConnection?.cancel();
     sl<BleService>().clearDevice();
   }
@@ -387,6 +388,6 @@ class BleManager extends ManagerBase {
     _deviceStateSubject.close();
     _deviceStateSubject.close();
     _deviceConnection.cancel();
-    deviceStateSubscription.cancel();
+    _deviceStateSubscription.cancel();
   }
 }

@@ -93,11 +93,15 @@ class BleService {
   Future<void> writeCharacteristic(List<int> data) async {
     var status = 'success';
     try {
-      await _device.writeCharacteristic(
-        _charForWrite,
-        data,
-        type: CharacteristicWriteType.withResponse,
-      );
+      await _device
+          .writeCharacteristic(
+            _charForWrite,
+            data,
+            type: CharacteristicWriteType.withResponse,
+          )
+          .timeout(Duration(seconds: 3),
+              onTimeout: () =>
+                  throw Exception('Failed to write the characteristic'));
     } catch (e) {
       status = 'failure ${e.toString()}';
     }

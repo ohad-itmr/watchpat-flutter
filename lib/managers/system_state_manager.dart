@@ -22,7 +22,7 @@ enum DeviceErrorStates {
   USED_DEVICE,
   HW_ERROR
 }
-enum SessionErrorState { UNKNOWN, NO_ERROR, PIN_ERROR }
+enum SessionErrorState { UNKNOWN, NO_ERROR, PIN_ERROR, NO_DISPATCHER }
 
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
 

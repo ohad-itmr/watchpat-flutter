@@ -42,6 +42,7 @@ class TestingManager extends ManagerBase {
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
     _systemStateManager = sl<SystemStateManager>();
+    _restartTimers();
   }
 
   Future<bool> get canStartTesting async {
@@ -58,9 +59,11 @@ class TestingManager extends ManagerBase {
     _startElapsedTimer();
   }
 
-  void restartTimers() {
-    _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
-    _startElapsedTimer();
+  void _restartTimers() {
+    if (_systemStateManager.testState == TestStates.INTERRUPTED) {
+      _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
+      _startElapsedTimer();
+    }
   }
 
   void _startElapsedTimer() {

@@ -47,7 +47,17 @@ class GeneralResponse extends DispatcherResponse {
   bool error;
   String message;
 
-  GeneralResponse.fromJson(Map<String, dynamic> json)
-      : error = json['error'],
-        message = json['message'];
+  GeneralResponse.fromJson(Map<String, dynamic> json) {
+    error = json['error'];
+
+    var msg = json['message'];
+    if (msg is int) {
+      message = '$msg';
+    } else if (msg is String) {
+      message = msg;
+    } else {
+      message = 'unknown';
+    }
+  }
+
 }

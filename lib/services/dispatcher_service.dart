@@ -7,6 +7,8 @@ import 'package:my_pat/utils/log/dio_logger.dart';
 class DispatcherService {
   static const String TAG = 'DispatcherService';
   static const String DISPATCHER_ERROR_STATUS = "666";
+  static const String SN_NOT_REGISTERED_ERROR_STATUS = "99";
+  static const String NO_PIN_RETRIES = "2";
   static const int DIO_CONNECT_TIMEOUT = 10000;
   static const int DIO_RECEIVE_TIMEOUT = 5000;
 

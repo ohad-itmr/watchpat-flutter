@@ -36,7 +36,7 @@ class UserAuthenticationService {
       _patientPolicy = PatientPolicyModel.fromJson(response['policy']);
       Log.info(TAG, 'Patient policy successfully set up');
     } else {
-      Log.shout(TAG, "Failed to get patient policty: ${response['message']}");
+      Log.shout(TAG, "Failed to get patient policy: ${response['message']}");
     }
   }
 

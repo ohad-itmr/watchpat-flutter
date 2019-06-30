@@ -176,7 +176,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               sl<SystemStateManager>().setTestState(TestStates.STARTED);
             } else if (currentTestState == TestStates.INTERRUPTED) {
               sl<SystemStateManager>().setTestState(TestStates.RESUMED);
-              sl<TestingManager>().restartTimers();
+//              sl<TestingManager>().restartTimers();
             }
           }
 
@@ -561,12 +561,19 @@ class IncomingPacketHandlerService extends ManagerBase {
     if (res.error) {
       if (res.message == DispatcherService.DISPATCHER_ERROR_STATUS) {
         errors += "- Connection to dispatcher failed";
-        sl<SystemStateManager>()
-            .setSessionErrorState(SessionErrorState.NO_DISPATCHER, errors: errors);
-      } else {
+        sl<SystemStateManager>().setSessionErrorState(
+            SessionErrorState.NO_DISPATCHER,
+            errors: errors);
+      } else if (res.message == DispatcherService.NO_PIN_RETRIES) {
         errors += "- Number of PIN retries exceeded";
         sl<SystemStateManager>()
             .setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
+      } else if (res.message ==
+          DispatcherService.SN_NOT_REGISTERED_ERROR_STATUS) {
+        errors += "- Serial number of your device is not registered";
+        sl<SystemStateManager>().setSessionErrorState(
+            SessionErrorState.SN_NOT_REGISTERED,
+            errors: errors);
       }
       return false;
     }

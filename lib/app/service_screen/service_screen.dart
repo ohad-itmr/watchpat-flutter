@@ -5,6 +5,7 @@ import 'package:my_pat/app/service_screen/ignore_errors_dialog.dart';
 import 'package:my_pat/app/service_screen/led_indicators_dialog.dart';
 import 'package:my_pat/app/service_screen/perform_bit_screen.dart';
 import 'package:my_pat/app/service_screen/reset_device_dialog.dart';
+import 'package:my_pat/app/service_screen/select_dispatcher_dialog.dart';
 import 'package:my_pat/app/welcome_sreen/welcome_screen.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
@@ -389,6 +390,11 @@ class _ServiceScreenState extends State<ServiceScreen> {
         ]));
   }
 
+  // Set dispatcher URL
+  _setDispatcherURL() {
+    showDialog(context: context, builder: (_) => SelectDispatcherDialog());
+  }
+
   _showResetApplicationDialog() {
     _showServiceDialog(ServiceDialog(
         title: Text(S.of(context).reset_application_title),
@@ -414,10 +420,12 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Retrieve test data from device and upload it to server",
           action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
+//      ServiceOption(
+//          title: "Upgrade main device firmware", action: _showFWUpgradeDialog),
       ServiceOption(
-          title: "Upgrade main device firmware", action: _showFWUpgradeDialog),
+          title: "Handle parameters file", action: _showParametersFileDialog),
       ServiceOption(
-          title: "Handle parameters file", action: _showParametersFileDialog)
+          title: "Set dispatcher URL", action: _setDispatcherURL)
     ];
 
     _technicianServiceOptions = [
@@ -426,10 +434,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(
           title: "Handle ACC registers", action: _showAccRegistersDialog),
       ServiceOption(
-          title: "Handle main devide EEPROM", action: _showEepromDialog),
+          title: "Handle main device EEPROM", action: _showEepromDialog),
       ServiceOption(
           title: "Set device serial", action: _showDeviceSerialDialog),
-      ServiceOption(title: "Sel LED indication", action: _showSetLedDialog),
+      ServiceOption(title: "Set LED indication", action: _showSetLedDialog),
       ServiceOption(
           title: "Get technical status", action: _performTechStatusReport),
       ServiceOption(

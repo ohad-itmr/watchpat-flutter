@@ -185,12 +185,15 @@ class S implements WidgetsLocalizations {
   String get scan_again => "Scan again";
   String get scanning_device => "Scanning for device";
   String get select_bit_type => "Select BIT mode";
+  String get select_dispatcher_text => "You will need to start the application again";
+  String get select_dispatcher_title => "Choose dispatcher URL";
   String get select_language => "Select language";
   String get select_led_color => "Select LED color";
   String get select_reset_type => "Select reset type";
   String get send => "Send";
   String get server_comm_error => "Server communication error, please contact support";
   String get set => "set";
+  String get set_and_close => "Set and close";
   String get set_device_serial_success => "Set device serial: success";
   String get set_device_serial_timeout => "Set device serial: timeout";
   String get set_led_color_success => "Set LED color: success";
@@ -271,6 +274,8 @@ class fr extends S {
   String get device_is_not_paired_error => "Previously connected device acts as unpaired. We don't know what to do.";
   @override
   String get upgrade => "Upgrade";
+  @override
+  String get select_dispatcher_title => "Choose dispatcher URL";
   @override
   String get connecting_to_device => "Connecting to a device";
   @override
@@ -400,6 +405,8 @@ class fr extends S {
   @override
   String get err_actigraph_test => "Actigraph test";
   @override
+  String get set_and_close => "Set and close";
+  @override
   String get technician_mode => "Technician mode";
   @override
   String get batteryTitle => "Insert Battery";
@@ -411,6 +418,8 @@ class fr extends S {
   String get eeprom_write_failed => "Device EEPROM write failed";
   @override
   String get upgrade_file_ver_name => "UpgradeFileVersion";
+  @override
+  String get select_dispatcher_text => "You will need to start the application again";
   @override
   String get green => "green";
   @override

@@ -20,6 +20,10 @@ class GlobalSettings {
         resource[GlobalSettingsModel.TAG_SERVICE_EMAIL_ADDRESS] ??
             DefaultSettings.emailService;
     PrefsProvider.saveServiceEmail(email);
+    final List<dynamic> dispatcherURLS =
+        resource[GlobalSettingsModel.TAG_DISPATCHERS_URLS] ??
+            [GlobalSettings.dispatcherLink];
+    PrefsProvider.saveDispatcherURL(dispatcherURLS[0]);
   }
 
   static GlobalSettingsModel get _globalSettings =>
@@ -66,7 +70,8 @@ class GlobalSettings {
 
   static String get serviceEmailAddress => PrefsProvider.loadServiceEmail();
 
-  static String get dispatcherLink => _globalSettings.dispatcherLink;
+  static String get dispatcherLink =>
+      PrefsProvider.loadDispatcherURL() ?? _globalSettings.dispatcherLink;
 
   static bool get isDebugMode => _globalSettings.debugMode;
 
@@ -83,5 +88,6 @@ class GlobalSettings {
 
   static int get btScanTimeout => _globalSettings.btScanTimeout;
 
-  static List<String> get dispatchersUrls => _globalSettings.dispatchersUrls;
+  static List<String> get dispatchersUrls =>
+      _globalSettings.dispatchersUrls.map((val) => "$val").toList();
 }

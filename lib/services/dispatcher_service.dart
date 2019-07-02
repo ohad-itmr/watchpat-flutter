@@ -28,7 +28,8 @@ class DispatcherService {
     }));
   }
 
-  static final String _dispatcherUrl = GlobalSettings.dispatcherLink;
+  static String get _dispatcherUrl => GlobalSettings.dispatcherLink;
+
   final String _testEndpoint = '$_dispatcherUrl/test';
   final String _checkExternalConfigEndpoint =
       '$_dispatcherUrl/watchpat/isConfigEnabled';

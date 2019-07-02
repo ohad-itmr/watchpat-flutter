@@ -4,17 +4,17 @@ import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
-class RemoveJewelryScreen extends StatefulWidget {
+class PreparationScreen extends StatefulWidget {
   static const String PATH = '/prepare';
-  static const String TAG = 'RemoveJewelryScreen';
+  static const String TAG = 'PreparationScreen';
 
-  RemoveJewelryScreen({Key key}) : super(key: key);
+  PreparationScreen({Key key}) : super(key: key);
 
   @override
-  _RemoveJewelryScreenState createState() => _RemoveJewelryScreenState();
+  _PreparationScreenState createState() => _PreparationScreenState();
 }
 
-class _RemoveJewelryScreenState extends State<RemoveJewelryScreen> {
+class _PreparationScreenState extends State<PreparationScreen> {
   final S loc = sl<S>();
   bool _nextIsPressed = false;
 
@@ -62,7 +62,7 @@ class _RemoveJewelryScreenState extends State<RemoveJewelryScreen> {
                 ),
                 moreActionButton: ButtonModel(
                   action: () => Navigator.of(context).pushNamed(
-                      "${CarouselScreen.PATH}/${RemoveJewelryScreen.TAG}"),
+                      "${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
                 ),
               ),
         showSteps: true,

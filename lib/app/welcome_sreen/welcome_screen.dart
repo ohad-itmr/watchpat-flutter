@@ -49,7 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         state == ScanResultStates.LOCATED_MULTIPLE) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else {
-      Navigator.of(context).pushNamed(RemoveJewelryScreen.PATH);
+      Navigator.of(context).pushNamed(PreparationScreen.PATH);
     }
   }
 

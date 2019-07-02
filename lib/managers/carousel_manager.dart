@@ -85,7 +85,7 @@ class CarouselManager extends ManagerBase {
                 "Make sure you follow the + and - marking, and with flat side against the spring",
             image: "assets/carousel/carousel_battery_2.jpg"),
       ],
-      RemoveJewelryScreen.TAG: [
+      PreparationScreen.TAG: [
         CarouselData(
             text:
                 "Remove all jewelry and hand cream. Make sure the fingernails are trimmed.",

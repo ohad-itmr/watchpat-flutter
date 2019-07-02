@@ -1,5 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_pat/app/app_routes.dart';
 import 'package:my_pat/config/app_theme.dart';
@@ -18,9 +19,8 @@ void main() async {
 //  PrefsProvider.setTestComplete(true);
 
   await setupServices();
-
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(AppComponent());
-//  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class AppComponent extends StatefulWidget {

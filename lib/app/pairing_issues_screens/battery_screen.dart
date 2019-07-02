@@ -52,7 +52,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
         Navigator.of(context).pushNamed(
             "${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
       } else {
-        Navigator.pushNamed(context, RemoveJewelryScreen.PATH);
+        Navigator.pushNamed(context, PreparationScreen.PATH);
       }
     } else {
       _showNotFoundDialog();

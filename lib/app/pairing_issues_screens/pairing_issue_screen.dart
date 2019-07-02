@@ -75,7 +75,7 @@ class _PairingIssueScreenState extends State<PairingIssueScreen> {
           nextActionButton: ButtonModel(
             action: () {
               if (_deviceConnected) {
-                Navigator.pushNamed(context, RemoveJewelryScreen.PATH);
+                Navigator.pushNamed(context, PreparationScreen.PATH);
               } else {
                 _showClosingDialog();
               }

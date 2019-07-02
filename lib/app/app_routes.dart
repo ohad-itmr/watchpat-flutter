@@ -42,14 +42,14 @@ var recordingRouteHandler = Handler(
   return RecordingScreen();
 });
 
-var removeJewelryRouteHandler = Handler(
+var preparationRouteHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
 //  if (sl<SystemStateManager>().dispatcherState ==
 //          DispatcherStates.DISCONNECTED &&
 //      PrefsProvider.loadDeviceSerial() != null) {
 //    sl<DispatcherService>().sendGetConfig(PrefsProvider.loadDeviceSerial());
 //  }
-  return RemoveJewelryScreen();
+  return PreparationScreen();
 });
 
 var startRouteHandler = Handler(
@@ -111,8 +111,8 @@ class AppRoutes {
     router.define(PinScreen.PATH,
         handler: pinRouteHandler, transitionType: TransitionType.native);
     router.define(RecordingScreen.PATH, handler: recordingRouteHandler);
-    router.define(RemoveJewelryScreen.PATH,
-        handler: removeJewelryRouteHandler,
+    router.define(PreparationScreen.PATH,
+        handler: preparationRouteHandler,
         transitionType: TransitionType.native);
     router.define(StartRecordingScreen.PATH,
         handler: startRouteHandler, transitionType: TransitionType.native);

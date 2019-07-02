@@ -172,8 +172,8 @@ class S implements WidgetsLocalizations {
   String get red => "Red";
   String get red_led_status => "Red LED status: ";
   String get remote_server => "Remote Server";
-  String get removeJewelryContent => "Remove tight cloths, watches and jewelry.\n Ensure that the fingernail on the non-dominant hand is trimmed.\nRemove artificial nail or colored nail polish from the monitored finger.\nUse the MORE button to see more details.";
-  String get removeJewelryTitle => "REMOVE JEWELRY";
+  String get removeJewelryContent => "Remove tight clothing, watches and jewelry.\nEnsure that the fingernail on the non-dominant hand is trimmed.\nRemove artificial nail or colored nail polish from the monitored finger.\nUse the MORE button to see more details.";
+  String get removeJewelryTitle => "PREPARATION";
   String get requesting_technical_status => "Requesting technical status";
   String get reset => "Reset";
   String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files? You will need to launch application again.";
@@ -203,7 +203,7 @@ class S implements WidgetsLocalizations {
   String get stepperOf => "of";
   String get stepperStep => "Step";
   String get stop_test => "STOP TEST";
-  String get strapWristContent => "Attach the WatchPAT\u2122ONE on your non-dominant hand. \n Secure the WatchPAT\u2122ONE to your wrist ensuring it is snug but not too tight.";
+  String get strapWristContent => "Attach the WatchPAT\u2122ONE on your non-dominant hand. \nSecure the WatchPAT\u2122ONE to your wrist ensuring it is snug but not too tight.";
   String get strapWristTitle => "ATTACH WRIST DEVICE";
   String get technician_mode => "Technician mode";
   String get test_data_from_previous_session_still_uploading => "Test data from previous session still uploading to server";
@@ -211,7 +211,7 @@ class S implements WidgetsLocalizations {
   String get test_data_transmit_in_progress => "Test data transmit in progress";
   String get test_in_progress => "Test in progress";
   String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
-  String get thankYouContent => "Congratulations, your study has been successfully uploaded to your doctor.\n Please dispose of the product according to local regulations.";
+  String get thankYouContent => "Congratulations, your study has been successfully uploaded to your doctor.\nPlease dispose of the product according to local regulations.";
   String get thankYouTitle => "THANK YOU";
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during the authentication, please contact support";

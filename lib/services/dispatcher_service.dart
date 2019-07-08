@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/dio_logger.dart';
+import 'package:my_pat/utils/log/log.dart';
 
 class DispatcherService {
   static const String TAG = 'DispatcherService';
@@ -25,41 +26,72 @@ class DispatcherService {
       return response;
     }, onError: (DioError error) {
       DioLogger.onError(TAG, error);
-      return _dio.resolve({"error": true, "message": DISPATCHER_ERROR_STATUS});
+      return _dio.reject(error);
     }));
   }
 
-  static String get _dispatcherUrl => GlobalSettings.getDispatcherLink(0);
+  static String get _dispatcherUrl =>
+      GlobalSettings.getDispatcherLink(PrefsProvider.loadDispatcherUrlIndex());
 
-  final String _testEndpoint = '$_dispatcherUrl/test';
-  final String _checkExternalConfigEndpoint =
-      '$_dispatcherUrl/watchpat/isConfigEnabled';
-  final String _getDefaultConfigEndpoint =
-      '$_dispatcherUrl/watchpat/getDefaultConfig';
-  final String _getPatientPolicy = '$_dispatcherUrl/watchpat/policy';
-  final String _authenticationEndPoint =
-      '$_dispatcherUrl/watchpat/authenticate';
-  final String _testCompleteEndpoint = '$_dispatcherUrl/test/done';
+  final String _checkExternalConfigEndpoint = '/watchpat/isConfigEnabled';
+  final String _getDefaultConfigEndpoint = '/watchpat/getDefaultConfig';
+  final String _getPatientPolicy = '/watchpat/policy';
+  final String _authenticationEndPoint = '/watchpat/authenticate';
+  final String _testCompleteEndpoint = '/test/done';
 
-  Future<bool> checkDispatcherAlive() async {
-    Response response = await _dio.get(_testEndpoint);
-    return response.data['test'] == 'ok';
+  // Generic method to send http request and try different dispatchers in case of failure
+  Future<Response> _sendRequest(
+      {@required String urlSuffix,
+      @required RequestMethod method,
+      Map<String, String> data}) async {
+    try {
+      if (method == RequestMethod.post) {
+        return await _dio.post("$_dispatcherUrl$urlSuffix", data: data);
+      } else if (method == RequestMethod.get) {
+        return await _dio.get("$_dispatcherUrl$urlSuffix");
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Log.shout(TAG,
+          "Failed to connect to dispatcher $_dispatcherUrl, ${e.toString()}");
+      if (_moreDispatchersAvailable()) {
+        await PrefsProvider.incrementDispatcherUrlIndex();
+        Log.info(TAG, "Reconnecting to another dispatcher $_dispatcherUrl");
+        return await _sendRequest(
+            urlSuffix: urlSuffix, method: method, data: data);
+      } else {
+        return _dio
+            .resolve({"error": true, "message": DISPATCHER_ERROR_STATUS});
+      }
+    }
+  }
+
+  bool _moreDispatchersAvailable() {
+    return PrefsProvider.loadDispatcherUrlIndex() <
+        (GlobalSettings.dispatcherUrlsAmount - 1);
   }
 
   Future<bool> checkExternalConfig() async {
-    Response response = await _dio.post(_checkExternalConfigEndpoint,
+    Response response = await _sendRequest(
+        method: RequestMethod.post,
+        urlSuffix: _checkExternalConfigEndpoint,
         data: {"client": "iOS APP", "version": "1"});
     return ExternalConfigEnabledModel.fromJson(response.data).enabled;
   }
 
   Future<Map<String, dynamic>> getExternalConfig() async {
-    Response response = await _dio.post(_getDefaultConfigEndpoint,
+    Response response = await _sendRequest(
+        method: RequestMethod.post,
+        urlSuffix: _getDefaultConfigEndpoint,
         data: {"client": "iOS APP", "version": "1"});
     return response.data;
   }
 
   Future<DispatcherResponse> getPatientPolicy(String serialNumber) async {
-    Response response = await _dio.post('$_getPatientPolicy/$serialNumber',
+    Response response = await _sendRequest(
+        urlSuffix: '$_getPatientPolicy/$serialNumber',
+        method: RequestMethod.post,
         data: {"client": "iOS APP", "version": "1"});
     sl<UserAuthenticationService>().setPatientPolicy(response.data);
     return GeneralResponse.fromJson(response.data);
@@ -67,16 +99,21 @@ class DispatcherService {
 
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
       String serialNumber, String pin) async {
-    Response response = await _dio.post(
-        "$_authenticationEndPoint/$serialNumber",
+    Response response = await _sendRequest(
+        urlSuffix: "$_authenticationEndPoint/$serialNumber",
+        method: RequestMethod.post,
         data: {"pin": pin, "client": "iOS APP", "version": "1"});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 
   void sendTestComplete(String serialNumber) async {
-    await _dio.get('$_testCompleteEndpoint/$serialNumber');
+    await _sendRequest(
+        urlSuffix: '$_testCompleteEndpoint/$serialNumber',
+        method: RequestMethod.get);
   }
 
   static BaseOptions options = new BaseOptions(
       connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);
 }
+
+enum RequestMethod { get, post }

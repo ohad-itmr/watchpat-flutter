@@ -348,6 +348,11 @@ class PrefsProvider {
     return PrefsService.prefs.setInt(PrefsNames.DISPATCHER_URL_INDEX, index);
   }
 
+  static Future<void> incrementDispatcherUrlIndex() async {
+    final int newIndex = loadDispatcherUrlIndex() + 1;
+    return PrefsService.prefs.setInt(PrefsNames.DISPATCHER_URL_INDEX, newIndex);
+  }
+
   static int loadDispatcherUrlIndex() {
     return PrefsService.prefs.getInt(PrefsNames.DISPATCHER_URL_INDEX) ?? 0;
   }

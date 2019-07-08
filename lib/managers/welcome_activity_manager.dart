@@ -67,7 +67,6 @@ class WelcomeActivityManager extends ManagerBase {
       // get config from server
       final Map<String, dynamic> response =
           await sl<DispatcherService>().getExternalConfig();
-      print(response["config"]);
       // set config
       if (response["error"]) {
         Log.shout(TAG,
@@ -77,6 +76,7 @@ class WelcomeActivityManager extends ManagerBase {
             "External config received from dispatcher, configuring application");
         GlobalSettings.setExternalConfiguration(response["config"]);
         GlobalSettings.persistConfiguration(response["config"]);
+        PrefsProvider.saveDispatcherUrlIndex(0);
       }
     }
   }

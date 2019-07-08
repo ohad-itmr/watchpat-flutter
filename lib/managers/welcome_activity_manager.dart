@@ -77,7 +77,6 @@ class WelcomeActivityManager extends ManagerBase {
             "External config received from dispatcher, configuring application");
         GlobalSettings.setExternalConfiguration(response["config"]);
         GlobalSettings.persistConfiguration(response["config"]);
-        print("CHECK CHECK ${GlobalSettings.getDispatcherLink(2)}");
       }
     }
   }

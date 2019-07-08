@@ -44,7 +44,7 @@ class PrefsNames {
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
   static const String LOCALE_CODE = "locale.code";
   static const String SERVICE_EMAIL_CODE = "service.email";
-  static const String DISPATCHER_URL = "dispatcher.url";
+  static const String DISPATCHER_URL_INDEX = "dispatcher.url.index";
   static const String DATA_UPLOADING_NOT_FINISHED = "test.data.uploaded";
   static const String IS_TEST_STOPPED_BY_USER = "is.test.stopped";
   static const String PACKET_ID_COUNTER_KEY = "packet.counter.key";
@@ -344,11 +344,11 @@ class PrefsProvider {
   //
   // Dispatcher URL
   //
-  static Future<void> saveDispatcherURL(String url) async {
-    return PrefsService.prefs.setString(PrefsNames.DISPATCHER_URL, url);
+  static Future<void> saveDispatcherUrlIndex(int index) async {
+    return PrefsService.prefs.setInt(PrefsNames.DISPATCHER_URL_INDEX, index);
   }
 
-  static String loadDispatcherURL() {
-    return PrefsService.prefs.getString(PrefsNames.DISPATCHER_URL);
+  static int loadDispatcherUrlIndex() {
+    return PrefsService.prefs.getInt(PrefsNames.DISPATCHER_URL_INDEX) ?? 0;
   }
 }

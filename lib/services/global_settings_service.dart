@@ -70,6 +70,8 @@ class GlobalSettings {
       ? dispatchersUrls[index]
       : dispatchersUrls[0];
 
+  static int get dispatcherUrlsAmount => dispatchersUrls.length;
+
   static bool get isDebugMode => _globalSettings.debugMode;
 
   static String get demoUrl => _globalSettings.demoUrl;

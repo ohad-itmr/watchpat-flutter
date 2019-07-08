@@ -45,8 +45,8 @@ class TransactionManager extends ManagerBase {
         .listen((_) async {
       Log.info(TAG, "Bluetooth went enabled, starting scan");
       await Future.delayed(Duration(seconds: 2));
-//      sl<BleManager>().startScan(
-//          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      sl<BleManager>().startScan(
+          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     });
   }
 

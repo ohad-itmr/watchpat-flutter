@@ -11,42 +11,36 @@ class SelectDispatcherDialog extends StatefulWidget {
 
 class _SelectDispatcherDialog extends State<SelectDispatcherDialog> {
   final S _loc = sl<S>();
-  String _selectedUrl = PrefsProvider.loadDispatcherURL();
+  int _selectedUrlIndex = PrefsProvider.loadDispatcherUrlIndex();
 
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return AlertDialog(
         title: Text(_loc.select_dispatcher_title),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(_loc.select_dispatcher_text),
-          ...GlobalSettings.dispatchersUrls
-              .map((String url) => RadioListTile(
-                    title: Text(url),
-                    value: _selectedUrl == url,
-                    onChanged: (_) => setState(() => _selectedUrl = url),
-                    groupValue: true,
-                  ))
-              .toList(),
-        ]),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: GlobalSettings.dispatchersUrls
+                .map((String url) => RadioListTile(
+                      title: Text(url),
+                      value: url ==
+                          GlobalSettings.getDispatcherLink(_selectedUrlIndex),
+                      onChanged: (_) => setState(() {
+                            _selectedUrlIndex =
+                                GlobalSettings.dispatchersUrls.indexOf(url);
+                            PrefsProvider.saveDispatcherUrlIndex(
+                                _selectedUrlIndex);
+                          }),
+                      groupValue: true,
+                    ))
+                .toList()),
         actions: <Widget>[
           FlatButton(
-            child: Text(_loc.cancel.toUpperCase()),
+            child: Text(_loc.ok.toUpperCase()),
             onPressed: () => Navigator.pop(context),
-          ),
-          FlatButton(
-            child: Text(_loc.set_and_close.toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            onPressed:
-                _selectedUrl != null ? () => _selectColor(_selectedUrl) : null,
           )
         ],
       );
     });
-  }
-
-  void _selectColor(String url) async {
-    await PrefsProvider.saveDispatcherURL(url);
-    exit(0);
   }
 }

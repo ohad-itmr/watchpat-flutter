@@ -11,7 +11,7 @@ class SelectDispatcherDialog extends StatefulWidget {
 
 class _SelectDispatcherDialog extends State<SelectDispatcherDialog> {
   final S _loc = sl<S>();
-  String _selectedUrl;
+  String _selectedUrl = PrefsProvider.loadDispatcherURL();
 
   @override
   Widget build(BuildContext context) {

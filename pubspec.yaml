@@ -15,7 +15,7 @@ dependencies:
   fluro: ^1.4.0
   dio: ^2.1.0
   logging: 0.11.3+2
-  path_provider: ^0.5.0+1
+  path_provider: ^1.1.0
   connectivity: ^0.4.2
   flutter_blue: 0.5.0
   date_format: ^1.0.6
@@ -30,6 +30,7 @@ dependencies:
   url_launcher: ^5.0.2
   tuple: ^1.0.2
   background_fetch: ^0.1.0
+  esys_flutter_share: ^1.0.2
 
 
   #  battery:

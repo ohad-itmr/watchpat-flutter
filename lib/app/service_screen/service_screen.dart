@@ -443,7 +443,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ServiceOption(
           title: "Export log file by email", action: _showLogSendingDialog),
       ServiceOption(
-          title: "Extract log file from device",
+          title: "Share device logfile",
           action: _manager.getLogFileFromDevice),
       ServiceOption(title: "Reset main device", action: _showResetDeviceDialog),
       ServiceOption(

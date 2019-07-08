@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
+import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/main.dart';
@@ -166,7 +168,15 @@ class ServiceScreenManager extends ManagerBase {
 
     // subscribe to result
     final bool isDone = await _paramFileHandler.logFileStatusStream.first;
-    if (isDone) _hideProgressbarWithMessage(_loc.getting_log_file_success);
+    if (isDone) {
+      _hideProgressbarWithMessage(_loc.getting_log_file_success);
+      final File logFile = await sl<FileSystemService>().deviceLogFile;
+      _shareFile(logFile);
+    }
+  }
+
+  _shareFile(File file) async {
+    await Share.file('Device log file', DefaultSettings.deviceLogFileName, file.readAsBytesSync(), 'text/plain');
   }
 
   // Handle AFE registers

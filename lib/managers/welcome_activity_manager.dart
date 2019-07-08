@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/domain_model/response_model.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -76,6 +77,7 @@ class WelcomeActivityManager extends ManagerBase {
             "External config received from dispatcher, configuring application");
         GlobalSettings.setExternalConfiguration(response["config"]);
         GlobalSettings.persistConfiguration(response["config"]);
+        print("CHECK CHECK ${GlobalSettings.getDispatcherLink(2)}");
       }
     }
   }

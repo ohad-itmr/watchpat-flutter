@@ -30,7 +30,8 @@ class DefaultSettings {
   static final maxTestLengthHours = 10;
   static final sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 95;
-  static final dispatcherLink = "http://mypat.dev.valigar.co.il";
+  static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";
+  static final dispatcherLink2 = "https://dispatcher.watchpat-one.com";
   static final userPinCodeLength = 4;
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;
@@ -64,7 +65,8 @@ class DefaultSettings {
       'maxTestLengthHours': maxTestLengthHours,
       'sessionTimeoutHours': sessionTimeoutHours,
       'minBatteryLevel': minBatteryRequiredLevel,
-      'dispatcherLink': dispatcherLink,
+      'dispatchersUrls': [dispatcherLink1, dispatcherLink2],
+      'fwVersionsForUpgrade': [],
       'userPinCodeLength': userPinCodeLength,
       'timeoutFtpSec': timeoutFtpSec,
       'timeoutBleSec': timeoutBleSec,

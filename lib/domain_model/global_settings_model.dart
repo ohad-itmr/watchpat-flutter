@@ -41,9 +41,9 @@ class GlobalSettingsModel {
   double dataTransferRate = INVALID_D_STATE;
   int minBatteryAskedLevel = INVALID_STATE;
   double minDataForUpload = INVALID_D_STATE;
-  List<dynamic> fwVersionsForUpgrade = [null];
+  List<String> fwVersionsForUpgrade = [];
   int btScanTimeout = INVALID_STATE;
-  List<dynamic> dispatchersUrls = [null];
+  List<String> dispatchersUrls = [];
 
   int minTestLength = INVALID_STATE;
   int maxTestLength = INVALID_STATE;
@@ -51,7 +51,6 @@ class GlobalSettingsModel {
   int minBatteryRequiredLevel = INVALID_STATE;
   int userPinCodeLength = INVALID_STATE;
   String serviceEmailAddress = "";
-  String dispatcherLink = "";
   bool debugMode = false;
 
   GlobalSettingsModel.fromResource(Map<String, dynamic> parsedJson)
@@ -62,15 +61,16 @@ class GlobalSettingsModel {
         dataTransferRate = parsedJson[TAG_DATA_TRANSFER_RATE] != null ? parsedJson[TAG_DATA_TRANSFER_RATE].toDouble() : DefaultSettings.dataTransferRate,
         minBatteryAskedLevel = parsedJson[TAG_MIN_BATTERY_ASKED_LEVEL] ?? DefaultSettings.minBatteryAskedLevel,
         minDataForUpload = parsedJson[TAG_MIN_DATA_FOR_UPLOAD] ?? DefaultSettings.minDataForUpload,
-        fwVersionsForUpgrade = parsedJson[TAG_FW_VERSIONS_FOR_UPGRADE] ?? DefaultSettings.fwVersionsForUpgrade,
+        fwVersionsForUpgrade = (parsedJson[TAG_FW_VERSIONS_FOR_UPGRADE] as List<dynamic>).map((val) => "$val").toList() ??
+            DefaultSettings.fwVersionsForUpgrade,
         btScanTimeout = parsedJson[TAG_BT_SCAN_TIMEOUT] ?? DefaultSettings.btScanTimeout,
-        dispatchersUrls = parsedJson[TAG_DISPATCHERS_URLS] ?? DefaultSettings.dispatchersUrls,
+        dispatchersUrls = (parsedJson[TAG_DISPATCHERS_URLS] as List<dynamic>).map((val) => "$val").toList() ??
+            [DefaultSettings.dispatcherLink1,DefaultSettings.dispatcherLink2],
         minTestLength = parsedJson[TAG_MIN_TEST_LENGTH_HOURS] ?? DefaultSettings.minTestLengthHours,
         maxTestLength = parsedJson[TAG_MAX_TEST_LENGTH_HOURS] ?? DefaultSettings.maxTestLengthHours,
         sessionTimeoutTimeHours = parsedJson[TAG_SESSION_TIMEOUT_HOURS] ?? DefaultSettings.sessionTimeoutHours,
         minBatteryRequiredLevel = parsedJson[TAG_MIN_BATTERY_REQUIRED_LEVEL] ?? DefaultSettings.minBatteryRequiredLevel,
         userPinCodeLength = parsedJson[TAG_PIN_CODE_LENGTH] ?? DefaultSettings.userPinCodeLength,
         serviceEmailAddress = parsedJson[TAG_SERVICE_EMAIL_ADDRESS] ?? DefaultSettings.emailService,
-        dispatcherLink = parsedJson[TAG_DISPATCHER_LINK] ?? DefaultSettings.dispatcherLink,
         debugMode = parsedJson[TAG_DEBUG_MODE] ?? DefaultSettings.debugMode;
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/dio_logger.dart';
@@ -28,7 +29,7 @@ class DispatcherService {
     }));
   }
 
-  static String get _dispatcherUrl => GlobalSettings.dispatcherLink;
+  static String get _dispatcherUrl => GlobalSettings.getDispatcherLink(0);
 
   final String _testEndpoint = '$_dispatcherUrl/test';
   final String _checkExternalConfigEndpoint =

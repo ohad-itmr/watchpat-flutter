@@ -46,7 +46,7 @@ class WelcomeActivityManager extends ManagerBase {
 
   Observable<List<String>> get initErrors => _initErrorsSubject.stream;
 
-  PublishSubject<bool> _configurationFinished = PublishSubject<bool>();
+  BehaviorSubject<bool> _configurationFinished = BehaviorSubject<bool>();
 
   Observable<bool> get configFinished => _configurationFinished.stream;
 

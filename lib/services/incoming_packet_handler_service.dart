@@ -208,7 +208,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
           Log.info(TAG, "### start session confirm: device serial saved");
 
-          if (_checkDeviceErrors(receivedPacket.opCodeDependent) && await _checkSessionErrors()) {
+          if (await _checkSessionErrors() && _checkDeviceErrors(receivedPacket.opCodeDependent)) {
             if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
               Log.info(TAG, "### start session confirm: device FW version check START");

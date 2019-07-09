@@ -26,9 +26,9 @@ class DefaultSettings {
   static final uploadDataChunkMaxSize = 5000;
   static final uploadDataAccumulationSize = 100000;
   static final minStorageSpaceMb = 80;
-  static final minTestLengthHours = 7;
-  static final maxTestLengthHours = 10;
-  static final sessionTimeoutHours = 20;
+  static final double minTestLengthHours = 7;
+  static final double maxTestLengthHours = 10;
+  static final double sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 95;
   static final dispatcherLink2 = "https://dispatcher.watchpat-one.com";
   static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";

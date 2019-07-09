@@ -30,18 +30,25 @@ class GlobalSettings {
       final xml.XmlDocument document = xml.parse(source);
       document.findAllElements('settings').toList().first.attributes
           .forEach((xml.XmlAttribute node) {
-            if (node.name.toString() != GlobalSettingsModel.TAG_DEBUG_MODE) {
-              _configurationResource[node.name.toString()] =  int.parse(node.value);
-            } else {
+            if (node.name.toString() == GlobalSettingsModel.TAG_DEBUG_MODE) {
               _configurationResource[node.name.toString()] = node.value == 'true';
+            } else if (node.name.toString() == GlobalSettingsModel.TAG_MIN_STORAGE_SPACE_MB) {
+              _configurationResource[node.name.toString()] = int.parse(node.value);
+            } else {
+              _configurationResource[node.name.toString()] =  double.parse(node.value);
             }
       });
-    } catch (e) {}
-    print(GlobalSettings.minStorageSpaceMB);
+    } catch (e) {
+      print("XML configuring error: ${e.toString()}");
+    }
     print(GlobalSettings._getMinTestLengthHours);
+    print(GlobalSettings.minTestLengthSeconds);
+
     print(GlobalSettings._getMaxTestLengthHours);
-    print(GlobalSettings._getSessionTimeoutTimeHours);
-    print(GlobalSettings.isDebugMode);
+    print(GlobalSettings.maxTestLengthSeconds);
+
+//
+//    print(GlobalSettings.maxTestLengthSeconds);
   }
 
   static GlobalSettingsModel get _globalSettings =>
@@ -54,29 +61,25 @@ class GlobalSettings {
   static int get minStorageSpaceMB => _globalSettings.minStorageSpace;
 
   static int get minTestLengthSeconds {
-    if (isDebugMode) {
-      return 15;
-    } else {
-      final int len = _getMinTestLengthHours;
-      return len == INVALID_STATE ? INVALID_STATE : len * 60 * 60;
-    }
+    final double len = _getMinTestLengthHours;
+    return len == INVALID_STATE ? INVALID_STATE : (len * 60 * 60).round();
   }
 
-  static int get _getMinTestLengthHours => _globalSettings.minTestLengthHours;
+  static double get _getMinTestLengthHours => _globalSettings.minTestLengthHours;
 
   static int get maxTestLengthSeconds {
-    final int len = _getMaxTestLengthHours;
-    return len == INVALID_STATE ? INVALID_STATE : len * 60 * 60;
+    final double len = _getMaxTestLengthHours;
+    return len == INVALID_STATE ? INVALID_STATE : (len * 60 * 60).round();
   }
 
-  static int get _getMaxTestLengthHours => _globalSettings.maxTestLengthHours;
+  static double get _getMaxTestLengthHours => _globalSettings.maxTestLengthHours;
 
   static int get sessionTimeoutTimeMS {
-    final int hours = _getSessionTimeoutTimeHours;
-    return (hours == INVALID_STATE ? INVALID_STATE : hours * 60 * 60 * 1000);
+    final double hours = _getSessionTimeoutTimeHours;
+    return hours == INVALID_STATE ? INVALID_STATE : (hours * 60 * 60 * 1000).round();
   }
 
-  static int get _getSessionTimeoutTimeHours => _globalSettings.sessionTimeoutTimeHours;
+  static double get _getSessionTimeoutTimeHours => _globalSettings.sessionTimeoutTimeHours;
 
   static int get minBatteryRequiredLevel => _globalSettings.minBatteryRequiredLevel;
 

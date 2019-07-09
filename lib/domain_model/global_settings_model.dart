@@ -45,9 +45,9 @@ class GlobalSettingsModel {
   int btScanTimeout = INVALID_STATE;
   List<String> dispatchersUrls = [];
 
-  int minTestLengthHours = INVALID_STATE;
-  int maxTestLengthHours = INVALID_STATE;
-  int sessionTimeoutTimeHours = INVALID_STATE;
+  double minTestLengthHours = INVALID_D_STATE;
+  double maxTestLengthHours = INVALID_D_STATE;
+  double sessionTimeoutTimeHours = INVALID_D_STATE;
   int minBatteryRequiredLevel = INVALID_STATE;
   int userPinCodeLength = INVALID_STATE;
   String serviceEmailAddress = "";

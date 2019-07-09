@@ -23,21 +23,18 @@ class TimeUtils {
     PrefsProvider.incTestPacketCount();
     final int testPacketCount = PrefsProvider.loadTestPacketCount();
     if (testPacketCount >
-            GlobalSettings.minTestLengthSeconds *
-                (GlobalSettings.dataTransferRate / 60) &&
+            GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60) &&
         sl<SystemStateManager>().testState != TestStates.STOPPED) {
       sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
     } else if (testPacketCount >
-        GlobalSettings.maxTestLengthSeconds *
-            (GlobalSettings.dataTransferRate / 60)) {
+        GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
 //      sl<SystemStateManager>().setTestState(TestStates.ENDED);
 
     }
   }
 
   static String getFullDateStringFromTimeStamp(DateTime timeStamp) {
-    return formatDate(
-        timeStamp, [dd, '-', MM, '-', yyyy, '_', HH, ':', mm, ':', ss]);
+    return formatDate(timeStamp, [dd, '-', MM, '-', yyyy, '_', HH, ':', mm, ':', ss]);
   }
 
   static int getTimeStamp() {
@@ -60,8 +57,7 @@ class TimeUtils {
   }
 
   static int getPacketRealTimeDiffSec() {
-    return PrefsProvider.loadTestElapsedTime() -
-        PrefsProvider.loadTestPacketCount();
+    return PrefsProvider.loadTestElapsedTime() - PrefsProvider.loadTestPacketCount();
   }
 }
 //

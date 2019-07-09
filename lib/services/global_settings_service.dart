@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:my_pat/domain_model/global_settings_model.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:xml/xml.dart' as xml;
 
 class GlobalSettings {
   static const String TAG = 'GlobalSettings';
@@ -8,8 +11,7 @@ class GlobalSettings {
   static const int INVALID_STATE = 2147483647;
   static const int INVALID_L_STATE = 9223372036854775807;
 
-  static Map<String, dynamic> _configurationResource =
-      DefaultSettings.settingsToMap();
+  static Map<String, dynamic> _configurationResource = DefaultSettings.settingsToMap();
 
   static setExternalConfiguration(Map<String, dynamic> resource) {
     _configurationResource = resource;
@@ -17,19 +19,37 @@ class GlobalSettings {
 
   static persistConfiguration(Map<String, dynamic> resource) {
     final String email =
-        resource[GlobalSettingsModel.TAG_SERVICE_EMAIL_ADDRESS] ??
-            DefaultSettings.emailService;
+        resource[GlobalSettingsModel.TAG_SERVICE_EMAIL_ADDRESS] ?? DefaultSettings.emailService;
     PrefsProvider.saveServiceEmail(email);
+  }
+
+  static void replaceSettingsFromXML() async {
+    try {
+      final File xmlFile = await sl<FileSystemService>().configFile;
+      final String source = await xmlFile.readAsString();
+      final xml.XmlDocument document = xml.parse(source);
+      document.findAllElements('settings').toList().first.attributes
+          .forEach((xml.XmlAttribute node) {
+            if (node.name.toString() != GlobalSettingsModel.TAG_DEBUG_MODE) {
+              _configurationResource[node.name.toString()] =  int.parse(node.value);
+            } else {
+              _configurationResource[node.name.toString()] = node.value == 'true';
+            }
+      });
+    } catch (e) {}
+    print(GlobalSettings.minStorageSpaceMB);
+    print(GlobalSettings._getMinTestLengthHours);
+    print(GlobalSettings._getMaxTestLengthHours);
+    print(GlobalSettings._getSessionTimeoutTimeHours);
+    print(GlobalSettings.isDebugMode);
   }
 
   static GlobalSettingsModel get _globalSettings =>
       GlobalSettingsModel.fromResource(_configurationResource);
 
-  static int get uploadDataChunkMaxSize =>
-      _globalSettings.uploadDataChunkMaxSize;
+  static int get uploadDataChunkMaxSize => _globalSettings.uploadDataChunkMaxSize;
 
-  static int get uploadDataAccumulationSize =>
-      _globalSettings.uploadDataAccumulationSize;
+  static int get uploadDataAccumulationSize => _globalSettings.uploadDataAccumulationSize;
 
   static int get minStorageSpaceMB => _globalSettings.minStorageSpace;
 
@@ -42,33 +62,30 @@ class GlobalSettings {
     }
   }
 
-  static int get _getMinTestLengthHours => _globalSettings.minTestLength;
+  static int get _getMinTestLengthHours => _globalSettings.minTestLengthHours;
 
   static int get maxTestLengthSeconds {
     final int len = _getMaxTestLengthHours;
     return len == INVALID_STATE ? INVALID_STATE : len * 60 * 60;
   }
 
-  static int get _getMaxTestLengthHours => _globalSettings.maxTestLength;
+  static int get _getMaxTestLengthHours => _globalSettings.maxTestLengthHours;
 
   static int get sessionTimeoutTimeMS {
     final int hours = _getSessionTimeoutTimeHours;
     return (hours == INVALID_STATE ? INVALID_STATE : hours * 60 * 60 * 1000);
   }
 
-  static int get _getSessionTimeoutTimeHours =>
-      _globalSettings.sessionTimeoutTimeHours;
+  static int get _getSessionTimeoutTimeHours => _globalSettings.sessionTimeoutTimeHours;
 
-  static int get minBatteryRequiredLevel =>
-      _globalSettings.minBatteryRequiredLevel;
+  static int get minBatteryRequiredLevel => _globalSettings.minBatteryRequiredLevel;
 
   static int get userPinCodeLength => _globalSettings.userPinCodeLength;
 
   static String get serviceEmailAddress => PrefsProvider.loadServiceEmail();
 
-  static String getDispatcherLink(int index) => index < dispatchersUrls.length
-      ? dispatchersUrls[index]
-      : dispatchersUrls[0];
+  static String getDispatcherLink(int index) =>
+      index < dispatchersUrls.length ? dispatchersUrls[index] : dispatchersUrls[0];
 
   static int get dispatcherUrlsAmount => dispatchersUrls.length;
 
@@ -82,11 +99,9 @@ class GlobalSettings {
 
   static double get minDataForUpload => _globalSettings.minDataForUpload;
 
-  static List<String> get fwVersionsForUpgrade =>
-      _globalSettings.fwVersionsForUpgrade;
+  static List<String> get fwVersionsForUpgrade => _globalSettings.fwVersionsForUpgrade;
 
   static int get btScanTimeout => _globalSettings.btScanTimeout;
 
-  static List<String> get dispatchersUrls =>
-      _globalSettings.dispatchersUrls;
+  static List<String> get dispatchersUrls => _globalSettings.dispatchersUrls;
 }

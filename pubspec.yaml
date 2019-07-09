@@ -31,6 +31,7 @@ dependencies:
   tuple: ^1.0.2
   background_fetch: ^0.1.0
   esys_flutter_share: ^1.0.2
+  xml: ^3.5.0
 
 
   #  battery:

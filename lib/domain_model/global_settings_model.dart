@@ -45,8 +45,8 @@ class GlobalSettingsModel {
   int btScanTimeout = INVALID_STATE;
   List<String> dispatchersUrls = [];
 
-  int minTestLength = INVALID_STATE;
-  int maxTestLength = INVALID_STATE;
+  int minTestLengthHours = INVALID_STATE;
+  int maxTestLengthHours = INVALID_STATE;
   int sessionTimeoutTimeHours = INVALID_STATE;
   int minBatteryRequiredLevel = INVALID_STATE;
   int userPinCodeLength = INVALID_STATE;
@@ -66,8 +66,8 @@ class GlobalSettingsModel {
         btScanTimeout = parsedJson[TAG_BT_SCAN_TIMEOUT] ?? DefaultSettings.btScanTimeout,
         dispatchersUrls = (parsedJson[TAG_DISPATCHERS_URLS] as List<dynamic>).map((val) => "$val").toList() ??
             [DefaultSettings.dispatcherLink1,DefaultSettings.dispatcherLink2],
-        minTestLength = parsedJson[TAG_MIN_TEST_LENGTH_HOURS] ?? DefaultSettings.minTestLengthHours,
-        maxTestLength = parsedJson[TAG_MAX_TEST_LENGTH_HOURS] ?? DefaultSettings.maxTestLengthHours,
+        minTestLengthHours = parsedJson[TAG_MIN_TEST_LENGTH_HOURS] ?? DefaultSettings.minTestLengthHours,
+        maxTestLengthHours = parsedJson[TAG_MAX_TEST_LENGTH_HOURS] ?? DefaultSettings.maxTestLengthHours,
         sessionTimeoutTimeHours = parsedJson[TAG_SESSION_TIMEOUT_HOURS] ?? DefaultSettings.sessionTimeoutHours,
         minBatteryRequiredLevel = parsedJson[TAG_MIN_BATTERY_REQUIRED_LEVEL] ?? DefaultSettings.minBatteryRequiredLevel,
         userPinCodeLength = parsedJson[TAG_PIN_CODE_LENGTH] ?? DefaultSettings.userPinCodeLength,

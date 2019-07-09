@@ -72,6 +72,9 @@ class WelcomeActivityManager extends ManagerBase {
         GlobalSettings.setExternalConfiguration(response["config"]);
         GlobalSettings.persistConfiguration(response["config"]);
         await PrefsProvider.saveDispatcherUrlIndex(0);
+
+        // todo testing only
+        GlobalSettings.replaceSettingsFromXML();
       }
       _configurationFinished.sink.add(true);
     }

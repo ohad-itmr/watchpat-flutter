@@ -30,8 +30,8 @@ class DefaultSettings {
   static final maxTestLengthHours = 10;
   static final sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 95;
-  static final dispatcherLink1 = "https://dispatcher.watchpat-one.com";
-  static final dispatcherLink2 = "http://mypat.dev.valigar.co.il";
+  static final dispatcherLink2 = "https://dispatcher.watchpat-one.com";
+  static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";
   static final userPinCodeLength = 4;
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;
@@ -54,6 +54,7 @@ class DefaultSettings {
   static String watchpatDirEEPROMFileName = "watchpat_eeprom.bin";
   static String resourceEEPROMFileName = "watchpat_eeprom_resource.bin";
   static String deviceLogFileName = "main_device_log.txt";
+  static String configFileName = 'watchpat_settings_ios.xml';
 
 
   static Map<String, dynamic> settingsToMap() {

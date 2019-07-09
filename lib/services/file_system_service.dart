@@ -17,8 +17,7 @@ class FileSystemService {
   final String logMainFileName = DefaultSettings.logMainFileName;
   final String logOutputFileName = DefaultSettings.logOutputFileName;
   final String parametersFileName = DefaultSettings.parametersFileName;
-  final String resourceParameterFileName =
-      DefaultSettings.resourceParametersFileName;
+  final String resourceParameterFileName = DefaultSettings.resourceParametersFileName;
   final String resourceFWFileName = DefaultSettings.resourceFWFileName;
   final String watchpatDirFWFileName = DefaultSettings.watchpatDirFWFileName;
 
@@ -26,11 +25,10 @@ class FileSystemService {
   final String resourceDirAFEFileName = DefaultSettings.resourceAFEFileName;
   final String watchpatDirACCFileName = DefaultSettings.watchpatDirACCFileName;
   final String resourceDirACCFileName = DefaultSettings.resourceACCFileName;
-  final String watchpatDirEEPROMFileName =
-      DefaultSettings.watchpatDirEEPROMFileName;
-  final String resourceDirEEPROMFileName =
-      DefaultSettings.resourceEEPROMFileName;
+  final String watchpatDirEEPROMFileName = DefaultSettings.watchpatDirEEPROMFileName;
+  final String resourceDirEEPROMFileName = DefaultSettings.resourceEEPROMFileName;
   final String deviceLogFileName = DefaultSettings.deviceLogFileName;
+  final String configFileName = DefaultSettings.configFileName;
 
   Future<String> get localPath async {
     final dir = await getApplicationDocumentsDirectory();
@@ -64,21 +62,18 @@ class FileSystemService {
 
   Future<File> get resourceParametersFile async {
     final path = await localPath;
-    final ByteData bytes =
-        await rootBundle.load('assets/raw/$parametersFileName');
+    final ByteData bytes = await rootBundle.load('assets/raw/$parametersFileName');
     final buffer = bytes.buffer;
-    return File('$path/$resourceParameterFileName').writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+    return File('$path/$resourceParameterFileName')
+        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 
   Future<File> get resourceFWFile async {
     final path = await localPath;
-    final ByteData bytes =
-        await rootBundle.load('assets/raw/$resourceFWFileName');
+    final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
     final buffer = bytes.buffer;
-    return File('$path/$resourceFWFileName').writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
-        flush: true);
+    return File('$path/$resourceFWFileName')
+        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
   }
 
   Future<File> get watchpatDirFWFile async {
@@ -88,8 +83,7 @@ class FileSystemService {
 
   Future<bool> get resourceFWFileExists async {
     try {
-      final ByteData bytes =
-          await rootBundle.load('assets/raw/$resourceFWFileName');
+      final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
       return bytes.elementSizeInBytes != 0;
     } catch (e) {
       Log.shout(TAG, "fw upgrade file not found in resources, ${e.toString()}");
@@ -104,12 +98,10 @@ class FileSystemService {
 
   Future<File> get resourceAFEFile async {
     final path = await localPath;
-    final ByteData bytes =
-        await rootBundle.load('assets/raw/$resourceDirAFEFileName');
+    final ByteData bytes = await rootBundle.load('assets/raw/$resourceDirAFEFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirAFEFileName').create();
-    return f.writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
         flush: true);
   }
 
@@ -120,12 +112,10 @@ class FileSystemService {
 
   Future<File> get resourceACCFile async {
     final path = await localPath;
-    final ByteData bytes =
-        await rootBundle.load('assets/raw/$resourceDirACCFileName');
+    final ByteData bytes = await rootBundle.load('assets/raw/$resourceDirACCFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirACCFileName').create();
-    return f.writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
         flush: true);
   }
 
@@ -136,18 +126,21 @@ class FileSystemService {
 
   Future<File> get resourceEEPROMFile async {
     final path = await localPath;
-    final ByteData bytes =
-        await rootBundle.load('assets/raw/$resourceDirEEPROMFileName');
+    final ByteData bytes = await rootBundle.load('assets/raw/$resourceDirEEPROMFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirEEPROMFileName').create();
-    return f.writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
         flush: true);
   }
 
   Future<File> get deviceLogFile async {
     final path = await localPath;
     return File('$path/$deviceLogFileName');
+  }
+
+  Future<File> get configFile async {
+    final path = await localPath;
+    return File('$path/$configFileName');
   }
 
   Future<Response> allocateSpace() async {

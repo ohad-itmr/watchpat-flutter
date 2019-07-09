@@ -4,7 +4,7 @@ import 'package:my_pat/main.dart';
 
 import '../service_locator.dart';
 
-enum PopupOption { language, email, forget }
+enum PopupOption { language, email, forget, kill }
 
 class MypatPopupMenuButton extends StatefulWidget {
   @override
@@ -23,7 +23,19 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       value: PopupOption.forget,
       child: Text("Forget device"),
     ),
+    _killAppOption()
   ];
+
+  static Widget _killAppOption() {
+    if (GlobalSettings.isDebugMode) {
+      return PopupMenuItem(
+        value: PopupOption.kill,
+        child: Text("Forget device"),
+      );
+    } else {
+      return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +54,8 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       _showLanguageSelectDialog();
     } else if (option == PopupOption.forget) {
       _forgetConnectedDevice();
+    } else if (option == PopupOption.kill) {
+      _killApplication();
     }
   }
 
@@ -95,6 +109,10 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
 
   void _forgetConnectedDevice() {
     sl<BleManager>().forgetDeviceAndRestartScan();
+  }
+
+  void _killApplication() {
+
   }
 
 

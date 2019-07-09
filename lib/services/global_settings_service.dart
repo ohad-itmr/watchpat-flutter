@@ -23,7 +23,7 @@ class GlobalSettings {
     PrefsProvider.saveServiceEmail(email);
   }
 
-  static void replaceSettingsFromXML() async {
+  static Future<void> replaceSettingsFromXML() async {
     try {
       final File xmlFile = await sl<FileSystemService>().configFile;
       final String source = await xmlFile.readAsString();
@@ -41,14 +41,7 @@ class GlobalSettings {
     } catch (e) {
       print("XML configuring error: ${e.toString()}");
     }
-    print(GlobalSettings._getMinTestLengthHours);
-    print(GlobalSettings.minTestLengthSeconds);
-
-    print(GlobalSettings._getMaxTestLengthHours);
-    print(GlobalSettings.maxTestLengthSeconds);
-
-//
-//    print(GlobalSettings.maxTestLengthSeconds);
+    return;
   }
 
   static GlobalSettingsModel get _globalSettings =>

@@ -145,9 +145,8 @@ class FileSystemService {
 
   Future<Response> allocateSpace() async {
     File localFile = await localDataFile;
-    TestStates testState = sl<SystemStateManager>().testState;
 
-    if (testState == TestStates.NOT_STARTED) {
+    if (sl<SystemStateManager>().testState == TestStates.NOT_STARTED) {
       if (await localFile.exists()) {
         Log.info(TAG, "data file from previous session is found, deleting...");
         try {
@@ -159,12 +158,18 @@ class FileSystemService {
       Log.info(TAG, 'checking sufficient local storage space...,');
 
       try {
-        var spaceToAllocate = GlobalSettings.minStorageSpaceMB * 1024 * 1000;
-        Log.info(TAG, 'Free storage space: $spaceToAllocate required');
-        RandomAccessFile file = await localFile.open(mode: FileMode.write);
-        file.truncateSync(spaceToAllocate);
-        file.closeSync();
-        return Response(success: true);
+        final int spaceToAllocate = GlobalSettings.minStorageSpaceMB;
+        final int freeSpace = await SystemStateManager.platform.invokeMethod('getFreeSpace');
+        if (freeSpace > spaceToAllocate) {
+          Log.info(TAG, 'Free storage space is enough, allocating');
+          RandomAccessFile file = await localFile.open(mode: FileMode.write);
+          file.truncateSync(spaceToAllocate);
+          file.closeSync();
+          return Response(success: true);
+        } else {
+          Log.shout(TAG, "Not enough free space on the phone, required $spaceToAllocate, have $freeSpace");
+          return Response(success: false, error: "Not enough free space on the phone");
+        }
       } catch (e) {
         Log.shout(TAG, 'SPACE ALLOCATION FAILED $e');
         return Response(success: false, error: e.toString());

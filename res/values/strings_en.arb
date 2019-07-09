@@ -79,7 +79,7 @@
   "invalid_id": "Invalid ID",
   "invalid_technician_password": "Invalid technician password",
   "inet_unavailable": "Internet access unavailable",
-  "insufficient_storage_space_on_smartphone": " There is insufficient free memory on your smart phone, shutting down the Application",
+  "insufficient_storage_space_on_smartphone": "Insufficient free memory on your phone",
   "loading": "Loading",
   "log_email_subject": "WatchPAT\u2122 device log file",
   "app_log_file_title" : "Application log file",

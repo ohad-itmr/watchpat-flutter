@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -79,6 +80,7 @@ enum StartSessionState { UNCONFIRMED, CONFIRMED }
 
 class SystemStateManager extends ManagerBase {
   static const String TAG = 'SystemStateManager';
+  static const platform = const MethodChannel('watchpat');
 
   // BT STATES
   static List<String> _btStates = [

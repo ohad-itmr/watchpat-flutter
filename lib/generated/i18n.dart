@@ -132,7 +132,7 @@ class S implements WidgetsLocalizations {
   String get inet_unavailable => "Internet access unavailable";
   String get insert_battery_desc1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and insert the provided battery";
   String get instructions_video => "Instructions video";
-  String get insufficient_storage_space_on_smartphone => " There is insufficient free memory on your smart phone, shutting down the Application";
+  String get insufficient_storage_space_on_smartphone => "Insufficient free memory on your phone";
   String get invalid_id => "Invalid ID";
   String get invalid_technician_password => "Invalid technician password";
   String get ir_led_status => "IR LED status: ";

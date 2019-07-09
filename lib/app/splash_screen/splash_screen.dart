@@ -112,7 +112,10 @@ class _SplashScreenState extends State<SplashScreen> {
     _systemStateManager.inetConnectionStateStream
         .firstWhere(
             (ConnectivityResult state) => state != ConnectivityResult.none)
-        .then((_) => sl<WelcomeActivityManager>().configureApplication());
+        .then((_) {
+      sl<WelcomeActivityManager>().configureApplication();
+      sl<WelcomeActivityManager>().allocateSpace();
+    });
 
     super.initState();
   }

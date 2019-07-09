@@ -19,7 +19,7 @@ class WelcomeActivityManager extends ManagerBase {
 
   WelcomeActivityManager() {
     _initErrorsSubject.add(List());
-    _allocateSpace();
+//    allocateSpace();
     createStartFiles();
     _welcomeState.add(WelcomeActivityState.NOT_STARTED);
     _fileCreationStateSubject.add(FileCreationState.NOT_STARTED);
@@ -46,11 +46,12 @@ class WelcomeActivityManager extends ManagerBase {
 
   Observable<List<String>> get initErrors => _initErrorsSubject.stream;
 
-  BehaviorSubject<bool> _configurationFinished = BehaviorSubject<bool>();
+  BehaviorSubject<bool> _configurationFinished = BehaviorSubject<bool>.seeded(false);
 
   Observable<bool> get configFinished => _configurationFinished.stream;
 
-  Future<void> _allocateSpace() async {
+  Future<void> allocateSpace() async {
+    await configFinished.firstWhere((done) => done);
     _fileAllocationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await sl<FileSystemService>().allocateSpace();
     _fileAllocationStateSubject.sink
@@ -74,7 +75,7 @@ class WelcomeActivityManager extends ManagerBase {
         await PrefsProvider.saveDispatcherUrlIndex(0);
 
         // todo testing only
-        GlobalSettings.replaceSettingsFromXML();
+        await GlobalSettings.replaceSettingsFromXML();
       }
       _configurationFinished.sink.add(true);
     }
@@ -88,6 +89,9 @@ class WelcomeActivityManager extends ManagerBase {
   }
 
   Observable<Response> _initFiles() {
+
+
+
     return Observable.combineLatest2(fileAllocationState, fileCreationState,
         (FileCreationState allocationState, FileCreationState fileState) {
       if (allocationState == FileCreationState.DONE_SUCCESS &&

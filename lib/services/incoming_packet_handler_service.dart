@@ -529,7 +529,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   Future<bool> _checkSessionErrors() async {
     Log.info(TAG, "### Checking for session errors");
     String errors = "Session errors:\n\n";
-    await sl<WelcomeActivityManager>().configFinished.first;
+    await sl<WelcomeActivityManager>().configFinished.firstWhere((done) => done);
     GeneralResponse res =
         await sl<DispatcherService>().getPatientPolicy(PrefsProvider.loadDeviceSerial());
     if (res.error) {

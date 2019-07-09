@@ -26,67 +26,62 @@ class WelcomeActivityManager extends ManagerBase {
     _fileAllocationStateSubject.add(FileCreationState.NOT_STARTED);
   }
 
-  BehaviorSubject<WelcomeActivityState> _welcomeState =
-      BehaviorSubject<WelcomeActivityState>();
+  BehaviorSubject<WelcomeActivityState> _welcomeState = BehaviorSubject<WelcomeActivityState>();
 
   BehaviorSubject<FileCreationState> _fileCreationStateSubject =
       BehaviorSubject<FileCreationState>();
 
-  Observable<FileCreationState> get fileCreationState =>
-      _fileCreationStateSubject.stream;
+  Observable<FileCreationState> get fileCreationState => _fileCreationStateSubject.stream;
 
   BehaviorSubject<FileCreationState> _fileAllocationStateSubject =
       BehaviorSubject<FileCreationState>();
 
-  Observable<FileCreationState> get fileAllocationState =>
-      _fileAllocationStateSubject.stream;
+  Observable<FileCreationState> get fileAllocationState => _fileAllocationStateSubject.stream;
 
   BehaviorSubject<bool> _internetExists = BehaviorSubject<bool>();
 
   Observable<bool> get internetExists => _internetExists.stream;
 
-  BehaviorSubject<List<String>> _initErrorsSubject =
-      BehaviorSubject<List<String>>();
+  BehaviorSubject<List<String>> _initErrorsSubject = BehaviorSubject<List<String>>();
 
   Observable<List<String>> get initErrors => _initErrorsSubject.stream;
+
+  PublishSubject<bool> _configurationFinished = PublishSubject<bool>();
+
+  Observable<bool> get configFinished => _configurationFinished.stream;
 
   Future<void> _allocateSpace() async {
     _fileAllocationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await sl<FileSystemService>().allocateSpace();
-    _fileAllocationStateSubject.sink.add(res.success
-        ? FileCreationState.DONE_SUCCESS
-        : FileCreationState.DONE_FAILED);
+    _fileAllocationStateSubject.sink
+        .add(res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   Future<void> configureApplication() async {
-    // Check in external config is enabled
-    final bool configEnabled =
-        await sl<DispatcherService>().checkExternalConfig();
+    // Check if external config is enabled
+    final bool configEnabled = await sl<DispatcherService>().checkExternalConfig();
     if (configEnabled) {
       Log.info(TAG, "External config enabled, getting config from dispatcher");
       // get config from server
-      final Map<String, dynamic> response =
-          await sl<DispatcherService>().getExternalConfig();
+      final Map<String, dynamic> response = await sl<DispatcherService>().getExternalConfig();
       // set config
       if (response["error"]) {
-        Log.shout(TAG,
-            "Failed to receive config from dispatcher: ${response["message"]}");
+        Log.shout(TAG, "Failed to receive config from dispatcher: ${response["message"]}");
       } else {
-        Log.info(TAG,
-            "External config received from dispatcher, configuring application");
+        Log.info(TAG, "External config received from dispatcher, configuring application");
         GlobalSettings.setExternalConfiguration(response["config"]);
         GlobalSettings.persistConfiguration(response["config"]);
-        PrefsProvider.saveDispatcherUrlIndex(0);
+        await PrefsProvider.saveDispatcherUrlIndex(0);
       }
+      _configurationFinished.sink.add(true);
     }
   }
 
   Future<void> createStartFiles() async {
     _fileCreationStateSubject.sink.add(FileCreationState.STARTED);
     Response res = await sl<FileSystemService>().init();
-    _fileCreationStateSubject.sink.add(res.success
-        ? FileCreationState.DONE_SUCCESS
-        : FileCreationState.DONE_FAILED);
+    _fileCreationStateSubject.sink
+        .add(res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   Observable<Response> _initFiles() {
@@ -108,8 +103,7 @@ class WelcomeActivityManager extends ManagerBase {
         sl<SystemStateManager>().bleScanStateStream,
         sl<SystemStateManager>().bleScanResultStream,
         _initFiles(),
-        (ScanStates scanState, ScanResultStates scanResultState,
-            Response initFilesResponse) {
+        (ScanStates scanState, ScanResultStates scanResultState, Response initFilesResponse) {
           _initErrorsSubject.add(List());
 
           if (!initFilesResponse.success) {
@@ -154,5 +148,6 @@ class WelcomeActivityManager extends ManagerBase {
     _welcomeState.close();
     _fileCreationStateSubject.close();
     _fileAllocationStateSubject.close();
+    _configurationFinished.close();
   }
 }

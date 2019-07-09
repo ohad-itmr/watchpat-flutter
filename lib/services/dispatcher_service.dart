@@ -17,8 +17,7 @@ class DispatcherService {
   Dio _dio = new Dio(options);
 
   DispatcherService() {
-    _dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
       DioLogger.onSend(TAG, options);
       return options;
     }, onResponse: (Response response) {
@@ -28,6 +27,7 @@ class DispatcherService {
       DioLogger.onError(TAG, error);
       return _dio.reject(error);
     }));
+    PrefsProvider.saveDispatcherUrlIndex(0);
   }
 
   static String get _dispatcherUrl =>
@@ -53,24 +53,19 @@ class DispatcherService {
         return null;
       }
     } catch (e) {
-      Log.shout(TAG,
-          "Failed to connect to dispatcher $_dispatcherUrl, ${e.toString()}");
-      if (_moreDispatchersAvailable()) {
+      Log.shout(TAG, "Failed to connect to dispatcher $_dispatcherUrl, ${e.toString()}");
+      if (_moreDispatchersAvailable) {
         await PrefsProvider.incrementDispatcherUrlIndex();
         Log.info(TAG, "Reconnecting to another dispatcher $_dispatcherUrl");
-        return await _sendRequest(
-            urlSuffix: urlSuffix, method: method, data: data);
+        return await _sendRequest(urlSuffix: urlSuffix, method: method, data: data);
       } else {
-        return _dio
-            .resolve({"error": true, "message": DISPATCHER_ERROR_STATUS});
+        return _dio.resolve({"error": true, "message": DISPATCHER_ERROR_STATUS});
       }
     }
   }
 
-  bool _moreDispatchersAvailable() {
-    return PrefsProvider.loadDispatcherUrlIndex() <
-        (GlobalSettings.dispatcherUrlsAmount - 1);
-  }
+  bool get _moreDispatchersAvailable =>
+      PrefsProvider.loadDispatcherUrlIndex() < (GlobalSettings.dispatcherUrlsAmount - 1);
 
   Future<bool> checkExternalConfig() async {
     Response response = await _sendRequest(
@@ -108,12 +103,11 @@ class DispatcherService {
 
   void sendTestComplete(String serialNumber) async {
     await _sendRequest(
-        urlSuffix: '$_testCompleteEndpoint/$serialNumber',
-        method: RequestMethod.get);
+        urlSuffix: '$_testCompleteEndpoint/$serialNumber', method: RequestMethod.get);
   }
 
-  static BaseOptions options = new BaseOptions(
-      connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);
+  static BaseOptions options =
+      new BaseOptions(connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);
 }
 
 enum RequestMethod { get, post }

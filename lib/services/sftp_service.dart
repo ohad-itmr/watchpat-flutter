@@ -99,12 +99,25 @@ class SftpService {
 
     // set up or restore uploading offset
     if (sl<SystemStateManager>().testState == TestStates.STARTED) {
+      await _writeTestInformationFile();
       await PrefsProvider.saveTestDataUploadingOffset(0);
     } else {
       await _restoreUploadingOffset();
     }
 
     _awaitForData();
+  }
+
+  Future<void> _writeTestInformationFile() async {
+    File infoFile = await sl<FileSystemService>().testInformationFile;
+    await infoFile.writeAsString("watchPAT device S/N: ${PrefsProvider.loadDeviceSerial()}\n");
+    await infoFile.writeAsString("User ID: ${PrefsProvider.loadUserPin()}", mode: FileMode.append);
+    try {
+      await _client.sftpUpload(path: infoFile.path, toPath: _sftpFilePath);
+      Log.info(TAG, "${DefaultSettings.serverInfoFileName} file created");
+    } catch (e) {
+      Log.shout(TAG, "Failed to create ${DefaultSettings.serverInfoFileName}, ${e.toString()}");
+    }
   }
 
   Future<void> _initSftpConnection() async {

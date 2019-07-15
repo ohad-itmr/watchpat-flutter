@@ -6,29 +6,23 @@ import 'package:my_pat/config/default_settings.dart';
 
 class PrefsNames {
   static const String READING_KEY = DefaultSettings.appName + ".reading";
-  static const String FIRST_TIME_RUN_KEY =
-      DefaultSettings.appName + ".firsttimerun";
+  static const String FIRST_TIME_RUN_KEY = DefaultSettings.appName + ".firsttimerun";
   static const String IS_TEST_STARTED = ".isteststarted";
   static const String IS_TEST_COMPLETE = ".is.test.complete";
   static const String TEST_ELAPSED_TIME = ".testelapsedtime";
   static const String WRITING_KEY = DefaultSettings.appName + ".writing";
-  static const String USER_PIN_CODE = DefaultSettings.appName + ".userpincode";
-  static const String DEVICE_SERIAL_KEY =
-      DefaultSettings.appName + ".deviceserial";
+  static const String USER_PIN_CODE = DefaultSettings.appName + ".user.pin.code";
+  static const String DEVICE_SERIAL_KEY = DefaultSettings.appName + ".deviceserial";
   static const String DEVICE_NAME_KEY = DefaultSettings.appName + ".devicename";
-  static const String DEVICE_ADDRESS_KEY =
-      DefaultSettings.appName + ".deviceaddress";
+  static const String DEVICE_ADDRESS_KEY = DefaultSettings.appName + ".deviceaddress";
   static const String TEST_STATE_KEY = DefaultSettings.appName + ".teststate";
   static const String DATA_STATE_KEY = DefaultSettings.appName + ".datastate";
   static const String TEST_DATA_UPLOADING_OFFSET = "testdatauploadingoffset";
   static const String TEST_DATA_RECORDING_OFFSET = "testdatarecordingoffset";
   static const String TEST_DATA_FILENAME = ".testdatafilename";
-  static const String TEST_REAL_START_TIME_KEY =
-      DefaultSettings.appName + ".testrealtime";
-  static const String TEST_PACKET_TIME_KEY =
-      DefaultSettings.appName + ".testpackettime";
-  static const String PACKET_IDENTIFIER_KEY =
-      DefaultSettings.appName + ".packetidentifier";
+  static const String TEST_REAL_START_TIME_KEY = DefaultSettings.appName + ".testrealtime";
+  static const String TEST_PACKET_TIME_KEY = DefaultSettings.appName + ".testpackettime";
+  static const String PACKET_IDENTIFIER_KEY = DefaultSettings.appName + ".packetidentifier";
   static const String PACKET_REMOTE_IDENTIFIER_KEY =
       DefaultSettings.appName + ".packetremoteidentifier";
   static const String IS_FIRST_SFTP_CONNECTION_KEY =
@@ -37,10 +31,8 @@ class PrefsNames {
       DefaultSettings.appName + ".isignoredeviceerrors";
   static const String SFTP_HOST_KEY = DefaultSettings.appName + ".sftphost";
   static const String SFTP_PORT_KEY = DefaultSettings.appName + ".sftpport";
-  static const String SFTP_USERNAME_KEY =
-      DefaultSettings.appName + ".sftpusername";
-  static const String SFTP_PASSWORD_KEY =
-      DefaultSettings.appName + ".sftppassword";
+  static const String SFTP_USERNAME_KEY = DefaultSettings.appName + ".sftpusername";
+  static const String SFTP_PASSWORD_KEY = DefaultSettings.appName + ".sftppassword";
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
   static const String LOCALE_CODE = "locale.code";
   static const String SERVICE_EMAIL_CODE = "service.email";
@@ -107,10 +99,8 @@ class PrefsProvider {
   // packet identifier
   //
   static Future<int> getPacketIdentifier() async {
-    int currIdentifier =
-        PrefsService.prefs.getInt(PrefsNames.PACKET_IDENTIFIER_KEY) ?? 0;
-    await PrefsService.prefs
-        .setInt(PrefsNames.PACKET_IDENTIFIER_KEY, currIdentifier + 1);
+    int currIdentifier = PrefsService.prefs.getInt(PrefsNames.PACKET_IDENTIFIER_KEY) ?? 0;
+    await PrefsService.prefs.setInt(PrefsNames.PACKET_IDENTIFIER_KEY, currIdentifier + 1);
     return currIdentifier;
   }
 
@@ -118,13 +108,11 @@ class PrefsProvider {
   // remote packet identifier
   //
   static void saveRemotePacketIdentifier(int id) async {
-    await PrefsService.prefs
-        .setInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY, id);
+    await PrefsService.prefs.setInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY, id);
   }
 
   static int loadRemotePacketIdentifier() {
-    return PrefsService.prefs.getInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY) ??
-        0;
+    return PrefsService.prefs.getInt(PrefsNames.PACKET_REMOTE_IDENTIFIER_KEY) ?? 0;
   }
 
   //
@@ -136,6 +124,17 @@ class PrefsProvider {
 
   static String loadDeviceSerial() {
     return PrefsService.prefs.getString(PrefsNames.DEVICE_SERIAL_KEY);
+  }
+
+  //
+  // User OUB
+  //
+  static void saveUserPin(String serial) async {
+    await PrefsService.prefs.setString(PrefsNames.USER_PIN_CODE, serial);
+  }
+
+  static String loadUserPin() {
+    return PrefsService.prefs.getString(PrefsNames.USER_PIN_CODE);
   }
 
   //
@@ -175,8 +174,7 @@ class PrefsProvider {
   // Device name
   //
   static void initDeviceName() async {
-    await PrefsService.prefs
-        .setString(PrefsNames.DEVICE_NAME_KEY, "ITAMAR_UART");
+    await PrefsService.prefs.setString(PrefsNames.DEVICE_NAME_KEY, "ITAMAR_UART");
   }
 
   static void saveDeviceName(String name) async {
@@ -195,13 +193,11 @@ class PrefsProvider {
   // is ignore device error
   //
   static void setIgnoreDeviceErrors(bool value) async {
-    await PrefsService.prefs
-        .setBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY, value);
+    await PrefsService.prefs.setBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY, value);
   }
 
   static bool getIgnoreDeviceErrors() {
-    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ??
-        true;
+    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ?? true;
   }
 
   //
@@ -263,26 +259,22 @@ class PrefsProvider {
   // recording test data
   //
   static int loadTestDataRecordingOffset() {
-    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_RECORDING_OFFSET) ??
-        0;
+    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_RECORDING_OFFSET) ?? 0;
   }
 
   static Future<void> saveTestDataRecordingOffset(int offset) async {
-    await PrefsService.prefs
-        .setInt(PrefsNames.TEST_DATA_RECORDING_OFFSET, offset);
+    await PrefsService.prefs.setInt(PrefsNames.TEST_DATA_RECORDING_OFFSET, offset);
   }
 
   //
   // uploading test data
   //
   static int loadTestDataUploadingOffset() {
-    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET) ??
-        0;
+    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET) ?? 0;
   }
 
   static Future<void> saveTestDataUploadingOffset(int offset) async {
-    await PrefsService.prefs
-        .setInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET, offset);
+    await PrefsService.prefs.setInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET, offset);
   }
 
   //
@@ -294,8 +286,7 @@ class PrefsProvider {
   }
 
   static Locale loadLocale() {
-    final String code =
-        PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
+    final String code = PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
     return Locale(code, "");
   }
 
@@ -309,7 +300,6 @@ class PrefsProvider {
   static int loadPacketId() {
     return PrefsService.prefs.getInt(PrefsNames.PACKET_ID_COUNTER_KEY) ?? 0;
   }
-
 
   //
   // Clear all saved preferences
@@ -332,13 +322,11 @@ class PrefsProvider {
   }
 
   static Future<void> setDataUploadingIncomplete({bool value = true}) async {
-    return PrefsService.prefs
-        .setBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED, value);
+    return PrefsService.prefs.setBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED, value);
   }
 
   static bool getDataUploadingIncomplete() {
-    return PrefsService.prefs.getBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED) ??
-        false;
+    return PrefsService.prefs.getBool(PrefsNames.DATA_UPLOADING_NOT_FINISHED) ?? false;
   }
 
   //

@@ -81,6 +81,11 @@ class FileSystemService {
     return File('$path/$watchpatDirFWFileName');
   }
 
+  Future<File> get testInformationFile async {
+    final path = await localPath;
+    return File('$path/${DefaultSettings.serverInfoFileName}');
+  }
+
   Future<bool> get resourceFWFileExists async {
     try {
       final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');

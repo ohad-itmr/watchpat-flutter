@@ -21,8 +21,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="sLJ-pc-qEF">
-                                <rect key="frame" x="20" y="0.0" width="374" height="736"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="4t1-Cz-Wlc">
+                                <rect key="frame" x="21" y="21" width="372" height="694"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -30,10 +30,10 @@
                             <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstItem="sLJ-pc-qEF" firstAttribute="bottom" secondItem="xbc-2k-c8Z" secondAttribute="top" id="H0Z-i8-mRk"/>
-                            <constraint firstItem="sLJ-pc-qEF" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" id="V0V-hd-ufG"/>
-                            <constraint firstItem="sLJ-pc-qEF" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Xar-Ey-XGL"/>
-                            <constraint firstItem="sLJ-pc-qEF" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="sgw-Ki-ILs"/>
+                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="1Ul-75-VBu"/>
+                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="1" id="Ufg-s1-Pu3"/>
+                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="top" secondItem="Ydg-fD-yQy" secondAttribute="bottom" constant="1" id="bZ5-19-f4Z"/>
+                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="fAe-om-xTS"/>
                         </constraints>
                     </view>
                 </viewController>

@@ -8,7 +8,7 @@ class TransactionManager extends ManagerBase {
 
   TransactionManager() {
     _initTestStatesPersistence();
-//    _initStartingScanOnBTAvailable();
+    _initStartingScanOnBTAvailable();
     _initStartingScanOnDeviceDisconnect();
   }
 

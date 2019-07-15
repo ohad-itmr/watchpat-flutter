@@ -63,7 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           type: BlockType.text,
           title: S.of(context).welcomeTitle,
           content: [loc.welcomeContent],
-          additionalTextContent: _buildTextWithLink(),
+//          additionalTextContent: _buildTextWithLink(),
         ),
         buttons: _buildButtonsBlock(),
         showSteps: false,

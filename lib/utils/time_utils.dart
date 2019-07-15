@@ -25,7 +25,8 @@ class TimeUtils {
     if (testPacketCount >
             GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60) &&
         sl<SystemStateManager>().testState != TestStates.STOPPED) {
-      sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
+//      sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
+      sl<SystemStateManager>().setTestDataAmountState(TestDataAmountState.MINIMUM_PASSED);
     } else if (testPacketCount >
         GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
 //      sl<SystemStateManager>().setTestState(TestStates.ENDED);

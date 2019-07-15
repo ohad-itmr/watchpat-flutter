@@ -4,6 +4,7 @@ import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart' as prefix0;
 import 'package:tuple/tuple.dart';
 
 enum BtStates { NONE, NOT_AVAILABLE, BLE_NOT_SUPPORTED, DISABLED, ENABLED }
@@ -38,6 +39,8 @@ enum TestStates {
 }
 
 enum DataTransferState { NOT_STARTED, TRANSFERRING, ENDED }
+
+enum TestDataAmountState { MINIMUM_NOT_PASSED, MINIMUM_PASSED }
 
 enum SftpUploadingState {
   NOT_STARTED,
@@ -223,6 +226,8 @@ class SystemStateManager extends ManagerBase {
   BehaviorSubject<TestStates> _testState = BehaviorSubject<TestStates>();
   BehaviorSubject<DataTransferState> _dataTransferState =
       BehaviorSubject<DataTransferState>();
+  BehaviorSubject<TestDataAmountState> _testDataAmountState =
+    BehaviorSubject<TestDataAmountState>();
   BehaviorSubject<AppModes> _appMode = BehaviorSubject<AppModes>();
   BehaviorSubject<FirmwareUpgradeStates> _firmwareState =
       BehaviorSubject<FirmwareUpgradeStates>();
@@ -260,6 +265,8 @@ class SystemStateManager extends ManagerBase {
 
   Observable<DataTransferState> get dataTransferStateStream =>
       _dataTransferState.stream;
+
+  Observable<TestDataAmountState> get testDataAmountState => _testDataAmountState.stream;
 
   Observable<AppModes> get appModeStream => _appMode.stream;
 
@@ -333,6 +340,7 @@ class SystemStateManager extends ManagerBase {
     setDeviceCommState(DeviceStates.NOT_INITIALIZED);
     setAppMode(AppModes.USER);
     setDataTransferState(DataTransferState.NOT_STARTED);
+    setTestDataAmountState(TestDataAmountState.MINIMUM_NOT_PASSED);
     setDeviceErrorState(DeviceErrorStates.UNKNOWN);
     setServerCommState(ServerStates.DISCONNECTED);
     setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
@@ -420,6 +428,13 @@ class SystemStateManager extends ManagerBase {
     if (state != _dataTransferState.value) {
       Log.info(TAG, "setDataTransferState: ${state.toString()}");
       _dataTransferState.sink.add(state);
+    }
+  }
+
+  void setTestDataAmountState(TestDataAmountState state) {
+    if (state != _testDataAmountState.value) {
+      Log.info(TAG, "setTestDataAmountState: ${state.toString()}");
+      _testDataAmountState.sink.add(state);
     }
   }
 
@@ -524,6 +539,7 @@ class SystemStateManager extends ManagerBase {
     _startSessionState.close();
     _sftpUploadingState.close();
     _sessionErrorState.close();
+    _testDataAmountState.close();
   }
 
   Future<bool> get deviceHasErrors {

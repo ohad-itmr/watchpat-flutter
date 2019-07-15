@@ -54,12 +54,12 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
             )),
         Spacer(),
         StreamBuilder(
-          stream: sl<SystemStateManager>().testStateStream,
-          builder: (BuildContext context, AsyncSnapshot<TestStates> snapshot) {
+          stream: sl<SystemStateManager>().testDataAmountState,
+          builder: (BuildContext context, AsyncSnapshot<TestDataAmountState> snapshot) {
             return ButtonsBlock(
               moreActionButton: null,
               nextActionButton: ButtonModel(
-                action: snapshot.data == TestStates.MINIMUM_PASSED
+                action: snapshot.data == TestDataAmountState.MINIMUM_PASSED
                     ? () => sl<TestingManager>().stopTesting()
                     : null,
                 text: S.of(context).btnEndRecording,

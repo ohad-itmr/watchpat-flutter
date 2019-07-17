@@ -5,7 +5,6 @@ import 'package:my_pat/services/services.dart';
 import '../service_locator.dart';
 
 class MyPatProgressIndicator extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -38,8 +37,7 @@ class ProgressPainter extends CustomPainter {
 
     // outline
     canvas.drawRRect(
-        RRect.fromLTRBR(
-            size.width, size.height, 0.0, 0.0, Radius.circular(cornerRadius)),
+        RRect.fromLTRBR(size.width, size.height, 0.0, 0.0, Radius.circular(cornerRadius)),
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3.0
@@ -53,8 +51,7 @@ class ProgressPainter extends CustomPainter {
     for (var i = 0; i < _barsCount; i++) {
       canvas.drawRRect(
           RRect.fromRectAndCorners(
-            Rect.fromLTWH(
-                _offset, size.height / 5, _barLength, size.height * 0.6),
+            Rect.fromLTWH(_offset, size.height / 5, _barLength, size.height * 0.6),
             topLeft: i == 0 ? Radius.circular(cornerRadius) : Radius.zero,
             bottomLeft: i == 0 ? Radius.circular(cornerRadius) : Radius.zero,
             topRight: i == 5 ? Radius.circular(cornerRadius) : Radius.zero,

@@ -23,14 +23,11 @@ class TestingManager extends ManagerBase {
   // remaining data receiving streams
   BehaviorSubject<int> _remainingDataSeconds = BehaviorSubject<int>.seeded(0);
 
-  Observable<int> get remainingDataSecondsStream =>
-      _remainingDataSeconds.stream;
+  Observable<int> get remainingDataSecondsStream => _remainingDataSeconds.stream;
 
-  BehaviorSubject<double> _remainingDataProgress =
-      BehaviorSubject<double>.seeded(0.0);
+  BehaviorSubject<double> _remainingDataProgress = BehaviorSubject<double>.seeded(0.0);
 
-  Observable<double> get remainingDataProgressStream =>
-      _remainingDataProgress.stream;
+  Observable<double> get remainingDataProgressStream => _remainingDataProgress.stream;
 
   Timer _elapsedTimer;
   int _elapsedTimerValue = 0;
@@ -48,14 +45,12 @@ class TestingManager extends ManagerBase {
   Future<bool> get canStartTesting async {
     final BatteryState state = await _batteryManager.getBatteryState();
     final int level = await _batteryManager.getBatteryLevel();
-    return level >= DefaultSettings.minBatteryRequiredLevel ||
-        state == BatteryState.charging;
+    return level >= DefaultSettings.minBatteryRequiredLevel || state == BatteryState.charging;
   }
 
   void startTesting() {
     Log.info(TAG, "### Sending START aquisition command");
-    sl<CommandTaskerManager>()
-        .addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
+    sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
     _startElapsedTimer();
   }
 
@@ -91,11 +86,10 @@ class TestingManager extends ManagerBase {
     }
   }
 
-  void  stopTesting() {
+  void stopTesting() {
     Log.info(TAG, "### Sending STOP acquisition command");
     _systemStateManager.setTestState(TestStates.STOPPED);
-    sl<CommandTaskerManager>()
-        .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
+    sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
     _initDataProgress();
     _stopElapsedTimer();
   }
@@ -118,49 +112,49 @@ class TestingManager extends ManagerBase {
   void _startDataProgress() async {
     do {
       // calculate number of seconds left to download the data
-      _numberOfSecondsToDownloadAllPackets =
-          TimeUtils.getPacketRealTimeDiffSec();
+      _numberOfSecondsToDownloadAllPackets = TimeUtils.getPacketRealTimeDiffSec();
 
-      // when time is growing then there is no communication with device.
-      // in this case update timer only and don't touch progress bar
-      if (_numberOfSecondsToDownloadAllPackets < _maxProgress) {
-        // time is decreasing, some packets has been transmitted so recalculate progress bar value now
-        int changeDelta = _maxProgress - _numberOfSecondsToDownloadAllPackets;
-        updateProgressBar(changeDelta);
-      } else {
-        _maxProgress = _numberOfSecondsToDownloadAllPackets;
-      }
+//      // when time is growing then there is no communication with device.
+//      // in this case update timer only and don't touch progress bar
+//      if (_numberOfSecondsToDownloadAllPackets < _maxProgress) {
+//        // time is decreasing, some packets has been transmitted so recalculate progress bar value now
+//        int changeDelta = _maxProgress - _numberOfSecondsToDownloadAllPackets;
+//        updateProgressBar(changeDelta);
+//      } else {
+//        _maxProgress = _numberOfSecondsToDownloadAllPackets;
+//      }
+      updateProgressBar(0);
       updateProgressTime();
       await Future.delayed(Duration(milliseconds: PROGRESS_BAR_UPDATE_PERIOD));
     } while (sl<SystemStateManager>().testState != TestStates.ENDED);
   }
 
   void updateProgressBar(int changeDelta) {
-    if (changeDelta <= 0) return;
-
-    double currentProgress = _remainingDataProgress.value * 100;
-    double currentMax = 100;
-
-    // calculate new progress according to value
-    double newProgress = currentProgress +
-        ((currentMax - currentProgress) *
-            changeDelta /
-            (_maxProgress - _currentProgress));
-
-    newProgress =
-        newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
+//    if (changeDelta <= 0) return;
+//
+//    double currentProgress = _remainingDataProgress.value * 100;
+//    double currentMax = 100;
+//
+//    // calculate new progress according to value
+//    double newProgress = currentProgress +
+//        ((currentMax - currentProgress) *
+//            changeDelta /
+//            (_maxProgress - _currentProgress));
+//
+//    newProgress =
+//        newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
 
 //    print("PROGRESS: ${currentProgress / 100} / ${newProgress / 100}");
 
-    _remainingDataProgress.sink.add(newProgress / 100);
+    final double newProgress = (_maxProgress - _numberOfSecondsToDownloadAllPackets) / (_maxProgress / 100) / 100;
+    _remainingDataProgress.sink.add(newProgress);
 
-    _currentProgress += changeDelta;
+//    _currentProgress += changeDelta;
   }
 
   void updateProgressTime() {
-    _remainingDataSeconds.sink.add(_numberOfSecondsToDownloadAllPackets > 0
-        ? _numberOfSecondsToDownloadAllPackets
-        : 0);
+    _remainingDataSeconds.sink
+        .add(_numberOfSecondsToDownloadAllPackets > 0 ? _numberOfSecondsToDownloadAllPackets : 0);
   }
 
   @override

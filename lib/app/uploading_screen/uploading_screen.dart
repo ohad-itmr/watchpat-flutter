@@ -50,18 +50,16 @@ class _UploadingScreenState extends State<UploadingScreen> {
               content: [S.of(context).uploadingContent],
             ),
             Padding(
-              padding: EdgeInsets.only(
-                  left: width / 6, right: width / 6, top: width / 10),
+              padding: EdgeInsets.only(left: width / 6, right: width / 6, top: width / 10),
               child: MyPatProgressIndicator(),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Text("Please wait"),
             ),
-
           ],
         ),
-        buttons:             Padding(
+        buttons: Padding(
           padding: const EdgeInsets.only(top: 15.0),
           child: StreamBuilder(
             stream: sl<TestingManager>().remainingDataSecondsStream,

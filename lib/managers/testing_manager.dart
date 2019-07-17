@@ -73,7 +73,7 @@ class TestingManager extends ManagerBase {
     });
   }
 
-  void stopTesting() {
+  void  stopTesting() {
     Log.info(TAG, "### Sending STOP acquisition command");
     _systemStateManager.setTestState(TestStates.STOPPED);
     sl<CommandTaskerManager>()

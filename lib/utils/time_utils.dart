@@ -23,14 +23,12 @@ class TimeUtils {
     PrefsProvider.incTestPacketCount();
     final int testPacketCount = PrefsProvider.loadTestPacketCount();
     if (testPacketCount >
-            GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60) &&
-        sl<SystemStateManager>().testState != TestStates.STOPPED) {
-//      sl<SystemStateManager>().setTestState(TestStates.MINIMUM_PASSED);
+        GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
       sl<SystemStateManager>().setTestDataAmountState(TestDataAmountState.MINIMUM_PASSED);
-    } else if (testPacketCount >
+    }
+    if (testPacketCount >
         GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
-//      sl<SystemStateManager>().setTestState(TestStates.ENDED);
-
+      sl<TestingManager>().stopTesting();
     }
   }
 

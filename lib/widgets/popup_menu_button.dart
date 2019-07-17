@@ -15,10 +15,10 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   String _selectedLanguage;
 
   final List<PopupMenuEntry<PopupOption>> _popupOptions = [
-    PopupMenuItem(
-      value: PopupOption.language,
-      child: Text("Select language"),
-    ),
+//    PopupMenuItem(
+//      value: PopupOption.language,
+//      child: Text("Select language"),
+//    ),
     PopupMenuItem(
       value: PopupOption.forget,
       child: Text("Forget device"),
@@ -30,7 +30,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
     if (GlobalSettings.isDebugMode) {
       return PopupMenuItem(
         value: PopupOption.kill,
-        child: Text("Forget device"),
+        child: Text("Kill app"),
       );
     } else {
       return Container();

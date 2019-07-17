@@ -70,7 +70,25 @@ class TestingManager extends ManagerBase {
     _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       _elapsedTimerState.sink.add(++_elapsedTimerValue);
       PrefsProvider.saveTestElapsedTime(_elapsedTimerValue);
+      _checkForSessionTimeout();
     });
+  }
+
+  void _stopElapsedTimer() {
+    if (_elapsedTimer != null && _elapsedTimer.isActive) {
+      _elapsedTimer.cancel();
+    }
+  }
+
+  void _checkForSessionTimeout() {
+    if (_elapsedTimerValue > GlobalSettings.sessionTimeoutTimeSec) {
+      Log.info(TAG, "Session timeout triggered. Stopping test.");
+      if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
+        stopTesting();
+      } else {
+        forceEndTesting();
+      }
+    }
   }
 
   void  stopTesting() {
@@ -79,13 +97,15 @@ class TestingManager extends ManagerBase {
     sl<CommandTaskerManager>()
         .addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
     _initDataProgress();
-    _elapsedTimer.cancel();
+    _stopElapsedTimer();
   }
 
   void forceEndTesting() {
-    Log.info(TAG, "Forcing end test");
+    Log.info(TAG, "Forcing end test state");
     sl<SystemStateManager>().setTestState(TestStates.ENDED);
     sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+    sl<SystemStateManager>().setScanCycleEnabled = false;
+    _stopElapsedTimer();
   }
 
   void _initDataProgress() {

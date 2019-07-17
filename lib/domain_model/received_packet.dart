@@ -30,21 +30,17 @@ class ReceivedPacket {
   int packetType;
 
   ReceivedPacket(this.bytes, this._commandTasker)
-      : _signature =
-            ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
+      : _signature = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
         opCode = ConvertFormats.twoBytesToInt(
             byte1: bytes[PACKET_OPCODE_STARTING_BYTE],
             byte2: bytes[PACKET_OPCODE_STARTING_BYTE + 1]),
         identifier = ConvertFormats.fourBytesToInt(bytes
-            .sublist(PACKET_IDENTIFIER_STARTING_BYTE,
-                PACKET_IDENTIFIER_STARTING_BYTE + 4)
+            .sublist(PACKET_IDENTIFIER_STARTING_BYTE, PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
         _len = ConvertFormats.twoBytesToInt(
-            byte1: bytes[PACKET_SIZE_STARTING_BYTE],
-            byte2: bytes[PACKET_SIZE_STARTING_BYTE + 1]),
+            byte1: bytes[PACKET_SIZE_STARTING_BYTE], byte2: bytes[PACKET_SIZE_STARTING_BYTE + 1]),
         opCodeDependent = ConvertFormats.byteArrayToHex(bytes
-            .sublist(PACKET_DEPENDENT_STARTING_BYTE,
-                PACKET_DEPENDENT_STARTING_BYTE + 4)
+            .sublist(PACKET_DEPENDENT_STARTING_BYTE, PACKET_DEPENDENT_STARTING_BYTE + 4)
             .reversed
             .toList()) {
     packetType = _extractPacketType();
@@ -64,8 +60,7 @@ class ReceivedPacket {
     }
 
     if (opCode == DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM) {
-      print(
-          '_extractPacketType DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM');
+      print('_extractPacketType DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM');
 
       return DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM;
     }
@@ -142,8 +137,8 @@ class ReceivedPacket {
       return false;
     } else if (!_validatePacketCRC()) {
       Log.shout(TAG, "Invalid CRC");
-//      _commandTasker.addAck(DeviceCommands.getAckCmd(
-//          packetType, DeviceCommands.ACK_STATUS_CRC_FAIL, identifier));
+      _commandTasker.addAck(
+          DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_CRC_FAIL, identifier));
       return false;
     }
 
@@ -157,8 +152,7 @@ class ReceivedPacket {
     bytes[PACKET_CRC_STARTING_BYTE] = 0;
     bytes[PACKET_CRC_STARTING_BYTE + 1] = 0;
 
-    int packetCRC =
-        ConvertFormats.twoBytesToInt(byte1: crcByte1, byte2: crcByte2);
+    int packetCRC = ConvertFormats.twoBytesToInt(byte1: crcByte1, byte2: crcByte2);
     int validationCRC = Crc16.convert(bytes);
 
     bytes[PACKET_CRC_STARTING_BYTE] = crcByte1;
@@ -168,8 +162,7 @@ class ReceivedPacket {
       return true;
     }
 
-    Log.shout(TAG,
-        "CRC validation failed. packet CRC: $packetCRC | should be: $validationCRC");
+    Log.shout(TAG, "CRC validation failed. packet CRC: $packetCRC | should be: $validationCRC");
     return false;
   }
 

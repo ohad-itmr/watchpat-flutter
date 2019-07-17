@@ -67,9 +67,9 @@ class GlobalSettings {
 
   static double get _getMaxTestLengthHours => _globalSettings.maxTestLengthHours;
 
-  static int get sessionTimeoutTimeMS {
+  static int get sessionTimeoutTimeSec {
     final double hours = _getSessionTimeoutTimeHours;
-    return hours == INVALID_STATE ? INVALID_STATE : (hours * 60 * 60 * 1000).round();
+    return hours == INVALID_STATE ? INVALID_STATE : (hours * 60 * 60).round();
   }
 
   static double get _getSessionTimeoutTimeHours => _globalSettings.sessionTimeoutTimeHours;

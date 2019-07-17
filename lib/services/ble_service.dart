@@ -105,7 +105,7 @@ class BleService {
     } catch (e) {
       status = 'failure ${e.toString()}';
     }
-    print("Writing TX characteristic: ${data.toString()} $status");
+    Log.info(TAG, "Writing TX characteristic: ${data.toString()} $status");
   }
 
 //  Future<void> writeCharacteristic(List<int> data) async {

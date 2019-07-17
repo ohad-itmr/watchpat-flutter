@@ -25,8 +25,7 @@ class SftpService {
 
   // Streams
   BehaviorSubject<SftpConnectionState> sftpConnectionStateStream =
-      BehaviorSubject<SftpConnectionState>.seeded(
-          SftpConnectionState.DISCONNECTED);
+      BehaviorSubject<SftpConnectionState>.seeded(SftpConnectionState.DISCONNECTED);
 
   // Working variables
   String _sftpFileName;
@@ -54,11 +53,11 @@ class SftpService {
 
   void _initConnectionAvailabilityListener() {
     Observable.combineLatest2(
-        _systemState.inetConnectionStateStream,
-        sftpConnectionStateStream.stream,
-        (ConnectivityResult inet, SftpConnectionState sftp) =>
-            _uploadingAvailable = inet != ConnectivityResult.none &&
-                sftp != SftpConnectionState.DISCONNECTED).listen(null);
+            _systemState.inetConnectionStateStream,
+            sftpConnectionStateStream.stream,
+            (ConnectivityResult inet, SftpConnectionState sftp) => _uploadingAvailable =
+                inet != ConnectivityResult.none && sftp != SftpConnectionState.DISCONNECTED)
+        .listen(null);
   }
 
   _handleDataTransferState(DataTransferState state) {
@@ -70,9 +69,10 @@ class SftpService {
     }
   }
 
-  _handleSftpUploadingState(SftpUploadingState state) {
+  _handleSftpUploadingState(SftpUploadingState state) async {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
+      await _checkRemoteFileSize();
       _closeConnection();
     }
   }
@@ -92,7 +92,6 @@ class SftpService {
     _tempDir = await getTemporaryDirectory();
 
     _dataFile = await _fileSystem.localDataFile;
-    print("DATA FILE ${_dataFile.lengthSync()}");
     _raf = await _dataFile.open(mode: FileMode.read);
 
     await _initSftpConnection();
@@ -125,8 +124,7 @@ class SftpService {
       Log.info(TAG, "Connecting to SFTP server");
       final resultSession = await _client.connect();
       final resultConnection = await _client.connectSFTP();
-      Log.info(
-          TAG, "Connected to SFTP server: $resultSession, $resultConnection");
+      Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
     } catch (e) {
       Log.shout(TAG, "Connection to SFTP failed, $e");
@@ -143,15 +141,13 @@ class SftpService {
       return;
     } else {
       await Future.delayed(Duration(seconds: 3));
-      Log.shout(TAG,
-          "Trying to reconnect to SFTP server, attempt: $_reconnectionAttempts");
+      Log.shout(TAG, "Trying to reconnect to SFTP server, attempt: $_reconnectionAttempts");
       _initSftpConnection();
     }
   }
 
   void _startReconnectionTimer() {
-    Log.shout(TAG,
-        "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
+    Log.shout(TAG, "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
     _reconnectionTimer = Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
@@ -159,25 +155,20 @@ class SftpService {
     do {
       // Check for connections, if none start waiting
       if (!_uploadingAvailable) {
-        sl<SystemStateManager>()
-            .setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
+        sl<SystemStateManager>().setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
         await _awaitForConnection();
       }
 
-      final int currentRecordingOffset =
-          PrefsProvider.loadTestDataRecordingOffset();
-      final int currentUploadingOffset =
-          PrefsProvider.loadTestDataUploadingOffset();
+      final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
+      final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
 
       if (currentUploadingOffset < currentRecordingOffset) {
         _systemState.setSftpUploadingState(SftpUploadingState.UPLOADING);
         await _uploadDataChunk(
-            uploadingOffset: currentUploadingOffset,
-            recordingOffset: currentRecordingOffset);
+            uploadingOffset: currentUploadingOffset, recordingOffset: currentRecordingOffset);
 
         // Check if test ended and all data is uploaded
-        final int newUploadingOffset =
-            PrefsProvider.loadTestDataUploadingOffset();
+        final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
         if (currentRecordingOffset == newUploadingOffset &&
             _currentDataTransferState == DataTransferState.ENDED) {
           _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
@@ -192,7 +183,7 @@ class SftpService {
         _systemState.setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
         Log.info(TAG,
             "Waiting for data: UPLOADING OFFSET: $currentUploadingOffset, RECORDING OFFSET: $currentRecordingOffset");
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(Duration(seconds: 5));
       }
     } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
   }
@@ -200,7 +191,7 @@ class SftpService {
   Future<void> _awaitForConnection() async {
     do {
       Log.info(TAG, "Waiting for connection");
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 5));
     } while (!_uploadingAvailable);
   }
 
@@ -221,22 +212,18 @@ class SftpService {
 
     try {
       final String result = await _client.sftpAppendToFile(
-          fromFilePath: tempFile.path,
-          toFilePath: '$_sftpFilePath/$_sftpFileName');
+          fromFilePath: tempFile.path, toFilePath: '$_sftpFilePath/$_sftpFileName');
 
       if (result == SftpService.APPENDING_SUCCESS) {
-        await PrefsProvider.saveTestDataUploadingOffset(
-            uploadingOffset + bytes.length);
+        await PrefsProvider.saveTestDataUploadingOffset(uploadingOffset + bytes.length);
         Log.info(TAG,
             "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
 
-        // todo test sftp offset
-        SFTPFile file = await _client.sftpFileInfo(
-            filePath: "$_sftpFilePath/$_sftpFileName");
-        print(
-            "CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
-        print("CURRENT REMOTE FILE SIZE: ${file.size}");
-        //
+//        // todo test sftp offset
+//        SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+//        print("CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+//        print("CURRENT REMOTE FILE SIZE: ${file.size}");
+//        //
 
       }
     } catch (e) {
@@ -256,9 +243,16 @@ class SftpService {
     }
   }
 
+  Future<void> _checkRemoteFileSize() async {
+    SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+    Log.info(TAG, "UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+    Log.info(TAG, "REMOTE FILE SIZE: ${file.size}");
+    //
+  }
+
   void _closeConnection() {
-    Log.info(TAG,
-        "Uploading of test data complete, closing sftp connection and informing dispatcher");
+    Log.info(
+        TAG, "Uploading of test data complete, closing sftp connection and informing dispatcher");
     sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     sftpConnectionStateStream.close();

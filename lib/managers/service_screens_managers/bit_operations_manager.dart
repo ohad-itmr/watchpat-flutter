@@ -91,6 +91,7 @@ class BitOperationsManager extends ManagerBase {
       }
     });
     _bitBITRequest = 0;
+    Log.info(TAG, "BIT response: \n$responseMsg");
     return responseMsg.toString();
   }
 

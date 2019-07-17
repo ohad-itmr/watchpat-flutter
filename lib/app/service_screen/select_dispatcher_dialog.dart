@@ -36,8 +36,8 @@ class _SelectDispatcherDialog extends State<SelectDispatcherDialog> {
                 .toList()),
         actions: <Widget>[
           FlatButton(
-            child: Text(_loc.ok.toUpperCase()),
-            onPressed: () => Navigator.pop(context),
+            child: Text(_loc.close_app.toUpperCase()),
+            onPressed: () => exit(0),
           )
         ],
       );

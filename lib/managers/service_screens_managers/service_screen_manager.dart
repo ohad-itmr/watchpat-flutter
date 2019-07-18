@@ -393,8 +393,6 @@ class ServiceScreenManager extends ManagerBase {
     responseMsg.write("${_loc.ir_led_status}${techStatusPayload.irLedStatus}\n");
     responseMsg.write("${_loc.red_led_status}${techStatusPayload.redLedStatus}\n");
     responseMsg.write("${_loc.pat_led_status}${techStatusPayload.patLedStatus}\n");
-    
-    Log.info(TAG, "Received tech status report: \n$responseMsg");
     return responseMsg.toString();
   }
 

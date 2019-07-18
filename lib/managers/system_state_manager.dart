@@ -58,7 +58,6 @@ enum StartSessionState { UNCONFIRMED, CONFIRMED }
 
 class SystemStateManager extends ManagerBase {
   static const String TAG = 'SystemStateManager';
-  static const platform = const MethodChannel('watchpat');
 
   // BT STATES
   static List<String> _btStates = [

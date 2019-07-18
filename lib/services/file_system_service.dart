@@ -184,7 +184,7 @@ class FileSystemService {
 
       try {
         final int spaceToAllocate = GlobalSettings.minStorageSpaceMB;
-        final int freeSpace = await SystemStateManager.platform.invokeMethod('getFreeSpace');
+        final int freeSpace = await TransactionManager.platformChannel.invokeMethod('getFreeSpace');
         Log.info(TAG,
             'Checking available free space, required: $spaceToAllocate MB, have: $freeSpace MB');
         if (freeSpace > spaceToAllocate) {

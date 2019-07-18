@@ -1,15 +1,19 @@
+import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 
 // Class responsible for performing various actions in response to system state changes
 class TransactionManager extends ManagerBase {
   static const String TAG = "TransactionManager";
+  static const platformChannel = const MethodChannel('watchpat');
+
   final SystemStateManager _sysState = sl<SystemStateManager>();
 
   TransactionManager() {
     _initTestStatesPersistence();
     _initStartingScanOnBTAvailable();
     _initStartingScanOnDeviceDisconnect();
+    _initMethodChannel();
   }
 
   _initTestStatesPersistence() {
@@ -60,6 +64,14 @@ class TransactionManager extends ManagerBase {
       Log.info(TAG, "Connection to device was lost during or before test, reconnecting");
       sl<BleManager>().startScan(
           time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+    });
+  }
+
+  _initMethodChannel() {
+    platformChannel.setMethodCallHandler((MethodCall call) {
+      if (call.method == "crashHappened") {
+        Log.shout(TAG, ">>>>>>>>>> APPLICATION CRASHED: ${call.arguments}");
+      }
     });
   }
 

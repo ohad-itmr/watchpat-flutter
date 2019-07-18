@@ -112,7 +112,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   }
 
   void _killApplication() {
-
+    TransactionManager.platformChannel.invokeMethod("crashApplication");
   }
 
 

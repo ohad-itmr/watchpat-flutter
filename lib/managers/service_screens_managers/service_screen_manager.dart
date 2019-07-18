@@ -54,8 +54,7 @@ class ServiceScreenManager extends ManagerBase {
 
   ServiceScreenManager() {
     _tapEvents.stream
-        .transform(
-            StreamTransformer.fromHandlers(handleData: _filterConseqTaps))
+        .transform(StreamTransformer.fromHandlers(handleData: _filterConseqTaps))
         .listen(_handleConseqTaps);
   }
 
@@ -108,11 +107,9 @@ class ServiceScreenManager extends ManagerBase {
 
     final AckCallback callback =
         AckCallback(action: () => _showToast(_loc.retrieving_stored_test_data));
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getSendStoredDataCmd(),
-        listener: callback);
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getSendStoredDataCmd(), listener: callback);
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) {
         _showToast(_loc.retrieve_stored_test_data_failed);
       }
@@ -126,8 +123,7 @@ class ServiceScreenManager extends ManagerBase {
     _paramFileHandler.startParamFileGet();
 
     // subscribe to result
-    _paramFileGetStatusSub =
-        _paramFileHandler.paramFileGetStatusStream.listen((bool isDone) {
+    _paramFileGetStatusSub = _paramFileHandler.paramFileGetStatusStream.listen((bool isDone) {
       if (isDone) _hideProgressbarWithMessage(_loc.getting_param_file_success);
       _paramFileGetStatusSub.cancel();
     });
@@ -146,10 +142,8 @@ class ServiceScreenManager extends ManagerBase {
     _paramFileHandler.startParamFileSet();
 
     // subscribe to result
-    _paramFileSetStatusSub =
-        _paramFileHandler.paramFileSetStatusStream.listen((bool isDone) {
-      if (isDone)
-        _hideProgressbarWithMessage(_loc.param_file_written_successfully);
+    _paramFileSetStatusSub = _paramFileHandler.paramFileSetStatusStream.listen((bool isDone) {
+      if (isDone) _hideProgressbarWithMessage(_loc.param_file_written_successfully);
       _paramFileSetStatusSub.cancel();
     });
   }
@@ -176,7 +170,8 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   _shareFile(File file) async {
-    await Share.file('Device log file', DefaultSettings.deviceLogFileName, file.readAsBytesSync(), 'text/plain');
+    await Share.file(
+        'Device log file', DefaultSettings.deviceLogFileName, file.readAsBytesSync(), 'text/plain');
   }
 
   // Handle AFE registers
@@ -185,12 +180,10 @@ class ServiceScreenManager extends ManagerBase {
     final AckCallback callback =
         AckCallback(action: () => _showToast(_loc.afe_registers_get_success));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getGetAFERegistersCmd(),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getGetAFERegistersCmd(), listener: callback);
 
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) {
         _showToast(_loc.afe_registers_get_fail);
       }
@@ -206,8 +199,7 @@ class ServiceScreenManager extends ManagerBase {
 
     // load data
     if (dirFile.existsSync() && dirFile.lengthSync() != 0) {
-      Log.info(
-          TAG, "Set AFE registers from WatchPatDir file, received from device");
+      Log.info(TAG, "Set AFE registers from WatchPatDir file, received from device");
       bytes = dirFile.readAsBytesSync();
     } else if (resourceFile.lengthSync() != 0) {
       Log.info(TAG, "Set AFE registers from resource file");
@@ -219,16 +211,14 @@ class ServiceScreenManager extends ManagerBase {
     }
 
     // send command and handle response
-    final AckCallback callback = AckCallback(
-        action: () => _showToast(_loc.afe_registers_written_successfully));
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.afe_registers_written_successfully));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getSetAFERegistersCmd(bytes),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getSetAFERegistersCmd(bytes), listener: callback);
 
     // handle timeout
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.afe_registers_write_failed);
     });
   }
@@ -239,12 +229,10 @@ class ServiceScreenManager extends ManagerBase {
     final AckCallback callback =
         AckCallback(action: () => _showToast(_loc.acc_registers_get_success));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getGetACCRegistersCmd(),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getGetACCRegistersCmd(), listener: callback);
 
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) {
         _showToast(_loc.acc_registers_get_fail);
       }
@@ -260,8 +248,7 @@ class ServiceScreenManager extends ManagerBase {
 
     // load data
     if (dirFile.existsSync() && dirFile.lengthSync() != 0) {
-      Log.info(
-          TAG, "Set ACC registers from WatchPatDir file, received from device");
+      Log.info(TAG, "Set ACC registers from WatchPatDir file, received from device");
       bytes = dirFile.readAsBytesSync();
     } else if (resourceFile.lengthSync() != 0) {
       Log.info(TAG, "Set ACC registers from resource file");
@@ -273,16 +260,14 @@ class ServiceScreenManager extends ManagerBase {
     }
 
     // send command and handle response
-    final AckCallback callback = AckCallback(
-        action: () => _showToast(_loc.acc_registers_written_successfully));
+    final AckCallback callback =
+        AckCallback(action: () => _showToast(_loc.acc_registers_written_successfully));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getSetACCRegistersCmd(bytes),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getSetACCRegistersCmd(bytes), listener: callback);
 
     // handle timeout
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.acc_registers_write_failed);
     });
   }
@@ -290,14 +275,12 @@ class ServiceScreenManager extends ManagerBase {
   // Handle EEPROM values
   void getEEPROMvalues() {
     Log.info(TAG, "Get device EEPROM");
-    final AckCallback callback =
-        AckCallback(action: () => _showToast(_loc.eeprom_get_success));
+    final AckCallback callback = AckCallback(action: () => _showToast(_loc.eeprom_get_success));
 
     sl<CommandTaskerManager>()
         .addCommandWithCb(DeviceCommands.getGetEEPROMCmd(), listener: callback);
 
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) {
         _showToast(_loc.eeprom_get_fail);
       }
@@ -313,8 +296,7 @@ class ServiceScreenManager extends ManagerBase {
 
     // load data
     if (dirFile.existsSync() && dirFile.lengthSync() != 0) {
-      Log.info(
-          TAG, "Set EEPROM values from WatchPatDir file, received from device");
+      Log.info(TAG, "Set EEPROM values from WatchPatDir file, received from device");
       bytes = dirFile.readAsBytesSync();
     } else if (resourceFile.lengthSync() != 0) {
       Log.info(TAG, "Set EEPROM values from resource file");
@@ -329,13 +311,11 @@ class ServiceScreenManager extends ManagerBase {
     final AckCallback callback =
         AckCallback(action: () => _showToast(_loc.eeprom_written_successfully));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getSetEEPROMCmd(bytes),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getSetEEPROMCmd(bytes), listener: callback);
 
     // handle timeout
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.eeprom_write_failed);
     });
   }
@@ -353,8 +333,7 @@ class ServiceScreenManager extends ManagerBase {
         listener: callback);
 
     // handle timeout
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.set_device_serial_timeout);
     });
   }
@@ -374,16 +353,13 @@ class ServiceScreenManager extends ManagerBase {
         ledOptions.firstWhere((LedOption o) => o.color == selectedColor);
 
     // send command and handle response
-    final AckCallback callback =
-        AckCallback(action: () => _showToast(_loc.set_led_color_success));
+    final AckCallback callback = AckCallback(action: () => _showToast(_loc.set_led_color_success));
 
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getSetLEDsCmd(selectedOption.value),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getSetLEDsCmd(selectedOption.value), listener: callback);
 
     // handle timeout
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.set_led_color_timeout);
     });
   }
@@ -398,14 +374,12 @@ class ServiceScreenManager extends ManagerBase {
     Log.info(TAG, "Requesting technical status");
 
     final AckCallback callback = AckCallback();
-    sl<CommandTaskerManager>().addCommandWithCb(
-        DeviceCommands.getGetTechnicalStatusCmd(),
-        listener: callback);
+    sl<CommandTaskerManager>()
+        .addCommandWithCb(DeviceCommands.getGetTechnicalStatusCmd(), listener: callback);
     _showToast(_loc.requesting_technical_status);
 
     // handle timeout
-    final Timer timer =
-        Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
+    final Timer timer = Timer(Duration(milliseconds: DeviceCommands.TECH_CMD_TIMEOUT), () {
       if (!callback.ackReceived) _showToast(_loc.get_tech_status_timeout);
     });
 
@@ -414,32 +388,24 @@ class ServiceScreenManager extends ManagerBase {
         await sl<IncomingPacketHandlerService>().techStatusResponse.first;
 
     var responseMsg = StringBuffer();
-    responseMsg
-        .write("${_loc.battery_voltage}${techStatusPayload.batteryVoltage}\n");
+    responseMsg.write("${_loc.battery_voltage}${techStatusPayload.batteryVoltage}\n");
     responseMsg.write("${_loc.vdd_voltage}${techStatusPayload.vddVoltage}\n");
-    responseMsg
-        .write("${_loc.ir_led_status}${techStatusPayload.irLedStatus}\n");
-    responseMsg
-        .write("${_loc.red_led_status}${techStatusPayload.redLedStatus}\n");
-    responseMsg
-        .write("${_loc.pat_led_status}${techStatusPayload.patLedStatus}\n");
+    responseMsg.write("${_loc.ir_led_status}${techStatusPayload.irLedStatus}\n");
+    responseMsg.write("${_loc.red_led_status}${techStatusPayload.redLedStatus}\n");
+    responseMsg.write("${_loc.pat_led_status}${techStatusPayload.patLedStatus}\n");
+    
+    Log.info(TAG, "Received tech status report: \n$responseMsg");
     return responseMsg.toString();
   }
 
   // Reset main device
   List<ResetOption> get resetOptions => [
         ResetOption(
-            type: ResetType.shut_reset,
-            title: "Shut and reset",
-            value: RESET_TYPE_SHUT_AND_RESET),
+            type: ResetType.shut_reset, title: "Shut and reset", value: RESET_TYPE_SHUT_AND_RESET),
         ResetOption(
-            type: ResetType.reset_clock,
-            title: "Reset clock",
-            value: RESET_TYPE_CLOCK_RESET),
+            type: ResetType.reset_clock, title: "Reset clock", value: RESET_TYPE_CLOCK_RESET),
         ResetOption(
-            type: ResetType.clear_data,
-            title: "Clear all data",
-            value: RESET_TYPE_CLEAR_DATA),
+            type: ResetType.clear_data, title: "Clear all data", value: RESET_TYPE_CLEAR_DATA),
         ResetOption(
             type: ResetType.load_factory_defaults,
             title: "Load factory defaults",
@@ -452,10 +418,9 @@ class ServiceScreenManager extends ManagerBase {
 
   resetMainDevice(ResetType type) {
     Log.info(TAG, "Resetting main device...");
-    final ResetOption option =
-        resetOptions.firstWhere((ResetOption opt) => opt.type == type);
-    sl<CommandTaskerManager>()
-        .addCommandWithNoCb(DeviceCommands.getResetDeviceCmd(option.value));
+    final ResetOption option = resetOptions.firstWhere((ResetOption opt) => opt.type == type);
+    sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getResetDeviceCmd(option.value));
+    _toasts.sink.add(_loc.reset_main_device);
   }
 
   //reset application
@@ -524,13 +489,7 @@ class LedOption {
   LedOption({this.color, this.title, this.value});
 }
 
-enum ResetType {
-  shut_reset,
-  reset_clock,
-  clear_data,
-  load_factory_defaults,
-  warm_version_change
-}
+enum ResetType { shut_reset, reset_clock, clear_data, load_factory_defaults, warm_version_change }
 
 class ResetOption {
   final ResetType type;

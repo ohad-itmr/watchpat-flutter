@@ -178,6 +178,7 @@ class S implements WidgetsLocalizations {
   String get reset => "Reset";
   String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files? You will need to launch application again.";
   String get reset_application_title => "Reset application";
+  String get reset_main_device => "Resetting main device";
   String get retrieve_stored_data => "Retrieve stored data";
   String get retrieve_stored_data_from_device => "Retrieve stored data from the device?";
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
@@ -402,6 +403,8 @@ class fr extends S {
   String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
   @override
   String get server_comm_error => "Server communication error, please contact support";
+  @override
+  String get reset_main_device => "Resetting main device";
   @override
   String get err_actigraph_test => "Actigraph test";
   @override

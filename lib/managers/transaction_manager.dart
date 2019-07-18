@@ -18,8 +18,7 @@ class TransactionManager extends ManagerBase {
 
   _initTestStatesPersistence() {
     _sysState.testStateStream.listen((TestStates state) {
-      Log.info(TAG,
-          "Test state changed to ${state.toString().toUpperCase()}, persisting");
+      Log.info(TAG, "Test state changed to ${state.toString().toUpperCase()}, persisting");
       switch (state) {
         case TestStates.STARTED:
         case TestStates.RESUMED:
@@ -44,13 +43,10 @@ class TransactionManager extends ManagerBase {
   }
 
   _initStartingScanOnBTAvailable() {
-    _sysState.btStateStream
-        .where((BtStates st) => st == BtStates.ENABLED)
-        .listen((_) async {
+    _sysState.btStateStream.where((BtStates st) => st == BtStates.ENABLED).listen((_) async {
       Log.info(TAG, "Bluetooth went enabled, starting scan");
       await Future.delayed(Duration(seconds: 2));
-      sl<BleManager>().startScan(
-          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     });
   }
 
@@ -62,8 +58,7 @@ class TransactionManager extends ManagerBase {
             _sysState.isScanCycleEnabled)
         .listen((_) {
       Log.info(TAG, "Connection to device was lost during or before test, reconnecting");
-      sl<BleManager>().startScan(
-          time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     });
   }
 

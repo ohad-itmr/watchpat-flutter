@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:my_pat/domain_model/command_task.dart';
+import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/utils/log/log.dart';
 
 import 'package:my_pat/services/ble_service.dart';
@@ -48,7 +49,7 @@ class CommandTaskerManager extends ManagerBase {
   int _maxCommandTimeout;
   int _ackOpCode;
 
-  Function _sendCmdCallback;
+  Function(CommandTaskerItem, bool) _sendCmdCallback;
   Function _timeoutCallback;
   Map<int, OnAckListener> _mapAckListeners = HashMap();
 
@@ -57,7 +58,7 @@ class CommandTaskerManager extends ManagerBase {
 
   static Observable<CommandTaskerItem> get taskerItemStream => _taskerItems.stream;
 
-  set sendCmdCallback(Function cb) => _sendCmdCallback = cb;
+  set sendCmdCallback(Function(CommandTaskerItem, bool) cb) => _sendCmdCallback = cb;
 
   set timeoutCallback(Function cb) => _timeoutCallback = cb;
 
@@ -144,7 +145,8 @@ class CommandTaskerManager extends ManagerBase {
         item.firstSendTime = currentTime;
       }
       item.lastAttemptToSendTime = currentTime;
-      await _sendCmdCallback(item);
+      final bool ensureSuccess = item.name != DeviceCommands.FW_UPGRADE_CMD_NAME;
+      await _sendCmdCallback(item, ensureSuccess);
     }
   }
 

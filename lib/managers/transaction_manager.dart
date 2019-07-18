@@ -57,7 +57,7 @@ class TransactionManager extends ManagerBase {
             _sysState.testState != TestStates.ENDED &&
             _sysState.isScanCycleEnabled)
         .listen((_) {
-      Log.info(TAG, "Connection to device was lost during test, reconnecting");
+      Log.info(TAG, "Connection to device was lost during or before test, reconnecting");
       sl<BleManager>().startScan(
           time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     });

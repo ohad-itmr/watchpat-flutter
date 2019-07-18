@@ -118,7 +118,7 @@ class BleManager extends ManagerBase {
           .add(StateChangeActions.APP_MODE_CHANGED);
 
       if (_isFirstConnection) {
-        sysStateManager.setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
+        sysStateManager.setFirmwareState(FirmwareUpgradeState.UNKNOWN);
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
@@ -184,11 +184,11 @@ class BleManager extends ManagerBase {
     return true;
   }
 
-  Future<dynamic> _sendCallback(CommandTaskerItem command) {
+  Future<dynamic> _sendCallback(CommandTaskerItem command, bool ensureSuccess) {
     print('_sendCallback ');
     try {
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
-        return _sendCommand(command.data);
+        return _sendCommand(command.data, ensureSuccess);
       } else {
         Log.warning(TAG, "device disconnected, command not sent ");
       }
@@ -211,12 +211,12 @@ class BleManager extends ManagerBase {
     }
   }
 
-  _sendCommand(List<List<int>> byteList) async {
+  _sendCommand(List<List<int>> byteList, bool ensureSuccess) async {
     print("### _sendCommand ");
 
     if (byteList != null) {
       for (var req in byteList) {
-        await sl<BleService>().writeCharacteristic(req);
+        await sl<BleService>().writeCharacteristic(req, ensureSuccess);
       }
     } else {
       Log.shout(TAG, "sendCommand failed: byteList is null $tag");

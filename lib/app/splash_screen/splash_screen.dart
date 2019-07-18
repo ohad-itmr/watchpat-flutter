@@ -45,11 +45,9 @@ class _SplashScreenState extends State<SplashScreen> {
     _serviceManager.serviceModesStream.listen((mode) {
       if (mode == ServiceMode.customer) {
         sl<SystemStateManager>().setAppMode(AppModes.CS);
-        sl<SystemStateManager>()
-            .changeState
-            .add(StateChangeActions.APP_MODE_CHANGED);
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
+        sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
       } else if (mode == ServiceMode.technician) {
         _showServicePasswordPrompt();
       }
@@ -61,15 +59,12 @@ class _SplashScreenState extends State<SplashScreen> {
         _systemStateManager.btStateStream,
         _systemStateManager.testStateStream,
         _systemStateManager.inetConnectionStateStream,
-        (BtStates btState, TestStates testState,
-                ConnectivityResult inetState) =>
-            {
+        (BtStates btState, TestStates testState, ConnectivityResult inetState) => {
               _BT_MAP_KEY: btState,
               _TEST_MAP_KEY: testState,
               _INET_MAP_KEY: inetState
             }).listen((Map<String, dynamic> data) async {
-
-              // todo implement SFTP uploading after test stopped
+      // todo implement SFTP uploading after test stopped
 //      if (PrefsProvider.getDataUploadingIncomplete()) {
 //        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
 //        Navigator.of(context).pushNamed(WelcomeScreen.PATH);
@@ -80,8 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
       _handleBtState(data[_BT_MAP_KEY]);
       _handleInternetState(data[_INET_MAP_KEY]);
 
-      if (data[_BT_MAP_KEY] == BtStates.ENABLED &&
-          data[_INET_MAP_KEY] != ConnectivityResult.none) {
+      if (data[_BT_MAP_KEY] == BtStates.ENABLED && data[_INET_MAP_KEY] != ConnectivityResult.none) {
         if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
           sl<WelcomeActivityManager>().initConnectivityListener();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
@@ -105,13 +99,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
 
-    sl<IncomingPacketHandlerService>()
-        .isPairedResponseStream
-        .listen(_handleIsPaired);
+    sl<IncomingPacketHandlerService>().isPairedResponseStream.listen(_handleIsPaired);
 
     _systemStateManager.inetConnectionStateStream
-        .firstWhere(
-            (ConnectivityResult state) => state != ConnectivityResult.none)
+        .firstWhere((ConnectivityResult state) => state != ConnectivityResult.none)
         .then((_) {
       sl<WelcomeActivityManager>().configureApplication();
       sl<WelcomeActivityManager>().allocateSpace();
@@ -147,24 +138,41 @@ class _SplashScreenState extends State<SplashScreen> {
         });
   }
 
-  void _handleUpgradeProgress(FirmwareUpgradeStates state) {
-    if (state == FirmwareUpgradeStates.UPGRADING && !_fwUpgradeShow) {
+  void _handleUpgradeProgress(FirmwareUpgradeState state) {
+    if (state == FirmwareUpgradeState.UPGRADING && !_fwUpgradeShow) {
       showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) => FirmwareUpgradeDialog());
+          barrierDismissible: false, context: context, builder: (_) => FirmwareUpgradeDialog());
       _fwUpgradeShow = true;
     } else if (_fwUpgradeShow) {
       Navigator.of(context).pop();
       _fwUpgradeShow = false;
+
+      if (state == FirmwareUpgradeState.UP_TO_DATE) {
+        _showAlertDialog(S.of(context).firmware_upgrade_success);
+      } else if (state == FirmwareUpgradeState.UPGRADE_FAILED) {
+        _showAlertDialog(S.of(context).firmware_upgrade_failed);
+      }
     }
   }
 
   void _showServicePasswordPrompt() {
     showDialog(
+        context: context, barrierDismissible: false, builder: (_) => ServicePasswordPrompt());
+  }
+
+  void _showAlertDialog(String msg) {
+    showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => ServicePasswordPrompt());
+        builder: (_) => AlertDialog(
+              content: Text(msg),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(S.of(context).ok.toUpperCase()),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            ));
   }
 
   void _handleBtState(BtStates state) {
@@ -189,8 +197,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _showBTWarning() {
     showDialog(
-      context: context,
-      barrierDismissible: false, // user must tap button!
+      context: context, barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(S.of(context).bt_initiation_error),
@@ -243,9 +250,7 @@ class _SplashScreenState extends State<SplashScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(S
-                    .of(context)
-                    .test_data_from_previous_session_still_uploading),
+                Text(S.of(context).test_data_from_previous_session_still_uploading),
                 Container(
                     padding: EdgeInsets.all(20.0),
                     child: Center(
@@ -264,13 +269,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
         body: Container(
             child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/splash_final.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )));
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/splash_final.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    )));
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_pat/config/default_settings.dart';
 
@@ -170,13 +171,6 @@ class PrefsProvider {
     return PrefsService.prefs.getBool(PrefsNames.IS_TEST_STOPPED_BY_USER) ?? false;
   }
 
-  //
-  // Device name
-  //
-  static void initDeviceName() async {
-    await PrefsService.prefs.setString(PrefsNames.DEVICE_NAME_KEY, "ITAMAR_UART");
-  }
-
   static void saveDeviceName(String name) async {
     await PrefsService.prefs.setString(PrefsNames.DEVICE_NAME_KEY, name);
   }
@@ -187,6 +181,7 @@ class PrefsProvider {
 
   static void clearDeviceName() {
     PrefsService.prefs.remove(PrefsNames.DEVICE_NAME_KEY);
+    Log.info("PrefsProvider", "CONNECTED DEVICE FORGOTTEN");
   }
 
   //

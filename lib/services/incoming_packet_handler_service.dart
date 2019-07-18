@@ -216,16 +216,15 @@ class IncomingPacketHandlerService extends ManagerBase {
               final bool isUpToDate =
                   await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
 
-              // todo return upgrader
-//              if (isUpToDate) {
-//                Log.info(TAG, "### start session confirm: device FW version check END");
-//                Log.info(TAG, "device FW up to date");
-//                sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
-//              } else {
-//                await Future.delayed(Duration(seconds: 1));
-//                Log.info(TAG, "device FW outdated");
-//                sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
-//              }
+              if (isUpToDate) {
+                Log.info(TAG, "### start session confirm: device FW version check END");
+                Log.info(TAG, "device FW up to date");
+                sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UP_TO_DATE);
+              } else {
+                await Future.delayed(Duration(seconds: 1));
+                Log.info(TAG, "device FW outdated");
+                sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
+              }
             }
           }
 

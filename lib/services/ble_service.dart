@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:hex/hex.dart';
 
 class BleService {
   static const String TAG = 'BleService';
@@ -30,8 +31,7 @@ class BleService {
   Stream<BluetoothState> get btStateOnChange => _flutterBlue.onStateChanged();
 
   Stream<ScanResult> scanForDevices(int time) {
-    return _flutterBlue.scan(
-        timeout: time != null ? Duration(milliseconds: time) : null);
+    return _flutterBlue.scan(timeout: time != null ? Duration(milliseconds: time) : null);
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
@@ -68,8 +68,7 @@ class BleService {
     });
   }
 
-  Future setNotification(
-      IncomingPacketHandlerService notificationHandler) async {
+  Future setNotification(IncomingPacketHandlerService notificationHandler) async {
     Log.info(TAG, "setNotification");
 
     if (_charForRead.isNotifying) {
@@ -90,42 +89,25 @@ class BleService {
     _readCharSubscription.cancel();
   }
 
-  Future<void> writeCharacteristic(List<int> data) async {
-    var status = 'success';
+  Future<void> writeCharacteristic(List<int> data, bool ensureSuccess) async {
+    var status = ensureSuccess ? 'success' : 'unknown';
     try {
       await _device
           .writeCharacteristic(
             _charForWrite,
             data,
-            type: CharacteristicWriteType.withResponse,
+            type: ensureSuccess
+                ? CharacteristicWriteType.withResponse
+                : CharacteristicWriteType.withoutResponse,
           )
           .timeout(Duration(seconds: 3),
-              onTimeout: () =>
-                  throw Exception('Failed to write the characteristic'));
+              onTimeout: () => throw Exception('Failed to write the characteristic'));
+      await Future.delayed(Duration(milliseconds: 2));
     } catch (e) {
       status = 'failure ${e.toString()}';
     }
-    Log.info(TAG, "Writing TX characteristic: ${data.toString()} $status");
+    Log.info(TAG, "Writing TX characteristic ${HEX.encode(data)}, status: $status");
   }
-
-//  Future<void> writeCharacteristic(List<int> data) async {
-//    TxWritingStatus status = TxWritingStatus.fail;
-//    int retries = 0;
-//    do {
-//      try {
-//        await _device.writeCharacteristic(
-//          _charForWrite,
-//          data,
-//          type: CharacteristicWriteType.withoutResponse,
-//        );
-//        status = TxWritingStatus.success;
-//      } catch (e) {
-//        retries++;
-//        print("Writing TX chars failed, trying again");
-//      }
-//    } while (status != TxWritingStatus.success && retries < 5);
-//    print("Writing TX characteristic: ${data.toString()} $status");
-//  }
 }
 
 enum TxWritingStatus { success, fail }

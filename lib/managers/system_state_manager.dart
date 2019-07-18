@@ -8,49 +8,24 @@ import 'package:rxdart/rxdart.dart' as prefix0;
 import 'package:tuple/tuple.dart';
 
 enum BtStates { NONE, NOT_AVAILABLE, BLE_NOT_SUPPORTED, DISABLED, ENABLED }
-enum ScanResultStates {
-  NOT_STARTED,
-  NOT_LOCATED,
-  LOCATED_SINGLE,
-  LOCATED_MULTIPLE
-}
+enum ScanResultStates { NOT_STARTED, NOT_LOCATED, LOCATED_SINGLE, LOCATED_MULTIPLE }
 enum ScanStates { NOT_STARTED, SCANNING, COMPLETE }
 enum DeviceStates { NOT_INITIALIZED, DISCONNECTED, CONNECTING, CONNECTED }
-enum DeviceErrorStates {
-  UNKNOWN,
-  NO_ERROR,
-  CHANGE_BATTERY,
-  INSERT_FINGER,
-  USED_DEVICE,
-  HW_ERROR
-}
+enum DeviceErrorStates { UNKNOWN, NO_ERROR, CHANGE_BATTERY, INSERT_FINGER, USED_DEVICE, HW_ERROR }
 enum SessionErrorState { UNKNOWN, NO_ERROR, PIN_ERROR, SN_NOT_REGISTERED, NO_DISPATCHER }
 
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
 
-enum TestStates {
-  NOT_STARTED,
-  STARTED,
-  INTERRUPTED,
-  RESUMED,
-  MINIMUM_PASSED,
-  STOPPED,
-  ENDED
-}
+enum TestStates { NOT_STARTED, STARTED, INTERRUPTED, RESUMED, MINIMUM_PASSED, STOPPED, ENDED }
 
 enum DataTransferState { NOT_STARTED, TRANSFERRING, ENDED }
 
 enum TestDataAmountState { MINIMUM_NOT_PASSED, MINIMUM_PASSED }
 
-enum SftpUploadingState {
-  NOT_STARTED,
-  UPLOADING,
-  WAITING_FOR_DATA,
-  ALL_UPLOADED
-}
+enum SftpUploadingState { NOT_STARTED, UPLOADING, WAITING_FOR_DATA, ALL_UPLOADED }
 
 enum AppModes { USER, CS, TECH, BACKGROUND }
-enum FirmwareUpgradeStates { UNKNOWN, UPGRADING, UP_TO_DATE, UPDATE_FAILED }
+enum FirmwareUpgradeState { UNKNOWN, UPGRADING, UP_TO_DATE, UPGRADE_FAILED }
 enum DispatcherStates {
   DISCONNECTED,
   CONFIG_RECEIVED,
@@ -107,11 +82,7 @@ class SystemStateManager extends ManagerBase {
   static String getScanResultStateName(int state) => _scanResults[state];
 
   // SCAN STATES
-  static List<String> _scanStates = [
-    "Not started",
-    "Scanning",
-    "Scanning complete"
-  ];
+  static List<String> _scanStates = ["Not started", "Scanning", "Scanning complete"];
 
   static String getScanStateName(int state) => _scanStates[state];
 
@@ -139,11 +110,7 @@ class SystemStateManager extends ManagerBase {
   static String getDeviceErrorStateName(int state) => _deviceErrorStates[state];
 
   // SERVER STATES
-  static List<String> _serverStates = [
-    "Disconnected",
-    "Connecting",
-    "Connected"
-  ];
+  static List<String> _serverStates = ["Disconnected", "Connecting", "Connected"];
 
   static String getServerStateName(int state) => _serverStates[state];
 
@@ -170,16 +137,10 @@ class SystemStateManager extends ManagerBase {
     "All transferred"
   ];
 
-  static String getDataTransferStateName(int state) =>
-      _dataTransferStates[state];
+  static String getDataTransferStateName(int state) => _dataTransferStates[state];
 
   // APP MODES
-  static List<String> _appStates = [
-    "User",
-    "Customer service",
-    "Technician",
-    "Background"
-  ];
+  static List<String> _appStates = ["User", "Customer service", "Technician", "Background"];
 
   static String getAppModeName(int state) => _appStates[state];
 
@@ -213,37 +174,25 @@ class SystemStateManager extends ManagerBase {
   // States
   BehaviorSubject<BtStates> _btState = BehaviorSubject<BtStates>();
   BehaviorSubject<ScanStates> _bleScanState = BehaviorSubject<ScanStates>();
-  BehaviorSubject<ScanResultStates> _bleScanResult =
-      BehaviorSubject<ScanResultStates>();
-  BehaviorSubject<DeviceStates> _deviceCommState =
-      BehaviorSubject<DeviceStates>();
-  BehaviorSubject<DeviceErrorStates> _deviceErrorState =
-      BehaviorSubject<DeviceErrorStates>();
-  BehaviorSubject<SessionErrorState> _sessionErrorState =
-      BehaviorSubject<SessionErrorState>();
-  BehaviorSubject<ServerStates> _serverCommState =
-      BehaviorSubject<ServerStates>();
+  BehaviorSubject<ScanResultStates> _bleScanResult = BehaviorSubject<ScanResultStates>();
+  BehaviorSubject<DeviceStates> _deviceCommState = BehaviorSubject<DeviceStates>();
+  BehaviorSubject<DeviceErrorStates> _deviceErrorState = BehaviorSubject<DeviceErrorStates>();
+  BehaviorSubject<SessionErrorState> _sessionErrorState = BehaviorSubject<SessionErrorState>();
+  BehaviorSubject<ServerStates> _serverCommState = BehaviorSubject<ServerStates>();
   BehaviorSubject<TestStates> _testState = BehaviorSubject<TestStates>();
-  BehaviorSubject<DataTransferState> _dataTransferState =
-      BehaviorSubject<DataTransferState>();
+  BehaviorSubject<DataTransferState> _dataTransferState = BehaviorSubject<DataTransferState>();
   BehaviorSubject<TestDataAmountState> _testDataAmountState =
-    BehaviorSubject<TestDataAmountState>();
+      BehaviorSubject<TestDataAmountState>();
   BehaviorSubject<AppModes> _appMode = BehaviorSubject<AppModes>();
-  BehaviorSubject<FirmwareUpgradeStates> _firmwareState =
-      BehaviorSubject<FirmwareUpgradeStates>();
-  BehaviorSubject<DispatcherStates> _dispatcherState =
-      BehaviorSubject<DispatcherStates>();
-  BehaviorSubject<ConnectivityResult> _inetConnectionState =
-      BehaviorSubject<ConnectivityResult>();
+  BehaviorSubject<FirmwareUpgradeState> _firmwareState = BehaviorSubject<FirmwareUpgradeState>();
+  BehaviorSubject<DispatcherStates> _dispatcherState = BehaviorSubject<DispatcherStates>();
+  BehaviorSubject<ConnectivityResult> _inetConnectionState = BehaviorSubject<ConnectivityResult>();
 
-  PublishSubject<StateChangeActions> _stateChangeSubject =
-      PublishSubject<StateChangeActions>();
+  PublishSubject<StateChangeActions> _stateChangeSubject = PublishSubject<StateChangeActions>();
 
-  BehaviorSubject<StartSessionState> _startSessionState =
-      BehaviorSubject<StartSessionState>();
+  BehaviorSubject<StartSessionState> _startSessionState = BehaviorSubject<StartSessionState>();
 
-  BehaviorSubject<SftpUploadingState> _sftpUploadingState =
-      BehaviorSubject<SftpUploadingState>();
+  BehaviorSubject<SftpUploadingState> _sftpUploadingState = BehaviorSubject<SftpUploadingState>();
 
   Observable<BtStates> get btStateStream => _btState.stream;
 
@@ -253,40 +202,31 @@ class SystemStateManager extends ManagerBase {
 
   Observable<DeviceStates> get deviceCommStateStream => _deviceCommState.stream;
 
-  Observable<DeviceErrorStates> get deviceErrorStateStream =>
-      _deviceErrorState.stream;
+  Observable<DeviceErrorStates> get deviceErrorStateStream => _deviceErrorState.stream;
 
-  Observable<SessionErrorState> get sessionErrorStateStream =>
-      _sessionErrorState.stream;
+  Observable<SessionErrorState> get sessionErrorStateStream => _sessionErrorState.stream;
 
   Observable<ServerStates> get serverCommStateStream => _serverCommState.stream;
 
   Observable<TestStates> get testStateStream => _testState.stream;
 
-  Observable<DataTransferState> get dataTransferStateStream =>
-      _dataTransferState.stream;
+  Observable<DataTransferState> get dataTransferStateStream => _dataTransferState.stream;
 
   Observable<TestDataAmountState> get testDataAmountState => _testDataAmountState.stream;
 
   Observable<AppModes> get appModeStream => _appMode.stream;
 
-  Observable<FirmwareUpgradeStates> get firmwareStateStream =>
-      _firmwareState.stream;
+  Observable<FirmwareUpgradeState> get firmwareStateStream => _firmwareState.stream;
 
-  Observable<DispatcherStates> get dispatcherStateStream =>
-      _dispatcherState.stream;
+  Observable<DispatcherStates> get dispatcherStateStream => _dispatcherState.stream;
 
-  Observable<ConnectivityResult> get inetConnectionStateStream =>
-      _inetConnectionState.stream;
+  Observable<ConnectivityResult> get inetConnectionStateStream => _inetConnectionState.stream;
 
-  Observable<StateChangeActions> get stateChangeStream =>
-      _stateChangeSubject.stream;
+  Observable<StateChangeActions> get stateChangeStream => _stateChangeSubject.stream;
 
-  Observable<StartSessionState> get startSessionStateStream =>
-      _startSessionState.stream;
+  Observable<StartSessionState> get startSessionStateStream => _startSessionState.stream;
 
-  Observable<SftpUploadingState> get sftpUploadingStateStream =>
-      _sftpUploadingState.stream;
+  Observable<SftpUploadingState> get sftpUploadingStateStream => _sftpUploadingState.stream;
 
   bool _isScanCycleEnabled = true;
 
@@ -294,11 +234,8 @@ class SystemStateManager extends ManagerBase {
   String _sessionErrors = "";
 
   void _initInternetConnectivity() {
-    _connectivity
-        .checkConnectivity()
-        .then((res) => _inetConnectionState.sink.add(res));
-    _connectivity.onConnectivityChanged
-        .listen((result) => _inetConnectionState.sink.add(result));
+    _connectivity.checkConnectivity().then((res) => _inetConnectionState.sink.add(res));
+    _connectivity.onConnectivityChanged.listen((result) => _inetConnectionState.sink.add(result));
   }
 
   //
@@ -306,8 +243,7 @@ class SystemStateManager extends ManagerBase {
   // normally, not restored after started test
   //
   _initPersistentState() {
-    if (testState != TestStates.INTERRUPTED &&
-        testState != TestStates.STOPPED) {
+    if (testState != TestStates.INTERRUPTED && testState != TestStates.STOPPED) {
       PrefsProvider.resetPersistentState();
     }
   }
@@ -319,8 +255,7 @@ class SystemStateManager extends ManagerBase {
   _initDependentStates() {
     // set proper TestState when device communication state has changed
     deviceCommStateStream
-        .where(
-            (_) => isTestActive && deviceCommState == DeviceStates.DISCONNECTED)
+        .where((_) => isTestActive && deviceCommState == DeviceStates.DISCONNECTED)
         .listen((_) => setTestState(TestStates.INTERRUPTED));
   }
 
@@ -343,7 +278,7 @@ class SystemStateManager extends ManagerBase {
     setTestDataAmountState(TestDataAmountState.MINIMUM_NOT_PASSED);
     setDeviceErrorState(DeviceErrorStates.UNKNOWN);
     setServerCommState(ServerStates.DISCONNECTED);
-    setFirmwareState(FirmwareUpgradeStates.UNKNOWN);
+    setFirmwareState(FirmwareUpgradeState.UNKNOWN);
     setDispatcherState(DispatcherStates.DISCONNECTED);
     setStartSessionState(StartSessionState.UNCONFIRMED);
     setSftpUploadingState(SftpUploadingState.NOT_STARTED);
@@ -352,8 +287,7 @@ class SystemStateManager extends ManagerBase {
 
   void _initTestState() {
     TestStates currentTestState;
-    if (PrefsProvider.getTestStarted() &&
-        PrefsProvider.getTestStoppedByUser()) {
+    if (PrefsProvider.getTestStarted() && PrefsProvider.getTestStoppedByUser()) {
       currentTestState = TestStates.STOPPED;
     } else if (PrefsProvider.getTestStarted()) {
       currentTestState = TestStates.INTERRUPTED;
@@ -445,17 +379,16 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
-  void setFirmwareState(FirmwareUpgradeStates state) {
+  void setFirmwareState(FirmwareUpgradeState state) {
     if (state != _firmwareState.value) {
-      Log.info(TAG, "setFirmwareState: ${getFirmwareStateName(state.index)}");
+      Log.info(TAG, "setFirmwareState: ${state.toString().toUpperCase()}");
       _firmwareState.sink.add(state);
     }
   }
 
   void setDispatcherState(DispatcherStates state) {
     if (state != _dispatcherState.value) {
-      Log.info(
-          TAG, "setDispatcherState: ${getDispatcherStateName(state.index)}");
+      Log.info(TAG, "setDispatcherState: ${getDispatcherStateName(state.index)}");
       _dispatcherState.sink.add(state);
     }
   }
@@ -500,7 +433,7 @@ class SystemStateManager extends ManagerBase {
 
   AppModes get appMode => _appMode.value;
 
-  FirmwareUpgradeStates get firmwareState => _firmwareState.value;
+  FirmwareUpgradeState get firmwareState => _firmwareState.value;
 
   DispatcherStates get dispatcherState => _dispatcherState.value;
 
@@ -511,15 +444,12 @@ class SystemStateManager extends ManagerBase {
   bool get isBTEnabled => btState == BtStates.ENABLED;
 
   bool get isConnectionToDevice =>
-      deviceCommState == DeviceStates.CONNECTED ||
-      deviceCommState == DeviceStates.CONNECTING;
+      deviceCommState == DeviceStates.CONNECTED || deviceCommState == DeviceStates.CONNECTING;
 
   bool get isConnectionToServer =>
-      serverCommState == ServerStates.CONNECTED ||
-      serverCommState == ServerStates.CONNECTING;
+      serverCommState == ServerStates.CONNECTED || serverCommState == ServerStates.CONNECTING;
 
-  bool get isTestActive =>
-      testState != TestStates.NOT_STARTED && testState != TestStates.ENDED;
+  bool get isTestActive => testState != TestStates.NOT_STARTED && testState != TestStates.ENDED;
 
   @override
   void dispose() {
@@ -543,8 +473,7 @@ class SystemStateManager extends ManagerBase {
   }
 
   Future<bool> get deviceHasErrors {
-    if (PrefsProvider.getIgnoreDeviceErrors() ||
-        bleScanResult == ScanResultStates.NOT_LOCATED)
+    if (PrefsProvider.getIgnoreDeviceErrors() || bleScanResult == ScanResultStates.NOT_LOCATED)
       return Future.value(false);
     return Observable.combineLatest2<DeviceStates, DeviceErrorStates, Tuple2>(
             deviceCommStateStream,
@@ -552,14 +481,12 @@ class SystemStateManager extends ManagerBase {
             (DeviceStates deviceState, DeviceErrorStates errorState) =>
                 Tuple2(deviceState, errorState))
         .firstWhere((Tuple2 values) =>
-            values.item1 == DeviceStates.CONNECTED &&
-            values.item2 != DeviceErrorStates.UNKNOWN)
+            values.item1 == DeviceStates.CONNECTED && values.item2 != DeviceErrorStates.UNKNOWN)
         .then((Tuple2 values) => values.item2 != DeviceErrorStates.NO_ERROR);
   }
 
   Future<bool> get sessionHasErrors {
-    if (bleScanResult == ScanResultStates.NOT_LOCATED)
-      return Future.value(false);
+    if (bleScanResult == ScanResultStates.NOT_LOCATED) return Future.value(false);
     return sessionErrorStateStream
         .firstWhere((SessionErrorState st) => st != SessionErrorState.UNKNOWN)
         .then((SessionErrorState state) => state != SessionErrorState.NO_ERROR);

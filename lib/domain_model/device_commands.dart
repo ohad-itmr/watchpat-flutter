@@ -66,18 +66,15 @@ class DeviceCommands {
   static const int SESSION_START_USE_TYPE_PRODUCTION = 0x04;
   static const int SESSION_START_USE_TYPE_DEVELOPER = 0x08;
 
-  static const int ERROR_BATTERY_LOW =
-      0x11; // Low battery detected during sleep test
+  static const int ERROR_BATTERY_LOW = 0x11; // Low battery detected during sleep test
   static const int ERROR_BATTERY_RECOVERED = 0x12; // Battery recovered
   static const int ERROR_SBP_MISSING =
       0x14; // SBP is disconnected during SBP type recognition. Input voltage is 0
   static const int ERROR_NO_PULSE_SIGNAL =
       0x15; // No RED and/or IR and PAT/or signal. May be finger is not in probe
-  static const int ERROR_DATA_WRITE_FAILED =
-      0x17; // Error writing data to flash
+  static const int ERROR_DATA_WRITE_FAILED = 0x17; // Error writing data to flash
   static const int ERROR_BATTERY_VOLTAGE_HIGH = 0x18;
-  static const int ERROR_BATTERY_HIGH_DEPLETION =
-      0x19; // Battery voltage drops too fast
+  static const int ERROR_BATTERY_HIGH_DEPLETION = 0x19; // Battery voltage drops too fast
   static const int ERROR_SBP_STOPS_TRANSMIT_DATA = 0x1B;
   static const int ERROR_SBP_INTERMITTENT_CONNECTION = 0x1C;
   static const int ERROR_SBP_TRANSMIT_DATA_RECOVERED = 0x1D;
@@ -114,6 +111,8 @@ class DeviceCommands {
 
   static const int TECH_CMD_TIMEOUT = 3000;
 
+  static const String FW_UPGRADE_CMD_NAME = "FWUpgradeRequest";
+
   static int getPacketIdentifier() {
     final int currentPacketId = PrefsProvider.loadPacketId();
     final int newPacketId = currentPacketId + 1;
@@ -126,10 +125,8 @@ class DeviceCommands {
   }
 
   static CommandTask getAckCmd(int reqOpcode, int status, int packetID) {
-    AckCommandPacket cmdPacket =
-        new AckCommandPacket(reqOpcode, status, packetID);
-    return new CommandTask(
-        "Ack", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    AckCommandPacket cmdPacket = new AckCommandPacket(reqOpcode, status, packetID);
+    return new CommandTask("Ack", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getStartSessionCmd(
@@ -140,171 +137,134 @@ class DeviceCommands {
     final int packetID = getPacketIdentifier();
     SessionStartCommandPacket cmdPacket =
         new SessionStartCommandPacket(mobileID, useType, swVersion, packetID);
-    return new CommandTask(
-        "StartSession", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    return new CommandTask("StartSession", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getStartAcquisitionCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_START_ACQUISITION, 0, packetID, 0);
-    return new CommandTask(
-        "StartAcquisition", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_START_ACQUISITION, 0, packetID, 0);
+    return new CommandTask("StartAcquisition", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getStopAcquisitionCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_STOP_ACQUISITION, 0, packetID, 0);
-    return new CommandTask(
-        "StopAcquisition", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_STOP_ACQUISITION, 0, packetID, 0);
+    return new CommandTask("StopAcquisition", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getConfigCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_CONFIG, 0, packetID, 0);
-    return new CommandTask("ConfigurationRequest", packetID, cmdPacket.opCode,
-        cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_CONFIG, 0, packetID, 0);
+    return new CommandTask("ConfigurationRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getSendStoredDataCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_SEND_STORED_DATA, 0, packetID, 0);
-    return new CommandTask(
-        "SendStoredData", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_SEND_STORED_DATA, 0, packetID, 0);
+    return new CommandTask("SendStoredData", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getResetDeviceCmd(final int flag) {
     final int packetID = getPacketIdentifier();
     ResetCommandPacket cmdPacket = new ResetCommandPacket(flag, packetID);
-    return new CommandTask(
-        "ResetDevice", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    return new CommandTask("ResetDevice", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getSetLEDsCmd(final int led) {
     final int packetID = getPacketIdentifier();
     SetLEDsCommandPacket cmdPacket = new SetLEDsCommandPacket(led, packetID);
-    return new CommandTask(
-        "SetLEDs", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    return new CommandTask("SetLEDs", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getSetDeviceSerialCmd(final int serial) {
     final int packetID = getPacketIdentifier();
-    SetDeviceSerialCommandPacket cmdPacket =
-        new SetDeviceSerialCommandPacket(serial, packetID);
-    return new CommandTask(
-        "SetDeviceSerial", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    SetDeviceSerialCommandPacket cmdPacket = new SetDeviceSerialCommandPacket(serial, packetID);
+    return new CommandTask("SetDeviceSerial", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   // Parameters file
-  static CommandTask getGetParametersFileCmd(
-      final int offset, final int length) {
+  static CommandTask getGetParametersFileCmd(final int offset, final int length) {
     final int packetID = getPacketIdentifier();
-    GetParametersFilePacket cmdPacket =
-        new GetParametersFilePacket(packetID, offset, length);
-    return new CommandTask(
-        "GetDeviceParamFile", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    GetParametersFilePacket cmdPacket = new GetParametersFilePacket(packetID, offset, length);
+    return new CommandTask("GetDeviceParamFile", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
-  static CommandTask getSetParametersFileCmd(
-      final List<int> chunk, final int offset) {
+  static CommandTask getSetParametersFileCmd(final List<int> chunk, final int offset) {
     final int packetID = getPacketIdentifier();
-    SetParametersFilePacket cmdPacket =
-        new SetParametersFilePacket(packetID, chunk, offset);
-    return new CommandTask(
-        "SetDeviceParamFile", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    SetParametersFilePacket cmdPacket = new SetParametersFilePacket(packetID, chunk, offset);
+    return new CommandTask("SetDeviceParamFile", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   // Log file
   static CommandTask getGetLogFileCmd(final int offset, final int length) {
     final int packetID = getPacketIdentifier();
     GetLogFilePacket cmdPacket = new GetLogFilePacket(packetID, offset, length);
-    return new CommandTask(
-        "GetDeviceLogFile", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    return new CommandTask("GetDeviceLogFile", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   // AFE registers
   static CommandTask getGetAFERegistersCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_GET_AFE_REGISTERS, 0, packetID, 0);
-    return new CommandTask(
-        "GetAFERegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_GET_AFE_REGISTERS, 0, packetID, 0);
+    return new CommandTask("GetAFERegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getSetAFERegistersCmd(final List<int> regData) {
     final int packetID = getPacketIdentifier();
-    SetAFERegistersPacket cmdPacket =
-        new SetAFERegistersPacket(packetID, regData);
-    return new CommandTask(
-        "SetAFERegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    SetAFERegistersPacket cmdPacket = new SetAFERegistersPacket(packetID, regData);
+    return new CommandTask("SetAFERegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   // ACC registers
   static CommandTask getGetACCRegistersCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_GET_ACTIGRAPH_REGISTERS, 0, packetID, 0);
-    return new CommandTask(
-        "GetACCRegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_GET_ACTIGRAPH_REGISTERS, 0, packetID, 0);
+    return new CommandTask("GetACCRegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getSetACCRegistersCmd(final List<int> regData) {
     final int packetID = getPacketIdentifier();
-    SetACCRegistersPacket cmdPacket =
-        new SetACCRegistersPacket(packetID, regData);
-    return new CommandTask(
-        "SetACCRegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    SetACCRegistersPacket cmdPacket = new SetACCRegistersPacket(packetID, regData);
+    return new CommandTask("SetACCRegisters", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   // EEPROM
   static CommandTask getGetEEPROMCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_GET_UPAT_EEPROM, 0, packetID, 0);
-    return new CommandTask(
-        "GetEEPROM", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_GET_UPAT_EEPROM, 0, packetID, 0);
+    return new CommandTask("GetEEPROM", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getSetEEPROMCmd(final List<int> regData) {
     final int packetID = getPacketIdentifier();
     SetEEPROMPacket cmdPacket = new SetEEPROMPacket(packetID, regData);
-    return new CommandTask(
-        "SetEEPROM", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    return new CommandTask("SetEEPROM", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getGetTechnicalStatusCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        new CommandPacket(CMD_OPCODE_GET_TECHNICAL_STATUS, 0, packetID, 0);
-    return new CommandTask("TechnicalStatusRequest", packetID, cmdPacket.opCode,
-        cmdPacket.prepare());
+    CommandPacket cmdPacket = new CommandPacket(CMD_OPCODE_GET_TECHNICAL_STATUS, 0, packetID, 0);
+    return new CommandTask(
+        "TechnicalStatusRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getBitRequestCmd(final int bitOper) {
     final int packetID = getPacketIdentifier();
     BitReqPacket cmdPacket = new BitReqPacket(bitOper, packetID);
-    return new CommandTask(
-        "BITRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    return new CommandTask("BITRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getFWUpgradeRequestCmd(
       final int offset, final int length, final List<int> data) {
     final int packetID = getPacketIdentifier();
-    FWUpgradeRequestPacket cmdPacket =
-        new FWUpgradeRequestPacket(offset, length, data, packetID);
-    return new CommandTask(
-        "FWUpgradeRequest", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    FWUpgradeRequestPacket cmdPacket = new FWUpgradeRequestPacket(offset, length, data, packetID);
+    return new CommandTask(FW_UPGRADE_CMD_NAME, packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   static CommandTask getIsDevicePairedCmd() {
     final int packetID = getPacketIdentifier();
-    CommandPacket cmdPacket =
-        CommandPacket(CMD_OPCODE_IS_DEVICE_PAIRED, 0, packetID, 0);
-    return CommandTask(
-        "IsDevicePaired", packetID, cmdPacket.opCode, cmdPacket.prepare());
+    CommandPacket cmdPacket = CommandPacket(CMD_OPCODE_IS_DEVICE_PAIRED, 0, packetID, 0);
+    return CommandTask("IsDevicePaired", packetID, cmdPacket.opCode, cmdPacket.prepare());
   }
 
   //
@@ -318,5 +278,4 @@ class DeviceCommands {
     bytes.forEach((byte) => result = result + byte.toRadixString(16));
     return result;
   }
-
 }

@@ -26,7 +26,7 @@ class FirmwareUpgrader extends ManagerBase {
   List<int> _upgradeData;
   int _upgradeDataOffset;
   int _upgradeDataChunkSize;
-  int _retransmissionRetries = 0;
+  int _retransmissionRetries = 3;
   bool _isUpgradeDone;
 
   RestartableTimer _timeoutTimer;
@@ -37,8 +37,7 @@ class FirmwareUpgrader extends ManagerBase {
   Future<bool> isDeviceFirmwareVersionUpToDate() async {
     final DeviceConfigPayload config = sl<DeviceConfigManager>().deviceConfig;
     if (config == null) {
-      Log.shout(TAG,
-          "Configuration receive failed, FW may not be checked or upgraded");
+      Log.shout(TAG, "Configuration receive failed, FW may not be checked or upgraded");
       return true;
     }
 
@@ -47,19 +46,17 @@ class FirmwareUpgrader extends ManagerBase {
       Log.shout(TAG, "fw upgrade file loading error");
       return true; // current fw version is up to date because there is no reference for comparison
     }
-    return (config.fwVersion.compareTo(_upgradeFileFWVersion) !=
-        CompareResults.VERSION_HIGHER);
+    return (config.fwVersion.compareTo(_upgradeFileFWVersion) != CompareResults.VERSION_HIGHER);
   }
 
   _startTimer() {
-    _timeoutTimer = RestartableTimer(Duration(seconds: 10), () {
+    _timeoutTimer = RestartableTimer(Duration(seconds: 6), () {
       if (_retransmissionRetries > 0) {
         _retransmissionRetries--;
         _timeoutTimer.reset();
         _firmwareUpgrade();
       } else {
-        sl<SystemStateManager>()
-            .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+        sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UPGRADE_FAILED);
       }
       _retransmissionRetries = 3;
     });
@@ -68,26 +65,24 @@ class FirmwareUpgrader extends ManagerBase {
   _firmwareUpgrade() {
     try {
       List<int> dataChunkToSend = _upgradeData
-          .getRange(
-              _upgradeDataOffset, _upgradeDataOffset + _upgradeDataChunkSize)
+          .getRange(_upgradeDataOffset, _upgradeDataOffset + _upgradeDataChunkSize)
           .toList();
-      sl<CommandTaskerManager>().sendDirectCommand(
-          DeviceCommands.getFWUpgradeRequestCmd(
-              _upgradeDataOffset, _upgradeDataChunkSize, dataChunkToSend));
+      sl<CommandTaskerManager>().sendDirectCommand(DeviceCommands.getFWUpgradeRequestCmd(
+          _upgradeDataOffset, _upgradeDataChunkSize, dataChunkToSend));
     } catch (e) {
-      sl<SystemStateManager>()
-          .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+      sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UPGRADE_FAILED);
       Log.shout(TAG, "Firmware upgrade failed: " + e.toString());
     }
     Log.info(TAG, "Firmware upgrade chunk sent to write");
   }
 
   void responseReceived() {
+    _retransmissionRetries = 3;
     if (!_isUpgradeDone) {
       _timeoutTimer.reset();
       _upgradeDataOffset += _upgradeDataChunkSize;
 
-      Log.info(TAG, "responseReceived. reporting offset: $_upgradeDataOffset");
+      Log.info(TAG, "Upgrade response received, reporting offset: $_upgradeDataOffset");
       _reportProgress(_upgradeDataOffset);
 
       if (_upgradeDataOffset + FW_UPGRADE_DATA_CHUNK < _upgradeData.length) {
@@ -102,12 +97,10 @@ class FirmwareUpgrader extends ManagerBase {
       _reportProgress(_upgradeData.length);
       Log.info(TAG, "Device firmware upgrade finished, resetting main device");
       _timeoutTimer.cancel();
-      sl<SystemStateManager>()
-          .setFirmwareState(FirmwareUpgradeStates.UP_TO_DATE);
+      sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UP_TO_DATE);
       sl<CommandTaskerManager>().addCommandWithNoCb(
-          DeviceCommands.getResetDeviceCmd(
-              ServiceScreenManager.RESET_TYPE_SHUT_AND_RESET));
-      PrefsProvider.initDeviceName();
+          DeviceCommands.getResetDeviceCmd(ServiceScreenManager.RESET_TYPE_SHUT_AND_RESET));
+      PrefsProvider.clearDeviceName();
     }
   }
 
@@ -119,12 +112,10 @@ class FirmwareUpgrader extends ManagerBase {
   void upgradeDeviceFirmwareFromResources() async {
     Log.info(TAG, "upgrading device fw from resources");
     if (_upgradeData == null) {
-      Log.warning(
-          TAG, "upgradeData not loaded. trying to load from resources...");
+      Log.warning(TAG, "upgradeData not loaded. trying to load from resources...");
       final bool loaded = await _loadFWUpgradeFileFromResource();
       if (!loaded) {
-        sl<SystemStateManager>()
-            .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+        sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UPGRADE_FAILED);
         return;
       }
     }
@@ -151,11 +142,8 @@ class FirmwareUpgrader extends ManagerBase {
     final int compilation = ConvertFormats.twoBytesToInt(
         byte1: _upgradeData[OFST_FILE_FW_COMPILATION_NUMBER],
         byte2: _upgradeData[OFST_FILE_FW_COMPILATION_NUMBER + 1]);
-    _upgradeFileFWVersion = new Version(
-        _upgradeData[OFST_FILE_FW_VERSION_MAJOR],
-        _upgradeData[OFST_FILE_FW_VERSION_MINOR],
-        compilation,
-        "UpgradeFileVersion");
+    _upgradeFileFWVersion = new Version(_upgradeData[OFST_FILE_FW_VERSION_MAJOR],
+        _upgradeData[OFST_FILE_FW_VERSION_MINOR], compilation, "UpgradeFileVersion");
   }
 
   void upgradeDeviceFirmwareFromWatchPATDir() async {
@@ -163,8 +151,7 @@ class FirmwareUpgrader extends ManagerBase {
 
     final bool fileExists = await _loadFWUpgradeFileFromWatchPATDir();
     if (!fileExists) {
-      sl<SystemStateManager>()
-          .setFirmwareState(FirmwareUpgradeStates.UPDATE_FAILED);
+      sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UPGRADE_FAILED);
       return;
     }
     _startFWUpgrade();
@@ -181,9 +168,8 @@ class FirmwareUpgrader extends ManagerBase {
   }
 
   void _startFWUpgrade() {
-    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeStates.UPGRADING);
-    Log.info(TAG,
-        "starting firmware upgrade (upgrade file size: ${_upgradeData.length})");
+    sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UPGRADING);
+    Log.info(TAG, "starting firmware upgrade (upgrade file size: ${_upgradeData.length})");
     _upgradeDataOffset = 0;
     _upgradeDataChunkSize = FW_UPGRADE_FIRST_DATA_CHUNK;
     _isUpgradeDone = false;

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/prefs_service.dart';
 import 'package:my_pat/services/services.dart';
@@ -33,7 +34,9 @@ class TimeUtils {
   }
 
   static String getFullDateStringFromTimeStamp(DateTime timeStamp) {
-    return formatDate(timeStamp, [dd, '-', MM, '-', yyyy, '_', HH, ':', mm, ':', ss]);
+//    return formatDate(timeStamp, [dd, '/', mm, '/', yy, '_', H, ':', mm, ':', ss]);
+    final String pattern = "yyyy.MM.dd_HH:mm:ss";
+    return DateFormat(pattern).format(timeStamp);
   }
 
   static int getTimeStamp() {

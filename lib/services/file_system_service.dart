@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:my_pat/utils/time_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:my_pat/config/default_settings.dart';
 
@@ -12,9 +13,10 @@ import 'package:my_pat/domain_model/response_model.dart';
 class FileSystemService {
   static const String TAG = 'FileSystemService';
 
+  String _logFileName;
+
   final String localDataFileName = DefaultSettings.dataFileName;
   final String logInputFileName = DefaultSettings.logInputFileName;
-  final String logMainFileName = DefaultSettings.logMainFileName;
   final String logOutputFileName = DefaultSettings.logOutputFileName;
   final String parametersFileName = DefaultSettings.parametersFileName;
   final String resourceParameterFileName = DefaultSettings.resourceParametersFileName;
@@ -43,6 +45,24 @@ class FileSystemService {
   Future<File> get logMainFile async {
     final path = await localPath;
     return File('$path/$logMainFileName');
+  }
+
+  String get logMainFileName {
+    if (_logFileName == null) {
+      _logFileName =
+          '${DefaultSettings.logMainFileName}_${TimeUtils.getFullDateStringFromTimeStamp(DateTime.now())}.txt';
+    }
+    return _logFileName;
+  }
+
+  Future<void> createMainLogFile() async {
+    try {
+      File mainLogFile = await logMainFile;
+      await mainLogFile.create();
+      Log.info(TAG, 'MAIN_LOG_FILE CREATED');
+    } catch (e) {
+      Log.shout(TAG, "Failed to create main log file, ${e.toString()}");
+    }
   }
 
   Future<File> get logInputFile async {
@@ -165,14 +185,15 @@ class FileSystemService {
       try {
         final int spaceToAllocate = GlobalSettings.minStorageSpaceMB;
         final int freeSpace = await SystemStateManager.platform.invokeMethod('getFreeSpace');
+        Log.info(TAG,
+            'Checking available free space, required: $spaceToAllocate MB, have: $freeSpace MB');
         if (freeSpace > spaceToAllocate) {
-          Log.info(TAG, 'Free storage space is enough, allocating');
           RandomAccessFile file = await localFile.open(mode: FileMode.write);
           file.truncateSync(spaceToAllocate);
           file.closeSync();
           return Response(success: true);
         } else {
-          Log.shout(TAG, "Not enough free space on the phone, required $spaceToAllocate, have $freeSpace");
+          Log.shout(TAG, "Not enough free space on the phone");
           return Response(success: false, error: "Not enough free space on the phone");
         }
       } catch (e) {
@@ -187,12 +208,10 @@ class FileSystemService {
   Future<Response> init() async {
     TestStates testState = sl<SystemStateManager>().testState;
     try {
-      // create new log files in case of first app launch
+      await createMainLogFile();
+      // create new data files in case of first app launch
       if (testState != TestStates.INTERRUPTED) {
         Log.info(TAG, 'Attempt to prepare initial files...');
-        File mainLogFile = await logMainFile;
-        await mainLogFile.create();
-        Log.info(TAG, 'MAIN_LOG_FILE CREATED');
         File localFile = await localDataFile;
         await localFile.create();
         Log.info(TAG, 'LOCAL_DATA_FILE CREATED');
@@ -204,7 +223,7 @@ class FileSystemService {
         Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
       }
 
-      // delete filed previously received from device
+      // delete files previously received from device
       File paramFile = await watchpatDirParametersFile;
       if (paramFile.existsSync()) paramFile.deleteSync();
       File afeFile = await watchpatDirAFEFile;

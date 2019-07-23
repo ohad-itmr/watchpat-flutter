@@ -1,7 +1,7 @@
 name: my_pat
 description: A new Flutter project.
 
-version: 1.0.0+1
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -55,13 +55,16 @@ dev_dependencies:
     sdk: flutter
   intl_translation: ^0.17.1
 
-  # Generating launcher images
+  ## Generating launcher images
+  ## 1. Install this plugin
 #  flutter_launcher_icons: "^0.7.0"
-
+  ## 2. Incomment this block
 #flutter_icons:
 #  android: false
 #  ios: true
-#  image_path: "assets/logo/itamar_plus_logo_bg.png"
+#  image_path: "assets/logo/itamar_plus_logo_1024.png"
+## 3.Run the following command
+## flutter pub pub run flutter_launcher_icons:main
 
 #dependency_overrides:
 #  image: 2.0.7

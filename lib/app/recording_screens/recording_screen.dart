@@ -38,7 +38,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
   Widget build(BuildContext context) {
     return MainTemplate(
         showBack: false,
-        showMenu: false,
+        showMenu: GlobalSettings.isDebugMode,
         backgroundColor: Color.fromARGB(255, 35, 35, 35),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -59,6 +59,9 @@ class WelcomeActivityManager extends ManagerBase {
   }
 
   Future<void> configureApplication() async {
+
+    // todo testing only
+    await GlobalSettings.replaceSettingsFromXML();
     // Check if external config is enabled
     final bool configEnabled = await sl<DispatcherService>().checkExternalConfig();
     if (configEnabled) {

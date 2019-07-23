@@ -31,6 +31,8 @@ class GlobalSettingsModel {
   static const String TAG_PIN_CODE_LENGTH = "userPinCodeLength";
   static const String TAG_SERVICE_EMAIL_ADDRESS = "supportEmail";
   static const String TAG_DISPATCHER_LINK = "dispatcherLink";
+  static const String TAG_DISPATCHER_LINK_1 = "dispatcherLink1";
+  static const String TAG_DISPATCHER_LINK_2 = "dispatcherLink2";
   static const String TAG_DEBUG_MODE = "debugMode";
 
   int uploadDataChunkMaxSize = INVALID_STATE;

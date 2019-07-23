@@ -28,15 +28,24 @@ class GlobalSettings {
       final File xmlFile = await sl<FileSystemService>().configFile;
       final String source = await xmlFile.readAsString();
       final xml.XmlDocument document = xml.parse(source);
-      document.findAllElements('settings').toList().first.attributes
+      document
+          .findAllElements('settings')
+          .toList()
+          .first
+          .attributes
           .forEach((xml.XmlAttribute node) {
-            if (node.name.toString() == GlobalSettingsModel.TAG_DEBUG_MODE) {
-              _configurationResource[node.name.toString()] = node.value == 'true';
-            } else if (node.name.toString() == GlobalSettingsModel.TAG_MIN_STORAGE_SPACE_MB) {
-              _configurationResource[node.name.toString()] = int.parse(node.value);
-            } else {
-              _configurationResource[node.name.toString()] =  double.parse(node.value);
-            }
+        if (node.name.toString() == GlobalSettingsModel.TAG_DEBUG_MODE) {
+          _configurationResource[node.name.toString()] = node.value == 'true';
+        } else if (node.name.toString() == GlobalSettingsModel.TAG_MIN_STORAGE_SPACE_MB) {
+          _configurationResource[node.name.toString()] = int.parse(node.value);
+        } else if (node.name.toString() == GlobalSettingsModel.TAG_DISPATCHER_LINK_1) {
+          _configurationResource[GlobalSettingsModel.TAG_DISPATCHERS_URLS].clear();
+          _configurationResource[GlobalSettingsModel.TAG_DISPATCHERS_URLS].add(node.value);
+        } else if (node.name.toString() == GlobalSettingsModel.TAG_DISPATCHER_LINK_2) {
+          _configurationResource[GlobalSettingsModel.TAG_DISPATCHERS_URLS].add(node.value);
+        } else {
+          _configurationResource[node.name.toString()] = double.parse(node.value);
+        }
       });
     } catch (e) {
       print("XML configuring error: ${e.toString()}");

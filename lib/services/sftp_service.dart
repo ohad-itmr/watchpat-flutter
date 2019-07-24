@@ -27,7 +27,6 @@ class SftpService {
   BehaviorSubject<SftpConnectionState> sftpConnectionStateStream =
       BehaviorSubject<SftpConnectionState>.seeded(SftpConnectionState.DISCONNECTED);
 
-  // Working variables
   String _sftpFileName;
   String _sftpFilePath;
   File _dataFile;
@@ -195,10 +194,8 @@ class SftpService {
     } while (!_uploadingAvailable);
   }
 
-  Future<void> _uploadDataChunk({
-    @required int uploadingOffset,
-    @required int recordingOffset,
-  }) async {
+  Future<void> _uploadDataChunk(
+      {@required int uploadingOffset, @required int recordingOffset}) async {
     RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
 
     final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
@@ -218,17 +215,11 @@ class SftpService {
         await PrefsProvider.saveTestDataUploadingOffset(uploadingOffset + bytes.length);
         Log.info(TAG,
             "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
-
-//        // todo test sftp offset
-//        SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-//        print("CURRENT UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
-//        print("CURRENT REMOTE FILE SIZE: ${file.size}");
-//        //
-
       }
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
       await Future.delayed(Duration(seconds: 3));
+      _tryToReconnect(error: e.toString());
     }
   }
 

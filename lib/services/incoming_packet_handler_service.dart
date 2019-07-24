@@ -180,7 +180,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           final int prevRemoteIdentifier = PrefsProvider.loadRemotePacketIdentifier();
           if (prevRemoteIdentifier < receivedPacket.identifier) {
-            Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}");
+            Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}, size: ${receivedPacket.size}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
             TimeUtils.packetCounterTick();
             sl<DataWritingService>().writeToLocalFile(receivedPacket.bytes);
@@ -467,7 +467,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     List<int> bytes = new List(2);
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
-    _incomingPacketLength = ConvertFormats.byteArrayToHex([bytes[1], bytes[0]]);
+    _incomingPacketLength = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]);
     print('---------------------------> setPacketSize $_incomingPacketLength');
 
     return _incomingPacketLength >= 0;

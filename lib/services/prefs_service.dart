@@ -10,7 +10,6 @@ class PrefsNames {
   static const String FIRST_TIME_RUN_KEY = DefaultSettings.appName + ".firsttimerun";
   static const String IS_TEST_STARTED = ".isteststarted";
   static const String IS_TEST_COMPLETE = ".is.test.complete";
-  static const String TEST_ELAPSED_TIME = ".testelapsedtime";
   static const String WRITING_KEY = DefaultSettings.appName + ".writing";
   static const String USER_PIN_CODE = DefaultSettings.appName + ".user.pin.code";
   static const String DEVICE_SERIAL_KEY = DefaultSettings.appName + ".deviceserial";
@@ -41,6 +40,7 @@ class PrefsNames {
   static const String DATA_UPLOADING_NOT_FINISHED = "test.data.uploaded";
   static const String IS_TEST_STOPPED_BY_USER = "is.test.stopped";
   static const String PACKET_ID_COUNTER_KEY = "packet.counter.key";
+  static const String TEST_START_TIME_KEY = "test.start.time.key";
 }
 
 class PrefsService {
@@ -82,18 +82,6 @@ class PrefsProvider {
   static void incTestPacketCount() async {
     final int currentCount = PrefsProvider.loadTestPacketCount();
     await PrefsProvider.saveTestPacketCount(currentCount + 1);
-  }
-
-  //
-  // Test elapsed time
-  //
-
-  static Future<void> saveTestElapsedTime(int seconds) async {
-    PrefsService.prefs.setInt(PrefsNames.TEST_ELAPSED_TIME, seconds);
-  }
-
-  static int loadTestElapsedTime() {
-    return PrefsService.prefs.getInt(PrefsNames.TEST_ELAPSED_TIME) ?? 0;
   }
 
   //
@@ -338,5 +326,14 @@ class PrefsProvider {
 
   static int loadDispatcherUrlIndex() {
     return PrefsService.prefs.getInt(PrefsNames.DISPATCHER_URL_INDEX) ?? 0;
+  }
+
+  // Test start time
+  static Future<void> saveTestStartTime(int timestampt) async {
+    return PrefsService.prefs.setInt(PrefsNames.TEST_START_TIME_KEY, timestampt);
+  }
+
+  static int loadTestStartTimeMS() {
+    return PrefsService.prefs.getInt(PrefsNames.TEST_START_TIME_KEY) ?? 0;
   }
 }

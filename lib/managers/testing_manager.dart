@@ -30,11 +30,9 @@ class TestingManager extends ManagerBase {
   Observable<double> get remainingDataProgressStream => _remainingDataProgress.stream;
 
   Timer _elapsedTimer;
-  int _elapsedTimerValue = 0;
-
   int _numberOfSecondsToDownloadAllPackets;
-  int _currentProgress;
   int _maxProgress;
+  int _testStoppedTimeMS;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
@@ -50,21 +48,21 @@ class TestingManager extends ManagerBase {
 
   void startTesting() {
     Log.info(TAG, "### Sending START aquisition command");
+    PrefsProvider.saveTestStartTime(DateTime.now().millisecondsSinceEpoch);
     sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
     _startElapsedTimer();
   }
 
   void _restartTimers() {
     if (_systemStateManager.testState == TestStates.INTERRUPTED) {
-      _elapsedTimerValue = PrefsProvider.loadTestElapsedTime();
       _startElapsedTimer();
     }
   }
 
   void _startElapsedTimer() {
     _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-      _elapsedTimerState.sink.add(++_elapsedTimerValue);
-      PrefsProvider.saveTestElapsedTime(_elapsedTimerValue);
+      final int val = TimeUtils.getTimeFromTestStartSec();
+      _elapsedTimerState.sink.add(val);
       _checkForSessionTimeout();
     });
   }
@@ -76,7 +74,7 @@ class TestingManager extends ManagerBase {
   }
 
   void _checkForSessionTimeout() {
-    if (_elapsedTimerValue > GlobalSettings.sessionTimeoutTimeSec) {
+    if (TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec) {
       Log.info(TAG, "Session timeout triggered. Stopping test.");
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
         stopTesting();
@@ -103,58 +101,34 @@ class TestingManager extends ManagerBase {
   }
 
   void _initDataProgress() {
-    _numberOfSecondsToDownloadAllPackets = TimeUtils.getPacketRealTimeDiffSec();
-    _currentProgress = 0;
-    _maxProgress = _numberOfSecondsToDownloadAllPackets;
+    _testStoppedTimeMS = DateTime.now().millisecondsSinceEpoch;
+    _maxProgress = _getPacketTimeDiffFromStopTest();
     _startDataProgress();
   }
 
   void _startDataProgress() async {
     do {
-      // calculate number of seconds left to download the data
-      _numberOfSecondsToDownloadAllPackets = TimeUtils.getPacketRealTimeDiffSec();
-
-//      // when time is growing then there is no communication with device.
-//      // in this case update timer only and don't touch progress bar
-//      if (_numberOfSecondsToDownloadAllPackets < _maxProgress) {
-//        // time is decreasing, some packets has been transmitted so recalculate progress bar value now
-//        int changeDelta = _maxProgress - _numberOfSecondsToDownloadAllPackets;
-//        updateProgressBar(changeDelta);
-//      } else {
-//        _maxProgress = _numberOfSecondsToDownloadAllPackets;
-//      }
+      _numberOfSecondsToDownloadAllPackets = _getPacketTimeDiffFromStopTest();
       updateProgressBar(0);
       updateProgressTime();
       await Future.delayed(Duration(milliseconds: PROGRESS_BAR_UPDATE_PERIOD));
     } while (sl<SystemStateManager>().testState != TestStates.ENDED);
   }
 
+  int _getPacketTimeDiffFromStopTest() {
+    return (_testStoppedTimeMS - PrefsProvider.loadTestStartTimeMS()) ~/ 1000 -
+        PrefsProvider.loadTestPacketCount();
+  }
+
   void updateProgressBar(int changeDelta) {
-//    if (changeDelta <= 0) return;
-//
-//    double currentProgress = _remainingDataProgress.value * 100;
-//    double currentMax = 100;
-//
-//    // calculate new progress according to value
-//    double newProgress = currentProgress +
-//        ((currentMax - currentProgress) *
-//            changeDelta /
-//            (_maxProgress - _currentProgress));
-//
-//    newProgress =
-//        newProgress.isNaN || newProgress.isInfinite ? 100 : newProgress;
-
-//    print("PROGRESS: ${currentProgress / 100} / ${newProgress / 100}");
-
-    final double newProgress = (_maxProgress - _numberOfSecondsToDownloadAllPackets) / (_maxProgress / 100) / 100;
+    print("PROGRESS: ${(_maxProgress - _numberOfSecondsToDownloadAllPackets)} / $_maxProgress");
+    final double newProgress = (_maxProgress - _numberOfSecondsToDownloadAllPackets) / _maxProgress;
     _remainingDataProgress.sink.add(newProgress);
-
-//    _currentProgress += changeDelta;
   }
 
   void updateProgressTime() {
-    _remainingDataSeconds.sink
-        .add(_numberOfSecondsToDownloadAllPackets > 0 ? _numberOfSecondsToDownloadAllPackets : 0);
+    final int secs = _numberOfSecondsToDownloadAllPackets ~/ 2;
+    _remainingDataSeconds.sink.add(secs > 0 ? secs : 0);
   }
 
   @override

@@ -59,7 +59,11 @@ class TimeUtils {
   }
 
   static int getPacketRealTimeDiffSec() {
-    return PrefsProvider.loadTestElapsedTime() - PrefsProvider.loadTestPacketCount();
+    return getTimeFromTestStartSec() - PrefsProvider.loadTestPacketCount();
+  }
+
+  static int getTimeFromTestStartSec() {
+    return (DateTime.now().millisecondsSinceEpoch - PrefsProvider.loadTestStartTimeMS()) ~/ 1000;
   }
 }
 //

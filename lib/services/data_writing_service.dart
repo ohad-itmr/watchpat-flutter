@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -12,6 +13,9 @@ class DataWritingService {
 
   SystemStateManager _systemState;
   static File _dataFile;
+
+  PublishSubject<List<int>> _data = PublishSubject<List<int>>();
+  Observable<List<int>> get _dataStream => _data.stream;
 
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
@@ -30,18 +34,20 @@ class DataWritingService {
   Future<void> _initializeFileWriting() async {
     Log.info(TAG, "Opening data file for writing");
     _dataFile = await sl<FileSystemService>().localDataFile;
+
+    _dataStream.asyncMap(_writeToLocalFileAsync).listen(null);
   }
 
   void writeToLocalFile(List<int> bytes) {
+    _data.sink.add(List.from(bytes));
+  }
+
+  void _writeToLocalFileAsync(List<int> bytes) async {
     try {
       final int currentOffset = PrefsProvider.loadTestDataRecordingOffset();
-        RandomAccessFile raf = _dataFile.openSync(mode: FileMode.write);
-        raf.setPositionSync(currentOffset);
-        raf.writeFromSync(bytes);
-        raf.close();
-      PrefsProvider.saveTestDataRecordingOffset(currentOffset + bytes.length);
+      await _dataFile.writeAsBytes(bytes, mode: FileMode.append, flush: true);
+      await PrefsProvider.saveTestDataRecordingOffset(currentOffset + bytes.length);
       Log.info(TAG, "Data packet stored to local file");
-      print(_dataFile.readAsBytesSync());
     } catch (e) {
       Log.shout(TAG, "Failed to store data packet to local file $e");
     }

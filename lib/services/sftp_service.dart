@@ -218,6 +218,7 @@ class SftpService {
       }
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
+      sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
       await Future.delayed(Duration(seconds: 3));
       _tryToReconnect(error: e.toString());
     }

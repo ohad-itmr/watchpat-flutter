@@ -188,9 +188,6 @@ class FileSystemService {
         Log.info(TAG,
             'Checking available free space, required: $spaceToAllocate MB, have: $freeSpace MB');
         if (freeSpace > spaceToAllocate) {
-          RandomAccessFile file = await localFile.open(mode: FileMode.write);
-          file.truncateSync(spaceToAllocate);
-          file.closeSync();
           return Response(success: true);
         } else {
           Log.shout(TAG, "Not enough free space on the phone");

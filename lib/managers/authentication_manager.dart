@@ -117,6 +117,7 @@ class AuthenticationManager extends ManagerBase {
       PrefsProvider.saveUserPin(pin);
       config.updatePin(pin);
 
+
       sl<DataWritingService>().writeToLocalFile(config.payloadBytes);
     }
   }

@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
+import 'package:hex/hex.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/log/log.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum PatientAuthState {
@@ -110,6 +116,7 @@ class AuthenticationManager extends ManagerBase {
       DeviceConfigPayload config = sl<DeviceConfigManager>().deviceConfig;
       PrefsProvider.saveUserPin(pin);
       config.updatePin(pin);
+
       sl<DataWritingService>().writeToLocalFile(config.payloadBytes);
     }
   }

@@ -1,4 +1,3 @@
-import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/domain_model/patient_policy_model.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -47,14 +46,5 @@ class UserAuthenticationService {
     PrefsProvider.saveSftpPassword(credentials.password);
     PrefsProvider.saveSftpUsername(credentials.username);
     PrefsProvider.saveSftpPath(credentials.root);
-
-//    Log.info(
-//        TAG,
-//        "SFTP PARAMS \n -------------------- \n"
-//        "HOST: ${credentials.host} \n"
-//        "PORT: ${credentials.port} \n"
-//        "USERNAME: ${credentials.username} \n"
-//        "PASSWORD: ${credentials.password} \n"
-//        "ROOT: ${credentials.root}");
   }
 }

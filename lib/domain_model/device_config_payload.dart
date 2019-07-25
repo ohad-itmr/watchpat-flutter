@@ -1,8 +1,12 @@
-import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:package_info/package_info.dart';
+import 'package:device_info/device_info.dart';
+import 'dart:math';
+
 
 class DeviceConfigPayload {
   static const String TAG = 'DeviceConfigPayload';
@@ -119,8 +123,7 @@ class DeviceConfigPayload {
   Version _deviceFWVersion;
   int _deviceSerial;
 
-  static final DeviceConfigPayload _singleton =
-      new DeviceConfigPayload._internal();
+  static final DeviceConfigPayload _singleton = new DeviceConfigPayload._internal();
 
   factory DeviceConfigPayload() {
     return _singleton;
@@ -153,10 +156,8 @@ class DeviceConfigPayload {
   List<int> get payloadBytes => _configPayloadBytes;
 
   void _setFWVersion(final List<int> bytesConfig) {
-    final int compilation = ConvertFormats.byteArrayToHex([
-      bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1],
-      bytesConfig[OFFSET_FW_COMPILATION_NUMBER]
-    ]);
+    final int compilation = ConvertFormats.byteArrayToHex(
+        [bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1], bytesConfig[OFFSET_FW_COMPILATION_NUMBER]]);
 
     _deviceFWVersion = new Version(
       bytesConfig[OFFSET_FW_VERSION_MAJOR],
@@ -167,34 +168,35 @@ class DeviceConfigPayload {
   }
 
   void _setDeviceSerial(final List<int> bytesConfig) {
-    final List<int> serialBytes = bytesConfig.sublist(
-        OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
+    final List<int> serialBytes =
+        bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
 
 //    _deviceSerial =
 //        ConvertFormats.byteArrayToHex(serialBytes.reversed.toList());
     _deviceSerial = ConvertFormats.fourBytesToInt(serialBytes.toList());
   }
 
-  static void updateSmartPhoneInfo(List<int> bytes) {
+  static void updateSmartPhoneInfo(List<int> bytes) async {
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT] = 0x0F;
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT + 1] = 0xF0;
 
-    // TOTO implement app version logic
-//  final List<String> appVersion = watchPATApp.getVersionName().split("[.]");
-    final List<String> appVersion = ['0', '0', '1'];
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
+    // updating application version
+    final List<String> appVersion = packageInfo.version.split(".");
     bytes[OFFSET_SMARTPHONE_APP_VERSION_MAJOR] = int.parse(appVersion[0]);
     if (appVersion.length > 1) {
       bytes[OFFSET_SMARTPHONE_APP_VERSION_MINOR] = int.parse(appVersion[1]);
     }
     if (appVersion.length > 2) {
-      bytes[OFFSET_SMARTPHONE_APP_COMPILATION_NUMBER] =
-          int.parse(appVersion[2]);
+      bytes[OFFSET_SMARTPHONE_APP_COMPILATION_NUMBER] = int.parse(appVersion[2]);
     }
 
-    // TOTO implement app version logic
-//    final List<String> osVersion = Build.VERSION.RELEASE.split("[.]");
-    final List<String> osVersion = ['0', '0', '1'];
+    // updating ios version
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+
+    final List<String> osVersion = iosInfo.systemVersion.split(".");
     bytes[OFFSET_SMARTPHONE_OS_VERSION_MAJOR] = int.parse(osVersion[0]);
     if (osVersion.length > 1) {
       bytes[OFFSET_SMARTPHONE_OS_VERSION_MINOR] = int.parse(osVersion[1]);
@@ -203,11 +205,10 @@ class DeviceConfigPayload {
       bytes[OFFSET_SMARTPHONE_OS_COMPILATION_NUMBER] = int.parse(osVersion[2]);
     }
 
-    // TOTO implement app version logic
-//    final List<int> phoneModel = Build.MODEL.getBytes();
-//    final List<int> phoneModel = Build.MODEL.getBytes();
-//    final int modelValueSize = Math.min(phoneModel.length, 16);
-//    System.arraycopy(phoneModel, 0, bytes, OFFSET_SMARTPHONE_MODEL, modelValueSize);
+    // updating phone model
+    final List<int> phoneModel = Utf8Encoder().convert(iosInfo.utsname.machine);
+    final int modelValueSize = min(phoneModel.length, 16);
+    bytes.replaceRange(OFFSET_SMARTPHONE_MODEL, OFFSET_SMARTPHONE_MODEL + modelValueSize, phoneModel);
   }
 
   void updatePin(String pinString) {
@@ -231,8 +232,7 @@ class Version {
 
   Version(this._major, this._minor, this._compilation, this._name);
 
-  String get versionString =>
-      '$_major.$_minor${_compilation > 0 ? '.$_compilation' : ''}';
+  String get versionString => '$_major.$_minor${_compilation > 0 ? '.$_compilation' : ''}';
 
   CompareResults compareTo(final Version versionToCmp) {
     Log.info(TAG,

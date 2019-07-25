@@ -41,6 +41,7 @@ class DataWritingService {
         raf.close();
       PrefsProvider.saveTestDataRecordingOffset(currentOffset + bytes.length);
       Log.info(TAG, "Data packet stored to local file");
+      print(_dataFile.readAsBytesSync());
     } catch (e) {
       Log.shout(TAG, "Failed to store data packet to local file $e");
     }

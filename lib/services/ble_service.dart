@@ -107,6 +107,6 @@ class BleService {
       status = 'failure ${e.toString()}';
     }
     Log.info(TAG, "Writing TX characteristic ${HEX.encode(data)}, status: $status");
-    print("Writing TX characteristic $data, status: $status");
+//    print("Writing TX characteristic $data, status: $status");
   }
 }

@@ -273,8 +273,10 @@ class FileSystemService {
       if (logInFile.existsSync()) logInFile.deleteSync();
       File logOutFile = await logInputFile;
       if (logOutFile.existsSync()) logOutFile.deleteSync();
-      File mainLogFile = await logMainFile;
-      if (mainLogFile.existsSync()) mainLogFile.deleteSync();
+
+//      File mainLogFile = await logMainFile;
+//      if (mainLogFile.existsSync()) mainLogFile.deleteSync();
+
       Log.info(TAG, 'FILES CLEARED');
       return Response(success: true);
     } catch (e) {

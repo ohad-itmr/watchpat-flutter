@@ -191,6 +191,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           break;
         case DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM:
+          if (sl<SystemStateManager>().startSessionState == StartSessionState.CONFIRMED) return;
           Log.info(TAG, "### start session confirm received");
           Log.info(TAG, "packet received (START_SESSION_CONFIRM)");
 

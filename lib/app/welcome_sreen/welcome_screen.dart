@@ -32,6 +32,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
+
+    print("FUCCJJJLLAA $state");
+
     _nextIsPressed = false;
     if (welcomeManager.getInitialErrors().length > 0) {
       Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${welcomeManager.getInitialErrors()}");
@@ -60,9 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           imageName: 'welcome.png',
         ),
         bottomBlock: BlockTemplate(
-          type: BlockType.text,
-          title: S.of(context).welcomeTitle,
-          content: [loc.welcomeContent],
+          type: BlockType.text, title: S.of(context).welcomeTitle, content: [loc.welcomeContent],
 //          additionalTextContent: _buildTextWithLink(),
         ),
         buttons: _buildButtonsBlock(),

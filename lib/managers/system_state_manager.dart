@@ -1,10 +1,8 @@
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/services.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/rxdart.dart' as prefix0;
 import 'package:tuple/tuple.dart';
 
 enum BtStates { NONE, NOT_AVAILABLE, BLE_NOT_SUPPORTED, DISABLED, ENABLED }
@@ -485,7 +483,8 @@ class SystemStateManager extends ManagerBase {
   }
 
   Future<bool> get sessionHasErrors {
-    if (bleScanResult == ScanResultStates.NOT_LOCATED) return Future.value(false);
+    if (bleScanResult == ScanResultStates.NOT_LOCATED ||
+        bleScanResult == ScanResultStates.LOCATED_MULTIPLE) return Future.value(false);
     return sessionErrorStateStream
         .firstWhere((SessionErrorState st) => st != SessionErrorState.UNKNOWN)
         .then((SessionErrorState state) => state != SessionErrorState.NO_ERROR);

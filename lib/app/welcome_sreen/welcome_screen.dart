@@ -60,9 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           imageName: 'welcome.png',
         ),
         bottomBlock: BlockTemplate(
-          type: BlockType.text,
-          title: S.of(context).welcomeTitle,
-          content: [loc.welcomeContent],
+          type: BlockType.text, title: S.of(context).welcomeTitle, content: [loc.welcomeContent],
 //          additionalTextContent: _buildTextWithLink(),
         ),
         buttons: _buildButtonsBlock(),

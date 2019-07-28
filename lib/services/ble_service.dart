@@ -31,7 +31,7 @@ class BleService {
   Stream<BluetoothState> get btStateOnChange => _flutterBlue.onStateChanged();
 
   Stream<ScanResult> scanForDevices(int time) {
-    return _flutterBlue.scan(timeout: time != null ? Duration(milliseconds: time) : null);
+    return _flutterBlue.scan(timeout: Duration(milliseconds: time));
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
@@ -68,25 +68,21 @@ class BleService {
     });
   }
 
-  Future setNotification(IncomingPacketHandlerService notificationHandler) async {
+  Future setNotification() async {
     Log.info(TAG, "setNotification");
-
-    if (_charForRead.isNotifying) {
-      await _device.setNotifyValue(_charForRead, false);
-    }
+    await _device.setNotifyValue(_charForRead, false);
     await _device.setNotifyValue(_charForRead, true);
-    _readCharSubscription = _device.onValueChanged(_charForRead).listen((data) {
-      notificationHandler.acceptAndHandleData(data);
-    });
+    _readCharSubscription = _device.onValueChanged(_charForRead).listen(_handleData);
   }
 
-  void clearSubscriptions() {
-    _readCharSubscription.cancel();
+  void _handleData(List<int> data) {
+    sl<IncomingPacketHandlerService>().acceptAndHandleData(data);
   }
 
   void clearDevice() {
     _device = null;
     _readCharSubscription.cancel();
+    _readCharSubscription = null;
   }
 
   Future<void> writeCharacteristic(List<int> data, bool ensureSuccess) async {

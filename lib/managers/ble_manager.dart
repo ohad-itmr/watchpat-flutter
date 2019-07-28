@@ -13,8 +13,6 @@ class BleManager extends ManagerBase {
 
   S lang;
 
-  IncomingPacketHandlerService _incomingPacketHandler;
-
   //#region Scanning
   StreamSubscription _scanSubscription;
   StreamSubscription _deviceStateSubscription;
@@ -26,8 +24,7 @@ class BleManager extends ManagerBase {
   BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
       BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
 
-  Observable<Map<DeviceIdentifier, ScanResult>> get scanResults =>
-      _scanResultsSubject.stream;
+  Observable<Map<DeviceIdentifier, ScanResult>> get scanResults => _scanResultsSubject.stream;
 
   int get scanResultsLength => _scanResultsSubject.value.length;
 
@@ -42,15 +39,13 @@ class BleManager extends ManagerBase {
   BehaviorSubject<BluetoothDeviceState> _deviceStateSubject =
       BehaviorSubject<BluetoothDeviceState>();
 
-  Observable<BluetoothDeviceState> get deviceState =>
-      _deviceStateSubject.stream;
+  Observable<BluetoothDeviceState> get deviceState => _deviceStateSubject.stream;
 
   Timer _testInterruptedTimer;
   bool _scanInProgress = false;
 
   BleManager() {
     lang = sl<S>();
-    _incomingPacketHandler = sl<IncomingPacketHandlerService>();
     _initTasker();
     initializeBT();
   }
@@ -71,8 +66,7 @@ class BleManager extends ManagerBase {
   }
 
   void connect(BluetoothDevice d) {
-    _deviceStateSubscription =
-        sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
+    _deviceStateSubscription = sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
   }
 
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
@@ -87,35 +81,30 @@ class BleManager extends ManagerBase {
 
       Log.info(TAG, "### starting services discovery");
       await sl<BleService>().setServicesAndChars();
-      await sl<BleService>().setNotification(_incomingPacketHandler);
+      await sl<BleService>().setNotification();
 
       if (sysStateManager.testState == TestStates.INTERRUPTED ||
           sysStateManager.testState == TestStates.STOPPED) {
         Log.info(TAG, "### reconnected to device after test started");
         _testInterruptedTimer = Timer(Duration(seconds: 2), () {
           if (sysStateManager.testState != TestStates.RESUMED) {
-            sl<CommandTaskerManager>()
-                .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
+            sl<CommandTaskerManager>().sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
           }
         });
         return;
       }
 
       Log.info(TAG, "Device name: $_deviceAdvName");
-      if (_isFirstConnection ||
-          !_isFirstConnection && _deviceAdvName.endsWith("N")) {
+      if (_isFirstConnection || !_isFirstConnection && _deviceAdvName.endsWith("N")) {
         Log.info(TAG,
             "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device $_deviceAdvName, checking 'paired' flag");
-        sl<CommandTaskerManager>()
-            .sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
+        sl<CommandTaskerManager>().sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
         return;
       }
 
       // start session
       sl<SystemStateManager>().setAppMode(AppModes.USER);
-      sl<SystemStateManager>()
-          .changeState
-          .add(StateChangeActions.APP_MODE_CHANGED);
+      sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
 
       if (_isFirstConnection) {
         sysStateManager.setFirmwareState(FirmwareUpgradeState.UNKNOWN);
@@ -125,7 +114,7 @@ class BleManager extends ManagerBase {
       sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
       disconnection();
       if (!sl<SystemStateManager>().isTestActive) {
-        _incomingPacketHandler.resetPacket();
+        sl<IncomingPacketHandlerService>().resetPacket();
       }
     }
   }
@@ -148,31 +137,29 @@ class BleManager extends ManagerBase {
 
   void _initTasker() {
     sl<SystemStateManager>().stateChangeStream.listen(_systemStateHandler);
-    sl<CommandTaskerManager>().setDelays(BleService.SEND_COMMANDS_DELAY,
-        BleService.SEND_ACK_DELAY, BleService.MAX_COMMAND_TIMEOUT);
+    sl<CommandTaskerManager>().setDelays(
+        BleService.SEND_COMMANDS_DELAY, BleService.SEND_ACK_DELAY, BleService.MAX_COMMAND_TIMEOUT);
     sl<CommandTaskerManager>().ackOpCode = DeviceCommands.CMD_OPCODE_ACK;
     sl<CommandTaskerManager>().sendCmdCallback = _sendCallback;
     sl<CommandTaskerManager>().timeoutCallback = _sendTimeoutCallback;
   }
 
   bool _preScanChecks() {
-    Log.info(TAG, "performing pre-scan checks");
+    print("performing pre-scan checks");
 
     if (!sl<SystemStateManager>().isBTEnabled) {
       Log.warning(TAG, "[preScanChecks] BT disabled, LE scan canceled");
       return false;
     }
 
-    if (sl<SystemStateManager>().bleScanResult ==
-            ScanResultStates.LOCATED_SINGLE &&
+    if (sl<SystemStateManager>().bleScanResult == ScanResultStates.LOCATED_SINGLE &&
         sl<SystemStateManager>().testState != TestStates.INTERRUPTED) {
       Log.warning(TAG, "[preScanChecks] device already located");
       return false;
     }
 
     if (sl<SystemStateManager>().isConnectionToDevice) {
-      Log.warning(
-          TAG, "[preScanChecks] connection to device already in progress");
+      Log.warning(TAG, "[preScanChecks] connection to device already in progress");
       return false;
     }
 
@@ -203,8 +190,7 @@ class BleManager extends ManagerBase {
     disconnection();
     if (sl<SystemStateManager>().isBTEnabled) {
       if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(
-            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }
     } else {
       Log.warning(TAG, "BT not enabled scan cycle not initiated");
@@ -227,8 +213,7 @@ class BleManager extends ManagerBase {
     //todo add real SW id
     Log.info(TAG, "### sending start session ");
     sl<CommandTaskerManager>().addCommandWithNoCb(
-        DeviceCommands.getStartSessionCmd(
-            808598064, useType, [55, 46, 49, 46, 50]));
+        DeviceCommands.getStartSessionCmd(808598064, useType, [55, 46, 49, 46, 50]));
   }
 
   void forgetDeviceAndRestartScan() {
@@ -238,13 +223,12 @@ class BleManager extends ManagerBase {
     startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
   }
 
-  void startScan(
-      {int time, @required bool connectToFirstDevice, String deviceName}) {
+  void startScan({int time, @required bool connectToFirstDevice, String deviceName}) {
     if (!_preScanChecks()) {
       return;
     }
 
-    Log.info(TAG, '## START SCAN');
+    print('## START SCAN');
     _scanInProgress = true;
     _isFirstConnection = PrefsProvider.loadDeviceName() == null;
 
@@ -266,20 +250,18 @@ class BleManager extends ManagerBase {
         );
   }
 
-  void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice,
-      {String deviceName}) {
+  void _scanResultHandler(ScanResult scanResult, bool connectToFirstDevice, {String deviceName}) {
     final String localName = scanResult.advertisementData.localName;
     if (deviceName != null) {
       // todo add implementation
 
     } else {
       if (localName.contains('ITAMAR')) {
-        Log.info(TAG,
-            ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
+        Log.info(
+            TAG, ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
 
         if ((_isFirstConnection && localName.endsWith("N")) ||
-            (!_isFirstConnection &&
-                localName.contains(PrefsProvider.loadDeviceName()))) {
+            (!_isFirstConnection && localName.contains(PrefsProvider.loadDeviceName()))) {
           Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
           var currentResults = _scanResultsSubject.value;
           currentResults[scanResult.device.id] = scanResult;
@@ -295,7 +277,7 @@ class BleManager extends ManagerBase {
   }
 
   void stopScan() {
-    Log.info(TAG, '## STOP SCAN');
+    print('## STOP SCAN');
     _scanInProgress = false;
     if (_scanSubscription != null) {
       _scanSubscription.cancel();
@@ -307,37 +289,30 @@ class BleManager extends ManagerBase {
 
   void _postScan() async {
     sl<SystemStateManager>().setBleScanState(ScanStates.COMPLETE);
-    final Map<DeviceIdentifier, ScanResult> _discoveredDevices =
-        _scanResultsSubject.value;
+    final Map<DeviceIdentifier, ScanResult> _discoveredDevices = _scanResultsSubject.value;
     Log.info(TAG, 'Discovered ${_discoveredDevices.length} devices');
     if (_discoveredDevices.isEmpty) {
       Log.info(TAG, "no device discovered on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
 
       if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(
-            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }
     } else if (_discoveredDevices.length == 1) {
       Log.info(TAG, "discovered a SINGLE device on scan");
-      sl<SystemStateManager>()
-          .setBleScanResult(ScanResultStates.LOCATED_SINGLE);
+      sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_SINGLE);
 
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
 
-      final BluetoothDevice device =
-          _discoveredDevices.values.toList()[0].device;
-      _deviceAdvName =
-          _discoveredDevices.values.toList()[0].advertisementData.localName;
+      final BluetoothDevice device = _discoveredDevices.values.toList()[0].device;
+      _deviceAdvName = _discoveredDevices.values.toList()[0].advertisementData.localName;
 
       connect(device);
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
-      sl<SystemStateManager>()
-          .setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
+      sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
       if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(
-            time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }
     }
   }
@@ -346,10 +321,7 @@ class BleManager extends ManagerBase {
     switch (action) {
       case StateChangeActions.APP_MODE_CHANGED:
         final AppModes mode = sl<SystemStateManager>().appMode;
-        Log.info(
-            TAG,
-            "receiverAppMode: " +
-                SystemStateManager.getAppModeName(mode.index));
+        Log.info(TAG, "receiverAppMode: " + SystemStateManager.getAppModeName(mode.index));
         switch (mode) {
           case AppModes.USER:
             _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
@@ -358,20 +330,14 @@ class BleManager extends ManagerBase {
             Future.delayed(Duration(milliseconds: 2000), () {
               if (sl<SystemStateManager>().appMode != AppModes.TECH) {
                 // todo add real SW ID
-                sl<CommandTaskerManager>().addCommandWithNoCb(
-                    DeviceCommands.getStartSessionCmd(
-                        0x0000,
-                        DeviceCommands.SESSION_START_USE_TYPE_SERVICE,
-                        [0, 0, 0, 1]));
+                sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
+                    0x0000, DeviceCommands.SESSION_START_USE_TYPE_SERVICE, [0, 0, 0, 1]));
               }
             });
             break;
           case AppModes.TECH:
-            sl<CommandTaskerManager>().addCommandWithNoCb(
-                DeviceCommands.getStartSessionCmd(
-                    0x0000,
-                    DeviceCommands.SESSION_START_USE_TYPE_PRODUCTION,
-                    [0, 0, 0, 1]));
+            sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
+                0x0000, DeviceCommands.SESSION_START_USE_TYPE_PRODUCTION, [0, 0, 0, 1]));
             break;
           default:
             break;

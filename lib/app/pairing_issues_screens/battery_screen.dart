@@ -24,8 +24,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
   @override
   void initState() {
     systemStateManager.bleScanResultStream
-        .firstWhere((ScanResultStates state) =>
-            state == ScanResultStates.LOCATED_MULTIPLE)
+        .firstWhere((ScanResultStates state) => state == ScanResultStates.LOCATED_MULTIPLE)
         .then((_) => _showMultipleDeviceDialog());
 
     super.initState();
@@ -41,19 +40,19 @@ class _BatteryScreenState extends State<BatteryScreen> {
         .then((DeviceStates s) => s == DeviceStates.CONNECTED);
 
     if (deviceConnected) {
-      final bool deviceHasErrors =
-          await sl<SystemStateManager>().deviceHasErrors;
-      final bool sessionHasErrors =
-          await sl<SystemStateManager>().sessionHasErrors;
+      final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
+      final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
       if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
-        Navigator.of(context).pushNamed(
-            "${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
+        Navigator.of(context)
+            .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
       } else if (sessionHasErrors) {
-        Navigator.of(context).pushNamed(
-            "${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
+        Navigator.of(context)
+            .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
       } else {
         Navigator.pushNamed(context, PreparationScreen.PATH);
       }
+    } else if (sl<SystemStateManager>().bleScanResult == ScanResultStates.LOCATED_MULTIPLE) {
+      _showMultipleDeviceDialog();
     } else {
       _showNotFoundDialog();
     }
@@ -72,8 +71,8 @@ class _BatteryScreenState extends State<BatteryScreen> {
           },
         ),
         moreActionButton: ButtonModel(
-          action: () => Navigator.of(context)
-              .pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
+          action: () =>
+              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
         ),
       );
     }
@@ -105,14 +104,12 @@ class _BatteryScreenState extends State<BatteryScreen> {
         ),
         bottomBlock: StreamBuilder(
             stream: systemStateManager.bleScanResultStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<ScanResultStates> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
                   type: BlockType.text,
                   title: loc.batteryTitle,
-                  content: _buildText(snapshot.hasData
-                      ? snapshot.data
-                      : ScanResultStates.NOT_LOCATED));
+                  content:
+                      _buildText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED));
             }),
         buttons: _buildButtonsBlock(),
         showSteps: false,

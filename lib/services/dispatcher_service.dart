@@ -27,7 +27,6 @@ class DispatcherService {
       DioLogger.onError(TAG, error);
       return _dio.reject(error);
     }));
-    PrefsProvider.saveDispatcherUrlIndex(0);
   }
 
   static String get _dispatcherUrl =>

@@ -47,6 +47,7 @@ class S implements WidgetsLocalizations {
   String get bt_initiation_error => "Bluetooth initiation error";
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth ON.";
   String get bt_not_available_shutdown => "Bluetooth is not available on this device";
+  String get btnChangeAndRestart => "Change and restart";
   String get btnCloseApp => "CLOSE APP";
   String get btnEndRecording => "END RECORDING";
   String get btnEnter => "ENTER";
@@ -617,6 +618,8 @@ class fr extends S {
   String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   @override
   String get connect_to_charger => "Connect the phone to a charger";
+  @override
+  String get btnChangeAndRestart => "Change and restart";
   @override
   String get firmware_alert_title => "Device firmware upgrade";
   @override

@@ -23,21 +23,24 @@ class _SelectDispatcherDialog extends State<SelectDispatcherDialog> {
             children: GlobalSettings.dispatchersUrls
                 .map((String url) => RadioListTile(
                       title: Text(url),
-                      value: url ==
-                          GlobalSettings.getDispatcherLink(_selectedUrlIndex),
+                      value: url == GlobalSettings.getDispatcherLink(_selectedUrlIndex),
                       onChanged: (_) => setState(() {
-                            _selectedUrlIndex =
-                                GlobalSettings.dispatchersUrls.indexOf(url);
-                            PrefsProvider.saveDispatcherUrlIndex(
-                                _selectedUrlIndex);
+                            _selectedUrlIndex = GlobalSettings.dispatchersUrls.indexOf(url);
                           }),
                       groupValue: true,
                     ))
                 .toList()),
         actions: <Widget>[
           FlatButton(
-            child: Text(_loc.close_app.toUpperCase()),
-            onPressed: () => exit(0),
+            child: Text(S.of(context).cancel.toUpperCase()),
+            onPressed: () => Navigator.pop(context),
+          ),
+          FlatButton(
+            child: Text(_loc.btnChangeAndRestart.toUpperCase()),
+            onPressed: () async {
+              await PrefsProvider.saveDispatcherUrlIndex(_selectedUrlIndex);
+              exit(0);
+            },
           )
         ],
       );

@@ -32,9 +32,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
-
-    print("FUCCJJJLLAA $state");
-
     _nextIsPressed = false;
     if (welcomeManager.getInitialErrors().length > 0) {
       Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${welcomeManager.getInitialErrors()}");

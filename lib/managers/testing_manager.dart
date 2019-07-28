@@ -121,7 +121,7 @@ class TestingManager extends ManagerBase {
   }
 
   void updateProgressBar(int changeDelta) {
-    print("PROGRESS: ${(_maxProgress - _numberOfSecondsToDownloadAllPackets)} / $_maxProgress");
+//    print("PROGRESS: ${(_maxProgress - _numberOfSecondsToDownloadAllPackets)} / $_maxProgress");
     final double newProgress = (_maxProgress - _numberOfSecondsToDownloadAllPackets) / _maxProgress;
     _remainingDataProgress.sink.add(newProgress);
   }

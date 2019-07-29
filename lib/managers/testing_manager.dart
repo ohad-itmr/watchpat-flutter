@@ -54,7 +54,8 @@ class TestingManager extends ManagerBase {
   }
 
   void _restartTimers() {
-    if (_systemStateManager.testState == TestStates.INTERRUPTED) {
+    if (_systemStateManager.testState == TestStates.INTERRUPTED ||
+        _systemStateManager.testState == TestStates.STOPPED) {
       _startElapsedTimer();
     }
   }

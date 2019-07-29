@@ -30,8 +30,8 @@ class DefaultSettings {
   static final double maxTestLengthHours = 10;
   static final double sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 95;
-  static final dispatcherLink2 = "https://dispatcher.watchpat-one.com";
-  static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";
+  static final dispatcherLink1 = "https://test1.watchpat-one.com";
+  static final dispatcherLink2 = "https://test1.watchpat-one.com";
   static final userPinCodeLength = 4;
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;

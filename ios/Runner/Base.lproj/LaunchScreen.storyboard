@@ -21,8 +21,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="4t1-Cz-Wlc">
-                                <rect key="frame" x="21" y="21" width="372" height="694"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="itamar_plus_logo" translatesAutoresizingMaskIntoConstraints="NO" id="W76-TS-omV">
+                                <rect key="frame" x="87" y="248" width="240" height="240"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -30,10 +30,10 @@
                             <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="1Ul-75-VBu"/>
-                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="1" id="Ufg-s1-Pu3"/>
-                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="top" secondItem="Ydg-fD-yQy" secondAttribute="bottom" constant="1" id="bZ5-19-f4Z"/>
-                            <constraint firstItem="4t1-Cz-Wlc" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="fAe-om-xTS"/>
+                            <constraint firstItem="W76-TS-omV" firstAttribute="top" secondItem="Ydg-fD-yQy" secondAttribute="bottom" constant="228" id="9kY-np-19g"/>
+                            <constraint firstItem="W76-TS-omV" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="67" id="DUT-EG-2Zd"/>
+                            <constraint firstItem="W76-TS-omV" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="sH0-eP-Ylr"/>
+                            <constraint firstItem="W76-TS-omV" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="tLs-fB-rKy"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -43,6 +43,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="360" height="640"/>
+        <image name="itamar_plus_logo" width="709" height="709"/>
     </resources>
 </document>

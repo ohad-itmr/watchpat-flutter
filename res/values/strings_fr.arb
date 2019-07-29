@@ -133,6 +133,7 @@
   "stepperStep": "Step",
   "stepper": "Step $step of $total",
   "stop_test": "Stop Test",
+  "confirm_stop_test": "Are you sure you want to end recording?",
   "strapWristTitle": "Strap Wrist Device",
   "strapWristContent": "You will be putting the WatchPAT on your non-dominant hand. \nPlace the WatchPAT on a flat surface. \nInsert your hand and close the strap, making sure its snug but not too  tight.",
   "technician_mode": "Technician mode",

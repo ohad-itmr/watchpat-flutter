@@ -19,6 +19,25 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
+  _confirmEndTest(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(S.of(context).stop_test),
+              content: Text(S.of(context).confirm_stop_test),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(S.of(context).cancel.toUpperCase()),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                FlatButton(
+                  child: Text(S.of(context).ok),
+                  onPressed: () => sl<TestingManager>().stopTesting(),
+                )
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -60,7 +79,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
               moreActionButton: null,
               nextActionButton: ButtonModel(
                 action: snapshot.data == TestDataAmountState.MINIMUM_PASSED
-                    ? () => sl<TestingManager>().stopTesting()
+                    ? () => _confirmEndTest(context)
                     : null,
                 text: S.of(context).btnEndRecording,
               ),

@@ -64,6 +64,7 @@ class S implements WidgetsLocalizations {
   String get chestSensorTitle => "Attach Chest Sensor";
   String get close_app => "CLOSE APP";
   String get close_mypat_app_q => "Close WatchPAT\u2122 Application?";
+  String get confirm_stop_test => "Are you sure you want to end recording?";
   String get connect_to_charger => "Connect the phone to a charger";
   String get connected => "Connected";
   String get connected_to_device => "Connected to device";
@@ -412,6 +413,8 @@ class fr extends S {
   String get set_and_close => "Set and close";
   @override
   String get technician_mode => "Technician mode";
+  @override
+  String get confirm_stop_test => "Are you sure you want to end recording?";
   @override
   String get batteryTitle => "Insert Battery";
   @override

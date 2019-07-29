@@ -7,7 +7,6 @@ import 'package:package_info/package_info.dart';
 import 'package:device_info/device_info.dart';
 import 'dart:math';
 
-
 class DeviceConfigPayload {
   static const String TAG = 'DeviceConfigPayload';
 
@@ -208,12 +207,13 @@ class DeviceConfigPayload {
     // updating phone model
     final List<int> phoneModel = Utf8Encoder().convert(iosInfo.utsname.machine);
     final int modelValueSize = min(phoneModel.length, 16);
-    bytes.replaceRange(OFFSET_SMARTPHONE_MODEL, OFFSET_SMARTPHONE_MODEL + modelValueSize, phoneModel);
+    bytes.replaceRange(
+        OFFSET_SMARTPHONE_MODEL, OFFSET_SMARTPHONE_MODEL + modelValueSize, phoneModel);
   }
 
   void updatePin(String pinString) {
     final int pin = int.parse(pinString);
-    final List<int> bytes = ConvertFormats.longToByteList(pin, reversed: true);
+    final List<int> bytes = ConvertFormats.longToByteList(pin, size: 4, reversed: false);
     for (int i = 0; i < bytes.length; i++) {
       payloadBytes[OFFSET_PIN_CODE_NUMBER + i] = bytes[i];
     }

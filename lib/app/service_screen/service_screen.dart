@@ -330,6 +330,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
             controller: _serialInputController,
             autofocus: true,
             keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: PrefsProvider.loadDeviceSerial()
+            ),
             validator: (value) {
               if (value.length != 9) {
                 _serialFormKey.currentState.reset();

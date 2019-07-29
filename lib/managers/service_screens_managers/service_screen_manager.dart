@@ -383,7 +383,7 @@ class ServiceScreenManager extends ManagerBase {
       if (!callback.ackReceived) _showToast(_loc.get_tech_status_timeout);
     });
 
-    // subscibe to result
+    // subscribe to result
     TechStatusPayload techStatusPayload =
         await sl<IncomingPacketHandlerService>().techStatusResponse.first;
 

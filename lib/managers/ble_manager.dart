@@ -217,10 +217,8 @@ class BleManager extends ManagerBase {
   }
 
   void forgetDeviceAndRestartScan() {
-    sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
-    sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
     PrefsProvider.clearDeviceName();
-    startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+    disconnection();
   }
 
   void startScan({int time, @required bool connectToFirstDevice, String deviceName}) {

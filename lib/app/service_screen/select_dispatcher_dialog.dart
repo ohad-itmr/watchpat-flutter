@@ -21,14 +21,15 @@ class _SelectDispatcherDialog extends State<SelectDispatcherDialog> {
         content: Column(
             mainAxisSize: MainAxisSize.min,
             children: GlobalSettings.dispatchersUrls
-                .map((String url) => RadioListTile(
-                      title: Text(url),
-                      value: url == GlobalSettings.getDispatcherLink(_selectedUrlIndex),
-                      onChanged: (_) => setState(() {
-                            _selectedUrlIndex = GlobalSettings.dispatchersUrls.indexOf(url);
-                          }),
-                      groupValue: true,
-                    ))
+                .asMap()
+                .map((int index, String url) => MapEntry(
+                    index,
+                    RadioListTile(
+                        title: Text(url),
+                        value: _selectedUrlIndex == index,
+                        onChanged: (_) => setState(() => _selectedUrlIndex = index),
+                        groupValue: true)))
+                .values
                 .toList()),
         actions: <Widget>[
           FlatButton(

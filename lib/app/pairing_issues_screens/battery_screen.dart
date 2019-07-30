@@ -31,6 +31,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
   }
 
   _handleNext() async {
+    sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
     await sl<SystemStateManager>()
         .bleScanStateStream
         .firstWhere((ScanStates s) => s == ScanStates.COMPLETE);
@@ -92,6 +93,14 @@ class _BatteryScreenState extends State<BatteryScreen> {
     }
   }
 
+  String _buildHeaderText(ScanResultStates state) {
+    if (state == ScanResultStates.LOCATED_MULTIPLE) {
+      return S.of(context).disconnect_all_irr_devices;
+    } else {
+      return S.of(context).batteryTitle;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -107,7 +116,8 @@ class _BatteryScreenState extends State<BatteryScreen> {
             builder: (BuildContext context, AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
                   type: BlockType.text,
-                  title: loc.batteryTitle,
+                  title: _buildHeaderText(
+                      snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED),
                   content:
                       _buildText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED));
             }),

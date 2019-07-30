@@ -309,9 +309,9 @@ class BleManager extends ManagerBase {
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
-      if (sl<SystemStateManager>().isScanCycleEnabled) {
-        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-      }
+//      if (sl<SystemStateManager>().isScanCycleEnabled) {
+//        startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+//      }
     }
   }
 

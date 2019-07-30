@@ -39,7 +39,7 @@ class S implements WidgetsLocalizations {
   String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and change the battery.";
   String get batteryContent_2 => " The flat side of the battery faces the MINUS sign.";
   String get batteryContent_many_1 => "Multiple devices are identified in this surrounding.\nPlease remove the battery from all irrelevant devices and try again.";
-  String get batteryContent_many_2 => " Open the battery compartment's cover, located on the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.";
+  String get batteryContent_many_2 => "Remove the battery from non-used WatchPAT\u2122 ONE in the surrounding.";
   String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   String get batteryTitle => "INSERT BATTERY ";
   String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
@@ -310,7 +310,7 @@ class fr extends S {
   @override
   String get connected_to_device => "Connected to device";
   @override
-  String get batteryContent_many_2 => " Open the battery compartment's cover, located on the back of the irrelevant WatchPAT\u2122 ONE and remove the battery.";
+  String get batteryContent_many_2 => "Remove the battery from non-used WatchPAT™ ONE in the surrounding.";
   @override
   String get batteryContent_many_1 => "Multiple devices are identified in this surrounding.\nPlease remove the battery from all irrelevant devices and try again.";
   @override

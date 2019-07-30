@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
-import 'package:my_pat/main.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/FirmwareUpgrader.dart';
 import 'package:my_pat/utils/ParameterFileHandler.dart';
@@ -325,8 +324,10 @@ class ServiceScreenManager extends ManagerBase {
     Log.info(TAG, "Setting device serial to $serial");
 
     // send command and handle response
-    final AckCallback callback =
-        AckCallback(action: () => _showToast(_loc.set_device_serial_success));
+    final AckCallback callback = AckCallback(action: () {
+      PrefsProvider.saveDeviceSerial(serial);
+      _showToast(_loc.set_device_serial_success);
+    });
 
     sl<CommandTaskerManager>().addCommandWithCb(
         DeviceCommands.getSetDeviceSerialCmd(int.parse(serial)),

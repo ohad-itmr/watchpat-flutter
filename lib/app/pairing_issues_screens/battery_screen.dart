@@ -96,7 +96,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
   Widget build(BuildContext context) {
     return MainTemplate(
       showBack: false,
-      showMenu: false,
+      showMenu: true,
       body: BodyTemplate(
         topBlock: BlockTemplate(
           type: BlockType.image,

@@ -129,9 +129,8 @@ class IncomingPacketHandlerService extends ManagerBase {
       // packet is fully received
       ReceivedPacket receivedPacket =
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
+          ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
-
-//      print("Received packet, length: ${receivedPacket.bytes.length}, content: ${receivedPacket.bytes}");
 
       // packet validity check
       if (!receivedPacket.isValidPacket()) {
@@ -191,7 +190,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           break;
         case DeviceCommands.CMD_OPCODE_START_SESSION_CONFIRM:
-          if (sl<SystemStateManager>().startSessionState == StartSessionState.CONFIRMED) return;
+          if (sl<SystemStateManager>().startSessionState == StartSessionState.CONFIRMED) break;
           Log.info(TAG, "### start session confirm received");
           Log.info(TAG, "packet received (START_SESSION_CONFIRM)");
 

@@ -281,4 +281,11 @@ class FileSystemService {
       return Response(success: false, error: e.toString());
     }
   }
+
+  Future<void> deleteConfigFile() async {
+    File file = await configFile;
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
 }

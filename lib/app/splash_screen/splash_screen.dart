@@ -66,11 +66,12 @@ class _SplashScreenState extends State<SplashScreen> {
             }).listen((Map<String, dynamic> data) async {
 
       // todo implement SFTP uploading after test stopped
-//      if (PrefsProvider.getDataUploadingIncomplete()) {
-//        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
-//        Navigator.of(context).pushNamed(EndScreen.PATH);
-//        return;
-//      }
+      if (PrefsProvider.getDataUploadingIncomplete()) {
+        sl<SystemStateManager>().setScanCycleEnabled = false;
+        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
+        Navigator.of(context).pushNamed(EndScreen.PATH);
+        return;
+      }
 
       _handleBtState(data[_BT_MAP_KEY]);
       _handleInternetState(data[_INET_MAP_KEY]);
@@ -78,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (data[_BT_MAP_KEY] == BtStates.ENABLED && data[_INET_MAP_KEY] != ConnectivityResult.none) {
         if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
           sl<WelcomeActivityManager>().initConnectivityListener();
+          GlobalSettings.replaceSettingsFromXML();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
           _navigationSub.cancel();
         } else if (data[_TEST_MAP_KEY] == TestStates.STOPPED) {
@@ -186,6 +188,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _handleInternetState(ConnectivityResult state) {
+    if (PrefsProvider.getDataUploadingIncomplete()) return;
     if (state == ConnectivityResult.none && !_noInternetShow) {
       _showNoInternetWarning();
       _noInternetShow = true;

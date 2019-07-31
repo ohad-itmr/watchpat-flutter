@@ -180,7 +180,7 @@ class PrefsProvider {
   }
 
   static bool getIgnoreDeviceErrors() {
-    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ?? true;
+    return PrefsService.prefs.getBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY) ?? false;
   }
 
   //

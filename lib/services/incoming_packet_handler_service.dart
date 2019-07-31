@@ -552,7 +552,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void _manageError(final int errorCode) {
-    if (PrefsProvider.getIgnoreDeviceErrors() != null && PrefsProvider.getIgnoreDeviceErrors()) {
+    if (PrefsProvider.getIgnoreDeviceErrors()) {
       Log.info(TAG, ">>> ignoring device errors");
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
       return;

@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
-
 
 class ErrorScreen extends StatelessWidget {
   static const String TAG = 'ErrorScreen';
@@ -18,22 +19,26 @@ class ErrorScreen extends StatelessWidget {
       showBack: false,
       showMenu: false,
       backgroundColor: Colors.black,
-      body: BodyTemplate(
-        topBlock: BlockTemplate(
-          type: BlockType.text,
-          title: loc.error,
-          content: [error],
-          textColor: Colors.white.withOpacity(0.9),
-          textTopPadding: true,
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text(S.of(context).error.toUpperCase(),
+                style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24.0)),
+            Text(
+              '$error',
+              style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 18.0),
+            ),
+            Container(height: MediaQuery.of(context).size.width / 2),
+            ButtonsBlock(
+              nextActionButton: ButtonModel(
+                  action: () => Navigator.pop(context), text: loc.btnReturnToApp.toUpperCase()),
+              moreActionButton: null,
+            )
+          ],
         ),
-        buttons: ButtonsBlock(
-          nextActionButton: ButtonModel(
-            action: () => Navigator.pop(context),
-            text: loc.btnReturnToApp.toUpperCase(),
-          ),
-          moreActionButton: null,
-        ),
-        showSteps: false,
       ),
     );
   }

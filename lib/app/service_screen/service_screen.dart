@@ -392,9 +392,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
           _buildActionButton(
               text: S.of(context).reset.toUpperCase(),
               action: () {
-                _manager.resetApplication();
-                Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-                Navigator.of(context).pushNamed(WelcomeScreen.PATH);
+                _manager.resetApplication(clearConfig: true);
               })
         ]));
   }

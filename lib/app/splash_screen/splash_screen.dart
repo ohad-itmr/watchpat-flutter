@@ -129,7 +129,7 @@ class _SplashScreenState extends State<SplashScreen> {
               FlatButton(
                 child: Text(S.of(context).ok),
                 onPressed: () {
-                  sl<ServiceScreenManager>().resetApplication();
+                  sl<ServiceScreenManager>().resetApplication(clearConfig: false);
                   exit(0);
                 },
               )

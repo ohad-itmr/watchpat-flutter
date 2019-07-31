@@ -423,10 +423,12 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   //reset application
-  resetApplication() async {
+  resetApplication({@required bool clearConfig}) async {
     await sl<FileSystemService>().clear();
-    await sl<FileSystemService>().deleteConfigFile();
     await PrefsProvider.clearAll();
+    if (clearConfig) {
+      await sl<FileSystemService>().deleteConfigFile();
+    }
     exit(0);
   }
 

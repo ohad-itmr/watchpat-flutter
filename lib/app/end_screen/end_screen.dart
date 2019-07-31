@@ -46,7 +46,7 @@ class EndScreen extends StatelessWidget {
                 BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
                 initPlatformState();
               } else {
-                sl<ServiceScreenManager>().resetApplication();
+                sl<ServiceScreenManager>().resetApplication(clearConfig: false);
               }
               await Future.delayed(Duration(milliseconds: 300));
               exit(0);
@@ -81,7 +81,6 @@ void _backgroundFetchTask() async {
   final Connectivity _connectivity = Connectivity();
   _connectivity.checkConnectivity().then((ConnectivityResult res) {
     sl<EmailSenderService>().sendTestMail();
-    print("SFTP FOLDER: ${PrefsProvider.loadSftpPath()}");
     if (res != ConnectivityResult.none) {
       sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
       //todo launch sftp uploading while test is already ended

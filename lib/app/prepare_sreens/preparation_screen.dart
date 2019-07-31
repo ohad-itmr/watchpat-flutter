@@ -19,11 +19,13 @@ class _PreparationScreenState extends State<PreparationScreen> {
   bool _nextIsPressed = false;
 
   _handleNext() async {
+    await sl<SystemStateManager>()
+        .bleScanStateStream
+        .firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
     if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
       await sl<SystemStateManager>()
           .startSessionStateStream
-          .where((StartSessionState st) => st == StartSessionState.CONFIRMED)
-          .first;
+          .firstWhere((StartSessionState st) => st == StartSessionState.CONFIRMED);
       _nextIsPressed = false;
       Navigator.pushNamed(context, PinScreen.PATH);
     } else {
@@ -61,8 +63,8 @@ class _PreparationScreenState extends State<PreparationScreen> {
                   },
                 ),
                 moreActionButton: ButtonModel(
-                  action: () => Navigator.of(context).pushNamed(
-                      "${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
+                  action: () => Navigator.of(context)
+                      .pushNamed("${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
                 ),
               ),
         showSteps: true,

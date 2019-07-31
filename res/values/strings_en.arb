@@ -163,7 +163,6 @@
   "fatal_error" : "Fatal error",
   "device_connection_failed": "Connection with the device failed. \\n\\nPlease contact Itamar Medical support for assistance.",
   "device_not_located": "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned. If not, verify that you placed a new battery and check it is properly positioned.",
-
   "writing_param_file": "Writing parameter file",
   "param_file_written_successfully": "Parameter file written successfully",
   "upgrade_file_ver_name": "UpgradeFileVersion",

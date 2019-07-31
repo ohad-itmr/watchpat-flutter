@@ -98,6 +98,7 @@ class FirmwareUpgrader extends ManagerBase {
       Log.info(TAG, "Device firmware upgrade finished, resetting main device");
       _timeoutTimer.cancel();
       sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UP_TO_DATE);
+      sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);
       sl<CommandTaskerManager>().addCommandWithNoCb(
           DeviceCommands.getResetDeviceCmd(ServiceScreenManager.RESET_TYPE_SHUT_AND_RESET));
       PrefsProvider.clearDeviceName();

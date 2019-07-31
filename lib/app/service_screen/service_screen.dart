@@ -46,13 +46,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   @override
   void initState() {
-    _toastSub =
-        _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
-    _progressSub =
-        _manager.progressBar.listen((String msg) => _handleProgressBar(msg));
-    _deviceBtStateSub = sl<SystemStateManager>()
-        .deviceCommStateStream
-        .listen(_handleBtStateChange);
+    _toastSub = _manager.toasts.listen((String msg) => MyPatToast.show(msg, context));
+    _progressSub = _manager.progressBar.listen((String msg) => _handleProgressBar(msg));
+    _deviceBtStateSub = sl<SystemStateManager>().deviceCommStateStream.listen(_handleBtStateChange);
     _initServiceOptions();
     super.initState();
   }
@@ -68,8 +64,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   void _handleBtStateChange(DeviceStates state) {
     setState(() => _deviceBtState = state);
     MyPatToast.show(
-        "Main device ${state == DeviceStates.CONNECTED ? 'CONNECTED' : 'DISCONNECTED'}",
-        context);
+        "Main device ${state == DeviceStates.CONNECTED ? 'CONNECTED' : 'DISCONNECTED'}", context);
   }
 
   void _handleProgressBar(String msg) {
@@ -85,8 +80,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
             return AlertDialog(
               title: Text(msg),
               content: Container(
-                  height: _screenWidth / 5,
-                  child: Center(child: CircularProgressIndicator())),
+                  height: _screenWidth / 5, child: Center(child: CircularProgressIndicator())),
             );
           });
     }
@@ -110,9 +104,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
     _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.mode == ServiceMode.customer
-              ? "Customer service mode"
-              : "Technician mode"),
+          title: Text(
+              widget.mode == ServiceMode.customer ? "Customer service mode" : "Technician mode"),
           flexibleSpace: AppBarDecoration(),
           leading: IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -123,16 +116,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 ? FlatButton(
                     onPressed: null,
                     child: CircularProgressIndicator(
-                        valueColor:
-                            new AlwaysStoppedAnimation<Color>(Colors.white)))
+                        valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)))
                 : Container()
           ]),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/gears_primary.png'),
-            colorFilter: ColorFilter.mode(
-                Color.fromRGBO(255, 255, 255, 0.2), BlendMode.modulate),
+            colorFilter: ColorFilter.mode(Color.fromRGBO(255, 255, 255, 0.2), BlendMode.modulate),
           ),
         ),
         child: ListView.separated(
@@ -152,7 +143,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: _deviceBtState == DeviceStates.CONNECTED ||
               option.action == _showResetApplicationDialog ||
-              option.action == _showLogSendingDialog
+              option.action == _showLogSendingDialog ||
+              option.action == _setDispatcherURL
           ? () => option.action()
           : () => MyPatToast.show("Main device disconnected", context),
     );
@@ -222,21 +214,18 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   // go to Perform BIT screen
   _showBitScreen() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => PerformBitScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => PerformBitScreen()));
   }
 
   // Send application log file by email
   _showLogSendingDialog() {
     _showServiceDialog(ServiceDialog(
       title: Text(S.of(context).app_log_file_title),
-      content: Text(
-          "${S.of(context).app_log_file_text} ${GlobalSettings.serviceEmailAddress}?"),
+      content: Text("${S.of(context).app_log_file_text} ${GlobalSettings.serviceEmailAddress}?"),
       actions: [
         _buildPopButton(_loc.cancel.toUpperCase()),
         _buildActionButton(
-            text: S.of(context).send.toUpperCase(),
-            action: () => _sendLogFileByEmail())
+            text: S.of(context).send.toUpperCase(), action: () => _sendLogFileByEmail())
       ],
     ));
   }
@@ -246,8 +235,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
     Navigator.pop(context);
     setState(() => _operationInProgress = true);
     final result = await sl<EmailSenderService>().sendLogFile();
-    MyPatToast.show(
-        "Log file sending: ${result ? 'SUCCESS' : 'FAILED'}", context);
+    MyPatToast.show("Log file sending: ${result ? 'SUCCESS' : 'FAILED'}", context);
     setState(() => _operationInProgress = false);
   }
 
@@ -330,9 +318,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
             controller: _serialInputController,
             autofocus: true,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: PrefsProvider.loadDeviceSerial()
-            ),
+            decoration: InputDecoration(hintText: PrefsProvider.loadDeviceSerial()),
             validator: (value) {
               if (value.length != 9) {
                 _serialFormKey.currentState.reset();
@@ -363,8 +349,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
   // Tech status report
   _performTechStatusReport() async {
     final String res = await _manager.techStatusReport();
-    _showServiceDialog(ServiceDialog(
-        content: Text(res), actions: [_buildPopButton(_loc.ok.toUpperCase())]));
+    _showServiceDialog(
+        ServiceDialog(content: Text(res), actions: [_buildPopButton(_loc.ok.toUpperCase())]));
   }
 
   // Reset main device
@@ -380,8 +366,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   // Firmware upgrade from documents directory
   _showFWUpgradeDialog() {
     _showServiceDialog(ServiceDialog(
-        content: Text(
-            S.of(context).make_sure_watchpat_bin_is_placed_in_watchpat_dir),
+        content: Text(S.of(context).make_sure_watchpat_bin_is_placed_in_watchpat_dir),
         actions: [
           _buildPopButton(S.of(context).cancel.toUpperCase()),
           _buildActionButton(
@@ -408,8 +393,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
               text: S.of(context).reset.toUpperCase(),
               action: () {
                 _manager.resetApplication();
-                Navigator.popUntil(
-                    context, (Route<dynamic> route) => route.isFirst);
+                Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
                 Navigator.of(context).pushNamed(WelcomeScreen.PATH);
               })
         ]));
@@ -417,49 +401,33 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
   _initServiceOptions() {
     _customerServiceOptions = [
-      ServiceOption(
-          title: "Main device FW version", action: _showFirmwareVersionDialog),
+      ServiceOption(title: "Main device FW version", action: _showFirmwareVersionDialog),
       ServiceOption(
           title: "Retrieve test data from device and upload it to server",
           action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
 //      ServiceOption(
 //          title: "Upgrade main device firmware", action: _showFWUpgradeDialog),
-      ServiceOption(
-          title: "Handle parameters file", action: _showParametersFileDialog),
-      ServiceOption(
-          title: "Set dispatcher URL", action: _setDispatcherURL)
+      ServiceOption(title: "Handle parameters file", action: _showParametersFileDialog),
+      ServiceOption(title: "Set dispatcher URL", action: _setDispatcherURL)
     ];
 
     _technicianServiceOptions = [
-      ServiceOption(
-          title: "Handle AFE registers", action: _showAfeRegistersDialog),
-      ServiceOption(
-          title: "Handle ACC registers", action: _showAccRegistersDialog),
-      ServiceOption(
-          title: "Handle main device EEPROM", action: _showEepromDialog),
-      ServiceOption(
-          title: "Set device serial", action: _showDeviceSerialDialog),
+      ServiceOption(title: "Handle AFE registers", action: _showAfeRegistersDialog),
+      ServiceOption(title: "Handle ACC registers", action: _showAccRegistersDialog),
+      ServiceOption(title: "Handle main device EEPROM", action: _showEepromDialog),
+      ServiceOption(title: "Set device serial", action: _showDeviceSerialDialog),
       ServiceOption(title: "Set LED indication", action: _showSetLedDialog),
-      ServiceOption(
-          title: "Get technical status", action: _performTechStatusReport),
-      ServiceOption(
-          title: "Export log file by email", action: _showLogSendingDialog),
-      ServiceOption(
-          title: "Share device logfile",
-          action: _manager.getLogFileFromDevice),
+      ServiceOption(title: "Get technical status", action: _performTechStatusReport),
+      ServiceOption(title: "Export log file by email", action: _showLogSendingDialog),
+      ServiceOption(title: "Share device logfile", action: _manager.getLogFileFromDevice),
       ServiceOption(title: "Reset main device", action: _showResetDeviceDialog),
-      ServiceOption(
-          title: "Ignore device errors", action: _showIgnoreDeviceErrorsDialog),
-      ServiceOption(
-          title: "Reset application", action: _showResetApplicationDialog),
+      ServiceOption(title: "Ignore device errors", action: _showIgnoreDeviceErrorsDialog),
+      ServiceOption(title: "Reset application", action: _showResetApplicationDialog),
     ];
     _serviceOptions = {
       ServiceMode.customer: _customerServiceOptions,
-      ServiceMode.technician: [
-        ..._customerServiceOptions,
-        ..._technicianServiceOptions
-      ]
+      ServiceMode.technician: [..._customerServiceOptions, ..._technicianServiceOptions]
     };
   }
 }

@@ -102,6 +102,7 @@ class S implements WidgetsLocalizations {
   String get error_state => "ERROR STATE";
   String get exit_service_mode => "Exit service mode";
   String get fatal_error => "Fatal error";
+  String get files_creating_failed => "Failed to create initial files";
   String get fingerProbeContent => "Insert any finger, except your thumb, all the way into the probe.  \nThe sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (like a table) and pull the TOP tab toward you to remove it from the probe.";
   String get fingerProbeTitle => " ATTACH FINGER PROBE";
   String get finger_not_detected => "Finger not detected alert";
@@ -467,6 +468,8 @@ class fr extends S {
   String get inet_unavailable => "Internet access unavailable";
   @override
   String get french => "Français";
+  @override
+  String get files_creating_failed => "Failed to create initial files";
   @override
   String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
   @override

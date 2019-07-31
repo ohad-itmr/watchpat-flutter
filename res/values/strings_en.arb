@@ -81,6 +81,7 @@
   "invalid_technician_password": "Invalid technician password",
   "inet_unavailable": "Internet access unavailable",
   "insufficient_storage_space_on_smartphone": "Insufficient free memory on your phone",
+  "files_creating_failed": "Failed to create initial files",
   "loading": "Loading",
   "log_email_subject": "WatchPAT\u2122 device log file",
   "app_log_file_title" : "Application log file",

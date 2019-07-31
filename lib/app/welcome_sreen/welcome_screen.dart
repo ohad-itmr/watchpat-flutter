@@ -34,7 +34,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
     _nextIsPressed = false;
     if (welcomeManager.getInitialErrors().length > 0) {
-      Navigator.of(context).pushNamed("${ErrorScreen.PATH}/${welcomeManager.getInitialErrors()}");
+      Navigator.of(context)
+          .pushNamed("${ErrorScreen.PATH}/${welcomeManager.initialErrorsAsString}");
     } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
       Navigator.of(context)
           .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");

@@ -66,12 +66,12 @@ class DispatcherService {
   bool get _moreDispatchersAvailable =>
       PrefsProvider.loadDispatcherUrlIndex() < (GlobalSettings.dispatcherUrlsAmount - 1);
 
-  Future<bool> checkExternalConfig() async {
+  Future<Map<String, dynamic>> checkExternalConfig() async {
     Response response = await _sendRequest(
         method: RequestMethod.post,
         urlSuffix: _checkExternalConfigEndpoint,
         data: {"client": "iOS APP", "version": "1"});
-    return ExternalConfigEnabledModel.fromJson(response.data).enabled;
+    return response.data;
   }
 
   Future<Map<String, dynamic>> getExternalConfig() async {

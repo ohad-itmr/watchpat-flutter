@@ -54,6 +54,8 @@ enum StateChangeActions {
 
 enum StartSessionState { UNCONFIRMED, CONFIRMED }
 
+enum GlobalProcedureState { INCOMPLETE, COMPLETE }
+
 class SystemStateManager extends ManagerBase {
   static const String TAG = 'SystemStateManager';
 
@@ -184,6 +186,8 @@ class SystemStateManager extends ManagerBase {
   BehaviorSubject<FirmwareUpgradeState> _firmwareState = BehaviorSubject<FirmwareUpgradeState>();
   BehaviorSubject<DispatcherStates> _dispatcherState = BehaviorSubject<DispatcherStates>();
   BehaviorSubject<ConnectivityResult> _inetConnectionState = BehaviorSubject<ConnectivityResult>();
+  BehaviorSubject<GlobalProcedureState> _globalProcedureState =
+      BehaviorSubject<GlobalProcedureState>();
 
   PublishSubject<StateChangeActions> _stateChangeSubject = PublishSubject<StateChangeActions>();
 
@@ -224,6 +228,8 @@ class SystemStateManager extends ManagerBase {
   Observable<StartSessionState> get startSessionStateStream => _startSessionState.stream;
 
   Observable<SftpUploadingState> get sftpUploadingStateStream => _sftpUploadingState.stream;
+
+  Observable<GlobalProcedureState> get globalProcedureStateStream => _globalProcedureState.stream;
 
   bool _isScanCycleEnabled = true;
 
@@ -279,6 +285,7 @@ class SystemStateManager extends ManagerBase {
     setDispatcherState(DispatcherStates.DISCONNECTED);
     setStartSessionState(StartSessionState.UNCONFIRMED);
     setSftpUploadingState(SftpUploadingState.NOT_STARTED);
+    setGlobalProcedureState(GlobalProcedureState.INCOMPLETE);
     _initTestState();
   }
 
@@ -402,6 +409,11 @@ class SystemStateManager extends ManagerBase {
     }
   }
 
+  void setGlobalProcedureState(GlobalProcedureState state) {
+    Log.info(TAG, "Set global procedure state ${state.toString()}");
+    _globalProcedureState.sink.add(state);
+  }
+
   Sink<StateChangeActions> get changeState => _stateChangeSubject.sink;
 
   set setScanCycleEnabled(bool value) => _isScanCycleEnabled = value;
@@ -467,6 +479,7 @@ class SystemStateManager extends ManagerBase {
     _sftpUploadingState.close();
     _sessionErrorState.close();
     _testDataAmountState.close();
+    _globalProcedureState.close();
   }
 
   Future<bool> get deviceHasErrors {

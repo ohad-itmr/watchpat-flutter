@@ -72,7 +72,9 @@ class SftpService {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
       await _checkRemoteFileSize();
+      await _informDispatcher();
       _closeConnection();
+      await sl<ServiceScreenManager>().resetApplication(clearConfig: false);
     }
   }
 
@@ -242,10 +244,14 @@ class SftpService {
     //
   }
 
-  void _closeConnection() {
+  Future<void> _informDispatcher() async {
     Log.info(
         TAG, "Uploading of test data complete, closing sftp connection and informing dispatcher");
-    sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
+    await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
+    sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
+  }
+
+  void _closeConnection() {
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     sftpConnectionStateStream.close();
   }

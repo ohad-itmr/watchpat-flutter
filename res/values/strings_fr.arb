@@ -145,6 +145,8 @@
   "test_status": "Test Status: $status",
   "thankYouTitle": "Thank You",
   "thankYouContent": "The data has been successfully uploaded and the test is over.\nPlease dispose the product by your local guidance's.",
+  "thankYouStillUploading" : "",
+  "thankYouNoInet": "",
   "title_led_color_alert": "Choose LED color",
   "select_dispatcher_title": "Choose dispatcher URL",
   "select_dispatcher_text": "You will need to start the application again",

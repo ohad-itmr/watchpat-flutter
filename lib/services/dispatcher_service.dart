@@ -100,7 +100,7 @@ class DispatcherService {
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 
-  void sendTestComplete(String serialNumber) async {
+  Future<void> sendTestComplete(String serialNumber) async {
     await _sendRequest(
         urlSuffix: '$_testCompleteEndpoint/$serialNumber', method: RequestMethod.get);
   }

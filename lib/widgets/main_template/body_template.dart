@@ -46,7 +46,7 @@ class BodyTemplate extends StatelessWidget {
             flex: 3,
             child: Column(
               children: <Widget>[
-                buttons,
+                buttons ?? Container(),
                 Steps(
                   current: current,
                   total: total,

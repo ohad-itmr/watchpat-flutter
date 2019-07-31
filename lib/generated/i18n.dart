@@ -219,6 +219,8 @@ class S implements WidgetsLocalizations {
   String get test_in_progress => "Test in progress";
   String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
   String get thankYouContent => "Congratulations, your study has been successfully uploaded to your doctor.\nPlease dispose of the product according to local regulations.";
+  String get thankYouNoInet => "You study currently can't be uploaded to your doctor because of internet connection is unavailable.\nYou can minimize the app, it will finish uploading data when internet connection will be available.";
+  String get thankYouStillUploading => "You study is still uploading to your doctor.\nYou can minimize the app, it will finish uploading without your participation";
   String get thankYouTitle => "THANK YOU";
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during the authentication, please contact support";
@@ -425,6 +427,8 @@ class fr extends S {
   @override
   String get eeprom_write_failed => "Device EEPROM write failed";
   @override
+  String get thankYouNoInet => "";
+  @override
   String get upgrade_file_ver_name => "UpgradeFileVersion";
   @override
   String get select_dispatcher_text => "You will need to start the application again";
@@ -462,6 +466,8 @@ class fr extends S {
   String get none => "None";
   @override
   String get fw_need_upgrade => "Main device new firmware version is available. It will not take long.\n\nPlease wait while we upgrade it&#8230;";
+  @override
+  String get thankYouStillUploading => "";
   @override
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
   @override

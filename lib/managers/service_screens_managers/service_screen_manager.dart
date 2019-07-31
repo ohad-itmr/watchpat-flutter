@@ -423,13 +423,15 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   //reset application
-  resetApplication({@required bool clearConfig}) async {
+  resetApplication({@required bool clearConfig, bool killApp = true}) async {
     await sl<FileSystemService>().clear();
     await PrefsProvider.clearAll();
     if (clearConfig) {
       await sl<FileSystemService>().deleteConfigFile();
     }
-    exit(0);
+    if (killApp) {
+      exit(0);
+    }
   }
 
   _hideProgressbarWithMessage(String message) {

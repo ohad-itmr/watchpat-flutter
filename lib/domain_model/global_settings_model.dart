@@ -34,6 +34,7 @@ class GlobalSettingsModel {
   static const String TAG_DISPATCHER_LINK_1 = "dispatcherLink1";
   static const String TAG_DISPATCHER_LINK_2 = "dispatcherLink2";
   static const String TAG_DEBUG_MODE = "debugMode";
+  static const String TAG_IGNORE_DEVICE_ERRORS = "ignoreDeviceErrors";
 
   int uploadDataChunkMaxSize = INVALID_STATE;
   int uploadDataAccumulationSize = INVALID_L_STATE;

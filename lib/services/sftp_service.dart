@@ -74,7 +74,8 @@ class SftpService {
       await _checkRemoteFileSize();
       await _informDispatcher();
       _closeConnection();
-      await sl<ServiceScreenManager>().resetApplication(clearConfig: false);
+      await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
+      BackgroundFetch.finish();
     }
   }
 
@@ -174,7 +175,6 @@ class SftpService {
             _currentDataTransferState == DataTransferState.ENDED) {
           _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
           _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
-          BackgroundFetch.finish();
         }
       } else if ((currentUploadingOffset == currentRecordingOffset) &&
           _currentDataTransferState == DataTransferState.ENDED) {
@@ -193,6 +193,9 @@ class SftpService {
     do {
       Log.info(TAG, "Waiting for connection");
       await Future.delayed(Duration(seconds: 5));
+      if (sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
+        await _initSftpConnection();
+      }
     } while (!_uploadingAvailable);
   }
 

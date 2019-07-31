@@ -64,11 +64,11 @@ class _SplashScreenState extends State<SplashScreen> {
               _TEST_MAP_KEY: testState,
               _INET_MAP_KEY: inetState
             }).listen((Map<String, dynamic> data) async {
+
       // todo implement SFTP uploading after test stopped
 //      if (PrefsProvider.getDataUploadingIncomplete()) {
 //        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
-//        Navigator.of(context).pushNamed(WelcomeScreen.PATH);
-//        _showUploadingInProgress();
+//        Navigator.of(context).pushNamed(EndScreen.PATH);
 //        return;
 //      }
 

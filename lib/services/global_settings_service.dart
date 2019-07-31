@@ -36,6 +36,8 @@ class GlobalSettings {
           .forEach((xml.XmlAttribute node) {
         if (node.name.toString() == GlobalSettingsModel.TAG_DEBUG_MODE) {
           _configurationResource[node.name.toString()] = node.value == 'true';
+        } else if (node.name.toString() == GlobalSettingsModel.TAG_IGNORE_DEVICE_ERRORS) {
+          PrefsProvider.setIgnoreDeviceErrors(node.value == 'true');
         } else if (node.name.toString() == GlobalSettingsModel.TAG_MIN_STORAGE_SPACE_MB) {
           _configurationResource[node.name.toString()] = int.parse(node.value);
         } else if (node.name.toString() == GlobalSettingsModel.TAG_DISPATCHER_LINK_1) {

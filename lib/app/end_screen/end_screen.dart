@@ -9,9 +9,27 @@ import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EndScreen extends StatelessWidget {
+class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   static const String TAG = 'EndScreen';
   static const String PATH = '/end';
+
+  EndScreen() {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
+          sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
+        Log.info(TAG, "Data was not uploaded to sftp server. Registering background fetch task");
+        PrefsProvider.setDataUploadingIncomplete();
+        BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
+        initPlatformState();
+      }
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   Widget _generateTextBlock(BuildContext context) {
     return StreamBuilder(
@@ -66,25 +84,6 @@ class EndScreen extends StatelessWidget {
             ),
           ],
         ),
-//        buttons: ButtonsBlock(
-//          nextActionButton: ButtonModel(
-//            action: () async {
-//              if (sl<SystemStateManager>().sftpUploadingState != SftpUploadingState.ALL_UPLOADED) {
-//                Log.info(
-//                    TAG, "Data was not uploaded to sftp server. Registering background fetch task");
-//                PrefsProvider.setDataUploadingIncomplete();
-//                BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
-//                initPlatformState();
-//              } else {
-//                sl<ServiceScreenManager>().resetApplication(clearConfig: false);
-//              }
-//              await Future.delayed(Duration(milliseconds: 300));
-//              exit(0);
-//            },
-//            text: S.of(context).btnCloseApp,
-//          ),
-//          moreActionButton: null,
-//        ),
         showSteps: false,
       ),
     );
@@ -111,7 +110,6 @@ void _backgroundFetchTask() async {
     sl<EmailSenderService>().sendTestMail();
     if (res != ConnectivityResult.none) {
       sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
-      //todo launch sftp uploading while test is already ended
     } else {
       BackgroundFetch.finish();
     }

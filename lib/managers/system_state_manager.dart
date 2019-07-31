@@ -450,6 +450,10 @@ class SystemStateManager extends ManagerBase {
 
   SftpUploadingState get sftpUploadingState => _sftpUploadingState.value;
 
+  GlobalProcedureState get globalProcedureState => _globalProcedureState.value;
+
+  ConnectivityResult get inetConnectionState => _inetConnectionState.value;
+
   bool get isBTEnabled => btState == BtStates.ENABLED;
 
   bool get isConnectionToDevice =>

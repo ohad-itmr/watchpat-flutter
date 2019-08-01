@@ -65,31 +65,31 @@ class _SplashScreenState extends State<SplashScreen> {
               _INET_MAP_KEY: inetState
             }).listen((Map<String, dynamic> data) async {
 
-      // todo implement SFTP uploading after test stopped
-      if (PrefsProvider.getDataUploadingIncomplete()) {
-        sl<SystemStateManager>().setScanCycleEnabled = false;
-        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
-        Navigator.of(context).pushNamed(EndScreen.PATH);
-        return;
-      }
+//      // todo implement SFTP uploading after test stopped
+//      if (PrefsProvider.getDataUploadingIncomplete()) {
+//        sl<SystemStateManager>().setScanCycleEnabled = false;
+//        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
+//        Navigator.of(context).pushNamed(EndScreen.PATH);
+//        return;
+//      }
 
       _handleBtState(data[_BT_MAP_KEY]);
       _handleInternetState(data[_INET_MAP_KEY]);
 
       if (data[_BT_MAP_KEY] == BtStates.ENABLED && data[_INET_MAP_KEY] != ConnectivityResult.none) {
+        sl<WelcomeActivityManager>().initConnectivityListener();
         if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
-          sl<WelcomeActivityManager>().initConnectivityListener();
           GlobalSettings.replaceSettingsFromXML();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
-          _navigationSub.cancel();
         } else if (data[_TEST_MAP_KEY] == TestStates.STOPPED) {
-          sl<WelcomeActivityManager>().initConnectivityListener();
           Navigator.of(context).pushNamed(UploadingScreen.PATH);
-          _navigationSub.cancel();
+        } else if (data[_TEST_MAP_KEY] == TestStates.SFTP_UPLOAD_INCOMPLETE) {
+          _systemStateManager.setDataTransferState(DataTransferState.ENDED);
+          Navigator.of(context).pushNamed(EndScreen.PATH);
         } else {
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);
-          _navigationSub.cancel();
         }
+        _navigationSub.cancel();
       }
     });
 

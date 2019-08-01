@@ -14,7 +14,16 @@ enum SessionErrorState { UNKNOWN, NO_ERROR, PIN_ERROR, SN_NOT_REGISTERED, NO_DIS
 
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
 
-enum TestStates { NOT_STARTED, STARTED, INTERRUPTED, RESUMED, MINIMUM_PASSED, STOPPED, ENDED }
+enum TestStates {
+  NOT_STARTED,
+  STARTED,
+  INTERRUPTED,
+  RESUMED,
+  MINIMUM_PASSED,
+  STOPPED,
+  ENDED,
+  SFTP_UPLOAD_INCOMPLETE
+}
 
 enum DataTransferState { NOT_STARTED, TRANSFERRING, ENDED }
 
@@ -112,19 +121,6 @@ class SystemStateManager extends ManagerBase {
   static List<String> _serverStates = ["Disconnected", "Connecting", "Connected"];
 
   static String getServerStateName(int state) => _serverStates[state];
-
-  // TEST STATES
-  static List<String> _testStates = [
-    "Not started",
-    "Started",
-    "Interrupted",
-    "Resumed",
-    "Minimum passed",
-    "Stopped",
-    "Ended"
-  ];
-
-  static String getTestStateName(int state) => _testStates[state];
 
   // DATA TRANSFER STATES
   static List<String> _dataTransferStates = [
@@ -246,7 +242,7 @@ class SystemStateManager extends ManagerBase {
   // normally, not restored after started test
   //
   _initPersistentState() {
-    if (testState != TestStates.INTERRUPTED && testState != TestStates.STOPPED) {
+    if (testState == TestStates.NOT_STARTED) {
       PrefsProvider.resetPersistentState();
     }
   }
@@ -295,6 +291,8 @@ class SystemStateManager extends ManagerBase {
       currentTestState = TestStates.STOPPED;
     } else if (PrefsProvider.getTestStarted()) {
       currentTestState = TestStates.INTERRUPTED;
+    } else if (PrefsProvider.getDataUploadingIncomplete()) {
+      currentTestState = TestStates.SFTP_UPLOAD_INCOMPLETE;
     } else {
       currentTestState = TestStates.NOT_STARTED;
     }
@@ -357,7 +355,7 @@ class SystemStateManager extends ManagerBase {
 
   void setTestState(TestStates state) {
     if (state != _testState.value) {
-      Log.info(TAG, "setTestState: ${getTestStateName(state.index)}");
+      Log.info(TAG, "setTestState: ${state.toString()}");
       _testState.sink.add(state);
     }
   }

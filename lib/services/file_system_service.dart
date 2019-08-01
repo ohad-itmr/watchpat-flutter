@@ -207,7 +207,7 @@ class FileSystemService {
     try {
       await createMainLogFile();
       // create new data files in case of first app launch
-      if (testState != TestStates.INTERRUPTED && !PrefsProvider.getDataUploadingIncomplete()) {
+      if (testState == TestStates.NOT_STARTED) {
         Log.info(TAG, 'Attempt to prepare initial files...');
         File localFile = await localDataFile;
         await localFile.create();

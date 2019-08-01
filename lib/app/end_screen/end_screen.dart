@@ -14,6 +14,7 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   static const String PATH = '/end';
 
   EndScreen() {
+    sl<SystemStateManager>().setScanCycleEnabled = false;
     WidgetsBinding.instance.addObserver(this);
   }
 

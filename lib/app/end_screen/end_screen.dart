@@ -19,7 +19,7 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
       if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
           sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
@@ -27,6 +27,8 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
         PrefsProvider.setDataUploadingIncomplete();
         BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
         initPlatformState();
+      } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {
+        Future.delayed(Duration(seconds: 2)).then((_) => exit(0));
       }
     }
     super.didChangeAppLifecycleState(state);

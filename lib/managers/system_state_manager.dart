@@ -430,6 +430,11 @@ class SystemStateManager extends ManagerBase {
 
   String get deviceErrors => _deviceErrors;
 
+  void clearDeviceErrors() {
+    _deviceErrors = '';
+    sl<IncomingPacketHandlerService>().clearDeviceErrors();
+  }
+
   String get sessionErrors => _sessionErrors;
 
   ServerStates get serverCommState => _serverCommState.value;

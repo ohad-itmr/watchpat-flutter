@@ -111,6 +111,9 @@ class BleManager extends ManagerBase {
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
+      sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.UNKNOWN);
+      sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);
+      sl<SystemStateManager>().clearDeviceErrors();
       sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
       disconnection();
       if (!sl<SystemStateManager>().isTestActive) {

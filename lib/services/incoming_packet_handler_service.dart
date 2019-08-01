@@ -96,6 +96,10 @@ class IncomingPacketHandlerService extends ManagerBase {
 //    _testStartTimer.startTimer();
   }
 
+  void clearDeviceErrors() {
+    _errorString = "Device errors:\n\n";
+  }
+
   bool isDataReceiving() {
     return _isDataReceiving;
   }

@@ -129,7 +129,7 @@ class IncomingPacketHandlerService extends ManagerBase {
       // packet is fully received
       ReceivedPacket receivedPacket =
           ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
-          ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
+      ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
       // packet validity check
@@ -177,12 +177,13 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           final int prevRemoteIdentifier = PrefsProvider.loadRemotePacketIdentifier();
           if (prevRemoteIdentifier < receivedPacket.identifier) {
-            Log.info(TAG, ">>> remote id: ${receivedPacket.identifier}, size: ${receivedPacket.size}");
+            Log.info(
+                TAG, ">>> remote id: ${receivedPacket.identifier}, size: ${receivedPacket.size}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
             TimeUtils.packetCounterTick();
 
-            final List<int> data = receivedPacket.bytes;
-            sl<DataWritingService>().writeToLocalFile(data);
+            sl<DataWritingService>().writeToLocalFile(
+                DataPacket(data: List.from(receivedPacket.bytes), id: receivedPacket.identifier));
           } else {
             Log.warning(TAG,
                 "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: ${receivedPacket.identifier}");

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:my_pat/domain_model/global_settings_model.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/log/log.dart';
 import 'package:xml/xml.dart' as xml;
 
 class GlobalSettings {
@@ -33,26 +34,39 @@ class GlobalSettings {
           .toList()
           .first
           .attributes
-          .forEach((xml.XmlAttribute node) {
+          .forEach((xml.XmlAttribute node) async {
         if (node.name.toString() == GlobalSettingsModel.TAG_DEBUG_MODE) {
           _configurationResource[node.name.toString()] = node.value == 'true';
+          printChangedSetting(
+              GlobalSettingsModel.TAG_DEBUG_MODE, GlobalSettings.isDebugMode.toString());
         } else if (node.name.toString() == GlobalSettingsModel.TAG_IGNORE_DEVICE_ERRORS) {
-          PrefsProvider.setIgnoreDeviceErrors(node.value == 'true');
+          await PrefsProvider.setIgnoreDeviceErrors(node.value == 'true');
+          printChangedSetting(GlobalSettingsModel.TAG_IGNORE_DEVICE_ERRORS,
+              PrefsProvider.getIgnoreDeviceErrors().toString());
         } else if (node.name.toString() == GlobalSettingsModel.TAG_MIN_STORAGE_SPACE_MB) {
           _configurationResource[node.name.toString()] = int.parse(node.value);
+          printChangedSetting(GlobalSettingsModel.TAG_MIN_STORAGE_SPACE_MB,
+              '${GlobalSettings.minStorageSpaceMB} MB');
         } else if (node.name.toString() == GlobalSettingsModel.TAG_DISPATCHER_LINK_1) {
           _configurationResource[GlobalSettingsModel.TAG_DISPATCHERS_URLS].clear();
           _configurationResource[GlobalSettingsModel.TAG_DISPATCHERS_URLS].add(node.value);
         } else if (node.name.toString() == GlobalSettingsModel.TAG_DISPATCHER_LINK_2) {
           _configurationResource[GlobalSettingsModel.TAG_DISPATCHERS_URLS].add(node.value);
+          printChangedSetting(
+              GlobalSettingsModel.TAG_DISPATCHERS_URLS, GlobalSettings.dispatchersUrls.toString());
         } else {
           _configurationResource[node.name.toString()] = double.parse(node.value);
+          printChangedSetting(node.name.toString(), double.parse(node.value).toString());
         }
       });
     } catch (e) {
       print("XML configuring error: ${e.toString()}");
     }
     return;
+  }
+
+  static void printChangedSetting(String name, String value) {
+    Log.info(TAG, '$name was changed from XML, new value is: $value');
   }
 
   static GlobalSettingsModel get _globalSettings =>

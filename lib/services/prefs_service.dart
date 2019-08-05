@@ -175,7 +175,7 @@ class PrefsProvider {
   //
   // is ignore device error
   //
-  static void setIgnoreDeviceErrors(bool value) async {
+  static Future<void> setIgnoreDeviceErrors(bool value) async {
     await PrefsService.prefs.setBool(PrefsNames.IS_IGNORE_DEVICE_ERRORS_KEY, value);
   }
 

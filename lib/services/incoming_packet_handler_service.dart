@@ -142,7 +142,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         return;
       }
 
-      print("RECEIVED PACKET: ${receivedPacket.bytes}");
+//      print("RECEIVED PACKET: ${receivedPacket.bytes}");
 
       // system reaction to the packet
       switch (packetType) {

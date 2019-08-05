@@ -29,19 +29,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   void _handleNext() async {
     await welcomeManager.initialChecksComplete.firstWhere((bool isComplete) => isComplete);
+
     final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
     _nextIsPressed = false;
+
     if (welcomeManager.getInitialErrors().length > 0) {
       Navigator.of(context)
           .pushNamed("${ErrorScreen.PATH}/${welcomeManager.initialErrorsAsString}");
-    } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
-      Navigator.of(context)
-          .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
     } else if (sessionHasErrors) {
       Navigator.of(context)
           .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
+    } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
+      Navigator.of(context)
+          .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
     } else if (state == ScanResultStates.NOT_LOCATED ||
         state == ScanResultStates.LOCATED_MULTIPLE) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);

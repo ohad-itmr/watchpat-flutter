@@ -27,9 +27,13 @@ class ErrorScreen extends StatelessWidget {
           children: <Widget>[
             Text(S.of(context).error.toUpperCase(),
                 style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24.0)),
-            Text(
-              '$error',
-              style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 18.0),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                '$error',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 18.0),
+              ),
             ),
             Container(height: MediaQuery.of(context).size.width / 2),
             ButtonsBlock(

@@ -142,6 +142,8 @@ class IncomingPacketHandlerService extends ManagerBase {
         return;
       }
 
+      print("RECEIVED PACKET: ${receivedPacket.bytes}");
+
       // system reaction to the packet
       switch (packetType) {
         case DeviceCommands.CMD_OPCODE_ACK:
@@ -272,7 +274,6 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_BIT_RES:
           Log.info(
               TAG, "packet received (BIT_RES): ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
-
           _bitResponse.sink.add(receivedPacket.extractBitResponse());
 
           // send bit-response packet ACK
@@ -586,7 +587,9 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void _setPacketState(PacketState state) {
-    print("SETTING PACKET STATE: ${state.toString()}");
-    _packetState = state;
+    if (_packetState != state) {
+      print("Setting packet state to: ${state.toString()}");
+      _packetState = state;
+    }
   }
 }

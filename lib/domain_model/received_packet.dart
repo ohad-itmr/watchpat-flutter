@@ -187,7 +187,7 @@ class ReceivedPacket {
   }
 
   int extractBitResponse() {
-    return int.parse(extractPayload().reversed.join());
+    return ConvertFormats.fourBytesToInt(extractPayload());
   }
 
   int extractLogFileSize() {

@@ -8,29 +8,27 @@ class NotificationsService {
   FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
   NotificationsService() {
-    var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS = IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocationLocation);
-    var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+    var initializationSettingsAndroid = new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS =
+        IOSInitializationSettings(onDidReceiveLocalNotification: onDidReceiveLocationLocation);
+    var initializationSettings =
+        InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
     _localNotifications.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
   }
 
   Future onSelectNotification(String payload) async {}
 
-  Future onDidReceiveLocationLocation(_,__,___,____) async {}
+  Future onDidReceiveLocationLocation(_, __, ___, ____) async {}
 
   Future<void> showLocalNotification(String msg) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'mypat_notification_channel', 'MyPAT', 'MyPAT application',
+        'watchpat_notification_channel', 'WatchPAT', 'WatchPAT',
         importance: Importance.Max, priority: Priority.High);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await _localNotifications.show(
-        0, 'MyPAT', msg, platformChannelSpecifics,
+    var platformChannelSpecifics =
+        NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await _localNotifications.show(0, 'WatchPAT™ONE', msg, platformChannelSpecifics,
         payload: 'item id 1');
   }
 }

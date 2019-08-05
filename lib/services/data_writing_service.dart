@@ -21,6 +21,7 @@ class DataWritingService {
   DataWritingService() {
     _systemState = sl<SystemStateManager>();
     _systemState.deviceCommStateStream.listen(_handleDeviceState);
+    _dataStream.asyncMap(_writeToLocalFileAsync).listen(null);
   }
 
   void _handleDeviceState(DeviceStates state) {
@@ -38,7 +39,6 @@ class DataWritingService {
     if (await _dataFile.exists()) {
       await PrefsProvider.saveTestDataRecordingOffset(await _dataFile.length());
     }
-    _dataStream.asyncMap(_writeToLocalFileAsync).listen(null);
   }
 
   void writeToLocalFile(DataPacket packet) {

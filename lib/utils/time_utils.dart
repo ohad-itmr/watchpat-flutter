@@ -29,6 +29,7 @@ class TimeUtils {
     }
     if (testPacketCount >
         GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
+      Log.info(TAG, "Maximum test length triggered. Stopping test.");
       sl<TestingManager>().stopTesting();
     }
   }

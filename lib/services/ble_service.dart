@@ -81,7 +81,9 @@ class BleService {
 
   void clearDevice() {
     _device = null;
-    _readCharSubscription.cancel();
+    if (_readCharSubscription != null) {
+      _readCharSubscription.cancel();
+    }
     _readCharSubscription = null;
   }
 

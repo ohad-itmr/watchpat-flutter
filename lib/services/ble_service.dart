@@ -37,14 +37,7 @@ class BleService {
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
     Log.info(TAG, '## Connection to device ${d.id}');
     _device = d;
-    _flutterBlue
-        .connect(
-          _device,
-        )
-        .listen(
-          null,
-//          onDone: _disconnect,
-        );
+    _flutterBlue.connect(_device).listen(null);
     return _device.onStateChanged();
   }
 

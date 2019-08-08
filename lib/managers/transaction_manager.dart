@@ -59,6 +59,7 @@ class TransactionManager extends ManagerBase {
         .listen((_) {
       Log.info(TAG, "Connection to device was lost during or before test, reconnecting");
       sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+//      sl<BleManager>().connect();
     });
   }
 
@@ -67,6 +68,7 @@ class TransactionManager extends ManagerBase {
       if (call.method == "crashHappened") {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION CRASHED: ${call.arguments}");
       }
+      return;
     });
   }
 

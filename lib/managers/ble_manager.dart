@@ -20,6 +20,7 @@ class BleManager extends ManagerBase {
   bool _isFirstConnection = true;
 
   String _deviceAdvName;
+  static BluetoothDevice _device;
 
   BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
       BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
@@ -65,8 +66,8 @@ class BleManager extends ManagerBase {
     }
   }
 
-  void connect(BluetoothDevice d) {
-    _deviceStateSubscription = sl<BleService>().connect(d).listen(_deviceConnectionStateHandler);
+  void connect() {
+    _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
   }
 
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
@@ -305,10 +306,10 @@ class BleManager extends ManagerBase {
 
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.CONNECTING);
 
-      final BluetoothDevice device = _discoveredDevices.values.toList()[0].device;
+      _device = _discoveredDevices.values.toList()[0].device;
       _deviceAdvName = _discoveredDevices.values.toList()[0].advertisementData.localName;
 
-      connect(device);
+      connect();
     } else {
       Log.info(TAG, "discovered MULTIPLE devices on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);

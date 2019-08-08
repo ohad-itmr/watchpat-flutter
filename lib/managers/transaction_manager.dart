@@ -52,14 +52,16 @@ class TransactionManager extends ManagerBase {
 
   _initStartingScanOnDeviceDisconnect() {
     _sysState.deviceCommStateStream
-        .where((DeviceStates deviceState) =>
-            deviceState == DeviceStates.DISCONNECTED &&
-            _sysState.testState != TestStates.ENDED &&
-            _sysState.isScanCycleEnabled)
+        .where((DeviceStates deviceState) => deviceState == DeviceStates.DISCONNECTED)
         .listen((_) {
-      Log.info(TAG, "Connection to device was lost during or before test, reconnecting");
-      sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-//      sl<BleManager>().connect();
+      if (sl<SystemStateManager>().isTestActive) {
+        Log.info(TAG, "Connection to device was lost during test, reconnecting");
+        sl<BleManager>().connect();
+      } else if (!sl<SystemStateManager>().isTestActive &&
+          sl<SystemStateManager>().isScanCycleEnabled) {
+        Log.info(TAG, "Connection to device was lost before test, scanning");
+        sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      }
     });
   }
 

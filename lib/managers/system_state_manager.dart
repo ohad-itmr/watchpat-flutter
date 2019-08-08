@@ -467,6 +467,7 @@ class SystemStateManager extends ManagerBase {
 
   bool get isTestActive => testState != TestStates.NOT_STARTED && testState != TestStates.ENDED;
 
+
   @override
   void dispose() {
     _btState.close();

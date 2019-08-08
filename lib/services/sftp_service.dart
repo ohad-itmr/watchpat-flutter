@@ -71,7 +71,8 @@ class SftpService {
   _handleSftpUploadingState(SftpUploadingState state) async {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
-      await _checkRemoteFileSize();
+      Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
+      _checkRemoteFileSize();
       await _informDispatcher();
       _closeConnection();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
@@ -249,8 +250,6 @@ class SftpService {
   }
 
   Future<void> _informDispatcher() async {
-    Log.info(
-        TAG, "Uploading of test data complete, closing sftp connection and informing dispatcher");
     await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
     sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
   }

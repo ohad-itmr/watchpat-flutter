@@ -99,8 +99,6 @@ class SftpService {
 
     await _initSftpConnection();
 
-    await _writeTestInformationFile();
-
     // set up or restore uploading offset
     if (sl<SystemStateManager>().testState == TestStates.STARTED) {
       await PrefsProvider.saveTestDataUploadingOffset(0);
@@ -109,6 +107,20 @@ class SftpService {
     }
 
     _awaitForData();
+  }
+
+  Future<void> _initSftpConnection() async {
+    try {
+      Log.info(TAG, "Connecting to SFTP server");
+      final resultSession = await _client.connect();
+      final resultConnection = await _client.connectSFTP();
+      Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
+      _writeTestInformationFile();
+      sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
+    } catch (e) {
+      Log.shout(TAG, "Connection to SFTP failed, $e");
+      _tryToReconnect(error: e.toString());
+    }
   }
 
   Future<void> _writeTestInformationFile() async {
@@ -120,19 +132,6 @@ class SftpService {
       Log.info(TAG, "${DefaultSettings.serverInfoFileName} file created");
     } catch (e) {
       Log.shout(TAG, "Failed to create ${DefaultSettings.serverInfoFileName}, ${e.toString()}");
-    }
-  }
-
-  Future<void> _initSftpConnection() async {
-    try {
-      Log.info(TAG, "Connecting to SFTP server");
-      final resultSession = await _client.connect();
-      final resultConnection = await _client.connectSFTP();
-      Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
-      sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
-    } catch (e) {
-      Log.shout(TAG, "Connection to SFTP failed, $e");
-      _tryToReconnect(error: e.toString());
     }
   }
 

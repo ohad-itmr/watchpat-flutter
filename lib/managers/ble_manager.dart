@@ -220,11 +220,6 @@ class BleManager extends ManagerBase {
         DeviceCommands.getStartSessionCmd(808598064, useType, [55, 46, 49, 46, 50]));
   }
 
-  void forgetDeviceAndRestartScan() {
-    PrefsProvider.clearDeviceName();
-    disconnection();
-  }
-
   void startScan({int time, @required bool connectToFirstDevice, String deviceName}) {
     if (!_preScanChecks()) {
       return;

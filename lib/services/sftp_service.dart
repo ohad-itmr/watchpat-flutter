@@ -115,7 +115,8 @@ class SftpService {
       final resultSession = await _client.connect();
       final resultConnection = await _client.connectSFTP();
       Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
-      _writeTestInformationFile();
+      await Future.delayed(Duration(seconds: 1));
+      await _writeTestInformationFile();
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
     } catch (e) {
       Log.shout(TAG, "Connection to SFTP failed, $e");

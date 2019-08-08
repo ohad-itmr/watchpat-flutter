@@ -108,7 +108,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   }
 
   void _forgetConnectedDevice() {
-    sl<BleManager>().forgetDeviceAndRestartScan();
+    PrefsProvider.clearDeviceName();
   }
 
   void _killApplication() {

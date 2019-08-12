@@ -78,7 +78,7 @@ class S implements WidgetsLocalizations {
   String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   String get device_log_file_description => "Device log file";
   String get device_not_found => "Device is not found";
-  String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned. If not, verify that you placed a new battery and check it is properly positioned.";
+  String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does, place your phone closer to the device. If not, verify that you placed a new battery and check it is properly positioned.";
   String get device_ver_name => "DeviceFWVersion";
   String get digits => "digits";
   String get disconnect_all_irr_devices => "Disconnect all irrelevant devices";

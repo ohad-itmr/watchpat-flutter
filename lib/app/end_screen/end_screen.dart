@@ -36,23 +36,26 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
 
   Widget _generateTextBlock(BuildContext context) {
     return StreamBuilder(
-      stream: Observable.combineLatest2(
+      stream: Observable.combineLatest3(
           sl<SystemStateManager>().globalProcedureStateStream,
           sl<SystemStateManager>().inetConnectionStateStream,
-          (GlobalProcedureState global, ConnectivityResult inet) => [global, inet]),
+          sl<SftpService>().sftpConnectionStateStream,
+          (GlobalProcedureState global, ConnectivityResult inet, SftpConnectionState sftp) =>
+              [global, inet, sftp]),
       initialData: [],
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.data.length == 0) return Container();
 
         final GlobalProcedureState global = snapshot.data[0];
         final ConnectivityResult inet = snapshot.data[1];
+        final SftpConnectionState sftp = snapshot.data[2];
 
         String bodyText;
 
         if (global == GlobalProcedureState.COMPLETE) {
           bodyText = S.of(context).thankYouContent;
         } else {
-          if (inet != ConnectivityResult.none) {
+          if (inet != ConnectivityResult.none && sftp == SftpConnectionState.CONNECTED) {
             bodyText = S.of(context).thankYouStillUploading;
           } else {
             bodyText = S.of(context).thankYouNoInet;

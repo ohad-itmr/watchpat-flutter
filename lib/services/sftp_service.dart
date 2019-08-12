@@ -71,7 +71,8 @@ class SftpService {
   _handleSftpUploadingState(SftpUploadingState state) async {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
-      await _checkRemoteFileSize();
+      Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
+      _checkRemoteFileSize();
       await _informDispatcher();
       _closeConnection();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
@@ -98,8 +99,6 @@ class SftpService {
 
     await _initSftpConnection();
 
-    await _writeTestInformationFile();
-
     // set up or restore uploading offset
     if (sl<SystemStateManager>().testState == TestStates.STARTED) {
       await PrefsProvider.saveTestDataUploadingOffset(0);
@@ -108,6 +107,21 @@ class SftpService {
     }
 
     _awaitForData();
+  }
+
+  Future<void> _initSftpConnection() async {
+    try {
+      Log.info(TAG, "Connecting to SFTP server");
+      final resultSession = await _client.connect();
+      final resultConnection = await _client.connectSFTP();
+      Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
+      await Future.delayed(Duration(seconds: 1));
+      await _writeTestInformationFile();
+      sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
+    } catch (e) {
+      Log.shout(TAG, "Connection to SFTP failed, $e");
+      _tryToReconnect(error: e.toString());
+    }
   }
 
   Future<void> _writeTestInformationFile() async {
@@ -119,19 +133,6 @@ class SftpService {
       Log.info(TAG, "${DefaultSettings.serverInfoFileName} file created");
     } catch (e) {
       Log.shout(TAG, "Failed to create ${DefaultSettings.serverInfoFileName}, ${e.toString()}");
-    }
-  }
-
-  Future<void> _initSftpConnection() async {
-    try {
-      Log.info(TAG, "Connecting to SFTP server");
-      final resultSession = await _client.connect();
-      final resultConnection = await _client.connectSFTP();
-      Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
-      sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
-    } catch (e) {
-      Log.shout(TAG, "Connection to SFTP failed, $e");
-      _tryToReconnect(error: e.toString());
     }
   }
 
@@ -249,8 +250,6 @@ class SftpService {
   }
 
   Future<void> _informDispatcher() async {
-    Log.info(
-        TAG, "Uploading of test data complete, closing sftp connection and informing dispatcher");
     await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
     sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
   }

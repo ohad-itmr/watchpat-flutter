@@ -23,12 +23,14 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
     if (state == AppLifecycleState.paused) {
       if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
           sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
-        Log.info(TAG, "Data was not uploaded to sftp server. Registering background fetch task");
-        PrefsProvider.setDataUploadingIncomplete();
-        BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
-        initPlatformState();
+        Log.info(TAG, "Data was not fully uploaded to sftp server.");
+//        PrefsProvider.setDataUploadingIncomplete();
+//        BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
+//        initPlatformState();
       } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {
-        Future.delayed(Duration(seconds: 2)).then((_) => exit(0));
+        await BackgroundFetch.stop();
+        await Future.delayed(Duration(seconds: 2));
+        exit(0);
       }
     }
     super.didChangeAppLifecycleState(state);
@@ -96,28 +98,28 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   }
 }
 
-void initPlatformState() async {
-  // Configure BackgroundFetch.
-  BackgroundFetch.configure(
-          BackgroundFetchConfig(
-              minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
-          _backgroundFetchTask)
-      .then((int status) {
-    print('[BackgroundFetch] SUCCESS: $status');
-  }).catchError((e) {
-    print('[BackgroundFetch] ERROR: $e');
-  });
-}
+//void initPlatformState() async {
+//  // Configure BackgroundFetch.
+//  BackgroundFetch.configure(
+//          BackgroundFetchConfig(
+//              minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
+//          _backgroundFetchTask)
+//      .then((int status) {
+//    print('[BackgroundFetch] SUCCESS: $status');
+//  }).catchError((e) {
+//    print('[BackgroundFetch] ERROR: $e');
+//  });
+//}
 
 // Fetch-event callback.
-void _backgroundFetchTask() async {
-  final Connectivity _connectivity = Connectivity();
-  _connectivity.checkConnectivity().then((ConnectivityResult res) {
-    sl<EmailSenderService>().sendTestMail();
-    if (res != ConnectivityResult.none) {
-      sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
-    } else {
-      BackgroundFetch.finish();
-    }
-  });
-}
+//void _backgroundFetchTask() async {
+//  final Connectivity _connectivity = Connectivity();
+//  _connectivity.checkConnectivity().then((ConnectivityResult res) {
+//    sl<EmailSenderService>().sendTestMail();
+//    if (res != ConnectivityResult.none) {
+//      sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+//    } else {
+//      BackgroundFetch.finish();
+//    }
+//  });
+//}

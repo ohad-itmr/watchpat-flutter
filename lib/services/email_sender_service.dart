@@ -62,7 +62,7 @@ class EmailSenderService {
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add('m.derzhavets@emg-soft.com')
       ..subject = 'This thing is alive!!'
-      ..text = 'Go fun yourself';
+      ..text = 'This is test message from background fetch';
 
     return await _sendMessage(message);
   }

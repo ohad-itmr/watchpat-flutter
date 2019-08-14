@@ -301,8 +301,8 @@ class IncomingPacketHandlerService extends ManagerBase {
               packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           // disconnect from device
-          await Future.delayed(Duration(seconds: 2));
-          sl<BleManager>().disconnection();
+//          await Future.delayed(Duration(seconds: 2));
+//          sl<BleManager>().disconnection();
 
           break;
         case DeviceCommands.CMD_OPCODE_FW_UPGRADE_RES:

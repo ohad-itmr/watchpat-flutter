@@ -30,10 +30,19 @@ static FlutterMethodChannel *channel = nil;
         }
     }];
     
+    
     UIApplication.sharedApplication.statusBarHidden = false;
   [GeneratedPluginRegistrant registerWithRegistry:self];
   // Override point for customization after application launch.
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (void) applicationWillTerminate:(UIApplication *)application {
+    [channel invokeMethod:@"applicationWillTerminate" arguments:nil];
+}
+
+- (void) applicationDidEnterBackground:(UIApplication *)application {
+    [channel invokeMethod:@"applicationDidEnterBackground" arguments:nil];
 }
 
 - (int)freeDiskspace {

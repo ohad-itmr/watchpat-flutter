@@ -64,7 +64,7 @@ class TestingManager extends ManagerBase {
     _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       final int val = TimeUtils.getTimeFromTestStartSec();
       _elapsedTimerState.sink.add(val);
-      _checkForSessionTimeout();
+      checkForSessionTimeout();
     });
   }
 
@@ -74,8 +74,9 @@ class TestingManager extends ManagerBase {
     }
   }
 
-  void _checkForSessionTimeout() {
-    if (TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec) {
+  bool checkForSessionTimeout() {
+    final bool sessionTimedOut = TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
+    if (sessionTimedOut) {
       Log.info(TAG, "Session timeout triggered. Stopping test.");
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
         stopTesting();
@@ -83,6 +84,7 @@ class TestingManager extends ManagerBase {
         forceEndTesting();
       }
     }
+    return sessionTimedOut;
   }
 
   void stopTesting() {

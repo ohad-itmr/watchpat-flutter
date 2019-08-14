@@ -71,6 +71,10 @@ class TransactionManager extends ManagerBase {
     platformChannel.setMethodCallHandler((MethodCall call) {
       if (call.method == "crashHappened") {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION CRASHED: ${call.arguments}");
+      } else if (call.method == "applicationDidEnterBackground") {
+        Log.shout(TAG, ">>>>>>>>>> APPLICATION ENTERED BACKGROUND");
+      } else if (call.method == "applicationWillTerminate") {
+        Log.shout(TAG, ">>>>>>>>>> APPLICATION WILL BE TERMINATED");
       }
       return;
     });

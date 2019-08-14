@@ -1,3 +1,5 @@
+import 'package:background_fetch/background_fetch.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -71,6 +73,31 @@ class TransactionManager extends ManagerBase {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION CRASHED: ${call.arguments}");
       }
       return;
+    });
+  }
+
+  void initBackgroundTask() async {
+    // Configure BackgroundFetch.
+    BackgroundFetch.configure(
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
+        _backgroundFetchTask)
+        .then((int status) {
+      print('[BackgroundFetch] SUCCESS: $status');
+    }).catchError((e) {
+      print('[BackgroundFetch] ERROR: $e');
+    });
+  }
+
+  void _backgroundFetchTask() async {
+    final Connectivity _connectivity = Connectivity();
+    _connectivity.checkConnectivity().then((ConnectivityResult res) {
+      sl<EmailSenderService>().sendTestMail();
+      if (res != ConnectivityResult.none) {
+        sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+      } else {
+        BackgroundFetch.finish();
+      }
     });
   }
 

@@ -28,7 +28,8 @@ class TimeUtils {
       sl<SystemStateManager>().setTestDataAmountState(TestDataAmountState.MINIMUM_PASSED);
     }
     if (testPacketCount >
-        GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
+            GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60) &&
+        !PrefsProvider.getTestStoppedByUser()) {
       Log.info(TAG, "Maximum test length triggered. Stopping test.");
       sl<TestingManager>().stopTesting();
     }

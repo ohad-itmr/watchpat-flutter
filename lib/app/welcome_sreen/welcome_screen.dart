@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,12 +29,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _handleNext() async {
+    Log.info(WelcomeScreen.TAG, 'Welcome checks started');
+    
     await welcomeManager.initialChecksComplete.firstWhere((bool isComplete) => isComplete);
-
     final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
     _nextIsPressed = false;
+
+    Log.info(WelcomeScreen.TAG, 'Welcome checks finished');
 
     if (welcomeManager.getInitialErrors().length > 0) {
       Navigator.of(context)

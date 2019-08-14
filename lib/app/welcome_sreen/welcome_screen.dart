@@ -29,15 +29,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _handleNext() async {
-    Log.info(WelcomeScreen.TAG, 'Welcome checks started');
-    
     await welcomeManager.initialChecksComplete.firstWhere((bool isComplete) => isComplete);
     final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
     _nextIsPressed = false;
-
-    Log.info(WelcomeScreen.TAG, 'Welcome checks finished');
 
     if (welcomeManager.getInitialErrors().length > 0) {
       Navigator.of(context)
@@ -45,6 +41,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     } else if (sessionHasErrors) {
       Navigator.of(context)
           .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
+    } else if (sl<SystemStateManager>().deviceErrorState == DeviceErrorStates.CHANGE_BATTERY) {
+      Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
       Navigator.of(context)
           .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");

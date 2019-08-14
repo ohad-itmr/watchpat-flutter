@@ -506,6 +506,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     } else {
       Log.info(TAG, ">>>  NOT Used device");
     }
+
     if ((opcodeDependant & _PATIENT_ERROR_BATTERY_VOLTAGE_TEST) != 0) {
       errorState = DeviceErrorStates.CHANGE_BATTERY;
       _errorString += '- ${lang.err_battery_low}\n';

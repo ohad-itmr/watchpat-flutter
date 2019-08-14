@@ -25,7 +25,11 @@ class _BatteryScreenState extends State<BatteryScreen> {
   void initState() {
     systemStateManager.bleScanResultStream
         .firstWhere((ScanResultStates state) => state == ScanResultStates.LOCATED_MULTIPLE)
-        .then((_) => _showMultipleDeviceDialog());
+        .then((_) => _showErrorDialog(S.of(context).batteryContent_many_1));
+
+    systemStateManager.deviceErrorStateStream
+        .firstWhere((DeviceErrorStates state) => state == DeviceErrorStates.CHANGE_BATTERY)
+        .then((_) => _showErrorDialog(S.of(context).battery_depleted));
 
     super.initState();
   }
@@ -46,6 +50,8 @@ class _BatteryScreenState extends State<BatteryScreen> {
       if (sessionHasErrors) {
         Navigator.of(context)
             .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
+      } else if (sl<SystemStateManager>().deviceErrorState == DeviceErrorStates.CHANGE_BATTERY) {
+        _showErrorDialog(S.of(context).battery_depleted);
       } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
         Navigator.of(context)
             .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
@@ -53,9 +59,11 @@ class _BatteryScreenState extends State<BatteryScreen> {
         Navigator.pushNamed(context, PreparationScreen.PATH);
       }
     } else if (sl<SystemStateManager>().bleScanResult == ScanResultStates.LOCATED_MULTIPLE) {
-      _showMultipleDeviceDialog();
+//      _showMultipleDeviceDialog();
+      _showErrorDialog(S.of(context).batteryContent_many_1);
     } else {
-      _showNotFoundDialog();
+//      _showNotFoundDialog();
+      _showErrorDialog(S.of(context).device_not_located);
     }
     setState(() => _nextIsPressed = false);
   }
@@ -127,36 +135,17 @@ class _BatteryScreenState extends State<BatteryScreen> {
     );
   }
 
-  _showNotFoundDialog() {
+  _showErrorDialog(String msg) {
     showDialog(
         context: context,
-        builder: (_) {
-          return AlertDialog(
-            title: Text(S.of(context).device_not_found),
-            content: Text(S.of(context).device_not_located),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(S.of(context).ok),
-              ),
-            ],
-          );
-        });
-  }
-
-  _showMultipleDeviceDialog() {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            content: Text(S.of(context).batteryContent_many_1),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(S.of(context).ok.toUpperCase()),
-                onPressed: () => Navigator.pop(context),
-              )
-            ],
-          );
-        });
+        builder: (_) => AlertDialog(
+              content: Text(msg),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(S.of(context).ok.toUpperCase()),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            ));
   }
 }

@@ -186,6 +186,7 @@
   "requesting_technical_status": "Requesting technical status",
   "get_tech_status_timeout": "Get tech status: timeout",
   "battery_voltage": "Battery voltage: ",
+  "battery_depleted": "The device's battery is depleted or damaged. Please replace battery and try again",
   "vdd_voltage": "VDD voltage: ",
   "ir_led_status": "IR LED status: ",
   "red_led_status": "Red LED status: ",

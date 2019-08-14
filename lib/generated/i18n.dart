@@ -42,6 +42,7 @@ class S implements WidgetsLocalizations {
   String get batteryContent_many_2 => "Remove the battery from non-used WatchPAT\u2122 ONE in the surrounding.";
   String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   String get batteryTitle => "INSERT BATTERY ";
+  String get battery_depleted => "The device's battery is depleted or damaged. Please replace battery and try again";
   String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
   String get bt_initiation_error => "Bluetooth initiation error";
@@ -630,6 +631,8 @@ class fr extends S {
   String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   @override
   String get connect_to_charger => "Connect the phone to a charger";
+  @override
+  String get battery_depleted => "The device's battery is depleted or damaged. Please replace battery and try again";
   @override
   String get btnChangeAndRestart => "Change and exit app";
   @override

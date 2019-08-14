@@ -467,7 +467,6 @@ class SystemStateManager extends ManagerBase {
 
   bool get isTestActive => testState != TestStates.NOT_STARTED && testState != TestStates.ENDED;
 
-
   @override
   void dispose() {
     _btState.close();
@@ -491,8 +490,9 @@ class SystemStateManager extends ManagerBase {
   }
 
   Future<bool> get deviceHasErrors {
-    if (PrefsProvider.getIgnoreDeviceErrors() || bleScanResult == ScanResultStates.NOT_LOCATED)
-      return Future.value(false);
+    if (PrefsProvider.getIgnoreDeviceErrors() ||
+        bleScanResult == ScanResultStates.NOT_LOCATED ||
+        bleScanResult == ScanResultStates.LOCATED_MULTIPLE) return Future.value(false);
     return Observable.combineLatest2<DeviceStates, DeviceErrorStates, Tuple2>(
             deviceCommStateStream,
             deviceErrorStateStream,

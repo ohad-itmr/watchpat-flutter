@@ -18,21 +18,20 @@ class ErrorScreen extends StatelessWidget {
     return MainTemplate(
       showBack: false,
       showMenu: false,
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: Container(
         constraints: BoxConstraints.expand(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(S.of(context).error.toUpperCase(),
-                style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 24.0)),
+            Text(S.of(context).error.toUpperCase(), style: TextStyle(fontSize: 24.0)),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 '$error',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 18.0),
+                style: TextStyle(fontSize: 18.0),
               ),
             ),
             Container(height: MediaQuery.of(context).size.width / 2),

@@ -50,7 +50,7 @@ class _AppComponentState extends State<AppComponent> {
   void initState() {
     super.initState();
     _initRouter();
-    _initBackgroundFetch();
+//    _initBackgroundFetch();
   }
 
   @override

@@ -24,9 +24,6 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
       if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
           sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
         Log.info(TAG, "Data was not fully uploaded to sftp server.");
-//        PrefsProvider.setDataUploadingIncomplete();
-//        BackgroundFetch.registerHeadlessTask(_backgroundFetchTask);
-//        initPlatformState();
       } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {
         await BackgroundFetch.stop();
         await Future.delayed(Duration(seconds: 2));
@@ -97,29 +94,3 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
     );
   }
 }
-
-//void initPlatformState() async {
-//  // Configure BackgroundFetch.
-//  BackgroundFetch.configure(
-//          BackgroundFetchConfig(
-//              minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
-//          _backgroundFetchTask)
-//      .then((int status) {
-//    print('[BackgroundFetch] SUCCESS: $status');
-//  }).catchError((e) {
-//    print('[BackgroundFetch] ERROR: $e');
-//  });
-//}
-
-// Fetch-event callback.
-//void _backgroundFetchTask() async {
-//  final Connectivity _connectivity = Connectivity();
-//  _connectivity.checkConnectivity().then((ConnectivityResult res) {
-//    sl<EmailSenderService>().sendTestMail();
-//    if (res != ConnectivityResult.none) {
-//      sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
-//    } else {
-//      BackgroundFetch.finish();
-//    }
-//  });
-//}

@@ -45,6 +45,15 @@ static FlutterMethodChannel *channel = nil;
     [channel invokeMethod:@"applicationDidEnterBackground" arguments:nil];
 }
 
+- (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    [channel invokeMethod:@"applicationDidReceiveMemoryWarning" arguments:nil];
+}
+
+- (void) applicationProtectedDataWillBecomeUnavailable:(UIApplication *)application {
+    [channel invokeMethod:@"applicationProtectedDataWillBecomeUnavailable" arguments:nil];
+
+}
+
 - (int)freeDiskspace {
     uint64_t totalFreeSpace = 0;
     

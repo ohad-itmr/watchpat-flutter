@@ -37,7 +37,7 @@ void _initializeAllServices() {
 
   sl.registerSingleton<SftpService>(SftpService());
   sl.registerSingleton<DataWritingService>(DataWritingService());
-  sl.registerSingleton<NotificationsService>(NotificationsService());
+//  sl.registerSingleton<NotificationsService>(NotificationsService());
 
   sl.registerSingleton<EmailSenderService>(EmailSenderService());
 

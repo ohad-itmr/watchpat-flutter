@@ -75,6 +75,11 @@ class TransactionManager extends ManagerBase {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION ENTERED BACKGROUND");
       } else if (call.method == "applicationWillTerminate") {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION WILL BE TERMINATED");
+      } else if (call.method == "applicationDidReceiveMemoryWarning") {
+        Log.shout(TAG, ">>>>>>>>>> APPLICATION RECEIVED MEMORY WARNING");
+      } else if (call.method == "applicationProtectedDataWillBecomeUnavailable") {
+        Log.shout(TAG, ">>>>>>>>>> APPLICATION PROTECTED DATA BECAME UNAVAILABLE");
+
       }
       return;
     });

@@ -67,7 +67,8 @@ class BleManager extends ManagerBase {
   }
 
   void connect() {
-    _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+    _deviceStateSubscription =
+        sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
   }
 
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
@@ -112,14 +113,15 @@ class BleManager extends ManagerBase {
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
+      disconnection();
+
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.UNKNOWN);
       sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);
       sl<SystemStateManager>().clearDeviceErrors();
+      sl<SystemStateManager>().setDataTransferState(DataTransferState.NOT_STARTED);
+      sl<SftpService>().resetSFTPService();
       sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-      disconnection();
-      if (!sl<SystemStateManager>().isTestActive) {
-        sl<IncomingPacketHandlerService>().resetPacket();
-      }
+      sl<IncomingPacketHandlerService>().resetPacket();
     }
   }
 

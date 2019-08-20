@@ -79,7 +79,6 @@ class TransactionManager extends ManagerBase {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION RECEIVED MEMORY WARNING");
       } else if (call.method == "applicationProtectedDataWillBecomeUnavailable") {
         Log.shout(TAG, ">>>>>>>>>> APPLICATION PROTECTED DATA BECAME UNAVAILABLE");
-
       }
       return;
     });

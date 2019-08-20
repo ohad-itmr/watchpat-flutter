@@ -50,6 +50,12 @@ class SftpService {
     _initConnectionAvailabilityListener();
   }
 
+  void resetSFTPService() {
+    _serviceInitialized = false;
+    sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
+    _reconnectionAttempts = 0;
+  }
+
   void _initConnectionAvailabilityListener() {
     Observable.combineLatest2(
             _systemState.inetConnectionStateStream,
@@ -157,6 +163,11 @@ class SftpService {
 
   void _awaitForData() async {
     do {
+      if (!_serviceInitialized) {
+        Log.info(TAG, "SFTP service not initialized");
+        return;
+      }
+
       // Check for connections, if none start waiting
       if (!_uploadingAvailable) {
         sl<SystemStateManager>().setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);

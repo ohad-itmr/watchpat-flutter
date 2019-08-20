@@ -44,8 +44,8 @@ class SftpService {
   SftpService() {
     _systemState = sl<SystemStateManager>();
     _fileSystem = sl<FileSystemService>();
-//    _systemState.dataTransferStateStream.listen(_handleDataTransferState);
-//    _systemState.sftpUploadingStateStream.listen(_handleSftpUploadingState);
+    _systemState.dataTransferStateStream.listen(_handleDataTransferState);
+    _systemState.sftpUploadingStateStream.listen(_handleSftpUploadingState);
 
     _initConnectionAvailabilityListener();
   }

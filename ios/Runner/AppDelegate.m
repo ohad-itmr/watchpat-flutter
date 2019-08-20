@@ -37,21 +37,57 @@ static FlutterMethodChannel *channel = nil;
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
++ (void)writeLogToFile:(NSString *)str {
+    NSString *message = [AppDelegate generateLogMessage:str];
+    NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *fileName = @"ios_logs.txt";
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    if (0 < [paths count]) {
+        NSString *documentsDirPath = [paths objectAtIndex:0];
+        NSString *filePath = [documentsDirPath stringByAppendingPathComponent:fileName];
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:filePath]) {
+            // Add the text at the end of the file.
+            NSFileHandle *fileHandler = [NSFileHandle fileHandleForUpdatingAtPath:filePath];
+            [fileHandler seekToEndOfFile];
+            [fileHandler writeData:data];
+            [fileHandler closeFile];
+        } else {
+            // Create the file and write text to it.
+            [data writeToFile:filePath atomically:YES];
+        }
+    }
+}
+
++ (NSString *) generateLogMessage: (NSString *)str {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
+    NSDate *currentDate = [NSDate date];
+    NSString *dateString = [formatter stringFromDate:currentDate];
+    NSString *message = [NSString stringWithFormat:@"%@ %@ \n", dateString, str];
+    return message;
+}
+
 - (void) applicationWillTerminate:(UIApplication *)application {
+    [AppDelegate writeLogToFile:@"Application will be terminated"];
     [channel invokeMethod:@"applicationWillTerminate" arguments:nil];
 }
 
 - (void) applicationDidEnterBackground:(UIApplication *)application {
+    [AppDelegate writeLogToFile:@"Application entered background"];
     [channel invokeMethod:@"applicationDidEnterBackground" arguments:nil];
 }
 
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    [AppDelegate writeLogToFile:@"Application received memory warning"];
     [channel invokeMethod:@"applicationDidReceiveMemoryWarning" arguments:nil];
 }
 
 - (void) applicationProtectedDataWillBecomeUnavailable:(UIApplication *)application {
+    [AppDelegate writeLogToFile:@"Application protected data became unavailable"];
     [channel invokeMethod:@"applicationProtectedDataWillBecomeUnavailable" arguments:nil];
-
 }
 
 - (int)freeDiskspace {
@@ -76,7 +112,9 @@ static FlutterMethodChannel *channel = nil;
 }
 
 void myExceptionHandler(NSException *exception) {
-    [channel invokeMethod:@"crashHappened" arguments:[exception reason]];
+    NSString *msg = [NSString stringWithFormat:@"EXCEPTION: %@", [exception reason]];
+    [AppDelegate writeLogToFile:msg];
+    [channel invokeMethod:@"crashHappened" arguments:msg];
 }
 
 - (void)setSignalHandler {
@@ -95,7 +133,8 @@ void myExceptionHandler(NSException *exception) {
 }
 
 void signalHandler(int signal) {
-    NSString* report = [NSString stringWithFormat:@"Signal %i", signal];
+    NSString* report = [NSString stringWithFormat:@"SIGNAL: %i", signal];
+    [AppDelegate writeLogToFile:report];
     [channel invokeMethod:@"crashHappened" arguments:report];
 }
 

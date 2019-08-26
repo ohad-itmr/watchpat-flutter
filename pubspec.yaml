@@ -1,7 +1,7 @@
 name: my_pat
 description: A new Flutter project.
 
-version: 1.0.9+6
+version: 1.0.9+8
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -35,6 +35,8 @@ dependencies:
   hex: ^0.1.2
   package_info: ^0.4.0+6
   device_info: ^0.4.0+2
+  pref_dessert: ^0.3.0
+
 
 
   #  battery:

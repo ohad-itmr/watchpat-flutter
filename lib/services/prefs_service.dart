@@ -41,6 +41,7 @@ class PrefsNames {
   static const String IS_TEST_STOPPED_BY_USER = "is.test.stopped";
   static const String PACKET_ID_COUNTER_KEY = "packet.counter.key";
   static const String TEST_START_TIME_KEY = "test.start.time.key";
+  static const String BLUETOOTH_DEVICE_ID_KEY = "bluetooth.device.id.key";
 }
 
 class PrefsService {
@@ -169,6 +170,7 @@ class PrefsProvider {
 
   static void clearDeviceName() {
     PrefsService.prefs.remove(PrefsNames.DEVICE_NAME_KEY);
+    PrefsService.prefs.remove(PrefsNames.BLUETOOTH_DEVICE_ID_KEY);
     Log.info("PrefsProvider", "CONNECTED DEVICE FORGOTTEN");
   }
 
@@ -335,5 +337,14 @@ class PrefsProvider {
 
   static int loadTestStartTimeMS() {
     return PrefsService.prefs.getInt(PrefsNames.TEST_START_TIME_KEY) ?? 0;
+  }
+
+  // Bluetooth device ID
+  static Future<void> saveBluetoothDeviceID(String id) async {
+    return PrefsService.prefs.setString(PrefsNames.BLUETOOTH_DEVICE_ID_KEY, id);
+  }
+
+  static String loadBluetoothDeviceID() {
+    return PrefsService.prefs.getString(PrefsNames.BLUETOOTH_DEVICE_ID_KEY) ?? null;
   }
 }

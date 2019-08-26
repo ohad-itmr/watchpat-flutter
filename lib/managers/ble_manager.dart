@@ -294,6 +294,18 @@ class BleManager extends ManagerBase {
       Log.info(TAG, "no device discovered on scan");
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
 
+      // restore connection if device already connected
+      if (PrefsProvider.loadBluetoothDeviceID() != null) {
+        final BluetoothDevice d =
+            await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
+        if (d != null) {
+          _device = d;
+          _deviceAdvName = d.name;
+          connect();
+          return;
+        }
+      }
+
       if (sl<SystemStateManager>().isScanCycleEnabled) {
         startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       }

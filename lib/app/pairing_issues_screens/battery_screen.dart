@@ -94,10 +94,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
       case ScanResultStates.LOCATED_MULTIPLE:
         return [S.of(context).batteryContent_many_2];
       default:
-        return [
-          S.of(context).batteryContent_1,
-          S.of(context).batteryContent_2,
-        ];
+        return [S.of(context).batteryContent_1];
     }
   }
 

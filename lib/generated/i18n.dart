@@ -36,8 +36,8 @@ class S implements WidgetsLocalizations {
   String get app_log_file_text => "Are you sure you want to send application log file to";
   String get app_log_file_title => "Application log file";
   String get auth_fail => "Authentication failed";
-  String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and change the battery.";
-  String get batteryContent_2 => " The flat side of the battery faces the MINUS sign.";
+  String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and insert the battery. \nThe flat side of the battery faces the MINUS sign.";
+  String get batteryContent_2 => "The flat side of the battery faces the MINUS sign.";
   String get batteryContent_many_1 => "Multiple devices are identified in this surrounding.\nPlease remove the battery from all irrelevant devices and try again.";
   String get batteryContent_many_2 => "Remove the battery from non-used WatchPAT\u2122 ONE in the surrounding.";
   String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
@@ -205,7 +205,7 @@ class S implements WidgetsLocalizations {
   String get set_led_color_timeout => "Set LED color: timeout";
   String get set_serial => "Set device serial";
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
-  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\n Leave the phone behind, connected to the charger.";
+  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nLeave the phone behind, connected to the charger.";
   String get startRecordingTitle => "START RECORDING";
   String get start_test => "START TEST";
   String get stepperOf => "of";
@@ -448,7 +448,7 @@ class fr extends S {
   @override
   String get inet_initiation_error => "Internet initiation error";
   @override
-  String get batteryContent_1 => "Open the battery door on the bottom side of  the WatchPAT\u2122 and insert the provided battery.";
+  String get batteryContent_1 => "Open the battery door on the bottom side of the WatchPAT\u2122 and insert the battery.";
   @override
   String get batteryContent_2 => "The flat side of the battery  goes to where the MINUS sign is depicted.";
   @override
@@ -478,7 +478,7 @@ class fr extends S {
   @override
   String get files_creating_failed => "Failed to create initial files";
   @override
-  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected  to the charger.";
+  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected to the charger.";
   @override
   String get btnNext => "Next";
   @override

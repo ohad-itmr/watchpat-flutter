@@ -11,6 +11,11 @@ static FlutterMethodChannel *channel = nil;
     [self setUncaughtExceptionHandler];
     [self setSignalHandler];
     
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationWillTerminate:)
+     name:UIApplicationWillTerminateNotification object:nil];
+    
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     
     FlutterMethodChannel* watchPatChannel = [FlutterMethodChannel
@@ -25,6 +30,8 @@ static FlutterMethodChannel *channel = nil;
             result(@(freeSpace));
         } else if ([@"crashApplication" isEqualToString:call.method]) {
             @throw NSInternalInconsistencyException;
+        } else if ([@"extractSystemLog" isEqualToString:call.method]){
+            [self writeSystemLogs];
         } else {
             result(FlutterMethodNotImplemented);
         }
@@ -37,7 +44,8 @@ static FlutterMethodChannel *channel = nil;
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
-+ (void)writeLogToFile:(NSString *)str {
+
++ (void) writeLogToFile:(NSString *)str {
     NSString *message = [AppDelegate generateLogMessage:str];
     NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
     NSString *fileName = @"ios_logs.txt";
@@ -49,13 +57,11 @@ static FlutterMethodChannel *channel = nil;
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
         if ([fileManager fileExistsAtPath:filePath]) {
-            // Add the text at the end of the file.
             NSFileHandle *fileHandler = [NSFileHandle fileHandleForUpdatingAtPath:filePath];
             [fileHandler seekToEndOfFile];
             [fileHandler writeData:data];
             [fileHandler closeFile];
         } else {
-            // Create the file and write text to it.
             [data writeToFile:filePath atomically:YES];
         }
     }
@@ -136,6 +142,14 @@ void signalHandler(int signal) {
     NSString* report = [NSString stringWithFormat:@"SIGNAL: %i", signal];
     [AppDelegate writeLogToFile:report];
     [channel invokeMethod:@"crashHappened" arguments:report];
+}
+
+- (void) writeSystemLogs {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *fileName =[NSString stringWithFormat:@"syslog_%@.log",[NSDate date]];
+    NSString *logFilePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+",stderr);
 }
 
 @end

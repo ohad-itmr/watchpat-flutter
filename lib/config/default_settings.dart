@@ -26,7 +26,7 @@ class DefaultSettings {
   static final uploadDataChunkMaxSize = 5000;
   static final uploadDataAccumulationSize = 100000;
   static final minStorageSpaceMb = 80;
-  static final double minTestLengthHours = 5;
+  static final double minTestLengthHours = 0;
   static final double maxTestLengthHours = 10;
   static final double sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 95;
@@ -39,7 +39,7 @@ class DefaultSettings {
   static final timeoutBleSec = 10;
   static final timeoutTransactionSec = 20;
   static final emailService = "not@working.com";
-  static final debugMode = true;
+  static final debugMode = false;
 
   static final demoUrl = "";
   static final dataTransferRate = 60.0;

@@ -1,6 +1,7 @@
 import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 
@@ -87,9 +88,9 @@ class TransactionManager extends ManagerBase {
   void initBackgroundTask() async {
     // Configure BackgroundFetch.
     BackgroundFetch.configure(
-        BackgroundFetchConfig(
-            minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
-        _backgroundFetchTask)
+            BackgroundFetchConfig(
+                minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
+            _backgroundFetchTask)
         .then((int status) {
       print('[BackgroundFetch] SUCCESS: $status');
     }).catchError((e) {

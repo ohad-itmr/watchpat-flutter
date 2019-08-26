@@ -4,7 +4,7 @@ import 'package:my_pat/main.dart';
 
 import '../service_locator.dart';
 
-enum PopupOption { language, email, forget, kill }
+enum PopupOption { language, email, forget, kill, log }
 
 class MypatPopupMenuButton extends StatefulWidget {
   @override
@@ -14,17 +14,30 @@ class MypatPopupMenuButton extends StatefulWidget {
 class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   String _selectedLanguage;
 
-  final List<PopupMenuEntry<PopupOption>> _popupOptions = [
+  List<PopupMenuEntry<PopupOption>> _popupOptions = [];
+
+  @override
+  void initState() {
+    initItems();
+    super.initState();
+  }
+
+  initItems() async {
+    sl<WelcomeActivityManager>().configFinished.firstWhere((done) => done).then((_) {
+      _popupOptions = [
 //    PopupMenuItem(
 //      value: PopupOption.language,
 //      child: Text("Select language"),
 //    ),
-    PopupMenuItem(
-      value: PopupOption.forget,
-      child: Text("Forget device"),
-    ),
-    _killAppOption()
-  ];
+        PopupMenuItem(
+          value: PopupOption.forget,
+          child: Text("Forget device"),
+        ),
+        _killAppOption(),
+        _logOption()
+      ];
+    });
+  }
 
   static Widget _killAppOption() {
     if (GlobalSettings.isDebugMode) {
@@ -33,7 +46,18 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
         child: Text("Kill app"),
       );
     } else {
-      return Container();
+      return null;
+    }
+  }
+
+  static Widget _logOption() {
+    if (GlobalSettings.isDebugMode) {
+      return PopupMenuItem(
+        value: PopupOption.log,
+        child: Text("Extract system log"),
+      );
+    } else {
+      return null;
     }
   }
 
@@ -56,6 +80,8 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       _forgetConnectedDevice();
     } else if (option == PopupOption.kill) {
       _killApplication();
+    } else if (option == PopupOption.log) {
+      _extractSystemLog();
     }
   }
 
@@ -95,8 +121,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    AppComponent.setLocale(
-                        context, Locale(_selectedLanguage.replaceAll("_", "")));
+                    AppComponent.setLocale(context, Locale(_selectedLanguage.replaceAll("_", "")));
                     Navigator.of(context).pop();
                   },
                   child: Text(S.of(context).ok),
@@ -112,8 +137,11 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   }
 
   void _killApplication() {
-    TransactionManager.platformChannel.invokeMethod("crashApplication");
+//    TransactionManager.platformChannel.invokeMethod("crashApplication");
+    sl<BleService>().disconnectFromStoredDevice();
   }
 
-
+  void _extractSystemLog() {
+    TransactionManager.platformChannel.invokeMethod("extractSystemLog");
+  }
 }

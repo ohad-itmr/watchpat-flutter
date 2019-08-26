@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -35,10 +36,27 @@ class BleService {
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
+    PrefsProvider.saveBluetoothDeviceID(d.id.toString());
     Log.info(TAG, '## Connection to device ${d.id}');
     _device = d;
     _flutterBlue.connect(_device).listen(null);
     return _device.onStateChanged();
+  }
+
+  void disconnectFromStoredDevice() async {
+    await Future.delayed(Duration(seconds: 10));
+    final String deviceId = PrefsProvider.loadBluetoothDeviceID();
+    _flutterBlue.disconnect(deviceId);
+  }
+
+  Future<BluetoothDevice> restoreConnectedDevice(String deviceId) async {
+    try {
+      final BluetoothDevice d = await _flutterBlue.restoreConnectedDevice(deviceId);
+      return d;
+    } catch (e) {
+      Log.shout(TAG, "Previously connected device is not present");
+      return null;
+    }
   }
 
   Future setServicesAndChars() async {
@@ -65,7 +83,9 @@ class BleService {
     Log.info(TAG, "setNotification");
     await _device.setNotifyValue(_charForRead, false);
     await _device.setNotifyValue(_charForRead, true);
-    _readCharSubscription = _device.onValueChanged(_charForRead).listen(_handleData);
+    if (_readCharSubscription == null) {
+      _readCharSubscription = _device.onValueChanged(_charForRead).listen(_handleData);
+    }
   }
 
   void _handleData(List<int> data) {

@@ -12,12 +12,12 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if ((sl<SystemStateManager>().testState == TestStates.STARTED ||
-            sl<SystemStateManager>().testState == TestStates.RESUMED) &&
-        state == AppLifecycleState.paused) {
       Log.info("RecordingControl", ">>>>>>>>>> App changed lifecyce: ${state.toString()}");
+//    if ((sl<SystemStateManager>().testState == TestStates.STARTED ||
+//            sl<SystemStateManager>().testState == TestStates.RESUMED) &&
+//        state == AppLifecycleState.paused) {
 //      sl<NotificationsService>().showLocalNotification("Test in progress");
-    }
+//    }
     super.didChangeAppLifecycleState(state);
   }
 

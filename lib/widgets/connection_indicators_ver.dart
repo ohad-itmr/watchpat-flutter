@@ -21,8 +21,8 @@ class _AppbarConnectionIndicatorsState
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(),
-          _buildLed(color: Theme.of(context).accentColor, indicator: _BT),
-          _buildLed(color: Theme.of(context).primaryColor, indicator: _SFTP),
+          _buildLed(color: Colors.lightBlueAccent, indicator: _BT),
+          _buildLed(color: Colors.lightGreen, indicator: _SFTP),
           Container(),
         ],
       ),
@@ -63,16 +63,18 @@ class IndicatorPainter extends CustomPainter {
         Offset(3.0, 3.0),
         6.0,
         Paint()
-          ..style = PaintingStyle.fill
-          ..color = Colors.white);
+          ..strokeWidth = 2
+          ..strokeJoin = StrokeJoin.bevel
+          ..style = isLit ? PaintingStyle.fill : PaintingStyle.stroke
+          ..color = color);
 
     // inner circle
-    canvas.drawCircle(
-        Offset(3.0, 3.0),
-        5.0,
-        Paint()
-          ..style = PaintingStyle.fill
-          ..color = isLit ? color : color.withOpacity(0.4));
+//    canvas.drawCircle(
+//        Offset(3.0, 3.0),
+//        5.0,
+//        Paint()
+//          ..style = PaintingStyle.fill
+//          ..color = isLit ? color : color.withOpacity(0.4));
   }
 
   @override

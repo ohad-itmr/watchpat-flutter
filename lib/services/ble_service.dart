@@ -43,12 +43,6 @@ class BleService {
     return _device.onStateChanged();
   }
 
-  void disconnectFromStoredDevice() async {
-    await Future.delayed(Duration(seconds: 10));
-    final String deviceId = PrefsProvider.loadBluetoothDeviceID();
-    _flutterBlue.disconnect(deviceId);
-  }
-
   Future<BluetoothDevice> restoreConnectedDevice(String deviceId) async {
     try {
       final BluetoothDevice d = await _flutterBlue.restoreConnectedDevice(deviceId);

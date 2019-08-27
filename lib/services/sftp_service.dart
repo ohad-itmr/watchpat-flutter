@@ -78,6 +78,7 @@ class SftpService {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
+      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       _checkRemoteFileSize();
       await _informDispatcher();
       _closeConnection();
@@ -87,6 +88,7 @@ class SftpService {
   }
 
   Future<void> _initService() async {
+    if (_serviceInitialized) return;
     _serviceInitialized = true;
     Log.info(TAG, "Initializing SFTP service");
 

@@ -81,30 +81,34 @@ class _AppComponentState extends State<AppComponent> {
 
   // Fetch-event callback.
   void _backgroundFetchTask() async {
-    Log.info(TAG, "[BACKGROUND] Received background fetch event");
+    Log.info("[BACKGROUND FETCH]", "Received background fetch event");
     sl<EmailSenderService>().sendTestMail();
     if (sl<SystemStateManager>().isTestActive) {
-      Log.info(TAG, "[BACKGROUND]: Test in progress, checking session timeout");
+      Log.info("[BACKGROUND FETCH]", "Test in progress, checking session timeout");
       if (sl<TestingManager>().checkForSessionTimeout()) {
+
         // todo request additional background time
+
       } else {
-        Log.info(TAG, "[BACKGROUND]: Session is still active, finishing task");
+        Log.info("[BACKGROUND FETCH]", "Session is still active, finishing task");
         BackgroundFetch.finish();
       }
     } else if (PrefsProvider.getDataUploadingIncomplete()) {
-      Log.info(TAG, "[BACKGROUND]: SFTP uploading incomplete, checking internet connection");
+      Log.info("[BACKGROUND FETCH]", "SFTP uploading incomplete, checking internet connection");
       final Connectivity _connectivity = Connectivity();
       _connectivity.checkConnectivity().then((ConnectivityResult res) {
         if (res != ConnectivityResult.none) {
+
           //todo  request additional background time
+
           sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
         } else {
-          Log.info(TAG, "[BACKGROUND]: Internet connection unavailable, finishing task");
+          Log.info("[BACKGROUND FETCH]", "Internet connection unavailable, finishing task");
           BackgroundFetch.finish();
         }
       });
     } else {
-      Log.info(TAG, "[BACKGROUND]: App state is clean, finishing task");
+      Log.info(TAG, "[BACKGROUND FETCH]: App state is clean, finishing task");
       BackgroundFetch.finish();
     }
   }

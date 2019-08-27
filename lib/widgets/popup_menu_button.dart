@@ -34,7 +34,6 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
           child: Text("Forget device"),
         ),
         _killAppOption(),
-        _logOption()
       ];
     });
   }
@@ -80,8 +79,6 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       _forgetConnectedDevice();
     } else if (option == PopupOption.kill) {
       _killApplication();
-    } else if (option == PopupOption.log) {
-      _extractSystemLog();
     }
   }
 
@@ -137,11 +134,6 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   }
 
   void _killApplication() {
-//    TransactionManager.platformChannel.invokeMethod("crashApplication");
-    sl<BleService>().disconnectFromStoredDevice();
-  }
-
-  void _extractSystemLog() {
-    TransactionManager.platformChannel.invokeMethod("extractSystemLog");
+    TransactionManager.platformChannel.invokeMethod("crashApplication");
   }
 }

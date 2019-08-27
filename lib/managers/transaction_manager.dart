@@ -1,7 +1,4 @@
-import 'package:background_fetch/background_fetch.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 
@@ -70,43 +67,14 @@ class TransactionManager extends ManagerBase {
 
   _initMethodChannel() {
     platformChannel.setMethodCallHandler((MethodCall call) {
-      if (call.method == "crashHappened") {
-        Log.shout(TAG, ">>>>>>>>>> APPLICATION CRASHED: ${call.arguments}");
-      } else if (call.method == "applicationDidEnterBackground") {
-        Log.shout(TAG, ">>>>>>>>>> APPLICATION ENTERED BACKGROUND");
-      } else if (call.method == "applicationWillTerminate") {
-        Log.shout(TAG, ">>>>>>>>>> APPLICATION WILL BE TERMINATED");
-      } else if (call.method == "applicationDidReceiveMemoryWarning") {
-        Log.shout(TAG, ">>>>>>>>>> APPLICATION RECEIVED MEMORY WARNING");
-      } else if (call.method == "applicationProtectedDataWillBecomeUnavailable") {
-        Log.shout(TAG, ">>>>>>>>>> APPLICATION PROTECTED DATA BECAME UNAVAILABLE");
+      if (call.method == "nativeLogEvent") {
+        Log.info("[iOS]", call.arguments);
+      } else if (call.method == "startSftpUploading") {
+        sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+      } else if (call.method == "stopSftpUploading") {
+        sl<SftpService>().resetSFTPService();
       }
       return;
-    });
-  }
-
-  void initBackgroundTask() async {
-    // Configure BackgroundFetch.
-    BackgroundFetch.configure(
-            BackgroundFetchConfig(
-                minimumFetchInterval: 15, stopOnTerminate: false, enableHeadless: true),
-            _backgroundFetchTask)
-        .then((int status) {
-      print('[BackgroundFetch] SUCCESS: $status');
-    }).catchError((e) {
-      print('[BackgroundFetch] ERROR: $e');
-    });
-  }
-
-  void _backgroundFetchTask() async {
-    final Connectivity _connectivity = Connectivity();
-    _connectivity.checkConnectivity().then((ConnectivityResult res) {
-      sl<EmailSenderService>().sendTestMail();
-      if (res != ConnectivityResult.none) {
-        sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
-      } else {
-        BackgroundFetch.finish();
-      }
     });
   }
 

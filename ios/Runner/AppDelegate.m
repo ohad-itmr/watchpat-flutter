@@ -4,6 +4,7 @@
 @implementation AppDelegate
 
 static FlutterMethodChannel *channel = nil;
+static BOOL sessionCompleted = NO;
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -30,8 +31,10 @@ static FlutterMethodChannel *channel = nil;
             result(@(freeSpace));
         } else if ([@"crashApplication" isEqualToString:call.method]) {
             @throw NSInternalInconsistencyException;
-        } else if ([@"extractSystemLog" isEqualToString:call.method]){
-            [self writeSystemLogs];
+        } else if ([@"startBackgroundSftpUploading" isEqualToString:call.method]) {
+            [self startBackgroundSftpUploading];
+        } else if ([@"backgroundSftpUploadingFinished" isEqualToString:call.method]) {
+            sessionCompleted = YES;
         } else {
             result(FlutterMethodNotImplemented);
         }
@@ -78,22 +81,18 @@ static FlutterMethodChannel *channel = nil;
 
 - (void) applicationWillTerminate:(UIApplication *)application {
     [AppDelegate writeLogToFile:@"Application will be terminated"];
-    [channel invokeMethod:@"applicationWillTerminate" arguments:nil];
+    [channel invokeMethod:@"nativeLogEvent" arguments:@"Application will be terminated"];
 }
 
 - (void) applicationDidEnterBackground:(UIApplication *)application {
     [AppDelegate writeLogToFile:@"Application entered background"];
-    [channel invokeMethod:@"applicationDidEnterBackground" arguments:nil];
+    [channel invokeMethod:@"nativeLogEvent" arguments:@"Application entered background"];
+    [self startBackgroundSftpUploading];
 }
 
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {
     [AppDelegate writeLogToFile:@"Application received memory warning"];
-    [channel invokeMethod:@"applicationDidReceiveMemoryWarning" arguments:nil];
-}
-
-- (void) applicationProtectedDataWillBecomeUnavailable:(UIApplication *)application {
-    [AppDelegate writeLogToFile:@"Application protected data became unavailable"];
-    [channel invokeMethod:@"applicationProtectedDataWillBecomeUnavailable" arguments:nil];
+    [channel invokeMethod:@"nativeLogEvent" arguments:@"Application received memory warning"];
 }
 
 - (int)freeDiskspace {
@@ -117,10 +116,36 @@ static FlutterMethodChannel *channel = nil;
     NSSetUncaughtExceptionHandler(&myExceptionHandler);
 }
 
+- (void)startBackgroundSftpUploading {
+    [[NSProcessInfo processInfo] performExpiringActivityWithReason:@"BackgroundSftpUploading" usingBlock:^void (BOOL expired) {
+        if (expired && !sessionCompleted) {
+            NSString *msg = @"SFTP background task expired, closing SFTP upload";
+            [channel invokeMethod:@"nativeLogEvent" arguments:msg];
+            [channel invokeMethod:@"stopSftpUploading" arguments:nil];
+            [AppDelegate writeLogToFile:msg];
+        } else if (!sessionCompleted) {
+            NSString *msg = @"SFTP background task is active, starting/continuing SFTP upload";
+            [channel invokeMethod:@"nativeLogEvent" arguments:msg];
+            [channel invokeMethod:@"startSftpUploading" arguments:nil];
+            [AppDelegate writeLogToFile:msg];
+            
+            while (!sessionCompleted) {
+                [NSThread sleepForTimeInterval:1.0];
+                if (sessionCompleted) {
+                    NSString *msg = @"SFTP background uploading finished";
+                    [channel invokeMethod:@"nativeLogEvent" arguments:msg];
+                    [AppDelegate writeLogToFile:msg];
+                }
+            }
+        }
+    }];
+}
+
+
 void myExceptionHandler(NSException *exception) {
-    NSString *msg = [NSString stringWithFormat:@"EXCEPTION: %@", [exception reason]];
+    NSString *msg = [NSString stringWithFormat:@">>>>>>>>>> EXCEPTION: %@", [exception reason]];
     [AppDelegate writeLogToFile:msg];
-    [channel invokeMethod:@"crashHappened" arguments:msg];
+    [channel invokeMethod:@"nativeLogEvent" arguments:msg];
 }
 
 - (void)setSignalHandler {
@@ -139,17 +164,9 @@ void myExceptionHandler(NSException *exception) {
 }
 
 void signalHandler(int signal) {
-    NSString* report = [NSString stringWithFormat:@"SIGNAL: %i", signal];
+    NSString* report = [NSString stringWithFormat:@">>>>>>>>>> SIGNAL: %i", signal];
     [AppDelegate writeLogToFile:report];
-    [channel invokeMethod:@"crashHappened" arguments:report];
-}
-
-- (void) writeSystemLogs {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *fileName =[NSString stringWithFormat:@"syslog_%@.log",[NSDate date]];
-    NSString *logFilePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+",stderr);
+    [channel invokeMethod:@"nativeLogEvent" arguments:report];
 }
 
 @end

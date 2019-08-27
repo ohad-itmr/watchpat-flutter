@@ -87,7 +87,6 @@ static BOOL sessionCompleted = NO;
 - (void) applicationDidEnterBackground:(UIApplication *)application {
     [AppDelegate writeLogToFile:@"Application entered background"];
     [channel invokeMethod:@"nativeLogEvent" arguments:@"Application entered background"];
-    [self startBackgroundSftpUploading];
 }
 
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {

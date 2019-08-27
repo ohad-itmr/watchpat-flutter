@@ -73,22 +73,19 @@ class _AppComponentState extends State<AppComponent> {
   _initBackgroundFetch() {
     BackgroundFetch.configure(BackgroundFetchConfig(minimumFetchInterval: 15), _backgroundFetchTask)
         .then((int status) {
-      Log.info(TAG, "Register background fetch SUCCESS $status");
+      Log.info("[BACKGROUND FETCH]", "Register background fetch SUCCESS $status");
     }).catchError((e) {
-      Log.info(TAG, "Register background fetch FAILED $e");
+      Log.info("[BACKGROUND FETCH]", "Register background fetch FAILED $e");
     });
   }
 
   // Fetch-event callback.
   void _backgroundFetchTask() async {
     Log.info("[BACKGROUND FETCH]", "Received background fetch event");
-    sl<EmailSenderService>().sendTestMail();
     if (sl<SystemStateManager>().isTestActive) {
       Log.info("[BACKGROUND FETCH]", "Test in progress, checking session timeout");
       if (sl<TestingManager>().checkForSessionTimeout()) {
-
-        // todo request additional background time
-
+        TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
       } else {
         Log.info("[BACKGROUND FETCH]", "Session is still active, finishing task");
         BackgroundFetch.finish();
@@ -98,10 +95,7 @@ class _AppComponentState extends State<AppComponent> {
       final Connectivity _connectivity = Connectivity();
       _connectivity.checkConnectivity().then((ConnectivityResult res) {
         if (res != ConnectivityResult.none) {
-
-          //todo  request additional background time
-
-          sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+          TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
         } else {
           Log.info("[BACKGROUND FETCH]", "Internet connection unavailable, finishing task");
           BackgroundFetch.finish();

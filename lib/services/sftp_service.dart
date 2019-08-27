@@ -69,7 +69,9 @@ class SftpService {
     _currentDataTransferState = state;
     if (state == DataTransferState.TRANSFERRING && !_serviceInitialized) {
       _initService();
+      PrefsProvider.setDataUploadingIncomplete(value: true);
     } else if (state == DataTransferState.ENDED && !_serviceInitialized) {
+      PrefsProvider.setDataUploadingIncomplete(value: true);
       _initService();
     }
   }
@@ -78,6 +80,7 @@ class SftpService {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
+      PrefsProvider.setDataUploadingIncomplete(value: false);
       TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       _checkRemoteFileSize();
       await _informDispatcher();

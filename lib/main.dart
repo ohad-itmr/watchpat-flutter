@@ -50,7 +50,7 @@ class _AppComponentState extends State<AppComponent> {
   void initState() {
     super.initState();
     _initRouter();
-//    _initBackgroundFetch();
+    _initBackgroundFetch();
   }
 
   @override
@@ -73,16 +73,16 @@ class _AppComponentState extends State<AppComponent> {
   _initBackgroundFetch() {
     BackgroundFetch.configure(BackgroundFetchConfig(minimumFetchInterval: 15), _backgroundFetchTask)
         .then((int status) {
-      Log.info("[BACKGROUND FETCH]", "Register background fetch SUCCESS $status");
+      Log.info(TAG, "Register background fetch SUCCESS $status");
     }).catchError((e) {
-      Log.info("[BACKGROUND FETCH]", "Register background fetch FAILED $e");
+      Log.info(TAG, "Register background fetch FAILED $e");
     });
   }
 
   // Fetch-event callback.
   void _backgroundFetchTask() async {
     Log.info("[BACKGROUND FETCH]", "Received background fetch event");
-    if (sl<SystemStateManager>().isTestActive) {
+    if (PrefsProvider.getTestStarted()) {
       Log.info("[BACKGROUND FETCH]", "Test in progress, checking session timeout");
       if (sl<TestingManager>().checkForSessionTimeout()) {
         TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
@@ -91,6 +91,7 @@ class _AppComponentState extends State<AppComponent> {
         BackgroundFetch.finish();
       }
     } else if (PrefsProvider.getDataUploadingIncomplete()) {
+      sl<SystemStateManager>().setScanCycleEnabled = false;
       Log.info("[BACKGROUND FETCH]", "SFTP uploading incomplete, checking internet connection");
       final Connectivity _connectivity = Connectivity();
       _connectivity.checkConnectivity().then((ConnectivityResult res) {
@@ -102,7 +103,7 @@ class _AppComponentState extends State<AppComponent> {
         }
       });
     } else {
-      Log.info(TAG, "[BACKGROUND FETCH]: App state is clean, finishing task");
+      Log.info("[BACKGROUND FETCH]", "App state is clean, finishing task");
       BackgroundFetch.finish();
     }
   }

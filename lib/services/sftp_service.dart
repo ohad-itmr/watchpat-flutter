@@ -51,9 +51,11 @@ class SftpService {
   }
 
   void resetSFTPService() {
+    Log.info(TAG, "Stopping SFTP service");
     _serviceInitialized = false;
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
+    BackgroundFetch.finish();
   }
 
   void _initConnectionAvailabilityListener() {
@@ -68,11 +70,11 @@ class SftpService {
   _handleDataTransferState(DataTransferState state) {
     _currentDataTransferState = state;
     if (state == DataTransferState.TRANSFERRING && !_serviceInitialized) {
-      _initService();
+      initService();
       PrefsProvider.setDataUploadingIncomplete(value: true);
     } else if (state == DataTransferState.ENDED && !_serviceInitialized) {
       PrefsProvider.setDataUploadingIncomplete(value: true);
-      _initService();
+      initService();
     }
   }
 
@@ -87,10 +89,11 @@ class SftpService {
       _closeConnection();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       BackgroundFetch.finish();
+      await BackgroundFetch.stop();
     }
   }
 
-  Future<void> _initService() async {
+  Future<void> initService() async {
     if (_serviceInitialized) return;
     _serviceInitialized = true;
     Log.info(TAG, "Initializing SFTP service");
@@ -121,6 +124,11 @@ class SftpService {
   }
 
   Future<void> _initSftpConnection() async {
+    if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
+      Log.shout(TAG, "No internet connection, SFTP service could not be initalized");
+      _serviceInitialized = false;
+      return;
+    }
     try {
       Log.info(TAG, "Connecting to SFTP server");
       final resultSession = await _client.connect();

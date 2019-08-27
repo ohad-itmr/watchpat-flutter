@@ -70,7 +70,7 @@ class TransactionManager extends ManagerBase {
       if (call.method == "nativeLogEvent") {
         Log.info("[iOS]", call.arguments);
       } else if (call.method == "startSftpUploading") {
-        sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+        sl<SftpService>().initService();
       } else if (call.method == "stopSftpUploading") {
         sl<SftpService>().resetSFTPService();
       }

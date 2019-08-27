@@ -27,6 +27,8 @@ Future <void> _initializeLogger() async {
 }
 
 void _initializeAllServices() {
+  Log.info("ServiceLocator", "Initializing all services");
+
   sl.registerSingleton<S>(S());
 
   // Services

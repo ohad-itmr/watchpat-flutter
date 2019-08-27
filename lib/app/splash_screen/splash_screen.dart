@@ -64,15 +64,6 @@ class _SplashScreenState extends State<SplashScreen> {
               _TEST_MAP_KEY: testState,
               _INET_MAP_KEY: inetState
             }).listen((Map<String, dynamic> data) async {
-
-//      // todo implement SFTP uploading after test stopped
-//      if (PrefsProvider.getDataUploadingIncomplete()) {
-//        sl<SystemStateManager>().setScanCycleEnabled = false;
-//        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
-//        Navigator.of(context).pushNamed(EndScreen.PATH);
-//        return;
-//      }
-
       _handleBtState(data[_BT_MAP_KEY]);
       _handleInternetState(data[_INET_MAP_KEY]);
 
@@ -90,6 +81,13 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);
         }
         _navigationSub.cancel();
+      }
+
+      if (PrefsProvider.getDataUploadingIncomplete()) {
+        sl<SystemStateManager>().setScanCycleEnabled = false;
+        _systemStateManager.setDataTransferState(DataTransferState.ENDED);
+        Navigator.of(context).pushNamed(EndScreen.PATH);
+        return;
       }
     });
 

@@ -86,7 +86,7 @@ class SftpService {
       TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       _checkRemoteFileSize();
       await _informDispatcher();
-      _closeConnection();
+      resetSFTPService();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       BackgroundFetch.finish();
       await BackgroundFetch.stop();

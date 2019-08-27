@@ -34,7 +34,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
                 ),
                 FlatButton(
                   child: Text(S.of(context).ok),
-                  onPressed: () => sl<TestingManager>().stopTesting(),
+                  onPressed: () => sl<TestingManager>().stopButtonPressed(),
                 )
               ],
             ));

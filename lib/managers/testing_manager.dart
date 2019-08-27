@@ -87,6 +87,14 @@ class TestingManager extends ManagerBase {
     return sessionTimedOut;
   }
 
+  void stopButtonPressed() {
+    if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
+      stopTesting();
+    } else {
+      forceEndTesting();
+    }
+  }
+
   void stopTesting() {
     Log.info(TAG, "### STOPPING TEST");
     _systemStateManager.setTestState(TestStates.STOPPED);

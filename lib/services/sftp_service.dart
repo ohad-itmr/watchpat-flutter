@@ -131,7 +131,7 @@ class SftpService {
       return;
     }
     try {
-      if (_connectionInProgress) return;
+      if (_connectionInProgress || _uploadingAvailable) return;
       _connectionInProgress = true;
       Log.info(TAG, "Connecting to SFTP server");
       final resultSession = await _client.connect();

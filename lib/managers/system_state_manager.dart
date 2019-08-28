@@ -104,19 +104,6 @@ class SystemStateManager extends ManagerBase {
 
   static String getDeviceStateName(int state) => _deviceStates[state];
 
-  // DEVICE ERROR STATES
-  static List<String> _deviceErrorStates = [
-    "Unknown",
-    "No error",
-    "Change battery",
-    "Insert finger",
-    "Used device",
-    "Hardware error",
-    "PIN error"
-  ];
-
-  static String getDeviceErrorStateName(int state) => _deviceErrorStates[state];
-
   // SERVER STATES
   static List<String> _serverStates = ["Disconnected", "Connecting", "Connected"];
 
@@ -328,7 +315,7 @@ class SystemStateManager extends ManagerBase {
   void setDeviceErrorState(DeviceErrorStates state, {String errors}) {
     if (state != _deviceErrorState.value) {
       Log.info(TAG,
-          "setDeviceErrorState: ${getDeviceErrorStateName(state.index)} ${errors != null ? errors : ''}");
+          "setDeviceErrorState: $state, $errors");
       if (errors != null) {
         _deviceErrors = errors;
       }

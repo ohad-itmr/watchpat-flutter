@@ -39,9 +39,8 @@ class ReceivedPacket {
             .toList()),
         _len = ConvertFormats.twoBytesToInt(
             byte1: bytes[PACKET_SIZE_STARTING_BYTE], byte2: bytes[PACKET_SIZE_STARTING_BYTE + 1]),
-        opCodeDependent = ConvertFormats.byteArrayToHex(bytes
+        opCodeDependent = ConvertFormats.fourBytesToInt(bytes
             .sublist(PACKET_DEPENDENT_STARTING_BYTE, PACKET_DEPENDENT_STARTING_BYTE + 4)
-            .reversed
             .toList()) {
     packetType = _extractPacketType();
   }

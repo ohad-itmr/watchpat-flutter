@@ -40,6 +40,7 @@ class SftpService {
   Timer _reconnectionTimer;
 
   bool _serviceInitialized = false;
+  bool _connectionInProgress = false;
 
   SftpService() {
     _systemState = sl<SystemStateManager>();
@@ -130,6 +131,8 @@ class SftpService {
       return;
     }
     try {
+      if (_connectionInProgress) return;
+      _connectionInProgress = true;
       Log.info(TAG, "Connecting to SFTP server");
       final resultSession = await _client.connect();
       final resultConnection = await _client.connectSFTP();
@@ -137,7 +140,9 @@ class SftpService {
       await Future.delayed(Duration(seconds: 1));
       await _writeTestInformationFile();
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
+      _connectionInProgress = false;
     } catch (e) {
+      _connectionInProgress = false;
       Log.shout(TAG, "Connection to SFTP failed, $e");
       _tryToReconnect(error: e.toString());
     }

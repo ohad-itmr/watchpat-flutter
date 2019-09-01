@@ -81,6 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);
         }
         _navigationSub.cancel();
+        return;
       }
 
       if (PrefsProvider.getDataUploadingIncomplete()) {

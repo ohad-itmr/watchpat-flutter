@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:battery/battery.dart';
 import 'package:my_pat/config/default_settings.dart';
+import 'package:my_pat/domain_model/command_task.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
@@ -49,7 +50,9 @@ class TestingManager extends ManagerBase {
   void startTesting() {
     Log.info(TAG, "### Sending START aquisition command");
     PrefsProvider.saveTestStartTime(DateTime.now().millisecondsSinceEpoch);
-    sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartAcquisitionCmd());
+    final CommandTask cmd = DeviceCommands.getStartAcquisitionCmd();
+    IncomingPacketHandlerService.startAcquisitionCmdId = cmd.packetIdentifier;
+    sl<CommandTaskerManager>().addCommandWithNoCb(cmd);
     _startElapsedTimer();
   }
 

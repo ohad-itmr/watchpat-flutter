@@ -92,6 +92,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   Observable<bool> get isPairedResponseStream => _isPairedResponse.stream;
 
+  static int startAcquisitionCmdId;
+
   void startPacketAnalysis() {
 //    _testStartTimer.startTimer();
   }
@@ -149,10 +151,17 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_ACK:
           Log.info(TAG, "packet received (ACK)");
           // ACK received - notify cmdTasker
+
+          if (startAcquisitionCmdId != null && startAcquisitionCmdId == receivedPacket.identifier) {
+            _setTestStarted();
+            startAcquisitionCmdId = null;
+          }
+
           sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
           break;
         case DeviceCommands.CMD_OPCODE_DATA_PACKET:
           Log.info(TAG, "packet received (DATA_PACKET)");
+          // data packet received - store to local file
           // data packet received - store to local file
           _isDataReceiving = true;
 //          _dataReceivedTimer.restart();
@@ -168,14 +177,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
-            final currentTestState = sl<SystemStateManager>().testState;
 
-            if (currentTestState == TestStates.NOT_STARTED) {
-              sl<SystemStateManager>().setTestState(TestStates.STARTED);
-            } else if (currentTestState == TestStates.INTERRUPTED) {
-              sl<SystemStateManager>().setTestState(TestStates.RESUMED);
-//              sl<TestingManager>().restartTimers();
-            }
+            _setTestStarted();
           }
 
           // set data transfer state
@@ -581,6 +584,15 @@ class IncomingPacketHandlerService extends ManagerBase {
         Log.info(TAG, lang.flash_full);
       // for future use: do something
     }
+  }
+
+  void _setTestStarted() {
+    if (sl<SystemStateManager>().testState == TestStates.NOT_STARTED) {
+      sl<SystemStateManager>().setTestState(TestStates.STARTED);
+    } else if (sl<SystemStateManager>().testState == TestStates.INTERRUPTED) {
+      sl<SystemStateManager>().setTestState(TestStates.RESUMED);
+    }
+    Log.info(TAG, "TEST STARTED / RESUMED");
   }
 
   @override

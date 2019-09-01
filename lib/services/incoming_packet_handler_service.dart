@@ -215,10 +215,10 @@ class IncomingPacketHandlerService extends ManagerBase {
           PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
           Log.info(TAG, "### start session confirm: device serial saved");
 
-          final bool sessionErrors = await _checkSessionErrors();
-          final bool deviceErrors = _checkDeviceErrors(receivedPacket.opCodeDependent);
+          final bool sessionHasNoErrors = await _checkSessionErrors();
+          final bool deviceHasNoErrors = _checkDeviceErrors(receivedPacket.opCodeDependent);
 
-          if (sessionErrors && deviceErrors) {
+          if (sessionHasNoErrors && deviceHasNoErrors) {
             if (PrefsProvider.loadDeviceName() == null) {
               Log.info(TAG, "first connection to device");
               Log.info(TAG, "### start session confirm: device FW version check START");
@@ -238,10 +238,13 @@ class IncomingPacketHandlerService extends ManagerBase {
             }
           }
 
-          final String deviceName =
-              "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
-          Log.info(TAG, "device new name: $deviceName");
-          PrefsProvider.saveDeviceName(deviceName);
+          if (deviceHasNoErrors) {
+            final String deviceName =
+                "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
+            Log.info(TAG, "device new name: $deviceName");
+            PrefsProvider.saveDeviceName(deviceName);
+          }
+
           Log.info(TAG, "### start session confirm: END");
           break;
 

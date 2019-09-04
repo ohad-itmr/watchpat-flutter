@@ -44,7 +44,7 @@ class TestingManager extends ManagerBase {
   Future<bool> get canStartTesting async {
     final BatteryState state = await _batteryManager.getBatteryState();
     final int level = await _batteryManager.getBatteryLevel();
-    return level >= DefaultSettings.minBatteryRequiredLevel || state == BatteryState.charging;
+    return level == DefaultSettings.minBatteryRequiredLevel || state == BatteryState.charging;
   }
 
   void startTesting() {

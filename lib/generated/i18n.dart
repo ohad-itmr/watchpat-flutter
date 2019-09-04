@@ -61,7 +61,7 @@ class S implements WidgetsLocalizations {
   String get btnReturnToApp => "Return To App";
   String get btnStartRecording => "START";
   String get cancel => "CANCEL";
-  String get chestSensorContent => "Pull the Chest Sensor along your non dominant hand, and up to the neck opening. \nPeel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.";
+  String get chestSensorContent => "If you wear a shirt at night, feed the chest sensor through your sleeve and up to the neck opening. Peel the white paper from the back of the sensor. Attach the sensor to the center of your upper chest bone, just under the sternal notch.";
   String get chestSensorTitle => "Attach Chest Sensor";
   String get close_app => "CLOSE APP";
   String get close_mypat_app_q => "Close WatchPAT\u2122 Application?";
@@ -104,7 +104,7 @@ class S implements WidgetsLocalizations {
   String get exit_service_mode => "Exit service mode";
   String get fatal_error => "Fatal error";
   String get files_creating_failed => "Failed to create initial files";
-  String get fingerProbeContent => "Insert any finger, except your thumb, all the way into the probe.  \nThe sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (like a table) and pull the TOP tab toward you to remove it from the probe.";
+  String get fingerProbeContent => "Insert any finger of your non-dominant hand, except your thumb, all the way into the probe. The sticker marked TOP should be on the top of your finger. Hold the probe against a hard surface (such as a table) and pull the TOP tab toward you to remove it from the probe.";
   String get fingerProbeTitle => " ATTACH FINGER PROBE";
   String get finger_not_detected => "Finger not detected alert";
   String get firmware_alert_title => "Device firmware upgrade";
@@ -156,7 +156,7 @@ class S implements WidgetsLocalizations {
   String get parameters_file_write_failed => "Parameters file write failed";
   String get parameters_file_written_successfully => "Parameters file written successfully";
   String get pat_led_status => "PAT LED status: ";
-  String get patient_msg1 => "Leave the charger plugged in during the entire test procedure. \nClose unused phone applications before starting test procedure ";
+  String get patient_msg1 => "Please plug your phone into a charger. Leave the charger plugged in during the entire test procedure. Close unused phone applications before starting test procedure. \n\nPlease don't close the WatchPAT™ONE application during the test procedure.";
   String get patient_msg2 => "Please don't close WatchPAT\u2122 application during test procedure";
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   String get pinTitle => "Enter PIN";
@@ -205,7 +205,7 @@ class S implements WidgetsLocalizations {
   String get set_led_color_timeout => "Set LED color: timeout";
   String get set_serial => "Set device serial";
   String get sftp_server_no_access => "SFTP Server is not accessible. Error code returned";
-  String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nLeave the phone behind, connected to the charger.";
+  String get startRecordingContent => "Once the WatchPAT™ONE has been properly put on, it is ready to start recording. Press the START button and have a good night sleep. \n\nIf you need to get up during the night, do not remove the device or sensors. Leave the phone behind, connected to the charger.";
   String get startRecordingTitle => "START RECORDING";
   String get start_test => "START TEST";
   String get stepperOf => "of";

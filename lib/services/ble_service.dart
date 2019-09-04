@@ -108,7 +108,7 @@ class BleService {
                 ? CharacteristicWriteType.withResponse
                 : CharacteristicWriteType.withoutResponse,
           )
-          .timeout(Duration(milliseconds: 100),
+          .timeout(Duration(milliseconds: 200),
               onTimeout: () => throw Exception('Characteristic writing timeout'));
       await Future.delayed(Duration(milliseconds: 2));
     } catch (e) {

@@ -89,8 +89,6 @@ class _BatteryScreenState extends State<BatteryScreen> {
 
   List<String> _buildText(ScanResultStates state) {
     switch (state) {
-      case ScanResultStates.LOCATED_SINGLE:
-        return [S.of(context).batteryContent_success];
       case ScanResultStates.LOCATED_MULTIPLE:
         return [S.of(context).batteryContent_many_2];
       default:

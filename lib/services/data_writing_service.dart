@@ -43,14 +43,6 @@ class DataWritingService {
 
   void writeToLocalFile(DataPacket packet) {
     _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
   }
 
   void _writeToLocalFileAsync(DataPacket packet) async {

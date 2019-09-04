@@ -9,27 +9,22 @@ class CarouselManager extends ManagerBase {
   static LinkedHashMap<String, List<CarouselData>> _scopedSlides;
   static List<CarouselData> _allSlides = [];
 
-  final BehaviorSubject<CarouselSnapshot> _carouselDataState =
-      BehaviorSubject<CarouselSnapshot>();
+  final BehaviorSubject<CarouselSnapshot> _carouselDataState = BehaviorSubject<CarouselSnapshot>();
 
-  Observable<CarouselSnapshot> get carouselSnapshot =>
-      _carouselDataState.stream;
+  Observable<CarouselSnapshot> get carouselSnapshot => _carouselDataState.stream;
 
   CarouselManager() {
     _prepareCarouselContent();
   }
 
   loadCarouselData(String screenTAG) {
-    final bool hasNext =
-        screenTAG == WelcomeScreen.TAG || _scopedSlides[screenTAG].length != 1;
+    final bool hasNext = screenTAG == WelcomeScreen.TAG || _scopedSlides[screenTAG].length != 1;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][0],
         actionPrev: null,
         actionNext: screenTAG == WelcomeScreen.TAG
             ? (_) => switchUnlimitedSlide(1)
-            : hasNext
-                ? (_) => switchLimitedSlide(screenTAG, 1)
-                : (ctx) => Navigator.pop(ctx),
+            : hasNext ? (_) => switchLimitedSlide(screenTAG, 1) : (ctx) => Navigator.pop(ctx),
         lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
@@ -39,9 +34,7 @@ class CarouselManager extends ManagerBase {
     final bool hasPrev = currentIndex != 0;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][currentIndex],
-        actionPrev: hasPrev
-            ? () => switchLimitedSlide(screenTAG, currentIndex - 1)
-            : null,
+        actionPrev: hasPrev ? () => switchLimitedSlide(screenTAG, currentIndex - 1) : null,
         actionNext: hasNext
             ? (_) => switchLimitedSlide(screenTAG, currentIndex + 1)
             : (ctx) => Navigator.pop(ctx),
@@ -54,11 +47,9 @@ class CarouselManager extends ManagerBase {
     final bool hasPrev = currentIndex != 0;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _allSlides[currentIndex],
-        actionPrev:
-            hasPrev ? () => switchUnlimitedSlide(currentIndex - 1) : null,
-        actionNext: hasNext
-            ? (_) => switchUnlimitedSlide(currentIndex + 1)
-            : (ctx) => Navigator.pop(ctx),
+        actionPrev: hasPrev ? () => switchUnlimitedSlide(currentIndex - 1) : null,
+        actionNext:
+            hasNext ? (_) => switchUnlimitedSlide(currentIndex + 1) : (ctx) => Navigator.pop(ctx),
         lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
@@ -81,14 +72,12 @@ class CarouselManager extends ManagerBase {
             text: "Insert the battery into the device",
             image: "assets/carousel/carousel_battery_1.jpg"),
         CarouselData(
-            text:
-                "Make sure you follow the + and - marking, and with flat side against the spring",
+            text: "Make sure you follow the + and - marking, and with flat side against the spring",
             image: "assets/carousel/carousel_battery_2.jpg"),
       ],
       PreparationScreen.TAG: [
         CarouselData(
-            text:
-                "Remove all jewelry and hand cream. Make sure the fingernails are trimmed.",
+            text: "Remove all jewelry and hand cream. Make sure the fingernails are trimmed.",
             image: "assets/carousel/carousel_prepare_1.jpg"),
         CarouselData(
             text: "Take off the watch. Do not apply any hand cream.",
@@ -96,8 +85,7 @@ class CarouselManager extends ManagerBase {
       ],
       "IDENTITY": [
         CarouselData(
-            text:
-                "Enter your assigned four digits PIN (personal identification number).",
+            text: "Enter your assigned four digits PIN (personal identification number).",
             image: "assets/carousel/carousel_identfy.jpg"),
       ],
       StrapWristScreen.TAG: [
@@ -108,8 +96,7 @@ class CarouselManager extends ManagerBase {
             text: "Place the WatchPAT on a flat surface.",
             image: "assets/carousel/carousel_strap_2.jpg"),
         CarouselData(
-            text:
-                "Insert your hand and close the strap, making sure it's snug but not too tight.",
+            text: "Insert your hand and close the strap, making sure it's snug but not too tight.",
             image: "assets/carousel/carousel_strap_3.jpg"),
       ],
       ChestSensorScreen.TAG: [
@@ -117,14 +104,12 @@ class CarouselManager extends ManagerBase {
             text: "Thread the sensor through your sleeve …",
             image: "assets/carousel/carousel_chest_1.jpg"),
         CarouselData(
-            text: "… up to the neck opening.",
-            image: "assets/carousel/carousel_chest_2.jpg"),
+            text: "… up to the neck opening.", image: "assets/carousel/carousel_chest_2.jpg"),
         CarouselData(
             text: "Peel the sticker off the back end of the sensor.",
             image: "assets/carousel/carousel_chest_3.jpg"),
         CarouselData(
-            text:
-                "Attach the sensor just below the sternum notch. Trim or shave here if needed.",
+            text: "Attach the sensor just below the sternum notch. Trim or shave here if needed.",
             image: "assets/carousel/carousel_chest_4.jpg"),
         CarouselData(
             text: "You may also secure the sensor with a medical tape.",
@@ -143,19 +128,16 @@ class CarouselManager extends ManagerBase {
             text: "Insert your index finger all the way into the probe.",
             image: "assets/carousel/carousel_finger_3.jpg"),
         CarouselData(
-            text:
-                "The tab on top of the probe should be situated on the top side of your finger.",
+            text: "The tab on top of the probe should be situated on the top side of your finger.",
             image: "assets/carousel/carousel_finger_4.jpg"),
         CarouselData(
             text: "While pushing against the surface …",
             image: "assets/carousel/carousel_finger_5.jpg"),
         CarouselData(
-            text:
-                "Gently but firmly remove the tab by pulling upward its tip …",
+            text: "Gently but firmly remove the tab by pulling upward its tip …",
             image: "assets/carousel/carousel_finger_6.jpg"),
         CarouselData(
-            text: "… until fully removed.",
-            image: "assets/carousel/carousel_finger_7.jpg"),
+            text: "… until fully removed.", image: "assets/carousel/carousel_finger_7.jpg"),
       ],
       StartRecordingScreen.TAG: [
         CarouselData(
@@ -167,8 +149,7 @@ class CarouselManager extends ManagerBase {
             text: "In the morning remove the Chest sensor.",
             image: "assets/carousel/carousel_end_1.jpg"),
         CarouselData(
-            text: "Remove the device from your hand.",
-            image: "assets/carousel/carousel_end_2.jpg"),
+            text: "Remove the device from your hand.", image: "assets/carousel/carousel_end_2.jpg"),
         CarouselData(
             text: "Remove the probe from your finger.",
             image: "assets/carousel/carousel_end_3.jpg"),
@@ -191,8 +172,7 @@ class CarouselSnapshot {
   final Function(BuildContext context) actionNext;
   final bool lastSlide;
 
-  CarouselSnapshot(
-      {this.content, this.actionPrev, this.actionNext, this.lastSlide});
+  CarouselSnapshot({this.content, this.actionPrev, this.actionNext, this.lastSlide});
 }
 
 class CarouselData {

@@ -117,6 +117,9 @@ static BOOL sessionCompleted = NO;
 
 - (void)startBackgroundSftpUploading {
     [[NSProcessInfo processInfo] performExpiringActivityWithReason:@"BackgroundSftpUploading" usingBlock:^void (BOOL expired) {
+        NSString *message = [NSString stringWithFormat:@"Background time request, expired? %@", expired ? @"YES" : @"NO"];
+        [channel invokeMethod:@"nativeLogEvent" arguments:message];
+        [AppDelegate writeLogToFile:message];
         if (expired && !sessionCompleted) {
             NSString *msg = @"SFTP background task expired, closing SFTP upload";
             [channel invokeMethod:@"nativeLogEvent" arguments:msg];

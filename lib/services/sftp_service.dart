@@ -84,18 +84,20 @@ class SftpService {
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
       PrefsProvider.setDataUploadingIncomplete(value: false);
-      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       _checkRemoteFileSize();
       await _informDispatcher();
       resetSFTPService();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
-      BackgroundFetch.finish();
       await BackgroundFetch.stop();
+      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
+      BackgroundFetch.finish();
     }
   }
 
   Future<void> initService() async {
-    if (_serviceInitialized) return;
+    if (_serviceInitialized) {
+      Log.info(TAG, "SFTP service already initialized");
+    }
     _serviceInitialized = true;
     Log.info(TAG, "Initializing SFTP service");
 

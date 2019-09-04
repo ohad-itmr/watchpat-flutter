@@ -29,7 +29,7 @@ class DefaultSettings {
   static final double minTestLengthHours = 0;
   static final double maxTestLengthHours = 10;
   static final double sessionTimeoutHours = 20;
-  static final minBatteryRequiredLevel = 95;
+  static final minBatteryRequiredLevel = 100;
   static final dispatcherLink1 = "https://test1.watchpat-one.com";
   static final dispatcherLink2 = "https://test1.watchpat-one.com";
 //  static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";
@@ -43,7 +43,7 @@ class DefaultSettings {
 
   static final demoUrl = "";
   static final dataTransferRate = 60.0;
-  static var minBatteryAskedLevel = 95;
+  static var minBatteryAskedLevel = 100;
   static var minDataForUpload = 0.1;
   static var fwVersionsForUpgrade = List<String>();
   static var btScanTimeout = 5000;

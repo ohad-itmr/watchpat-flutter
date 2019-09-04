@@ -220,8 +220,12 @@ class SystemStateManager extends ManagerBase {
   String _sessionErrors = "";
 
   void _initInternetConnectivity() {
-    _connectivity.checkConnectivity().then((res) => _inetConnectionState.sink.add(res));
+    updateInternetState();
     _connectivity.onConnectivityChanged.listen((result) => _inetConnectionState.sink.add(result));
+  }
+
+  void updateInternetState() {
+    _connectivity.checkConnectivity().then((res) => _inetConnectionState.sink.add(res));
   }
 
   //

@@ -43,7 +43,7 @@ class S implements WidgetsLocalizations {
   String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   String get batteryTitle => "INSERT BATTERY ";
   String get battery_depleted => "The device's battery is depleted or damaged. Please replace battery and try again";
-  String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
+  String get battery_level_error => "Your phone isn't fully charged and not connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
   String get bt_initiation_error => "Bluetooth initiation error";
   String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth ON.";
@@ -406,7 +406,7 @@ class fr extends S {
   @override
   String get ignore_device_errors => "Ignore all device generated errors?";
   @override
-  String get battery_level_error => "Your phone has battery level below 95% and not connected to a charger. Please connect a charger to start test.";
+  String get battery_level_error => "Your phone isn't fully charged and not connected to a charger. Please connect a charger to start test.";
   @override
   String get server_comm_error => "Server communication error, please contact support";
   @override

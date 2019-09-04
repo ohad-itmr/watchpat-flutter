@@ -38,7 +38,6 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
-		<string>external-accessory</string>
 		<string>fetch</string>
 		<string>location</string>
 	</array>

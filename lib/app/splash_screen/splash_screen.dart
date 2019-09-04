@@ -38,6 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    sl<SystemStateManager>().updateInternetState();
+
     internetWarningSub = _systemStateManager.inetConnectionStateStream
         .where((_) => this.mounted)
         .listen(_handleInternetState);
@@ -68,7 +70,6 @@ class _SplashScreenState extends State<SplashScreen> {
       _handleInternetState(data[_INET_MAP_KEY]);
 
       if (data[_BT_MAP_KEY] == BtStates.ENABLED && data[_INET_MAP_KEY] != ConnectivityResult.none) {
-        sl<WelcomeActivityManager>().initConnectivityListener();
         if (data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
           GlobalSettings.replaceSettingsFromXML();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
@@ -82,12 +83,19 @@ class _SplashScreenState extends State<SplashScreen> {
         }
         _navigationSub.cancel();
         return;
+      } else if (data[_INET_MAP_KEY] == ConnectivityResult.none &&
+          PrefsProvider.getDataUploadingIncomplete() &&
+          data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+        Navigator.of(context).pushNamed(RecordingScreen.PATH);
+        _navigationSub.cancel();
+        return;
       }
 
       if (PrefsProvider.getDataUploadingIncomplete()) {
         sl<SystemStateManager>().setScanCycleEnabled = false;
         _systemStateManager.setDataTransferState(DataTransferState.ENDED);
         Navigator.of(context).pushNamed(EndScreen.PATH);
+        _navigationSub.cancel();
         return;
       }
     });
@@ -132,8 +140,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 onPressed: () {
 //                  sl<ServiceScreenManager>().resetApplication(clearConfig: false);
 //                  exit(0);
-                PrefsProvider.clearDeviceName();
-                Navigator.pop(context);
+                  PrefsProvider.clearDeviceName();
+                  Navigator.pop(context);
                 },
               )
             ],

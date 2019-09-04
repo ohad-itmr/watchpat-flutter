@@ -83,7 +83,6 @@ class BleService {
       _readCharSubscription.cancel();
       _readCharSubscription = _device.onValueChanged(_charForRead).listen(_handleData);
     }
-
   }
 
   void _handleData(List<int> data) {
@@ -109,8 +108,8 @@ class BleService {
                 ? CharacteristicWriteType.withResponse
                 : CharacteristicWriteType.withoutResponse,
           )
-          .timeout(Duration(seconds: 3),
-              onTimeout: () => throw Exception('Failed to write the characteristic'));
+          .timeout(Duration(milliseconds: 100),
+              onTimeout: () => throw Exception('Characteristic writing timeout'));
       await Future.delayed(Duration(milliseconds: 2));
     } catch (e) {
       status = 'failure ${e.toString()}';

@@ -67,8 +67,15 @@ class BleManager extends ManagerBase {
   }
 
   void connect() {
-    _deviceStateSubscription =
-        sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+    if (_device != null) {
+      Log.info(TAG, "Device was connected before, trying to reconnect");
+      if (_deviceStateSubscription != null) {
+        _deviceStateSubscription.cancel();
+        _deviceStateSubscription = null;
+      }
+      _deviceStateSubscription =
+          sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+    }
   }
 
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
@@ -113,7 +120,9 @@ class BleManager extends ManagerBase {
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
-      disconnection();
+      sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
+      sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
+//      disconnection();
 
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.UNKNOWN);
       sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);

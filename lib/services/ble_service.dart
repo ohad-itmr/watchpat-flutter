@@ -79,7 +79,11 @@ class BleService {
     await _device.setNotifyValue(_charForRead, true);
     if (_readCharSubscription == null) {
       _readCharSubscription = _device.onValueChanged(_charForRead).listen(_handleData);
+    } else {
+      _readCharSubscription.cancel();
+      _readCharSubscription = _device.onValueChanged(_charForRead).listen(_handleData);
     }
+
   }
 
   void _handleData(List<int> data) {

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:package_info/package_info.dart';
 
 class Log{
   static const String _NAME = 'Logger';
@@ -17,11 +18,17 @@ class Log{
     });
     _instance = Logger(_NAME);
     await _initLogFile();
+    await _writeSFVersion();
   }
 
   static Future<void> _initLogFile() async {
     final File logFile = await sl<FileSystemService>().logMainFile;
     _logFileSink = logFile.openWrite(mode: FileMode.append);
+  }
+
+  static Future<void> _writeSFVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    writeLogToFile("~~~~~~~~~~~ SOFTWARE VERSION: ${packageInfo.version} (${packageInfo.buildNumber}) ~~~~~~~~~~~");
   }
 
   static void writeLogToFile(String entry) {

@@ -46,7 +46,7 @@ class S implements WidgetsLocalizations {
   String get battery_level_error => "Your phone isn't fully charged and not connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
   String get bt_initiation_error => "Bluetooth initiation error";
-  String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth ON.";
+  String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease active bluetooth in Control Center.";
   String get bt_not_available_shutdown => "Bluetooth is not available on this device";
   String get btnChangeAndRestart => "Change and exit app";
   String get btnCloseApp => "CLOSE APP";

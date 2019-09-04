@@ -29,7 +29,7 @@
   "btnStartRecording": "START",
   "bt_initiation_error": "Bluetooth initiation error",
   "inet_initiation_error": "Internet initiation error",
-  "bt_must_be_enabled": "Bluetooth must be enabled for the test procedure.\nPlease turn Bluetooth ON.",
+  "bt_must_be_enabled": "Bluetooth must be enabled for the test procedure.\nPlease active bluetooth in Control Center.",
   "bt_not_available_shutdown": "Bluetooth is not available on this device",
   "chestSensorTitle": "Attach Chest Sensor",
   "chestSensorContent": "Pull the Chest Sensor along your non dominant hand, and up to the neck opening. \nPeel the white paper from the back of the sensor. Stick the sensor to the center of your upper chest bone, just below the front of neck.",

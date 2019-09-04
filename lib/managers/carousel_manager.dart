@@ -164,13 +164,13 @@ class CarouselManager extends ManagerBase {
       ],
       "END": [
         CarouselData(
-            text: "In the morning remove the probe from your finger.",
+            text: "In the morning remove the Chest sensor.",
             image: "assets/carousel/carousel_end_1.jpg"),
         CarouselData(
             text: "Remove the device from your hand.",
             image: "assets/carousel/carousel_end_2.jpg"),
         CarouselData(
-            text: "Remove the Chest sensor.",
+            text: "Remove the probe from your finger.",
             image: "assets/carousel/carousel_end_3.jpg"),
         CarouselData(
             text: "Remove the battery from device and keep for other uses.",

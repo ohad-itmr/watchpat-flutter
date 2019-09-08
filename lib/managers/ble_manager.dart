@@ -78,6 +78,8 @@ class BleManager extends ManagerBase {
     }
   }
 
+  BluetoothDevice get device => _device;
+
   void _deviceConnectionStateHandler(BluetoothDeviceState state) async {
     Log.info(TAG, '## Device State Changed to $state');
     _deviceStateSubject.sink.add(state);

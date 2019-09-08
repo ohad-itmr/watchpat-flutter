@@ -44,10 +44,15 @@ class TransactionManager extends ManagerBase {
 
   _initStartingScanOnBTAvailable() {
     _sysState.btStateStream.where((BtStates st) => st == BtStates.ENABLED).listen((_) async {
-      Log.info(TAG, "Bluetooth went enabled, starting scan");
-      await Future.delayed(Duration(seconds: 2));
-      sl<BleManager>().connect();
-      sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      Log.info(TAG, "Bluetooth went enabled");
+      if (sl<BleManager>().device == null) {
+        Log.info(TAG, "Starting scan");
+        await Future.delayed(Duration(seconds: 2));
+        sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+      } else {
+        Log.info(TAG, "Reconnecting to previously connected device");
+        sl<BleManager>().connect();
+      }
     });
   }
 
@@ -55,14 +60,17 @@ class TransactionManager extends ManagerBase {
     _sysState.deviceCommStateStream
         .where((DeviceStates deviceState) => deviceState == DeviceStates.DISCONNECTED)
         .listen((_) {
-      if (sl<SystemStateManager>().isTestActive) {
-        Log.info(TAG, "Connection to device was lost during test, reconnecting");
-        sl<BleManager>().connect();
-      } else if (!sl<SystemStateManager>().isTestActive &&
-          sl<SystemStateManager>().isScanCycleEnabled) {
-        Log.info(TAG, "Connection to device was lost before test, scanning");
-        sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-      }
+      Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
+      sl<BleManager>().connect();
+
+//      if (sl<SystemStateManager>().isTestActive) {
+//        Log.info(TAG, "Connection to device was lost during test, reconnecting");
+//        sl<BleManager>().connect();
+//      } else if (!sl<SystemStateManager>().isTestActive &&
+//          sl<SystemStateManager>().isScanCycleEnabled) {
+//        Log.info(TAG, "Connection to device was lost before test, scanning");
+//        sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+//      }
     });
   }
 

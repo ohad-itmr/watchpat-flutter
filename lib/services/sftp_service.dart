@@ -97,6 +97,7 @@ class SftpService {
   Future<void> initService() async {
     if (_serviceInitialized) {
       Log.info(TAG, "SFTP service already initialized");
+      return;
     }
     _serviceInitialized = true;
     Log.info(TAG, "Initializing SFTP service");
@@ -114,6 +115,12 @@ class SftpService {
     _dataFile = await _fileSystem.localDataFile;
     _raf = await _dataFile.open(mode: FileMode.read);
 
+    if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
+      Log.shout(TAG, "No internet connection, SFTP service could not be initalized");
+      _serviceInitialized = false;
+      return;
+    }
+
     await _initSftpConnection();
 
     // set up or restore uploading offset
@@ -127,11 +134,6 @@ class SftpService {
   }
 
   Future<void> _initSftpConnection() async {
-    if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
-      Log.shout(TAG, "No internet connection, SFTP service could not be initalized");
-      _serviceInitialized = false;
-      return;
-    }
     try {
       if (_connectionInProgress || _uploadingAvailable) return;
       _connectionInProgress = true;

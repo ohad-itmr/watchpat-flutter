@@ -485,7 +485,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     _incomingPacketLength = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]);
     print('---------------------------> setPacketSize $_incomingPacketLength');
 
-    return _incomingPacketLength >= 0;
+    return _incomingPacketLength > 0 && _incomingPacketLength < 3072;
   }
 
   bool _checkDeviceErrors(final int opcodeDependant) {

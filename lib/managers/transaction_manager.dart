@@ -60,8 +60,10 @@ class TransactionManager extends ManagerBase {
     _sysState.deviceCommStateStream
         .where((DeviceStates deviceState) => deviceState == DeviceStates.DISCONNECTED)
         .listen((_) {
-      Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
-      sl<BleManager>().connect();
+      if (sl<SystemStateManager>().dataTransferState != DataTransferState.ENDED) {
+        Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
+        sl<BleManager>().connect();
+      }
 
 //      if (sl<SystemStateManager>().isTestActive) {
 //        Log.info(TAG, "Connection to device was lost during test, reconnecting");

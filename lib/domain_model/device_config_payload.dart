@@ -155,8 +155,12 @@ class DeviceConfigPayload {
   List<int> get payloadBytes => _configPayloadBytes;
 
   void _setFWVersion(final List<int> bytesConfig) {
-    final int compilation = ConvertFormats.byteArrayToHex(
-        [bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1], bytesConfig[OFFSET_FW_COMPILATION_NUMBER]]);
+//    final int compilation = ConvertFormats.byteArrayToHex(
+//        [bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1], bytesConfig[OFFSET_FW_COMPILATION_NUMBER]]);
+
+    final int compilation = ConvertFormats.twoBytesToInt(
+        byte1: bytesConfig[OFFSET_FW_COMPILATION_NUMBER],
+        byte2: bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1]);
 
     _deviceFWVersion = new Version(
       bytesConfig[OFFSET_FW_VERSION_MAJOR],

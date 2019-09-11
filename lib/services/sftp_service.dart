@@ -51,11 +51,19 @@ class SftpService {
     _initConnectionAvailabilityListener();
   }
 
-  void resetSFTPService() {
+  void resetSFTPService() async {
+    if (_serviceInitialized) return;
     Log.info(TAG, "Stopping SFTP service");
     _serviceInitialized = false;
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
+    try {
+      Log.shout(TAG, "Cleaning up connection on close");
+      await _client.disconnect();
+    } catch (e) {
+      Log.shout(TAG, "SFTP connection cleanup failed ${e.toString()}");
+    }
+
     BackgroundFetch.finish();
   }
 
@@ -116,9 +124,12 @@ class SftpService {
     _raf = await _dataFile.open(mode: FileMode.read);
 
     if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
-      Log.shout(TAG, "No internet connection, SFTP service could not be initalized");
-      _serviceInitialized = false;
-      return;
+      await Future.delayed(Duration(seconds: 5));
+      if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
+        Log.shout(TAG, "No internet connection, SFTP service could not be initalized");
+        _serviceInitialized = false;
+        return;
+      }
     }
 
     await _initSftpConnection();
@@ -139,15 +150,24 @@ class SftpService {
       _connectionInProgress = true;
       Log.info(TAG, "Connecting to SFTP server");
       final resultSession = await _client.connect();
+      Log.info(TAG, "Opened SSH session: $resultSession");
       final resultConnection = await _client.connectSFTP();
-      Log.info(TAG, "Connected to SFTP server: $resultSession, $resultConnection");
+      Log.info(TAG, "Connected to SFTP server: $resultConnection");
       await Future.delayed(Duration(seconds: 1));
       await _writeTestInformationFile();
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
       _connectionInProgress = false;
     } catch (e) {
-      _connectionInProgress = false;
       Log.shout(TAG, "Connection to SFTP failed, $e");
+
+      try {
+        Log.shout(TAG, "Cleaning up connection before next attempt");
+        await _client.disconnect();
+      } catch (e) {
+        Log.shout(TAG, "SFTP connection cleanup failed ${e.toString()}");
+      }
+
+      _connectionInProgress = false;
       _tryToReconnect(error: e.toString());
     }
   }
@@ -166,7 +186,7 @@ class SftpService {
 
   void _tryToReconnect({@required String error}) async {
     _reconnectionAttempts++;
-    if (_reconnectionAttempts > 3) {
+    if (_reconnectionAttempts > 5) {
       _reconnectionAttempts = 0;
       sl<EmailSenderService>().sendSftpFailureEmail(error: error);
       _startReconnectionTimer();
@@ -259,8 +279,7 @@ class SftpService {
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
       sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
-      await Future.delayed(Duration(seconds: 3));
-      _tryToReconnect(error: e.toString());
+//      _tryToReconnect(error: e.toString());
     }
   }
 

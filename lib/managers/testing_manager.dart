@@ -43,8 +43,7 @@ class TestingManager extends ManagerBase {
 
   Future<bool> get canStartTesting async {
     final BatteryState state = await _batteryManager.getBatteryState();
-    final int level = await _batteryManager.getBatteryLevel();
-    return level == DefaultSettings.minBatteryRequiredLevel || state == BatteryState.charging;
+    return state == BatteryState.charging;
   }
 
   void startTesting() {
@@ -78,7 +77,8 @@ class TestingManager extends ManagerBase {
   }
 
   bool checkForSessionTimeout() {
-    final bool sessionTimedOut = TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
+    final bool sessionTimedOut =
+        TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
     if (sessionTimedOut) {
       Log.info(TAG, "Session timeout triggered. Stopping test.");
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:battery/battery.dart';
+import 'package:date_format/date_format.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/domain_model/command_task.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
@@ -43,7 +44,9 @@ class TestingManager extends ManagerBase {
 
   Future<bool> get canStartTesting async {
     final BatteryState state = await _batteryManager.getBatteryState();
-    return state == BatteryState.charging;
+    print("STATE $state");
+//    return state == BatteryState.charging;
+    return true;
   }
 
   void startTesting() {

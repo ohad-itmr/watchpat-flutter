@@ -9,9 +9,21 @@ import 'package:my_pat/widgets/widgets.dart';
 
 import '../screens.dart';
 
-class UploadingScreen extends StatefulWidget {
+class UploadingScreen extends StatefulWidget with WidgetsBindingObserver {
   static const String PATH = '/uploading';
   static const String TAG = 'UploadingScreen';
+
+  UploadingScreen() {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused) {
+      TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
+    }
+    super.didChangeAppLifecycleState(state);
+  }
 
   @override
   _UploadingScreenState createState() => _UploadingScreenState();

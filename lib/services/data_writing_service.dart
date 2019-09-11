@@ -45,6 +45,10 @@ class DataWritingService {
     _data.sink.add(packet);
   }
 
+  Future<void> resetLocalFile() async {
+    await _dataFile.writeAsBytes([], mode: FileMode.write);
+  }
+
   void _writeToLocalFileAsync(DataPacket packet) async {
     try {
       final int currentOffset = PrefsProvider.loadTestDataRecordingOffset();

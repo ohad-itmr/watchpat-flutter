@@ -77,11 +77,9 @@ class AuthenticationManager extends ManagerBase {
   }
 
   authenticatePatient() async {
-    ConnectivityResult inetState =
-        await sl<SystemStateManager>().inetConnectionStateStream.first;
+    ConnectivityResult inetState = await sl<SystemStateManager>().inetConnectionStateStream.first;
     if (inetState == ConnectivityResult.none) {
-      sl<SystemStateManager>()
-          .setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
+      sl<SystemStateManager>().setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
       _authStateSubject.add(PatientAuthState.FailedNoInternet);
       return;
     }
@@ -94,8 +92,7 @@ class AuthenticationManager extends ManagerBase {
     print('AuthenticateUserResponseModel data ${data.error}');
 
     if (data.error) {
-      sl<SystemStateManager>()
-          .setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
+      sl<SystemStateManager>().setDispatcherState(DispatcherStates.AUTHENTICATION_FAILURE);
       resetPin();
       if (data.message == '1') {
         _authStateSubject.add(PatientAuthState.FailedTryAgain);
@@ -106,8 +103,7 @@ class AuthenticationManager extends ManagerBase {
       // set up sftp
       sl<UserAuthenticationService>().setSftpParams(data.credentials);
       _authStateSubject.add(PatientAuthState.Authenticated);
-      sl<SystemStateManager>()
-          .setDispatcherState(DispatcherStates.AUTHENTICATED);
+      sl<SystemStateManager>().setDispatcherState(DispatcherStates.AUTHENTICATED);
 
       // disable internet warning
       internetWarningSub.cancel();
@@ -117,6 +113,7 @@ class AuthenticationManager extends ManagerBase {
       PrefsProvider.saveUserPin(pin);
       config.updatePin(pin);
 
+      await sl<DataWritingService>().resetLocalFile();
       sl<DataWritingService>().writeToLocalFile(DataPacket(data: config.payloadBytes, id: -1));
     }
   }
@@ -131,8 +128,7 @@ class AuthenticationManager extends ManagerBase {
         .map((newVal) => _pin = '$newVal')
         .listen((value) => _resultSubject.add(_pinNumberList));
 
-    _resultSubject.listen(
-        (value) => _pinIsValid.add(value.where((n) => n != null).length == 4));
+    _resultSubject.listen((value) => _pinIsValid.add(value.where((n) => n != null).length == 4));
   }
 
   dispose() {

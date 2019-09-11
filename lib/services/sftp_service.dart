@@ -51,19 +51,23 @@ class SftpService {
     _initConnectionAvailabilityListener();
   }
 
-  void resetSFTPService() async {
-    if (_serviceInitialized) return;
+  bool _resetInProgress = false;
+
+  Future<void> resetSFTPService() async {
+    if (_resetInProgress) return;
+    _resetInProgress = true;
     Log.info(TAG, "Stopping SFTP service");
-    _serviceInitialized = false;
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
     try {
       Log.shout(TAG, "Cleaning up connection on close");
-      await _client.disconnect();
+      _client.disconnect();
     } catch (e) {
       Log.shout(TAG, "SFTP connection cleanup failed ${e.toString()}");
     }
 
+    _serviceInitialized = false;
+    _resetInProgress = true;
     BackgroundFetch.finish();
   }
 
@@ -92,9 +96,8 @@ class SftpService {
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
       PrefsProvider.setDataUploadingIncomplete(value: false);
-      _checkRemoteFileSize();
+      await resetSFTPService();
       await _informDispatcher();
-      resetSFTPService();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       await BackgroundFetch.stop();
       TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
@@ -155,6 +158,7 @@ class SftpService {
       Log.info(TAG, "Connected to SFTP server: $resultConnection");
       await Future.delayed(Duration(seconds: 1));
       await _writeTestInformationFile();
+      await _restoreUploadingOffset();
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
       _connectionInProgress = false;
     } catch (e) {
@@ -162,7 +166,8 @@ class SftpService {
 
       try {
         Log.shout(TAG, "Cleaning up connection before next attempt");
-        await _client.disconnect();
+        _client.disconnect();
+        await Future.delayed(Duration(seconds: 3));
       } catch (e) {
         Log.shout(TAG, "SFTP connection cleanup failed ${e.toString()}");
       }
@@ -231,7 +236,7 @@ class SftpService {
           _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
           _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
         }
-      } else if ((currentUploadingOffset == currentRecordingOffset) &&
+      } else if (currentUploadingOffset == currentRecordingOffset &&
           _currentDataTransferState == DataTransferState.ENDED) {
         _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
         _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
@@ -242,6 +247,7 @@ class SftpService {
         await Future.delayed(Duration(seconds: 5));
       }
     } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
+    Log.info(TAG, "Data waiting loop finished");
   }
 
   Future<void> _awaitForConnection() async {
@@ -279,18 +285,17 @@ class SftpService {
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
       sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
-//      _tryToReconnect(error: e.toString());
     }
   }
 
   Future<void> _restoreUploadingOffset() async {
     try {
-      Log.info(TAG, "Looking for previous sftp file");
+      Log.info(TAG, "Restoring uploading offset: Looking for previous sftp file");
       final SFTPFile remoteFile =
           await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
       await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
     } catch (e) {
-      Log.info(TAG, "Sftp data file not found, will create new one");
+      Log.info(TAG, "Restoring uploading offset: SFTP data file not found");
     }
   }
 
@@ -306,7 +311,13 @@ class SftpService {
     sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
   }
 
-  void _closeConnection() {
+  Future<void> _closeConnection() async {
+    try {
+      Log.shout(TAG, "Cleaning up connection");
+      await _client.disconnect();
+    } catch (e) {
+      Log.shout(TAG, "Connection cleanup failed: ${e.toString()}");
+    }
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     sftpConnectionStateStream.close();
   }

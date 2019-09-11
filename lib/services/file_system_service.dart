@@ -264,8 +264,9 @@ class FileSystemService {
 
   Future<Response> clear() async {
     try {
-      File localFile = await localDataFile;
-      if (localFile.existsSync()) localFile.deleteSync();
+//      File localFile = await localDataFile;
+//      if (localFile.existsSync()) localFile.deleteSync();
+
       File logInFile = await logInputFile;
       if (logInFile.existsSync()) logInFile.deleteSync();
       File logOutFile = await logInputFile;

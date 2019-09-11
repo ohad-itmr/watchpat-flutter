@@ -48,21 +48,17 @@ class _BatteryScreenState extends State<BatteryScreen> {
       final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
       final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
       if (sessionHasErrors) {
-        Navigator.of(context)
-            .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
+        _showErrorDialog(sl<SystemStateManager>().sessionErrors);
       } else if (sl<SystemStateManager>().deviceErrorState == DeviceErrorStates.CHANGE_BATTERY) {
         _showErrorDialog(S.of(context).battery_depleted);
       } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
-        Navigator.of(context)
-            .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
+        _showErrorDialog(sl<SystemStateManager>().deviceErrors);
       } else {
         Navigator.pushNamed(context, PreparationScreen.PATH);
       }
     } else if (sl<SystemStateManager>().bleScanResult == ScanResultStates.LOCATED_MULTIPLE) {
-//      _showMultipleDeviceDialog();
       _showErrorDialog(S.of(context).batteryContent_many_1);
     } else {
-//      _showNotFoundDialog();
       _showErrorDialog(S.of(context).device_not_located);
     }
     setState(() => _nextIsPressed = false);
@@ -134,6 +130,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
+              title: Text(S.of(context).error.toUpperCase()),
               content: Text(msg),
               actions: <Widget>[
                 FlatButton(

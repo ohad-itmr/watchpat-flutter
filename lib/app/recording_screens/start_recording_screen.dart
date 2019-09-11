@@ -11,6 +11,24 @@ class StartRecordingScreen extends StatelessWidget {
   final S loc = sl<S>();
   final _testingManager = sl<TestingManager>();
 
+  _showErrorDialog(String msg, BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(S.of(context).error.toUpperCase()),
+            content: Text(msg),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(S.of(context).ok.toUpperCase()),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -36,17 +54,15 @@ class StartRecordingScreen extends StatelessWidget {
                 _testingManager.startTesting();
                 Navigator.pushNamed(context, RecordingScreen.PATH);
               } else {
-                Navigator.pushNamed(context,
-                    "${ErrorScreen.PATH}/${S.of(context).battery_level_error}");
+                _showErrorDialog(S.of(context).battery_level_error, context);
               }
             },
             text: S.of(context).btnStartRecording,
           ),
           moreActionButton: ButtonModel(
-            action: () => Navigator.of(context)
-                .pushNamed("${CarouselScreen.PATH}/${StartRecordingScreen.TAG}"),
-            text: S.of(context).btnMore
-          ),
+              action: () => Navigator.of(context)
+                  .pushNamed("${CarouselScreen.PATH}/${StartRecordingScreen.TAG}"),
+              text: S.of(context).btnMore),
         ),
         showSteps: true,
         current: 6,

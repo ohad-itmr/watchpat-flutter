@@ -34,25 +34,41 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
     final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
-    _nextIsPressed = false;
+
+    setState(() => _nextIsPressed = false);
 
     if (welcomeManager.getInitialErrors().length > 0) {
-      Navigator.of(context)
-          .pushNamed("${ErrorScreen.PATH}/${welcomeManager.initialErrorsAsString}");
+      _showErrorDialog(welcomeManager.initialErrorsAsString);
     } else if (sessionHasErrors) {
-      Navigator.of(context)
-          .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().sessionErrors}");
+      _showErrorDialog(sl<SystemStateManager>().sessionErrors);
     } else if (sl<SystemStateManager>().deviceErrorState == DeviceErrorStates.CHANGE_BATTERY) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
-      Navigator.of(context)
-          .pushNamed("${ErrorScreen.PATH}/${sl<SystemStateManager>().deviceErrors}");
+      _showErrorDialog(sl<SystemStateManager>().deviceErrors);
     } else if (state == ScanResultStates.NOT_LOCATED ||
         state == ScanResultStates.LOCATED_MULTIPLE) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else {
       Navigator.of(context).pushNamed(PreparationScreen.PATH);
     }
+  }
+
+  _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(S.of(context).error.toUpperCase()),
+            content: Text(msg),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(S.of(context).ok.toUpperCase()),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
+        });
   }
 
   @override

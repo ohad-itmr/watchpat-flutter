@@ -144,8 +144,8 @@ class SftpService {
 
   Future<void> _cleanUpConnection() async {
     try {
-//      Log.shout(TAG, "Cleaning up connection");
-//      _client.disconnect();
+      Log.shout(TAG, "Cleaning up connection");
+      _client.disconnect();
       await Future.delayed(Duration(seconds: 3));
     } catch (e) {
       Log.shout(TAG, "SFTP connection cleanup failed ${e.toString()}");

@@ -44,9 +44,7 @@ class TestingManager extends ManagerBase {
 
   Future<bool> get canStartTesting async {
     final BatteryState state = await _batteryManager.getBatteryState();
-    print("STATE $state");
-//    return state == BatteryState.charging;
-    return true;
+    return state != BatteryState.discharging;
   }
 
   void startTesting() {

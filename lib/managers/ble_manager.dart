@@ -66,8 +66,12 @@ class BleManager extends ManagerBase {
     }
   }
 
-  void connect() {
+  void connect({bool reconnect = false}) {
     if (_device != null) {
+      if (reconnect) {
+        _deviceAdvName = _device.name;
+      }
+
       Log.info(TAG, "Device is present, trying to connect");
       if (_deviceStateSubscription != null) {
         _deviceStateSubscription.cancel();
@@ -313,8 +317,7 @@ class BleManager extends ManagerBase {
             await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
         if (d != null) {
           _device = d;
-          _deviceAdvName = d.name;
-          connect();
+          connect(reconnect: true);
           return;
         }
       }

@@ -53,7 +53,7 @@ class TransactionManager extends ManagerBase {
         sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
       } else {
         Log.info(TAG, "Reconnecting to previously connected device");
-        sl<BleManager>().connect();
+        sl<BleManager>().connect(reconnect: true);
       }
     });
   }
@@ -64,7 +64,7 @@ class TransactionManager extends ManagerBase {
         .listen((_) {
       if (sl<SystemStateManager>().dataTransferState != DataTransferState.ENDED) {
         Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
-        sl<BleManager>().connect();
+        sl<BleManager>().connect(reconnect: true);
       }
     });
   }

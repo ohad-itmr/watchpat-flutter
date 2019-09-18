@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -14,6 +15,7 @@ class TransactionManager extends ManagerBase {
     _initStartingScanOnBTAvailable();
     _initStartingScanOnDeviceDisconnect();
     _initMethodChannel();
+    _initSftpOnInternetAvailable();
   }
 
   _initTestStatesPersistence() {
@@ -64,15 +66,6 @@ class TransactionManager extends ManagerBase {
         Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
         sl<BleManager>().connect();
       }
-
-//      if (sl<SystemStateManager>().isTestActive) {
-//        Log.info(TAG, "Connection to device was lost during test, reconnecting");
-//        sl<BleManager>().connect();
-//      } else if (!sl<SystemStateManager>().isTestActive &&
-//          sl<SystemStateManager>().isScanCycleEnabled) {
-//        Log.info(TAG, "Connection to device was lost before test, scanning");
-//        sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-//      }
     });
   }
 
@@ -86,6 +79,17 @@ class TransactionManager extends ManagerBase {
         sl<SftpService>().resetSFTPService();
       }
       return;
+    });
+  }
+
+  _initSftpOnInternetAvailable() {
+    sl<SystemStateManager>().inetConnectionStateStream.listen((ConnectivityResult state) {
+      if (state != ConnectivityResult.none) {
+        if (PrefsProvider.getTestStarted() || PrefsProvider.getTestStoppedByUser()) {
+          Log.info(TAG, "Internet became available during test, initializing SFTP service");
+          sl<SftpService>().initService();
+        }
+      }
     });
   }
 

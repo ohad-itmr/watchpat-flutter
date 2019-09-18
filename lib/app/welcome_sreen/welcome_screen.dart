@@ -137,3 +137,5 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
   }
 }
+
+class TestMFException implements Exception {}

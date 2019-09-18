@@ -68,7 +68,7 @@ class BleManager extends ManagerBase {
 
   void connect() {
     if (_device != null) {
-      Log.info(TAG, "Device was connected before, trying to reconnect");
+      Log.info(TAG, "Device is present, trying to connect");
       if (_deviceStateSubscription != null) {
         _deviceStateSubscription.cancel();
         _deviceStateSubscription = null;
@@ -104,6 +104,8 @@ class BleManager extends ManagerBase {
         });
         return;
       }
+
+      _isFirstConnection = PrefsProvider.loadDeviceName() == null;
 
       Log.info(TAG, "Device name: $_deviceAdvName");
       if (_isFirstConnection || !_isFirstConnection && _deviceAdvName.endsWith("N")) {

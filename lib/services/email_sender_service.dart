@@ -14,8 +14,7 @@ class EmailSenderService {
 
   static const String TAG = "EmailSenderSerivce";
 
-  final _smtpServer =
-      SmtpServer(SMTP_HOST, username: SMTP_USERNAME, password: SMTP_PASSWORD);
+  final _smtpServer = SmtpServer(SMTP_HOST, username: SMTP_USERNAME, password: SMTP_PASSWORD);
 
   Future<bool> sendSftpFailureEmail({@required String error}) async {
     final message = Message()
@@ -45,13 +44,29 @@ class EmailSenderService {
     return await _sendMessage(message);
   }
 
-  Future <bool> _sendMessage(Message msg) async {
+  Future<bool> sendAllLogFiles() async {
+    List<File> files = await sl<FileSystemService>().getAllLogFiles();
+    List<Attachment> attachment = files.map((File f) => FileAttachment(f)).toList();
+    final message = Message()
+      ..from = Address(SMTP_USERNAME, 'Itamar Medical')
+      ..recipients.add("wp1@itamar-medical.com")
+      ..subject = 'Study log files'
+      ..text = 'Received log files exported from WatchPAT application.\n\n' +
+          'Time: ${DateTime.now().toIso8601String()}\n' +
+          'Device s/n: ${PrefsProvider.loadDeviceSerial()}'
+      ..attachments = attachment;
+
+    return await _sendMessage(message);
+  }
+
+  Future<bool> _sendMessage(Message msg) async {
     try {
       await send(msg, _smtpServer);
-      Log.info(TAG, "Successfully sent email message to ${PrefsProvider.loadServiceEmail()}, subject ${msg.subject}");
+      Log.info(TAG, "Successfully sent email message to ${msg.recipients}, subject ${msg.subject}");
       return true;
     } catch (e) {
-      Log.shout(TAG, "Failed to send email message to ${PrefsProvider.loadServiceEmail()}, subject ${msg.subject}, error ${e.toString()}");
+      Log.shout(TAG,
+          "Failed to send email message to ${msg.recipients}, subject ${msg.subject}, error ${e.toString()}");
       return false;
     }
   }

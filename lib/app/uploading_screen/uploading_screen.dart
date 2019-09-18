@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/rendering.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/time_utils.dart';
@@ -41,6 +42,12 @@ class _UploadingScreenState extends State<UploadingScreen> {
       Navigator.of(context).pushNamed(EndScreen.PATH);
     });
     super.initState();
+  }
+
+  @override
+  void deactivate() {
+    WidgetsBinding.instance.removeObserver(widget);
+    super.deactivate();
   }
 
   @override

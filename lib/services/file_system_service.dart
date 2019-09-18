@@ -47,6 +47,20 @@ class FileSystemService {
     return File('$path/$logMainFileName');
   }
 
+  Future<List<File>> getAllLogFiles() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    List<File> files = [];
+    StreamSubscription sub =
+        dir.list(recursive: true, followLinks: false).listen((FileSystemEntity entity) async {
+      if (entity.path.contains("log")) {
+        files.add(File(entity.path));
+      }
+    });
+    await Future.delayed(Duration(seconds: 2));
+    sub.cancel();
+    return files;
+  }
+
   String get logMainFileName {
     if (_logFileName == null) {
       _logFileName =
@@ -212,12 +226,12 @@ class FileSystemService {
         File localFile = await localDataFile;
         await localFile.create();
         Log.info(TAG, 'LOCAL_DATA_FILE CREATED');
-        File logInFile = await logInputFile;
-        await logInFile.create();
-        Log.info(TAG, 'LOG_INBOUND_FILE CREATED');
-        File logOutFile = await logInputFile;
-        await logOutFile.create();
-        Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
+//        File logInFile = await logInputFile;
+//        await logInFile.create();
+//        Log.info(TAG, 'LOG_INBOUND_FILE CREATED');
+//        File logOutFile = await logInputFile;
+//        await logOutFile.create();
+//        Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
       }
 
       // delete files previously received from device

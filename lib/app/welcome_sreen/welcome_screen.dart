@@ -126,16 +126,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           action: () {
             setState(() => _nextIsPressed = true);
             _handleNext();
-
-//          sl<SystemStateManager>().setBleScanResult(ScanResultStates.LOCATED_MULTIPLE);
-//            Navigator.of(context)
-//                .pushNamed(BatteryScreen.PATH);
           },
         ),
         moreActionButton: ButtonModel(
             text: S.of(context).btnPreview.toUpperCase(),
-            action: () =>
-                Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}")),
+            action: () {
+              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
+            }),
       );
     }
   }

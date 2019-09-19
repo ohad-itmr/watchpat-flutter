@@ -26,13 +26,15 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Application require bluetooth connection to receivce medical data from WatchPAT portable diagnostic device</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Application using bluetooth to establish connection with WatchPAT portable diagnostic device</string>
 	<key>UIBackgroundModes</key>

@@ -34,6 +34,23 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
+  Widget _buildTextBlock() {
+    return StreamBuilder<GlobalProcedureState>(
+      stream: sl<SystemStateManager>().globalProcedureStateStream,
+      initialData: GlobalProcedureState.INCOMPLETE,
+      builder: (BuildContext context, AsyncSnapshot<GlobalProcedureState> snapshot) {
+        final String msg = snapshot.data == GlobalProcedureState.COMPLETE
+            ? S.of(context).thankYouContent
+            : S.of(context).thankYouStillUploading;
+        return BlockTemplate(
+            type: BlockType.text,
+            title: S.of(context).thankYouTitle,
+            content: [msg],
+            textTopPadding: true);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -41,11 +58,7 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
       showBack: false,
       showMenu: false,
       body: BodyTemplate(
-        topBlock: BlockTemplate(
-            type: BlockType.text,
-            title: S.of(context).thankYouTitle,
-            content: [S.of(context).thankYouContent],
-            textTopPadding: true),
+        topBlock: _buildTextBlock(),
         bottomBlock: Column(
           children: <Widget>[
             Container(

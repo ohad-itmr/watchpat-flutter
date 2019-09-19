@@ -24,7 +24,7 @@ dependencies:
   get_it: ^1.0.3
   sprintf: ^4.0.2
   flutter_local_notifications: ^0.7.0
-  mailer: ^2.3.0
+  mailer: ^3.0.2
   fluttertoast: ^3.0.4
   transparent_image: ^1.0.0
   url_launcher: ^5.0.2

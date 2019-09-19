@@ -50,6 +50,7 @@ class EmailSenderService {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add("wp1@itamar-medical.com")
+//      ..recipients.add("m.derzhavets@emg-soft.com")
       ..subject = 'Study log files'
       ..text = 'Received log files exported from WatchPAT application.\n\n' +
           'Time: ${DateTime.now().toIso8601String()}\n' +
@@ -61,12 +62,11 @@ class EmailSenderService {
 
   Future<bool> _sendMessage(Message msg) async {
     try {
-      await send(msg, _smtpServer);
-      Log.info(TAG, "Successfully sent email message to ${msg.recipients}, subject ${msg.subject}");
+      SendReport report = await send(msg, _smtpServer);
+      Log.info(TAG, "$report");
       return true;
     } catch (e) {
-      Log.shout(TAG,
-          "Failed to send email message to ${msg.recipients}, subject ${msg.subject}, error ${e.toString()}");
+      Log.shout(TAG, "Email sending failed: ${e.toString()}");
       return false;
     }
   }

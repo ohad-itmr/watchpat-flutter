@@ -393,7 +393,7 @@ class SystemStateManager extends ManagerBase {
 
   void setSftpUploadingState(SftpUploadingState state) {
     if (state != sftpUploadingState) {
-      Log.info(TAG, "setSftpUploadingState ${state.toString()}");
+//      Log.info(TAG, "setSftpUploadingState ${state.toString()}");
       _sftpUploadingState.sink.add(state);
     }
   }

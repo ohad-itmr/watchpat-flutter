@@ -70,9 +70,16 @@ class TransactionManager extends ManagerBase {
   }
 
   _initMethodChannel() {
-    platformChannel.setMethodCallHandler((MethodCall call) {
+    platformChannel.setMethodCallHandler((MethodCall call) async {
       if (call.method == "nativeLogEvent") {
         Log.info("[iOS]", call.arguments);
+
+        if (call.arguments == 'SIGNAL: 11') {
+          Log.shout(TAG, 'DEBUG: RECEIVED SIGNAL 11, WILL TRY TO RESTART SFTP');
+          sl<SftpService>().resetSFTPService();
+          await Future.delayed(Duration(seconds: 5));
+          sl<SftpService>().initService();
+        }
       } else if (call.method == "startSftpUploading") {
         sl<SftpService>().initService();
       } else if (call.method == "stopSftpUploading") {
@@ -89,6 +96,8 @@ class TransactionManager extends ManagerBase {
           Log.info(TAG, "Internet became available during test, initializing SFTP service");
           sl<SftpService>().initService();
         }
+      } else {
+        Log.shout(TAG, "Internet connection became unavailable");
       }
     });
   }

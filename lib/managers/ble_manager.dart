@@ -195,7 +195,7 @@ class BleManager extends ManagerBase {
   }
 
   Future<dynamic> _sendCallback(CommandTaskerItem command, bool ensureSuccess) {
-    print('_sendCallback ');
+//    print('_sendCallback ');
     try {
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
         return _sendCommand(command.data, ensureSuccess);
@@ -221,7 +221,7 @@ class BleManager extends ManagerBase {
   }
 
   _sendCommand(List<List<int>> byteList, bool ensureSuccess) async {
-    print("### _sendCommand ");
+//    print("### _sendCommand ");
 
     if (byteList != null) {
       for (var req in byteList) {

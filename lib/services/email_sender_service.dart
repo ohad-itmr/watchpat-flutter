@@ -14,12 +14,12 @@ class EmailSenderService {
 
   static const String TAG = "EmailSenderSerivce";
 
-  final _smtpServer = SmtpServer(SMTP_HOST, username: SMTP_USERNAME, password: SMTP_PASSWORD);
-
   Future<bool> sendSftpFailureEmail({@required String error}) async {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add(PrefsProvider.loadServiceEmail())
+//      ..recipients.add("wp1@itamar-medical.com")
+//      ..recipients.add("m.derzhavets@emg-soft.com")
       ..subject = 'SFTP server connection failed'
       ..text = 'Connection to SFTP server was failed.\n\n' +
           'Host: ${sl<UserAuthenticationService>().sftpHost}\n' +
@@ -62,7 +62,10 @@ class EmailSenderService {
 
   Future<bool> _sendMessage(Message msg) async {
     try {
-      SendReport report = await send(msg, _smtpServer);
+      final SmtpServer server =
+          SmtpServer(SMTP_HOST, username: SMTP_USERNAME, password: SMTP_PASSWORD);
+      Log.info(TAG, "Trying to send mail: ($SMTP_HOST, $SMTP_USERNAME, $SMTP_PASSWORD)");
+      SendReport report = await send(msg, server);
       Log.info(TAG, "$report");
       return true;
     } catch (e) {

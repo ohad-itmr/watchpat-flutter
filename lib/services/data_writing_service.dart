@@ -54,7 +54,7 @@ class DataWritingService {
       final int currentOffset = PrefsProvider.loadTestDataRecordingOffset();
       await _dataFile.writeAsBytes(packet.data, mode: FileMode.append, flush: true);
       await PrefsProvider.saveTestDataRecordingOffset(currentOffset + packet.data.length);
-      print("Data packet < ${packet.id} > stored to local file");
+//      print("Data packet < ${packet.id} > stored to local file");
     } catch (e) {
       Log.shout(TAG, "Failed to store data packet to local file $e");
     }

@@ -10,7 +10,7 @@ static BOOL sessionCompleted = NO;
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [self setUncaughtExceptionHandler];
-    [self setSignalHandler];
+//    [self setSignalHandler];
     
     [[NSNotificationCenter defaultCenter]
      addObserver:self
@@ -87,6 +87,11 @@ static BOOL sessionCompleted = NO;
 - (void) applicationDidEnterBackground:(UIApplication *)application {
     [AppDelegate writeLogToFile:@"Application entered background"];
     [channel invokeMethod:@"nativeLogEvent" arguments:@"Application entered background"];
+}
+
+- (void) applicationWillEnterForeground:(UIApplication *)application {
+    [AppDelegate writeLogToFile:@"Application entered foreground"];
+    [channel invokeMethod:@"nativeLogEvent" arguments:@"Application entered foreground"];
 }
 
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {

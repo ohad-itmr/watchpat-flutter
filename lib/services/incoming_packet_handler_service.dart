@@ -111,7 +111,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
-      print("Handling new packet  $_packetState");
+//      print("Handling new packet  $_packetState");
       _setPacketState(PacketState.HANDLING_PACKET);
 
       if (_isValidSignature()) {
@@ -464,7 +464,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void resetPacket() {
-    print('resetPacket');
+//    print('resetPacket');
     _receivedByteStream.clear();
     _incomingPacketLength = 0;
     _setPacketState(PacketState.WAITING_FOR_NEW);
@@ -483,7 +483,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     bytes[0] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE];
     bytes[1] = _incomingData[ReceivedPacket.PACKET_SIZE_STARTING_BYTE + 1];
     _incomingPacketLength = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]);
-    print('---------------------------> setPacketSize $_incomingPacketLength');
+//    print('---------------------------> setPacketSize $_incomingPacketLength');
 
     return _incomingPacketLength >= 24 && _incomingPacketLength < 2500;
   }
@@ -604,7 +604,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   void _setPacketState(PacketState state) {
     if (_packetState != state) {
-      print("Setting packet state to: ${state.toString()}");
+//      print("Setting packet state to: ${state.toString()}");
       _packetState = state;
     }
   }

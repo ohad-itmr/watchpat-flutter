@@ -61,7 +61,7 @@ class SftpService {
     _reconnectionAttempts = 0;
     _cleanUpConnection();
     _serviceInitialized = false;
-    _resetInProgress = true;
+    _resetInProgress = false;
     BackgroundFetch.finish();
   }
 
@@ -154,6 +154,8 @@ class SftpService {
 
   Future<void> _initSftpConnection() async {
     try {
+//      print(
+//          "_connectionInProgress: $_connectionInProgress, _uploadingAvailable: $_uploadingAvailable");
       if (_connectionInProgress || _uploadingAvailable) return;
       _connectionInProgress = true;
       Log.info(TAG, "Connecting to SFTP server");
@@ -165,11 +167,13 @@ class SftpService {
       await _writeTestInformationFile();
       await _restoreUploadingOffset();
       sftpConnectionStateStream.sink.add(SftpConnectionState.CONNECTED);
+      _reconnectionAttempts = 0;
       _connectionInProgress = false;
     } catch (e) {
+      _connectionInProgress = false;
       Log.shout(TAG, "Connection to SFTP failed, $e");
 
-      await _cleanUpConnection();
+//      await _cleanUpConnection();
 
       _connectionInProgress = false;
       _tryToReconnect(error: e.toString());
@@ -190,7 +194,7 @@ class SftpService {
 
   void _tryToReconnect({@required String error}) async {
     _reconnectionAttempts++;
-    if (_reconnectionAttempts > 5) {
+    if (_reconnectionAttempts > 3) {
       _reconnectionAttempts = 0;
       sl<EmailSenderService>().sendSftpFailureEmail(error: error);
       _startReconnectionTimer();
@@ -251,11 +255,13 @@ class SftpService {
   }
 
   Future<void> _awaitForConnection() async {
+    await _initSftpConnection();
     do {
-      Log.info(TAG, "Waiting for connection");
+      Log.info(
+          TAG, "Waiting for connection, internet: ${sl<SystemStateManager>().inetConnectionState}");
       await Future.delayed(Duration(seconds: 5));
       if (sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
-        await _initSftpConnection();
+//        _tryToReconnect(error: e.toString());
       }
     } while (!_uploadingAvailable);
   }
@@ -274,8 +280,10 @@ class SftpService {
     await tempFile.writeAsBytes(bytes);
 
     try {
-      final String result = await _client.sftpAppendToFile(
-          fromFilePath: tempFile.path, toFilePath: '$_sftpFilePath/$_sftpFileName');
+      final String result = await _client
+          .sftpAppendToFile(
+              fromFilePath: tempFile.path, toFilePath: '$_sftpFilePath/$_sftpFileName')
+          .timeout(Duration(seconds: 3), onTimeout: () => throw Exception("Uploading timeout"));
 
       if (result == SftpService.APPENDING_SUCCESS) {
         await PrefsProvider.saveTestDataUploadingOffset(uploadingOffset + bytes.length);
@@ -293,7 +301,7 @@ class SftpService {
       Log.info(TAG, "Restoring uploading offset: Looking for previous sftp file");
       final SFTPFile remoteFile = await _client
           .sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName")
-          .timeout(Duration(seconds: 30), onTimeout: () {
+          .timeout(Duration(seconds: 3), onTimeout: () {
         throw new SftpFileRestoringTimeoutException();
       });
       await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);

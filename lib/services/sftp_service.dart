@@ -59,7 +59,6 @@ class SftpService {
     Log.info(TAG, "Stopping SFTP service");
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
-    _cleanUpConnection();
     _serviceInitialized = false;
     _resetInProgress = false;
     BackgroundFetch.finish();
@@ -142,20 +141,8 @@ class SftpService {
     _awaitForData();
   }
 
-  Future<void> _cleanUpConnection() async {
-    try {
-      Log.shout(TAG, "Cleaning up connection");
-      _client.disconnect();
-      await Future.delayed(Duration(seconds: 3));
-    } catch (e) {
-      Log.shout(TAG, "SFTP connection cleanup failed ${e.toString()}");
-    }
-  }
-
   Future<void> _initSftpConnection() async {
     try {
-//      print(
-//          "_connectionInProgress: $_connectionInProgress, _uploadingAvailable: $_uploadingAvailable");
       if (_connectionInProgress || _uploadingAvailable) return;
       _connectionInProgress = true;
       Log.info(TAG, "Connecting to SFTP server");
@@ -172,9 +159,6 @@ class SftpService {
     } catch (e) {
       _connectionInProgress = false;
       Log.shout(TAG, "Connection to SFTP failed, $e");
-
-//      await _cleanUpConnection();
-
       _connectionInProgress = false;
       _tryToReconnect(error: e.toString());
     }
@@ -209,7 +193,7 @@ class SftpService {
   void _startReconnectionTimer() {
     Log.shout(TAG, "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
     _serviceInitialized = false;
-    _reconnectionTimer = Timer(Duration(hours: 1), () => initService());
+    _reconnectionTimer = Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
   void _awaitForData() async {
@@ -255,14 +239,11 @@ class SftpService {
   }
 
   Future<void> _awaitForConnection() async {
-    await _initSftpConnection();
+    _initSftpConnection();
     do {
       Log.info(
           TAG, "Waiting for connection, internet: ${sl<SystemStateManager>().inetConnectionState}");
       await Future.delayed(Duration(seconds: 5));
-      if (sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
-//        _tryToReconnect(error: e.toString());
-      }
     } while (!_uploadingAvailable);
   }
 
@@ -280,10 +261,8 @@ class SftpService {
     await tempFile.writeAsBytes(bytes);
 
     try {
-      final String result = await _client
-          .sftpAppendToFile(
-              fromFilePath: tempFile.path, toFilePath: '$_sftpFilePath/$_sftpFileName')
-          .timeout(Duration(seconds: 3), onTimeout: () => throw Exception("Uploading timeout"));
+      final String result = await _client.sftpAppendToFile(
+          fromFilePath: tempFile.path, toFilePath: '$_sftpFilePath/$_sftpFileName');
 
       if (result == SftpService.APPENDING_SUCCESS) {
         await PrefsProvider.saveTestDataUploadingOffset(uploadingOffset + bytes.length);
@@ -301,7 +280,7 @@ class SftpService {
       Log.info(TAG, "Restoring uploading offset: Looking for previous sftp file");
       final SFTPFile remoteFile = await _client
           .sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName")
-          .timeout(Duration(seconds: 3), onTimeout: () {
+          .timeout(Duration(seconds: 5), onTimeout: () {
         throw new SftpFileRestoringTimeoutException();
       });
       await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
@@ -309,7 +288,6 @@ class SftpService {
       const String msg =
           "SFTP file restoring timeout, looks like SFTP/internet connection is not alive";
       Log.info(TAG, msg);
-      await _cleanUpConnection();
       _tryToReconnect(error: msg);
     } catch (e) {
       Log.info(TAG, "Restoring uploading offset: SFTP data file not found");
@@ -329,7 +307,6 @@ class SftpService {
   }
 
   Future<void> _closeConnection() async {
-    await _cleanUpConnection();
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     sftpConnectionStateStream.close();
   }

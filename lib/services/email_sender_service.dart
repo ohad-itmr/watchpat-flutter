@@ -64,7 +64,7 @@ class EmailSenderService {
     try {
       final SmtpServer server =
           SmtpServer(SMTP_HOST, username: SMTP_USERNAME, password: SMTP_PASSWORD);
-      Log.info(TAG, "Trying to send mail: ($SMTP_HOST, $SMTP_USERNAME, $SMTP_PASSWORD)");
+      Log.info(TAG, "Trying to send mail");
       SendReport report = await send(msg, server);
       Log.info(TAG, "$report");
       return true;

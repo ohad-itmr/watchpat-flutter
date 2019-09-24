@@ -83,36 +83,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           imageName: 'welcome.png',
         ),
         bottomBlock: BlockTemplate(
-          type: BlockType.text, title: S.of(context).welcomeTitle, content: [loc.welcomeContent],
-//          additionalTextContent: _buildTextWithLink(),
+          type: BlockType.text,
+          title: S.of(context).welcomeTitle,
+          content: [loc.welcomeContent],
         ),
         buttons: _buildButtonsBlock(),
         showSteps: false,
       ),
-    );
-  }
-
-  Widget _buildTextWithLink() {
-    return Row(
-      children: <Widget>[
-        Text(
-          "${S.of(context).for_help_video}: ",
-          style: TextStyle(
-            height: 1.3,
-            color: Theme.of(context).textTheme.title.color,
-          ),
-        ),
-        GestureDetector(
-          child: Text(
-            S.of(context).instructions_video,
-            style: TextStyle(
-                height: 1.3,
-                color: Theme.of(context).textTheme.title.color,
-                decoration: prefix0.TextDecoration.underline),
-          ),
-          onTap: () => launch(GlobalSettings.demoUrl),
-        )
-      ],
     );
   }
 

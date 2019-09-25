@@ -126,7 +126,9 @@ static BOOL sessionCompleted = NO;
         [channel invokeMethod:@"nativeLogEvent" arguments:message];
         [AppDelegate writeLogToFile:message];
         if (expired && !sessionCompleted) {
-            NSString *msg = @"SFTP background task expired, closing SFTP upload";
+            UIApplication* app = [UIApplication sharedApplication];
+            double sec = app.backgroundTimeRemaining;
+            NSString *msg = [NSString stringWithFormat:@"SFTP background task expired, closing SFTP upload, remaining background time: %f", sec];
             [channel invokeMethod:@"nativeLogEvent" arguments:msg];
             [channel invokeMethod:@"stopSftpUploading" arguments:nil];
             [AppDelegate writeLogToFile:msg];

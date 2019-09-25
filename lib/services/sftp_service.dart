@@ -62,6 +62,7 @@ class SftpService {
     _serviceInitialized = false;
     _resetInProgress = false;
     BackgroundFetch.finish();
+    Log.info(TAG, "SFTP service stopped");
   }
 
   void _initConnectionAvailabilityListener() {

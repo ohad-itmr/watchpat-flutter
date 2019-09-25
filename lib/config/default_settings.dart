@@ -32,6 +32,7 @@ class DefaultSettings {
   static final minBatteryRequiredLevel = 100;
   static final dispatcherLink1 = "https://dispatcher.watchpat-one.com";
   static final dispatcherLink2 = "https://dispatcher2.watchpat-one.com";
+
 //  static final dispatcherLink1 = "https://test1.watchpat-one.com";
 //  static final dispatcherLink2 = "https://test1.watchpat-one.com";
 //  static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";
@@ -40,7 +41,7 @@ class DefaultSettings {
   static final timeoutFtpSec = 80;
   static final timeoutBleSec = 10;
   static final timeoutTransactionSec = 20;
-  static final emailService = "not@working.com";
+  static final emailService = "wp1@itamar-medical.com";
   static final debugMode = false;
 
   static final demoUrl = "";
@@ -59,7 +60,6 @@ class DefaultSettings {
   static String resourceEEPROMFileName = "watchpat_eeprom_resource.bin";
   static String deviceLogFileName = "main_device_log.txt";
   static String configFileName = 'watchpat_settings_ios.xml';
-
 
   static Map<String, dynamic> settingsToMap() {
     return <String, dynamic>{

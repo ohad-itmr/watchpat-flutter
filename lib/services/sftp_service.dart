@@ -53,7 +53,7 @@ class SftpService {
 
   bool _resetInProgress = false;
 
-  Future<void> resetSFTPService() async {
+  void resetSFTPService() {
     if (_resetInProgress) return;
     _resetInProgress = true;
     Log.info(TAG, "Stopping SFTP service");
@@ -89,7 +89,7 @@ class SftpService {
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
       PrefsProvider.setDataUploadingIncomplete(value: false);
-      await resetSFTPService();
+      resetSFTPService();
       await _informDispatcher();
       await sl<EmailSenderService>().sendAllLogFiles();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
@@ -198,16 +198,28 @@ class SftpService {
 
   void _awaitForData() async {
     do {
-      if (!_serviceInitialized) {
-        Log.info(TAG, "SFTP service not initialized");
+      if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
+        Log.info(TAG, "Internet connection not available, cannot upload");
+        resetSFTPService();
         return;
       }
 
-      // Check for connections, if none start waiting
-      if (!_uploadingAvailable) {
-        sl<SystemStateManager>().setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
-        await _awaitForConnection();
+      if (!_serviceInitialized) {
+        Log.info(TAG, "SFTP service not initialized, cannot upload");
+        return;
       }
+
+      if (sftpConnectionStateStream.value == SftpConnectionState.DISCONNECTED) {
+        Log.info(TAG, "SFTP disconnected, waiting for connection");
+        await Future.delayed(Duration(seconds: 5));
+        continue;
+      }
+
+      // Check for connections, if none start waiting
+//      if (!_uploadingAvailable) {
+//        sl<SystemStateManager>().setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
+//        await _awaitForConnection();
+//      }
 
       final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
       final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
@@ -272,23 +284,17 @@ class SftpService {
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");
       sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
+      await Future.delayed(Duration(seconds: 3));
+      _tryToReconnect(error: e.toString());
     }
   }
 
   Future<void> _restoreUploadingOffset() async {
     try {
       Log.info(TAG, "Restoring uploading offset: Looking for previous sftp file");
-      final SFTPFile remoteFile = await _client
-          .sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName")
-          .timeout(Duration(seconds: 5), onTimeout: () {
-        throw new SftpFileRestoringTimeoutException();
-      });
+      final SFTPFile remoteFile =
+          await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
       await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
-    } on SftpFileRestoringTimeoutException {
-      const String msg =
-          "SFTP file restoring timeout, looks like SFTP/internet connection is not alive";
-      Log.info(TAG, msg);
-      _tryToReconnect(error: msg);
     } catch (e) {
       Log.info(TAG, "Restoring uploading offset: SFTP data file not found");
     }

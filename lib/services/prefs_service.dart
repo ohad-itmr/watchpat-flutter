@@ -255,7 +255,7 @@ class PrefsProvider {
   // uploading test data
   //
   static int loadTestDataUploadingOffset() {
-    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET) ?? 0;
+    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET);
   }
 
   static Future<void> saveTestDataUploadingOffset(int offset) async {
@@ -302,8 +302,12 @@ class PrefsProvider {
   }
 
   static String loadServiceEmail() {
-    return PrefsService.prefs.getString(PrefsNames.SERVICE_EMAIL_CODE) ??
-        DefaultSettings.emailService;
+    final String mail = PrefsService.prefs.getString(PrefsNames.SERVICE_EMAIL_CODE);
+    if (mail == null || mail.isEmpty) {
+      return DefaultSettings.emailService;
+    } else {
+      return mail;
+    }
   }
 
   static Future<void> setDataUploadingIncomplete({bool value = true}) async {

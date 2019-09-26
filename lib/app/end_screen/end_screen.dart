@@ -22,7 +22,8 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
-      if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE) {
+      if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
+          sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
         Log.info(TAG, "Data was not fully uploaded to sftp server, starting background uploading");
         TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
       } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {

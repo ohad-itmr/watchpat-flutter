@@ -1,3 +1,4 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
@@ -73,17 +74,14 @@ class TransactionManager extends ManagerBase {
     platformChannel.setMethodCallHandler((MethodCall call) async {
       if (call.method == "nativeLogEvent") {
         Log.info("[iOS]", call.arguments);
-
-        if (call.arguments == 'SIGNAL: 11') {
-          Log.shout(TAG, 'DEBUG: RECEIVED SIGNAL 11, WILL TRY TO RESTART SFTP');
-          sl<SftpService>().resetSFTPService();
-          await Future.delayed(Duration(seconds: 5));
-          sl<SftpService>().initService();
-        }
       } else if (call.method == "startSftpUploading") {
         sl<SftpService>().initService();
       } else if (call.method == "stopSftpUploading") {
         sl<SftpService>().resetSFTPService();
+        await Future.delayed(Duration(seconds: 10));
+        BackgroundFetch.finish();
+      } else if (call.method == 'stopBackgroundFetch') {
+        BackgroundFetch.finish();
       }
       return;
     });

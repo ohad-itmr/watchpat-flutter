@@ -255,7 +255,7 @@ class PrefsProvider {
   // uploading test data
   //
   static int loadTestDataUploadingOffset() {
-    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET);
+    return PrefsService.prefs.getInt(PrefsNames.TEST_DATA_UPLOADING_OFFSET) ?? 0;
   }
 
   static Future<void> saveTestDataUploadingOffset(int offset) async {

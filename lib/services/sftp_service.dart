@@ -53,7 +53,7 @@ class SftpService {
 
   bool _resetInProgress = false;
 
-  void resetSFTPService() {
+  void resetSFTPService() async {
     if (_resetInProgress) return;
     _resetInProgress = true;
     Log.info(TAG, "Stopping SFTP service");
@@ -61,7 +61,6 @@ class SftpService {
     _reconnectionAttempts = 0;
     _serviceInitialized = false;
     _resetInProgress = false;
-    BackgroundFetch.finish();
     Log.info(TAG, "SFTP service stopped");
   }
 
@@ -92,12 +91,12 @@ class SftpService {
       PrefsProvider.setDataUploadingIncomplete(value: false);
       await _checkRemoteFileSize();
       resetSFTPService();
+      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       await _informDispatcher();
       await sl<EmailSenderService>().sendLogsArchive();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
-      await BackgroundFetch.stop();
-      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       BackgroundFetch.finish();
+      await BackgroundFetch.stop();
     }
   }
 

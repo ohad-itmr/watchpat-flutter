@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/rendering.dart';
@@ -20,7 +21,8 @@ class UploadingScreen extends StatefulWidget with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.paused &&
+        sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
       TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
     }
     super.didChangeAppLifecycleState(state);

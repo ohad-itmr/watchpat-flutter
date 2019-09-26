@@ -4,7 +4,8 @@
 @implementation AppDelegate
 
 static FlutterMethodChannel *channel = nil;
-static BOOL sessionCompleted = NO;
+static BOOL sessionCompleted = false;
+static BOOL backgroundTimeAlmostExpired = false;
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -123,29 +124,48 @@ static BOOL sessionCompleted = NO;
 - (void)startBackgroundSftpUploading {
     [[NSProcessInfo processInfo] performExpiringActivityWithReason:@"BackgroundSftpUploading" usingBlock:^void (BOOL expired) {
         NSString *message = [NSString stringWithFormat:@"Background time request, expired? %@", expired ? @"YES" : @"NO"];
+
         [channel invokeMethod:@"nativeLogEvent" arguments:message];
         [AppDelegate writeLogToFile:message];
         if (expired && !sessionCompleted) {
-            UIApplication* app = [UIApplication sharedApplication];
-            double sec = app.backgroundTimeRemaining;
-            NSString *msg = [NSString stringWithFormat:@"SFTP background task expired, closing SFTP upload, remaining background time: %f", sec];
+            NSString *msg = @"SFTP background task expired, finishing background fetch";
             [channel invokeMethod:@"nativeLogEvent" arguments:msg];
-            [channel invokeMethod:@"stopSftpUploading" arguments:nil];
+            [channel invokeMethod:@"stopBackgroundFetch" arguments:nil];
             [AppDelegate writeLogToFile:msg];
         } else if (!sessionCompleted) {
+            backgroundTimeAlmostExpired = false;
             NSString *msg = @"SFTP background task is active, starting/continuing SFTP upload";
             [channel invokeMethod:@"nativeLogEvent" arguments:msg];
             [channel invokeMethod:@"startSftpUploading" arguments:nil];
             [AppDelegate writeLogToFile:msg];
             
-            while (!sessionCompleted) {
-                [NSThread sleepForTimeInterval:1.0];
-                if (sessionCompleted) {
-                    NSString *msg = @"SFTP background uploading finished";
-                    [channel invokeMethod:@"nativeLogEvent" arguments:msg];
-                    [AppDelegate writeLogToFile:msg];
+                while (!sessionCompleted) {
+                    [NSThread sleepForTimeInterval:1.0];
+                    
+                    if (backgroundTimeAlmostExpired) {
+                        break;
+                    }
+                    
+                        if (sessionCompleted) {
+                            NSString *msg = @"SFTP background uploading finished";
+                            [channel invokeMethod:@"nativeLogEvent" arguments:msg];
+                            [AppDelegate writeLogToFile:msg];
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                UIApplication* app = [UIApplication sharedApplication];
+                                double sec = app.backgroundTimeRemaining;
+                                if (sec < 15) {
+                                    NSString *msg = @"Background time is about to expire, closing SFTP connection";
+                                    [channel invokeMethod:@"nativeLogEvent" arguments:msg];
+                                    [channel invokeMethod:@"stopSftpUploading" arguments:nil];
+                                    [AppDelegate writeLogToFile:msg];
+                                    backgroundTimeAlmostExpired = true;
+                                }
+                            });
+                        }
+
                 }
-            }
+                
         }
     }];
 }

@@ -132,6 +132,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             text: S.of(context).btnPreview.toUpperCase(),
             action: () {
               Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
+//              sl<EmailSenderService>().sendLogsArchive();
             }),
       );
     }

@@ -59,6 +59,21 @@ class EmailSenderService {
     return await _sendMessage(message);
   }
 
+  Future<bool> sendLogsArchive() async {
+    File file = await sl<FileSystemService>().getAllLogFilesArchived();
+    final message = Message()
+      ..from = Address(SMTP_USERNAME, 'Itamar Medical')
+//      ..recipients.add("wp1@itamar-medical.com")
+      ..recipients.add("m.derzhavets@emg-soft.com")
+      ..subject = 'Study log files'
+      ..text = 'Received log files exported from WatchPAT application.\n\n' +
+          'Time: ${DateTime.now().toIso8601String()}\n' +
+          'Device s/n: ${PrefsProvider.loadDeviceSerial()}'
+      ..attachments = [FileAttachment(file)];
+
+    return await _sendMessage(message);
+  }
+
   Future<bool> _sendMessage(Message msg) async {
     try {
       await send(msg, _smtpServer);

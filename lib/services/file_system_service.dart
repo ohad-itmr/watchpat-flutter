@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:archive/archive_io.dart';
 import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
@@ -59,6 +60,19 @@ class FileSystemService {
     await Future.delayed(Duration(seconds: 2));
     sub.cancel();
     return files;
+  }
+
+  Future<File> getAllLogFilesArchived() async {
+    ZipFileEncoder encoder = ZipFileEncoder();
+    Directory dir = await getApplicationDocumentsDirectory();
+    final String archivePath = '${dir.path}/logs.zip';
+    List<File> files = await getAllLogFiles();
+    encoder.create(archivePath);
+    files.forEach((File f) {
+      encoder.addFile(f);
+    });
+    encoder.close();
+    return File(archivePath);
   }
 
   String get logMainFileName {

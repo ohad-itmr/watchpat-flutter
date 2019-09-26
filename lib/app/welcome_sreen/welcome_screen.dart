@@ -110,6 +110,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             action: () {
 //              sl<EmailSenderService>().sendAllLogFiles();
               Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
+//              sl<EmailSenderService>().sendLogsArchive();
             }),
       );
     }

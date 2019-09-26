@@ -92,7 +92,7 @@ class SftpService {
       PrefsProvider.setDataUploadingIncomplete(value: false);
       resetSFTPService();
       await _informDispatcher();
-      await sl<EmailSenderService>().sendAllLogFiles();
+      await sl<EmailSenderService>().sendLogsArchive();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       await BackgroundFetch.stop();
       TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");

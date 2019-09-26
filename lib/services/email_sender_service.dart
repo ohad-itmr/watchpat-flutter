@@ -18,9 +18,8 @@ class EmailSenderService {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add(PrefsProvider.loadServiceEmail())
-      ..recipients.add("m.derzhavets@emg-soft.com")
-//      ..recipients.add("wp1@itamar-medical.com")
 //      ..recipients.add("m.derzhavets@emg-soft.com")
+      ..recipients.add("wp1@itamar-medical.com")
       ..subject = 'SFTP server connection failed'
       ..text = 'Connection to SFTP server was failed.\n\n' +
           'Host: ${sl<UserAuthenticationService>().sftpHost}\n' +
@@ -65,7 +64,7 @@ class EmailSenderService {
     File file = await sl<FileSystemService>().getAllLogFilesArchived();
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
-//      ..recipients.add("wp1@itamar-medical.com")
+      ..recipients.add("wp1@itamar-medical.com")
       ..recipients.add("m.derzhavets@emg-soft.com")
       ..subject = 'Study log files'
       ..text = 'Received log files exported from WatchPAT application.\n\n' +

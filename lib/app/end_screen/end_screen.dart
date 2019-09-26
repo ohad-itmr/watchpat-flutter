@@ -19,18 +19,27 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
   }
 
+  static bool _cycleAlreadyFired = false;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
       if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
-          sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
+          sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none &&
+          !_cycleAlreadyFired) {
+        _cycleAlreadyFired = true;
         Log.info(TAG, "Data was not fully uploaded to sftp server, starting background uploading");
         TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
+        await Future.delayed(Duration(milliseconds: 500));
+        _cycleAlreadyFired = false;
       } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {
         await BackgroundFetch.stop();
         await Future.delayed(Duration(seconds: 2));
         exit(0);
       }
+    } else if (state == AppLifecycleState.resumed &&
+        sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
+      sl<SftpService>().initService();
     }
     super.didChangeAppLifecycleState(state);
   }

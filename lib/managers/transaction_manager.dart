@@ -78,7 +78,7 @@ class TransactionManager extends ManagerBase {
         sl<SftpService>().initService();
       } else if (call.method == "stopSftpUploading") {
         sl<SftpService>().resetSFTPService();
-        await Future.delayed(Duration(seconds: 10));
+        await Future.delayed(Duration(seconds: 7));
         BackgroundFetch.finish();
       } else if (call.method == 'stopBackgroundFetch') {
         BackgroundFetch.finish();

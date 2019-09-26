@@ -281,6 +281,8 @@ class SftpService {
         await PrefsProvider.saveTestDataUploadingOffset(uploadingOffset + bytes.length);
         Log.info(TAG,
             "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
+      } else {
+        Log.info(TAG, "Uploading to SFTP Failed with status: $result");
       }
     } catch (e) {
       Log.shout(TAG, "Uploading to SFTP Failed: $e");

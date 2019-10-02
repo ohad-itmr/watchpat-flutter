@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:battery/battery.dart';
 import 'package:date_format/date_format.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/domain_model/command_task.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
@@ -32,6 +33,7 @@ class TestingManager extends ManagerBase {
   Observable<double> get remainingDataProgressStream => _remainingDataProgress.stream;
 
   Timer _elapsedTimer;
+  Timer _sftpIncompleteTimer;
   int _numberOfSecondsToDownloadAllPackets;
   int _maxProgress;
   int _testStoppedTimeMS;
@@ -77,6 +79,18 @@ class TestingManager extends ManagerBase {
     }
   }
 
+  void _startSftpTimer() {
+    _sftpIncompleteTimer = Timer(Duration(seconds: 10), () {
+      final AppLifecycleState state = WidgetsBinding.instance.lifecycleState;
+      if (_systemStateManager.sftpUploadingState != SftpUploadingState.ALL_UPLOADED &&
+          state != AppLifecycleState.resumed) {
+        sl<NotificationsService>().showLocalNotification(
+            "Data from WatchPAT ONE device finished transferring. Please open the application to upload data to your doctor.");
+        _sftpIncompleteTimer = null;
+      }
+    });
+  }
+
   bool checkForSessionTimeout() {
     final bool sessionTimedOut =
         TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
@@ -106,6 +120,7 @@ class TestingManager extends ManagerBase {
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _initDataProgress();
     _stopElapsedTimer();
+    _startSftpTimer();
   }
 
   void forceEndTesting() {
@@ -115,6 +130,7 @@ class TestingManager extends ManagerBase {
     sl<SystemStateManager>().setScanCycleEnabled = false;
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _stopElapsedTimer();
+    _startSftpTimer();
   }
 
   void _initDataProgress() {
@@ -138,7 +154,6 @@ class TestingManager extends ManagerBase {
   }
 
   void updateProgressBar(int changeDelta) {
-//    print("PROGRESS: ${(_maxProgress - _numberOfSecondsToDownloadAllPackets)} / $_maxProgress");
     final double newProgress = (_maxProgress - _numberOfSecondsToDownloadAllPackets) / _maxProgress;
     _remainingDataProgress.sink.add(newProgress);
   }

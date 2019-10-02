@@ -6,6 +6,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:my_pat/config/default_settings.dart';
+import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -29,11 +30,6 @@ class SftpService {
 
   String _sftpFileName;
   String _sftpFilePath;
-  File _dataFile;
-  RandomAccessFile _raf;
-  Directory _tempDir;
-  int _dataChunkSize = DefaultSettings.uploadDataChunkMaxSize;
-  bool _uploadingAvailable = false;
   SftpUploadingState _currentUploadingState;
   DataTransferState _currentDataTransferState;
   int _reconnectionAttempts = 0;
@@ -47,8 +43,6 @@ class SftpService {
     _fileSystem = sl<FileSystemService>();
     _systemState.dataTransferStateStream.listen(_handleDataTransferState);
     _systemState.sftpUploadingStateStream.listen(_handleSftpUploadingState);
-
-    _initConnectionAvailabilityListener();
   }
 
   bool _resetInProgress = false;
@@ -62,15 +56,6 @@ class SftpService {
     _serviceInitialized = false;
     _resetInProgress = false;
     Log.info(TAG, "SFTP service stopped");
-  }
-
-  void _initConnectionAvailabilityListener() {
-    Observable.combineLatest2(
-            _systemState.inetConnectionStateStream,
-            sftpConnectionStateStream.stream,
-            (ConnectivityResult inet, SftpConnectionState sftp) => _uploadingAvailable =
-                inet != ConnectivityResult.none && sftp != SftpConnectionState.DISCONNECTED)
-        .listen(null);
   }
 
   _handleDataTransferState(DataTransferState state) {
@@ -96,6 +81,7 @@ class SftpService {
       await sl<EmailSenderService>().sendLogsArchive();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
+      TransactionManager.platformChannel.invokeMethod("enableAutoSleep");
       BackgroundFetch.finish();
       await BackgroundFetch.stop();
     }
@@ -117,10 +103,6 @@ class SftpService {
 
     _sftpFilePath = PrefsProvider.loadSftpPath();
     _sftpFileName = DefaultSettings.serverDataFileName;
-    _tempDir = await getTemporaryDirectory();
-
-    _dataFile = await _fileSystem.localDataFile;
-    _raf = await _dataFile.open(mode: FileMode.read);
 
     if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
       await Future.delayed(Duration(seconds: 5));
@@ -218,36 +200,19 @@ class SftpService {
         continue;
       }
 
-      final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
-      final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
-
-      if (currentUploadingOffset < currentRecordingOffset) {
-        _systemState.setSftpUploadingState(SftpUploadingState.UPLOADING);
-
-        if (_currentDataTransferState == DataTransferState.ENDED) {
-          await _uploadAllData();
-        } else {
-          await _uploadDataChunk();
-        }
-
-
-
-        // Check if test ended and all data is uploaded
-        final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
-        if (currentRecordingOffset == newUploadingOffset &&
-            _currentDataTransferState == DataTransferState.ENDED) {
-          _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
-          _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
-        }
-      } else if (currentUploadingOffset == currentRecordingOffset &&
-          _currentDataTransferState == DataTransferState.ENDED) {
-        _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
-        _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
+      if (_currentDataTransferState == DataTransferState.ENDED) {
+        await _uploadAllData(complete: true);
       } else {
-        _systemState.setSftpUploadingState(SftpUploadingState.WAITING_FOR_DATA);
-        Log.info(TAG,
-            "Waiting for data: UPLOADING OFFSET: $currentUploadingOffset, RECORDING OFFSET: $currentRecordingOffset");
-        await Future.delayed(Duration(seconds: 5));
+        final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
+        final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
+        if ((currentRecordingOffset - currentUploadingOffset) < 100000) {
+          Log.info(TAG,
+              'Accumulating data to 100k, recording offset: $currentRecordingOffset, uploading offset: $currentUploadingOffset');
+          await Future.delayed(Duration(seconds: 5));
+          continue;
+        } else {
+          await _uploadAllData();
+        }
       }
     } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
     Log.info(TAG, "Data waiting loop finished");
@@ -267,49 +232,7 @@ class SftpService {
     }
   }
 
-  Future<void> _uploadDataChunk() async {
-    try {
-      int uploadingOffset = await getRemoteOffset();
-      int recordingOffset = PrefsProvider.loadTestDataRecordingOffset();
-
-      RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
-
-      final int lengthToRead = recordingOffset - uploadingOffset > _dataChunkSize
-          ? _dataChunkSize
-          : recordingOffset - uploadingOffset;
-
-      List<int> bytes = await rafWithOffset.read(lengthToRead);
-
-      final File tempFile = File("${_tempDir.path}/$_sftpFileName");
-      await tempFile.writeAsBytes(bytes);
-
-      final String result = await _client.sftpAppendToFile(
-          fromFilePath: tempFile.path, toFilePath: '$_sftpFilePath/$_sftpFileName');
-
-      if (result == SftpService.APPENDING_SUCCESS) {
-        int newOffset = await getRemoteOffset();
-
-        while (newOffset == uploadingOffset) {
-          Log.shout(TAG, ">>>>>>>>>> Same remote offset detected after successfull appending!!");
-          await Future.delayed(Duration(seconds: 5));
-          newOffset = await getRemoteOffset();
-        }
-
-        await PrefsProvider.saveTestDataUploadingOffset(newOffset);
-        Log.info(TAG,
-            "Uploaded chunk to SFTP. Current uploading offset: ${PrefsProvider.loadTestDataUploadingOffset()}, current recording offset: $recordingOffset");
-      } else {
-        Log.info(TAG, "Uploading to SFTP Failed with status: $result");
-      }
-    } catch (e) {
-      Log.shout(TAG, "Uploading to SFTP Failed: $e");
-      sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
-      await Future.delayed(Duration(seconds: 3));
-      _tryToReconnect(error: e.toString());
-    }
-  }
-
-  Future<void> _uploadAllData() async {
+  Future<void> _uploadAllData({bool complete = false}) async {
     try {
       final File localFile = await sl<FileSystemService>().localDataFile;
 
@@ -321,10 +244,15 @@ class SftpService {
 
       if (result == SftpService.UPLOADING_SUCCESS) {
         Log.info(TAG, "Uploading successfull");
-        int newOffset = await getRemoteOffset();
-        await PrefsProvider.saveTestDataUploadingOffset(newOffset);
+        if (complete) {
+          _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
+          _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);
+        } else {
+          int newOffset = await getRemoteOffset();
+          await PrefsProvider.saveTestDataUploadingOffset(newOffset);
+        }
       } else {
-        Log.info(TAG, "Uploading to SFTP Failed with status: $result");
+        throw Exception("Uploading to SFTP Failed with status: $result");
       }
     } catch (e) {
       Log.info(TAG, "Resuming upload to SFTP Failed with status: $e");
@@ -355,11 +283,8 @@ class SftpService {
 
   Future<void> _informDispatcher() async {
     await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
-//    sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
   }
 
   static const String APPENDING_SUCCESS = "appending_success";
   static const String UPLOADING_SUCCESS = "uploading_success";
 }
-
-class SftpFileRestoringTimeoutException implements Exception {}

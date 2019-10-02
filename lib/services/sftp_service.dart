@@ -226,7 +226,6 @@ class SftpService {
 
         if (_currentDataTransferState == DataTransferState.ENDED) {
           await _uploadAllData();
-          return;
         } else {
           await _uploadDataChunk();
         }
@@ -310,31 +309,26 @@ class SftpService {
 
   Future<void> _uploadAllData() async {
     try {
-      int uploadingOffset = await getRemoteOffset();
       final File localFile = await sl<FileSystemService>().localDataFile;
-      int recordingOffset = await localFile.length();
-
-      RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
-
-      List<int> bytes = await rafWithOffset.read(recordingOffset - uploadingOffset);
-
-      final File tempFile = File("${_tempDir.path}/$_sftpFileName");
-      await tempFile.writeAsBytes(bytes);
 
       final String result = await _client.sftpResumeFile(
-          path: tempFile.path,
+          path: localFile.path,
           toPath: '$_sftpFilePath/$_sftpFileName',
-          callback: (var progress) {
-            Log.info(TAG, "SFTP Uploading Progress: $progress");
-          });
+          callback: (var progress) =>
+              sl<SystemStateManager>().setSftpUploadingProgress(progress as int));
 
       if (result == SftpService.UPLOADING_SUCCESS) {
-        Log.info(TAG, "Uploading successfully started");
+        Log.info(TAG, "Uploading successfull");
+        int newOffset = await getRemoteOffset();
+        await PrefsProvider.saveTestDataUploadingOffset(newOffset);
       } else {
         Log.info(TAG, "Uploading to SFTP Failed with status: $result");
       }
     } catch (e) {
       Log.info(TAG, "Resuming upload to SFTP Failed with status: $e");
+      sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
+      await Future.delayed(Duration(seconds: 3));
+      _tryToReconnect(error: e.toString());
     }
   }
 

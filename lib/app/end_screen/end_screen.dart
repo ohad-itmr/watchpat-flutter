@@ -46,13 +46,16 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   }
 
   Widget _buildTextBlock() {
-    return StreamBuilder<GlobalProcedureState>(
-      stream: sl<SystemStateManager>().globalProcedureStateStream,
-      initialData: GlobalProcedureState.INCOMPLETE,
-      builder: (BuildContext context, AsyncSnapshot<GlobalProcedureState> snapshot) {
-        final String msg = snapshot.data == GlobalProcedureState.COMPLETE
+    return StreamBuilder<List<dynamic>>(
+      stream: Observable.combineLatest2(
+          sl<SystemStateManager>().globalProcedureStateStream,
+          sl<SystemStateManager>().sftpUploadingProgress,
+          (GlobalProcedureState state, int progress) => [state, progress]),
+      initialData: [GlobalProcedureState.INCOMPLETE, 0],
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        final String msg = snapshot.data[0] == GlobalProcedureState.COMPLETE
             ? S.of(context).thankYouContent
-            : S.of(context).thankYouStillUploading;
+            : '${S.of(context).thankYouStillUploading} ${snapshot.data[1]}%';
         return BlockTemplate(
             type: BlockType.text,
             title: S.of(context).thankYouTitle,

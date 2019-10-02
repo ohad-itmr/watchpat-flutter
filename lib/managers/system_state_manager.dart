@@ -171,6 +171,7 @@ class SystemStateManager extends ManagerBase {
   BehaviorSubject<ConnectivityResult> _inetConnectionState = BehaviorSubject<ConnectivityResult>();
   BehaviorSubject<GlobalProcedureState> _globalProcedureState =
       BehaviorSubject<GlobalProcedureState>();
+  BehaviorSubject<int> _sftpUploadingProgress = BehaviorSubject<int>();
 
   PublishSubject<StateChangeActions> _stateChangeSubject = PublishSubject<StateChangeActions>();
 
@@ -213,6 +214,8 @@ class SystemStateManager extends ManagerBase {
   Observable<SftpUploadingState> get sftpUploadingStateStream => _sftpUploadingState.stream;
 
   Observable<GlobalProcedureState> get globalProcedureStateStream => _globalProcedureState.stream;
+
+  Observable<int> get sftpUploadingProgress => _sftpUploadingProgress.stream;
 
   bool _isScanCycleEnabled = true;
 
@@ -318,8 +321,7 @@ class SystemStateManager extends ManagerBase {
 
   void setDeviceErrorState(DeviceErrorStates state, {String errors}) {
     if (state != _deviceErrorState.value) {
-      Log.info(TAG,
-          "setDeviceErrorState: $state, $errors");
+      Log.info(TAG, "setDeviceErrorState: $state, $errors");
       if (errors != null) {
         _deviceErrors = errors;
       }
@@ -396,6 +398,10 @@ class SystemStateManager extends ManagerBase {
 //      Log.info(TAG, "setSftpUploadingState ${state.toString()}");
       _sftpUploadingState.sink.add(state);
     }
+  }
+
+  void setSftpUploadingProgress(int val) {
+    _sftpUploadingProgress.sink.add(val);
   }
 
   void setGlobalProcedureState(GlobalProcedureState state) {

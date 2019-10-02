@@ -46,7 +46,7 @@ class S implements WidgetsLocalizations {
   String get battery_level_error => "Your phone isn't connected to a charger. Please connect a charger to start test.";
   String get battery_voltage => "Battery voltage: ";
   String get bt_initiation_error => "Bluetooth initiation error";
-  String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease active bluetooth in Control Center.";
+  String get bt_must_be_enabled => "Bluetooth must be enabled for the test procedure.\nPlease activate bluetooth in Control Center.";
   String get bt_not_available_shutdown => "Bluetooth is not available on this device";
   String get btnChangeAndRestart => "Change and exit app";
   String get btnCloseApp => "CLOSE APP";
@@ -221,7 +221,7 @@ class S implements WidgetsLocalizations {
   String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
   String get thankYouContent => "Congratulations, your study has been successfully uploaded to your doctor.\nPlease dispose of the product according to local regulations.";
   String get thankYouNoInet => "You study currently can't be uploaded to your doctor because of internet connection is unavailable.\nYou can minimize the app, it will finish uploading data when internet connection will be available.";
-  String get thankYouStillUploading => "You study is still uploading to your doctor.\nPlease don't close the application.";
+  String get thankYouStillUploading => "You study is still uploading to your doctor.\nPlease don't close the application.\n\nUploading progress: ";
   String get thankYouTitle => "THANK YOU";
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during the authentication, please contact support";

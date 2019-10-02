@@ -1,12 +1,10 @@
-import 'package:battery/battery.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
+import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/utils/log/log.dart';
-import 'package:my_pat/widgets/popup_menu_button.dart';
 import 'package:my_pat/widgets/widgets.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String TAG = 'WelcomeScreen';
@@ -108,12 +106,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         moreActionButton: ButtonModel(
             text: S.of(context).btnPreview.toUpperCase(),
             action: () {
-//              sl<EmailSenderService>().sendAllLogFiles();
-              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
-//              sl<EmailSenderService>().sendLogsArchive();
+//              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
+              Navigator.of(context).pushNamed(EndScreen.PATH);
+
+              _testSftpUploading();
             }),
       );
     }
+  }
+
+  _testSftpUploading() async {
+    sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
+    final File localFile = await sl<FileSystemService>().localDataFile;
+    PrefsProvider.saveTestDataRecordingOffset(await localFile.length());
+
+    PrefsProvider.saveSftpHost('test1.watchpat-one.com');
+    PrefsProvider.saveSftpPort(22);
+    PrefsProvider.saveSftpPassword('qNIw9VWh3APR');
+    PrefsProvider.saveSftpUsername('sftp');
+    PrefsProvider.saveSftpPath('sftp/123456782/20191002_0758');
+
+    sl<SftpService>().initService();
   }
 }
 

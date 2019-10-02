@@ -4,7 +4,7 @@ import 'package:my_pat/main.dart';
 
 import '../service_locator.dart';
 
-enum PopupOption { language, email, forget, kill, log }
+enum PopupOption { language, email, forget, kill, log, cancel_sftp }
 
 class MypatPopupMenuButton extends StatefulWidget {
   @override
@@ -33,7 +33,8 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
           value: PopupOption.forget,
           child: Text("Forget device"),
         ),
-        _killAppOption(),
+//        _killAppOption(),
+//        _sftpOption()
       ];
     });
   }
@@ -60,6 +61,17 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
     }
   }
 
+  static Widget _sftpOption() {
+    if (GlobalSettings.isDebugMode) {
+      return PopupMenuItem(
+        value: PopupOption.log,
+        child: Text("Cancel sftp upload"),
+      );
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<PopupOption>(
@@ -79,6 +91,8 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       _forgetConnectedDevice();
     } else if (option == PopupOption.kill) {
       _killApplication();
+    } else if (option == PopupOption.cancel_sftp) {
+      _cancelSftpUploading();
     }
   }
 
@@ -135,5 +149,9 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
 
   void _killApplication() {
     TransactionManager.platformChannel.invokeMethod("crashApplication");
+  }
+
+  void _cancelSftpUploading() {
+    sl<SftpService>().cancelUpload();
   }
 }

@@ -51,6 +51,7 @@ class SftpService {
     if (_resetInProgress) return;
     _resetInProgress = true;
     Log.info(TAG, "Stopping SFTP service");
+    _client.sftpCancelUpload();
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
     _serviceInitialized = false;
@@ -73,14 +74,14 @@ class SftpService {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
-      PrefsProvider.setDataUploadingIncomplete(value: false);
       await _checkRemoteFileSize();
       resetSFTPService();
-      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       await _informDispatcher();
       await sl<EmailSenderService>().sendLogsArchive();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
+      PrefsProvider.setDataUploadingIncomplete(value: false);
+      TransactionManager.platformChannel.invokeMethod("backgroundSftpUploadingFinished");
       TransactionManager.platformChannel.invokeMethod("enableAutoSleep");
       BackgroundFetch.finish();
       await BackgroundFetch.stop();
@@ -160,6 +161,20 @@ class SftpService {
     }
   }
 
+  Future<int> getRemoteOffset() async {
+    try {
+      final SFTPFile remoteFile =
+          await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+      return remoteFile.size;
+    } catch (e) {
+      if (PrefsProvider.loadTestDataUploadingOffset() == 0) {
+        return 0;
+      } else {
+        throw Exception("Remote file unreachable");
+      }
+    }
+  }
+
   void _tryToReconnect({@required String error}) async {
     if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) return;
     _reconnectionAttempts++;
@@ -173,12 +188,6 @@ class SftpService {
       Log.shout(TAG, "Trying to reconnect to SFTP server, attempt: $_reconnectionAttempts");
       _initSftpConnection();
     }
-  }
-
-  void _startReconnectionTimer() {
-    Log.shout(TAG, "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
-    _serviceInitialized = false;
-    _reconnectionTimer = Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
   void _awaitForData() async {
@@ -218,18 +227,10 @@ class SftpService {
     Log.info(TAG, "Data waiting loop finished");
   }
 
-  Future<int> getRemoteOffset() async {
-    try {
-      final SFTPFile remoteFile =
-          await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-      return remoteFile.size;
-    } catch (e) {
-      if (PrefsProvider.loadTestDataUploadingOffset() == 0) {
-        return 0;
-      } else {
-        throw Exception("Remote file unreachable");
-      }
-    }
+  void _startReconnectionTimer() {
+    Log.shout(TAG, "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
+    _serviceInitialized = false;
+    _reconnectionTimer = Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
   Future<void> _uploadAllData({bool complete = false}) async {
@@ -287,4 +288,9 @@ class SftpService {
 
   static const String APPENDING_SUCCESS = "appending_success";
   static const String UPLOADING_SUCCESS = "uploading_success";
+
+  //todo TESTT
+  cancelUpload() {
+    _client.sftpCancelUpload();
+  }
 }

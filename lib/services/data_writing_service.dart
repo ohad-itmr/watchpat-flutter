@@ -43,15 +43,6 @@ class DataWritingService {
 
   void writeToLocalFile(DataPacket packet) {
     _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
-    _data.sink.add(packet);
   }
 
   Future<void> resetLocalFile() async {

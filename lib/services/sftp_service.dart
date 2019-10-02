@@ -230,6 +230,8 @@ class SftpService {
           await _uploadDataChunk();
         }
 
+
+
         // Check if test ended and all data is uploaded
         final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
         if (currentRecordingOffset == newUploadingOffset &&

@@ -106,10 +106,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         moreActionButton: ButtonModel(
             text: S.of(context).btnPreview.toUpperCase(),
             action: () {
-//              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
-              Navigator.of(context).pushNamed(EndScreen.PATH);
+              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
+//              Navigator.of(context).pushNamed(EndScreen.PATH);
 
-              _testSftpUploading();
+//              _testSftpUploading();
             }),
       );
     }

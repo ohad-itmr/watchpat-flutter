@@ -222,7 +222,13 @@ class SftpService {
 
       if (currentUploadingOffset < currentRecordingOffset) {
         _systemState.setSftpUploadingState(SftpUploadingState.UPLOADING);
-        await _uploadDataChunk();
+
+        if (_currentDataTransferState == DataTransferState.ENDED) {
+          await _uploadAllData();
+          return;
+        } else {
+          await _uploadDataChunk();
+        }
 
         // Check if test ended and all data is uploaded
         final int newUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
@@ -301,6 +307,36 @@ class SftpService {
     }
   }
 
+  Future<void> _uploadAllData() async {
+    try {
+      int uploadingOffset = await getRemoteOffset();
+      final File localFile = await sl<FileSystemService>().localDataFile;
+      int recordingOffset = await localFile.length();
+
+      RandomAccessFile rafWithOffset = await _raf.setPosition(uploadingOffset);
+
+      List<int> bytes = await rafWithOffset.read(recordingOffset - uploadingOffset);
+
+      final File tempFile = File("${_tempDir.path}/$_sftpFileName");
+      await tempFile.writeAsBytes(bytes);
+
+      final String result = await _client.sftpResumeFile(
+          path: tempFile.path,
+          toPath: '$_sftpFilePath/$_sftpFileName',
+          callback: (var progress) {
+            Log.info(TAG, "SFTP Uploading Progress: $progress");
+          });
+
+      if (result == SftpService.UPLOADING_SUCCESS) {
+        Log.info(TAG, "Uploading successfully started");
+      } else {
+        Log.info(TAG, "Uploading to SFTP Failed with status: $result");
+      }
+    } catch (e) {
+      Log.info(TAG, "Resuming upload to SFTP Failed with status: $e");
+    }
+  }
+
   Future<void> _restoreUploadingOffset() async {
     try {
       final SFTPFile remoteFile =
@@ -309,12 +345,14 @@ class SftpService {
       await PrefsProvider.saveTestDataUploadingOffset(remoteFile.size);
     } catch (e) {
       Log.info(TAG, "Restoring uploading offset: SFTP data file not found");
+      await PrefsProvider.saveTestDataUploadingOffset(0);
     }
   }
 
   Future<void> _checkRemoteFileSize() async {
-    SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-    Log.info(TAG, "UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+    final SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+    final File localFile = await sl<FileSystemService>().localDataFile;
+    Log.info(TAG, "LOCAL FILE SIZE: ${await localFile.length()}");
     Log.info(TAG, "REMOTE FILE SIZE: ${file.size}");
   }
 
@@ -324,6 +362,7 @@ class SftpService {
   }
 
   static const String APPENDING_SUCCESS = "appending_success";
+  static const String UPLOADING_SUCCESS = "uploading_success";
 }
 
 class SftpFileRestoringTimeoutException implements Exception {}

@@ -1,7 +1,7 @@
 name: my_pat
 description: A new Flutter project.
 
-version: 1.0.14+8
+version: 1.0.14+10
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -44,11 +44,12 @@ dependencies:
     git:
       url: https://github.com/derzhavets/plugins
       path: packages/battery
-#  ssh:
-#    path: ../../../../derzhavets/projects/flutter_ssh/
+
   ssh:
-    git:
-      url: https://github.com/derzhavets/flutter_ssh
+    path: ../../../../derzhavets/projects/flutter_ssh/
+#  ssh:
+#    git:
+#      url: https://github.com/derzhavets/flutter_ssh
 
 
   cupertino_icons: ^0.1.2

@@ -28,6 +28,7 @@ class DioLogger {
   static String _filterOutSensitiveData(Map<String, dynamic> d) {
     final data = Map.from(d);
     if (data['credentials'] != null) {
+      print("SFTP CREDENTIALS: ${data['credentials']}");
       data.remove('credentials');
     }
     return data.toString();

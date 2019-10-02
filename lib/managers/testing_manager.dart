@@ -103,6 +103,7 @@ class TestingManager extends ManagerBase {
     Log.info(TAG, "### STOPPING TEST");
     _systemStateManager.setTestState(TestStates.STOPPED);
     sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
+    TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _initDataProgress();
     _stopElapsedTimer();
   }
@@ -112,6 +113,7 @@ class TestingManager extends ManagerBase {
     sl<SystemStateManager>().setTestState(TestStates.ENDED);
     sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
     sl<SystemStateManager>().setScanCycleEnabled = false;
+    TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _stopElapsedTimer();
   }
 

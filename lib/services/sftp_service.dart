@@ -313,8 +313,9 @@ class SftpService {
   }
 
   Future<void> _checkRemoteFileSize() async {
-    SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
-    Log.info(TAG, "UPLOADING OFFSET: ${PrefsProvider.loadTestDataUploadingOffset()}");
+    final SFTPFile file = await _client.sftpFileInfo(filePath: "$_sftpFilePath/$_sftpFileName");
+    final File localFile = await sl<FileSystemService>().localDataFile;
+    Log.info(TAG, "LOCAL FILE SIZE: ${await localFile.length()}");
     Log.info(TAG, "REMOTE FILE SIZE: ${file.size}");
   }
 

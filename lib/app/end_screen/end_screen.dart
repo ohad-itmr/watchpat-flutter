@@ -38,7 +38,8 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
         exit(0);
       }
     } else if (state == AppLifecycleState.resumed &&
-        sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
+        sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none &&
+        sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE) {
       sl<SftpService>().initService();
     }
     super.didChangeAppLifecycleState(state);

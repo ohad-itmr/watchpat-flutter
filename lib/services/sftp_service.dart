@@ -95,6 +95,7 @@ class SftpService {
       await _informDispatcher();
       await sl<EmailSenderService>().sendLogsArchive();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
+      sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
       BackgroundFetch.finish();
       await BackgroundFetch.stop();
     }
@@ -358,7 +359,7 @@ class SftpService {
 
   Future<void> _informDispatcher() async {
     await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
-    sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
+//    sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
   }
 
   static const String APPENDING_SUCCESS = "appending_success";

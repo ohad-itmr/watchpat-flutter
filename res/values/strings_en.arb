@@ -145,7 +145,7 @@
   "test_status": "Test Status: $status",
   "thankYouTitle": "THANK YOU",
   "thankYouContent": "Congratulations, your study has been successfully uploaded to your doctor.\nPlease dispose of the product according to local regulations.",
-  "thankYouStillUploading": "You study is still uploading to your doctor.\nYou can minimize the app, it will finish uploading without your participation",
+  "thankYouStillUploading": "You study is still uploading to your doctor.\nPlease don't close the application.",
   "thankYouNoInet": "You study currently can't be uploaded to your doctor because of internet connection is unavailable.\nYou can minimize the app, it will finish uploading data when internet connection will be available.",
   "title_led_color_alert": "Choose LED color",
   "select_dispatcher_title": "Choose dispatcher URL",

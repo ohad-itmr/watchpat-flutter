@@ -36,6 +36,10 @@ static BOOL backgroundTimeAlmostExpired = false;
             [self startBackgroundSftpUploading];
         } else if ([@"backgroundSftpUploadingFinished" isEqualToString:call.method]) {
             sessionCompleted = YES;
+        } else if ([@"disableAutoSleep" isEqualToString:call.method]) {
+            [self setIdleTimerDisabledTo:YES];
+        } else if ([@"enableAutoSleep" isEqualToString:call.method]) {
+            [self setIdleTimerDisabledTo:NO];
         } else {
             result(FlutterMethodNotImplemented);
         }
@@ -119,6 +123,15 @@ static BOOL backgroundTimeAlmostExpired = false;
 
 - (void)setUncaughtExceptionHandler {
     NSSetUncaughtExceptionHandler(&myExceptionHandler);
+}
+
+- (void)setIdleTimerDisabledTo:(BOOL) mode {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIApplication* app = [UIApplication sharedApplication];
+        app.idleTimerDisabled = mode;
+        NSString *message = [NSString stringWithFormat:@"Disabling idle timer set to: %@", mode ? @"YES" : @"NO"];
+        [channel invokeMethod:@"nativeLogEvent" arguments:message];
+    });
 }
 
 - (void)startBackgroundSftpUploading {

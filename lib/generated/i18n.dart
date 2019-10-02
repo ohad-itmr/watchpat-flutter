@@ -221,7 +221,7 @@ class S implements WidgetsLocalizations {
   String get test_is_complete => "Application was successfully used to perform the test. Please reset application to use it again.";
   String get thankYouContent => "Congratulations, your study has been successfully uploaded to your doctor.\nPlease dispose of the product according to local regulations.";
   String get thankYouNoInet => "You study currently can't be uploaded to your doctor because of internet connection is unavailable.\nYou can minimize the app, it will finish uploading data when internet connection will be available.";
-  String get thankYouStillUploading => "You study is still uploading to your doctor.\nYou can minimize the app, it will finish uploading without your participation";
+  String get thankYouStillUploading => "You study is still uploading to your doctor.\nPlease don't close the application.";
   String get thankYouTitle => "THANK YOU";
   String get title_led_color_alert => "Choose LED color";
   String get unknown_error => "Unknown error occurred during the authentication, please contact support";

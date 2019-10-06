@@ -517,6 +517,7 @@ class IncomingPacketHandlerService extends ManagerBase {
       errorState = DeviceErrorStates.CHANGE_BATTERY;
       _errorString += '- ${lang.err_battery_low}\n';
     }
+
     if ((opcodeDependant & _PATIENT_ERROR_ACTIGRAPH_TEST) != 0) {
       errorState = DeviceErrorStates.HW_ERROR;
       _errorString += '- ${lang.err_actigraph_test}\n';

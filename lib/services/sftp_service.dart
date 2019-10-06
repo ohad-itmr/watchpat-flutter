@@ -48,7 +48,9 @@ class SftpService {
   void resetSFTPService() async {
     _serviceInitialized = false;
     Log.info(TAG, "Stopping SFTP service");
-    _client.sftpCancelUpload();
+    if (_client != null) {
+      _client.sftpCancelUpload();
+    }
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
     Log.info(TAG, "SFTP service stopped");
@@ -230,6 +232,7 @@ class SftpService {
 
   Future<void> _uploadAllData({bool complete = false}) async {
     try {
+      Log.info(TAG, "Starting uploading");
       final File localFile = await sl<FileSystemService>().localDataFile;
 
       final String result = await _client.sftpResumeFile(
@@ -239,7 +242,7 @@ class SftpService {
               sl<SystemStateManager>().setSftpUploadingProgress(progress as int));
 
       if (result == SftpService.UPLOADING_SUCCESS) {
-        Log.info(TAG, "Uploading successfull");
+        Log.info(TAG, "Uploading successful");
         if (complete) {
           _currentUploadingState = SftpUploadingState.ALL_UPLOADED;
           _systemState.setSftpUploadingState(SftpUploadingState.ALL_UPLOADED);

@@ -93,6 +93,7 @@ class BleManager extends ManagerBase {
     if (state == BluetoothDeviceState.connected) {
       Log.info(TAG, "### connected to device");
       sysStateManager.setDeviceCommState(DeviceStates.CONNECTED);
+      sysStateManager.setBleScanResult(ScanResultStates.LOCATED_SINGLE);
 
       Log.info(TAG, "### starting services discovery");
       await sl<BleService>().setServicesAndChars();
@@ -170,6 +171,12 @@ class BleManager extends ManagerBase {
 
   bool _preScanChecks() {
     print("performing pre-scan checks");
+    Log.info(
+        TAG,
+        'Performing pre-scan checks: [BT Enabled: ${sl<SystemStateManager>().isBTEnabled}], '
+        '[Scan result: ${sl<SystemStateManager>().bleScanResult}], '
+        '[Device state: ${sl<SystemStateManager>().deviceCommState}] , '
+        '[Scan in progress: $_scanInProgress]');
 
     if (!sl<SystemStateManager>().isBTEnabled) {
       Log.warning(TAG, "[preScanChecks] BT disabled, LE scan canceled");

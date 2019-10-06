@@ -22,6 +22,9 @@ class _PreparationScreenState extends State<PreparationScreen> {
     await sl<SystemStateManager>()
         .bleScanStateStream
         .firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
+
+
+
     if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
       await sl<SystemStateManager>()
           .startSessionStateStream

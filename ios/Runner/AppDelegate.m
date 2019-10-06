@@ -168,7 +168,7 @@ static BOOL backgroundTimeAlmostExpired = false;
                                 UIApplication* app = [UIApplication sharedApplication];
                                 double sec = app.backgroundTimeRemaining;
                                 NSLog(@"Background time left: %f", sec);
-                                if (sec < 10) {
+                                if (sec < 5) {
                                     NSString *msg = @"Background time is about to expire, closing SFTP connection";
                                     [channel invokeMethod:@"nativeLogEvent" arguments:msg];
                                     [channel invokeMethod:@"stopSftpUploading" arguments:nil];

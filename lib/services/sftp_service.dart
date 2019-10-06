@@ -45,17 +45,12 @@ class SftpService {
     _systemState.sftpUploadingStateStream.listen(_handleSftpUploadingState);
   }
 
-  bool _resetInProgress = false;
-
   void resetSFTPService() async {
-    if (_resetInProgress) return;
-    _resetInProgress = true;
+    _serviceInitialized = false;
     Log.info(TAG, "Stopping SFTP service");
     _client.sftpCancelUpload();
     sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
     _reconnectionAttempts = 0;
-    _serviceInitialized = false;
-    _resetInProgress = false;
     Log.info(TAG, "SFTP service stopped");
   }
 

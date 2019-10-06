@@ -90,7 +90,7 @@ class TransactionManager extends ManagerBase {
   _initSftpOnInternetAvailable() {
     sl<SystemStateManager>().inetConnectionStateStream.listen((ConnectivityResult state) {
       if (state != ConnectivityResult.none) {
-        if (PrefsProvider.getTestStarted() || PrefsProvider.getTestStoppedByUser()) {
+        if (PrefsProvider.getDataUploadingIncomplete()) {
           Log.info(TAG, "Internet became available during test, initializing SFTP service");
           sl<SftpService>().initService();
         }

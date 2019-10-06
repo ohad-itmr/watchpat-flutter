@@ -128,7 +128,7 @@ class BleManager extends ManagerBase {
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
-      if (PrefsProvider.getDataUploadingIncomplete()) return;
+      if (sl<SystemStateManager>().dataTransferState == DataTransferState.ENDED) return;
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
 //      disconnection();

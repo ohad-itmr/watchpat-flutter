@@ -238,8 +238,10 @@ class SftpService {
       final String result = await _client.sftpResumeFile(
           path: localFile.path,
           toPath: '$_sftpFilePath/$_sftpFileName',
-          callback: (var progress) =>
-              sl<SystemStateManager>().setSftpUploadingProgress(progress as int));
+          callback: (var progress) {
+            sl<SystemStateManager>().setSftpUploadingProgress(progress as int);
+            Log.info(TAG, "Uploading progress: $progress");
+          });
 
       if (result == SftpService.UPLOADING_SUCCESS) {
         Log.info(TAG, "Uploading successful");

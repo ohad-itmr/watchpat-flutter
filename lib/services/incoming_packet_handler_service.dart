@@ -561,6 +561,9 @@ class IncomingPacketHandlerService extends ManagerBase {
         errors += "- Serial number of your device is not registered";
         sl<SystemStateManager>()
             .setSessionErrorState(SessionErrorState.SN_NOT_REGISTERED, errors: errors);
+      } else {
+        errors += "- Internal policy error: ${res.message}";
+        sl<SystemStateManager>().setSessionErrorState(SessionErrorState.UNKNOWN, errors: errors);
       }
       return false;
     }

@@ -563,7 +563,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             .setSessionErrorState(SessionErrorState.SN_NOT_REGISTERED, errors: errors);
       } else {
         errors += "- Internal policy error: ${res.message}";
-        sl<SystemStateManager>().setSessionErrorState(SessionErrorState.UNKNOWN, errors: errors);
+        sl<SystemStateManager>().setSessionErrorState(SessionErrorState.UNDEFINED, errors: errors);
       }
       return false;
     }

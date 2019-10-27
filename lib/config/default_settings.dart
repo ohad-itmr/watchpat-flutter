@@ -25,16 +25,16 @@ class DefaultSettings {
 
   static final uploadDataChunkMaxSize = 5000;
   static final uploadDataAccumulationSize = 100000;
-  static final minStorageSpaceMb = 80;
+  static final minStorageSpaceMb = 35;
   static final double minTestLengthHours = 5;
   static final double maxTestLengthHours = 10;
   static final double sessionTimeoutHours = 20;
   static final minBatteryRequiredLevel = 100;
-//  static final dispatcherLink1 = "https://dispatcher.watchpat-one.com";
-//  static final dispatcherLink2 = "https://dispatcher2.watchpat-one.com";
+  static final dispatcherLink1 = "https://dispatcher.watchpat-one.com";
+  static final dispatcherLink2 = "https://dispatcher2.watchpat-one.com";
 
-  static final dispatcherLink1 = "https://test1.watchpat-one.com";
-  static final dispatcherLink2 = "https://test1.watchpat-one.com";
+//  static final dispatcherLink1 = "https://test1.watchpat-one.com";
+//  static final dispatcherLink2 = "https://test1.watchpat-one.com";
 //  static final dispatcherLink1 = "http://mypat.dev.valigar.co.il";
 //  static final dispatcherLink2 = "http://mypat.dev.valigar.co.il";
   static final userPinCodeLength = 4;

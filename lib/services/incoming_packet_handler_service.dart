@@ -144,7 +144,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         return;
       }
 
-//      print("RECEIVED PACKET: ${receivedPacket.bytes}");
+      print("RECEIVED PACKET: ${receivedPacket.bytes}");
 
       // system reaction to the packet
       switch (packetType) {
@@ -213,6 +213,9 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // start-session-confirm packet received
           sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
+
+          print('COFIG PAYLOAD: ${receivedPacket.extractConfigBlock().payloadBytes}');
+
           Log.info(TAG, "### start session confirm: device configuration set");
 
           PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);

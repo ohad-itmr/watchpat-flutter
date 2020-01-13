@@ -532,9 +532,20 @@ class IncomingPacketHandlerService extends ManagerBase {
       errorState = DeviceErrorStates.HW_ERROR;
       _errorString += '- ${lang.err_probe_photo}\n';
     }
+
+//    IGNORING SPB ERROR
+//    if ((opcodeDependant & _PATIENT_ERROR_SBP_TEST) != 0) {
+//      errorState = DeviceErrorStates.HW_ERROR;
+//      _errorString += '- ${lang.err_sbp}\n';
+//    }
     if ((opcodeDependant & _PATIENT_ERROR_SBP_TEST) != 0) {
-      errorState = DeviceErrorStates.HW_ERROR;
-      _errorString += '- ${lang.err_sbp}\n';
+      if (errorState == DeviceErrorStates.UNKNOWN) {
+        Log.info(TAG, "Device errors: only SPB error - ignoring");
+        sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
+        return true;
+      } else {
+        _errorString += '- ${lang.err_probe_photo}\n';
+      }
     }
 
     sl<SystemStateManager>().setDeviceErrorState(errorState, errors: _errorString.toString());

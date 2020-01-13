@@ -18,8 +18,7 @@ class PinScreen extends StatelessWidget {
 
   PinScreen({Key key}) : super(key: key);
 
-  final Map<String, String Function(BuildContext context)>
-      _localizedPinDefinitions = {
+  final Map<String, String Function(BuildContext context)> _localizedPinDefinitions = {
     "PN": (BuildContext context) => S.of(context).pin_type_pn,
     "SS": (BuildContext context) => S.of(context).pin_type_ss,
     "CC": (BuildContext context) => S.of(context).pin_type_cc,
@@ -34,8 +33,7 @@ class PinScreen extends StatelessWidget {
       print('authStateStream.listen((state) $state');
       switch (state) {
         case PatientAuthState.Authenticated:
-          Navigator.of(_ctxKey.currentContext)
-              .pushReplacementNamed(StrapWristScreen.PATH);
+          Navigator.of(_ctxKey.currentContext).pushReplacementNamed(StrapWristScreen.PATH);
           break;
         case PatientAuthState.FailedTryAgain:
           print('PatientAuthState.FailedTryAgain');
@@ -97,8 +95,7 @@ class PinScreen extends StatelessWidget {
     return Container();
   }
 
-  _enterBtnBuilder(
-      BuildContext context, AsyncSnapshot<PatientAuthState> snapshot) {
+  _enterBtnBuilder(BuildContext context, AsyncSnapshot<PatientAuthState> snapshot) {
     if (snapshot.hasData && snapshot.data == PatientAuthState.InProgress) {
       final double size = prefix0.MediaQuery.of(context).size.width;
       return Container(
@@ -150,8 +147,7 @@ class PinScreen extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: Text(S.of(context).pin_number_assigned_to_you(
-                _localizedPinDefinitions[pinType.toUpperCase()](context))),
+            content: Text(S.of(context).pin_number_assigned_to_you(_getHintText(pinType, context))),
             actions: <Widget>[
               FlatButton(
                 child: Text(S.of(context).ok.toUpperCase()),
@@ -160,6 +156,27 @@ class PinScreen extends StatelessWidget {
             ],
           );
         });
+  }
+
+  String _getHintText(String text, BuildContext ctx) {
+    switch (text) {
+      case "PN":
+        return S.of(ctx).pin_type_pn;
+      case "SS":
+        return S.of(ctx).pin_type_ss;
+      case "CC":
+        return S.of(ctx).pin_type_cc;
+      case "MN":
+        return S.of(ctx).pin_type_mn;
+      case "HIC":
+        return S.of(ctx).pin_type_hic;
+      case "PLAIN":
+        return S.of(ctx).pin_type_plain;
+      case "DOB":
+        return S.of(ctx).pin_type_dob;
+      default:
+        return "anything";
+    }
   }
 
   @override
@@ -203,8 +220,7 @@ class PinScreen extends StatelessWidget {
                             right: size / 3.7,
                             top: -size / 35,
                             child: IconButton(
-                              icon: Icon(Icons.help_outline,
-                                  color: Theme.of(context).accentColor),
+                              icon: Icon(Icons.help_outline, color: Theme.of(context).accentColor),
                               onPressed: () => _showPinHint(context),
                             ),
                           ),

@@ -220,5 +220,6 @@
   "pin_type_cc": "the last four digits of your credit card",
   "pin_type_mn": "the last four digits of your mobile phone number",
   "pin_type_hic": "the last four digits of your health insurer card",
-  "pin_type_plain": "four digits that were provided to you by the doctor’s staff"
+  "pin_type_plain": "four digits that were provided to you by the doctor’s staff",
+  "pin_type_dob": "four digits of your date of birth - MMYY (two digits for month followed by two digits for year)"
 }

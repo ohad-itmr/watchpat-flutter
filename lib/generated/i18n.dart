@@ -161,6 +161,7 @@ class S implements WidgetsLocalizations {
   String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   String get pinTitle => "Enter PIN";
   String get pin_type_cc => "the last four digits of your credit card";
+  String get pin_type_dob => "four digits of your date of birth - MMYY (two digits for month followed by two digits for year)";
   String get pin_type_hic => "the last four digits of your health insurer card";
   String get pin_type_mn => "the last four digits of your mobile phone number";
   String get pin_type_plain => "four digits that were provided to you by the doctor’s staff";
@@ -262,6 +263,8 @@ class fr extends S {
   @override
   String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
   @override
+  String get pin_type_plain => "four digits that were provided to you by the doctor’s staff";
+  @override
   String get connection_to_main_device_lost => "Connection to Main Device is lost";
   @override
   String get patient_msg2 => "Please don't close myPAT application during test procedure";
@@ -283,6 +286,8 @@ class fr extends S {
   String get upgrade => "Upgrade";
   @override
   String get select_dispatcher_title => "Choose dispatcher URL";
+  @override
+  String get pin_type_dob => "four digits of your date of birth - MMYY (two digits for month followed by two digits for year)";
   @override
   String get connecting_to_device => "Connecting to a device";
   @override
@@ -309,6 +314,8 @@ class fr extends S {
   String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
   @override
   String get btnReady => "Ready";
+  @override
+  String get pin_type_hic => "the last four digits of your health insurer card";
   @override
   String get unknown_error => "Unknown error occurred during authentication, please contact support";
   @override
@@ -486,6 +493,8 @@ class fr extends S {
   @override
   String get test_data_transmit_in_progress => "Test data transmit in progress";
   @override
+  String get pin_type_pn => "four digits that were provided to you by the doctor’s staff";
+  @override
   String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   @override
   String get please_plug_charger => "Please plug in a charger";
@@ -521,6 +530,8 @@ class fr extends S {
   String get get => "get";
   @override
   String get please_replace_battery => "Please replace the battery in the device";
+  @override
+  String get pin_type_mn => "the last four digits of your mobile phone number";
   @override
   String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly. \n\nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
   @override
@@ -569,6 +580,10 @@ class fr extends S {
   String get bt_initiation_error => "Bluetooth initiation error";
   @override
   String get device_not_found => "Device is not found";
+  @override
+  String get pin_type_ss => "the last four digits of your Social Security number";
+  @override
+  String get pin_type_cc => "the last four digits of your credit card";
   @override
   String get enter_new_serial => "Enter main device new serial number";
   @override

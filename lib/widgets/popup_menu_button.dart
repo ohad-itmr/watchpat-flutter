@@ -4,7 +4,7 @@ import 'package:my_pat/main.dart';
 
 import '../service_locator.dart';
 
-enum PopupOption { language, email, forget, kill, log, cancel_sftp }
+enum PopupOption { language, email, forget, kill, log, cancel_sftp, send_logs }
 
 class MypatPopupMenuButton extends StatefulWidget {
   @override
@@ -29,6 +29,10 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
 //      value: PopupOption.language,
 //      child: Text("Select language"),
 //    ),
+        PopupMenuItem(
+          value: PopupOption.send_logs,
+          child: Text("Send logs"),
+        ),
         PopupMenuItem(
           value: PopupOption.forget,
           child: Text("Forget device"),
@@ -93,6 +97,8 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       _killApplication();
     } else if (option == PopupOption.cancel_sftp) {
       _cancelSftpUploading();
+    } else if (option == PopupOption.send_logs) {
+      _sendLogs();
     }
   }
 
@@ -153,5 +159,9 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
 
   void _cancelSftpUploading() {
     sl<SftpService>().cancelUpload();
+  }
+
+  void _sendLogs() {
+    sl<EmailSenderService>().sendLogsArchive();
   }
 }

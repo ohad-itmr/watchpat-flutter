@@ -6,6 +6,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:package_info/package_info.dart';
 
 class EmailSenderService {
   static const String SMTP_HOST = "smtp.gmail.com";
@@ -62,14 +63,16 @@ class EmailSenderService {
 
   Future<bool> sendLogsArchive() async {
     File file = await sl<FileSystemService>().getAllLogFilesArchived();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
-      ..recipients.add("wp1@itamar-medical.com")
-      ..recipients.add("m.derzhavets@emg-soft.com")
-      ..subject = 'Study log files'
-      ..text = 'Received log files exported from WatchPAT application.\n\n' +
-          'Time: ${DateTime.now().toIso8601String()}\n' +
-          'Device s/n: ${PrefsProvider.loadDeviceSerial()}'
+      ..recipients.add("itamar.medical.development@gmail.com")
+      ..subject =
+          'Manual logs sending ${PrefsProvider.loadDeviceSerial() != null ? PrefsProvider.loadDeviceSerial() : ''}'
+      ..text = 'S/N: ${PrefsProvider.loadDeviceSerial()}\n' +
+          'DATE: ${DateTime.now().toIso8601String()}\n' +
+          'PLATFORM: iOS\n'
+              'VERSION: ${packageInfo.version} (${packageInfo.buildNumber})'
       ..attachments = [FileAttachment(file)];
 
     return await _sendMessage(message);

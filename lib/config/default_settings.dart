@@ -11,7 +11,7 @@ class DefaultSettings {
   static final dataFileName = 'localData.dat';
   static final serverDataFileName = 'sleep.dat';
   static final serverInfoFileName = 'TestInformation.txt';
-  static final logMainFileName = 'log';
+  static final logMainFileName = 'ioslog';
   static final logInputFileName = 'mypat_log_input.txt';
   static final logOutputFileName = 'mypat_log_output.txt';
   static final parametersFileName = 'watchpat_params.ini';

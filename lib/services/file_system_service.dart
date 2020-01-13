@@ -53,7 +53,7 @@ class FileSystemService {
     List<File> files = [];
     StreamSubscription sub =
         dir.list(recursive: true, followLinks: false).listen((FileSystemEntity entity) async {
-      if (entity.path.contains("log")) {
+      if (entity.path.contains("ioslog")) {
         files.add(File(entity.path));
       }
     });

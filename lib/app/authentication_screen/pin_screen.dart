@@ -151,7 +151,7 @@ class PinScreen extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             content: Text(S.of(context).pin_number_assigned_to_you(
-                _localizedPinDefinitions[pinType](context))),
+                _localizedPinDefinitions[pinType.toUpperCase()](context))),
             actions: <Widget>[
               FlatButton(
                 child: Text(S.of(context).ok.toUpperCase()),

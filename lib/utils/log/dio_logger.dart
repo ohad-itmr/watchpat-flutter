@@ -8,6 +8,7 @@ class DioLogger {
   }
 
   static void onSuccess(String tag, Response response) {
+    print('Reponse received: $response');
     Log.info(tag,
         'Response Path : [${response.request.method}] ${response.request.baseUrl}${response.request.path} Request Data : ${response.request.data.toString()}');
     Log.info(tag, 'Response statusCode : ${response.statusCode}');

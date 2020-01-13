@@ -144,8 +144,6 @@ class IncomingPacketHandlerService extends ManagerBase {
         return;
       }
 
-      print("RECEIVED PACKET: ${receivedPacket.bytes}");
-
       // system reaction to the packet
       switch (packetType) {
         case DeviceCommands.CMD_OPCODE_ACK:
@@ -160,8 +158,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
           break;
         case DeviceCommands.CMD_OPCODE_DATA_PACKET:
-          Log.info(TAG, "packet received (DATA_PACKET)");
-          // data packet received - store to local file
+//          Log.info(TAG, "packet received (DATA_PACKET)");
           // data packet received - store to local file
           _isDataReceiving = true;
 //          _dataReceivedTimer.restart();
@@ -186,8 +183,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           final int prevRemoteIdentifier = PrefsProvider.loadRemotePacketIdentifier();
           if (prevRemoteIdentifier < receivedPacket.identifier) {
-            Log.info(
-                TAG, ">>> remote id: ${receivedPacket.identifier}, size: ${receivedPacket.size}");
+//            Log.info(
+//                TAG, ">>> remote id: ${receivedPacket.identifier}, size: ${receivedPacket.size}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
             TimeUtils.packetCounterTick();
 
@@ -213,8 +210,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // start-session-confirm packet received
           sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
-
-          print('COFIG PAYLOAD: ${receivedPacket.extractConfigBlock().payloadBytes}');
 
           Log.info(TAG, "### start session confirm: device configuration set");
 

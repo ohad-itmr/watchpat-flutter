@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
@@ -12,7 +11,6 @@ import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:ssh/ssh.dart';
-import 'package:path_provider/path_provider.dart';
 
 enum SftpConnectionState { CONNECTED, DISCONNECTED }
 
@@ -74,7 +72,6 @@ class SftpService {
       await _checkRemoteFileSize();
       resetSFTPService();
       await _informDispatcher();
-      await sl<EmailSenderService>().sendLogsArchive();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
       PrefsProvider.setDataUploadingIncomplete(value: false);
@@ -208,16 +205,18 @@ class SftpService {
 
       if (_currentDataTransferState == DataTransferState.ENDED) {
         await _uploadAllData(complete: true);
+        await _uploadLogFile();
       } else {
         final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
         final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
         if ((currentRecordingOffset - currentUploadingOffset) < 100000) {
           Log.info(TAG,
               'Accumulating data to 100k, recording offset: $currentRecordingOffset, uploading offset: $currentUploadingOffset');
-          await Future.delayed(Duration(seconds: 5));
+          await Future.delayed(Duration(seconds: 10));
           continue;
         } else {
           await _uploadAllData();
+          await _uploadLogFile();
         }
       }
     } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
@@ -260,6 +259,16 @@ class SftpService {
       sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
       await Future.delayed(Duration(seconds: 3));
       _tryToReconnect(error: e.toString());
+    }
+  }
+
+  Future<void> _uploadLogFile() async {
+    final File logFile = await sl<FileSystemService>().logMainFile;
+    final String logFileName = sl<FileSystemService>().logMainFileName;
+    final String result = await _client.sftpResumeFile(
+        path: logFile.path, toPath: '$_sftpFilePath/$logFileName', callback: (_) {});
+    if (result != SftpService.UPLOADING_SUCCESS) {
+      Log.shout(TAG, "Uploading log to SFTP failed!");
     }
   }
 

@@ -18,12 +18,17 @@ class _PreparationScreenState extends State<PreparationScreen> {
   final S loc = sl<S>();
   bool _nextIsPressed = false;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _showDisconnectedWarning(context, null, S.of(context).patient_msg1));
+  }
+
   _handleNext() async {
     await sl<SystemStateManager>()
         .bleScanStateStream
         .firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
-
-
 
     if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
       await sl<SystemStateManager>()
@@ -32,7 +37,8 @@ class _PreparationScreenState extends State<PreparationScreen> {
       _nextIsPressed = false;
       Navigator.pushNamed(context, PinScreen.PATH);
     } else {
-      _showDisconnectedWarning(context);
+      _showDisconnectedWarning(
+          context, S.of(context).device_not_found, S.of(context).device_not_located);
       setState(() {
         _nextIsPressed = false;
       });
@@ -77,13 +83,13 @@ class _PreparationScreenState extends State<PreparationScreen> {
     );
   }
 
-  _showDisconnectedWarning(BuildContext context) {
+  _showDisconnectedWarning(BuildContext context, String title, String content) {
     showDialog(
         context: context,
         builder: (_) {
           return AlertDialog(
-            title: Text(S.of(context).device_not_found),
-            content: Text(S.of(context).device_not_located),
+            title: title != null ? Text(title) : null,
+            content: Text(content),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.pop(context),

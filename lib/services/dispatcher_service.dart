@@ -5,6 +5,7 @@ import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/dio_logger.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:package_info/package_info.dart';
 
 class DispatcherService {
   static const String TAG = 'DispatcherService';
@@ -45,6 +46,9 @@ class DispatcherService {
       Map<String, String> data}) async {
     try {
       if (method == RequestMethod.post) {
+        PackageInfo packageInfo = await PackageInfo.fromPlatform();
+        data["version"] = packageInfo.version;
+        data["client"] = "iOS APP";
         return await _dio.post("$_dispatcherUrl$urlSuffix", data: data);
       } else if (method == RequestMethod.get) {
         return await _dio.get("$_dispatcherUrl$urlSuffix");
@@ -68,25 +72,19 @@ class DispatcherService {
 
   Future<Map<String, dynamic>> checkExternalConfig() async {
     Response response = await _sendRequest(
-        method: RequestMethod.post,
-        urlSuffix: _checkExternalConfigEndpoint,
-        data: {"client": "iOS APP", "version": "1"});
+        method: RequestMethod.post, urlSuffix: _checkExternalConfigEndpoint, data: {});
     return response.data;
   }
 
   Future<Map<String, dynamic>> getExternalConfig() async {
     Response response = await _sendRequest(
-        method: RequestMethod.post,
-        urlSuffix: _getDefaultConfigEndpoint,
-        data: {"client": "iOS APP", "version": "1"});
+        method: RequestMethod.post, urlSuffix: _getDefaultConfigEndpoint, data: {});
     return response.data;
   }
 
   Future<DispatcherResponse> getPatientPolicy(String serialNumber) async {
     Response response = await _sendRequest(
-        urlSuffix: '$_getPatientPolicy/$serialNumber',
-        method: RequestMethod.post,
-        data: {"client": "iOS APP", "version": "1"});
+        urlSuffix: '$_getPatientPolicy/$serialNumber', method: RequestMethod.post, data: {});
     sl<UserAuthenticationService>().setPatientPolicy(response.data);
     return GeneralResponse.fromJson(response.data);
   }
@@ -96,7 +94,7 @@ class DispatcherService {
     Response response = await _sendRequest(
         urlSuffix: "$_authenticationEndPoint/$serialNumber",
         method: RequestMethod.post,
-        data: {"pin": pin, "client": "iOS APP", "version": "1"});
+        data: {"pin": pin});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 

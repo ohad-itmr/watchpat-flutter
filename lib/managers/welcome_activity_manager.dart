@@ -13,6 +13,8 @@ enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }
 class WelcomeActivityManager extends ManagerBase {
   static const String TAG = 'WelcomeActivityManager';
 
+  static const int MAX_TIME_GAP_BETWEEN_RUNS_HOURS = 24;
+
   final _lang = sl<S>();
   final Connectivity _connectivity = Connectivity();
 
@@ -29,13 +31,11 @@ class WelcomeActivityManager extends ManagerBase {
 
   BehaviorSubject<WelcomeActivityState> _welcomeState = BehaviorSubject<WelcomeActivityState>();
 
-  BehaviorSubject<FileCreationState> _fileCreationStateSubject =
-      BehaviorSubject<FileCreationState>();
+  BehaviorSubject<FileCreationState> _fileCreationStateSubject = BehaviorSubject<FileCreationState>();
 
   Observable<FileCreationState> get fileCreationState => _fileCreationStateSubject.stream;
 
-  BehaviorSubject<FileCreationState> _fileAllocationStateSubject =
-      BehaviorSubject<FileCreationState>();
+  BehaviorSubject<FileCreationState> _fileAllocationStateSubject = BehaviorSubject<FileCreationState>();
 
   Observable<FileCreationState> get fileAllocationState => _fileAllocationStateSubject.stream;
 
@@ -57,8 +57,7 @@ class WelcomeActivityManager extends ManagerBase {
 
   Future<void> configureApplication() async {
     // Check if external config is enabled
-    final Map<String, dynamic> configEnabledResponse =
-        await sl<DispatcherService>().checkExternalConfig();
+    final Map<String, dynamic> configEnabledResponse = await sl<DispatcherService>().checkExternalConfig();
 
     if (!configEnabledResponse['error']) {
       if (configEnabledResponse['isEnabled']) {
@@ -92,8 +91,7 @@ class WelcomeActivityManager extends ManagerBase {
     if (!res.success) {
       addInitialErrors(_lang.insufficient_storage_space_on_smartphone);
     }
-    _fileAllocationStateSubject.sink
-        .add(res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
+    _fileAllocationStateSubject.sink.add(res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   Future<void> createStartFiles() async {
@@ -102,17 +100,13 @@ class WelcomeActivityManager extends ManagerBase {
     if (!res.success) {
       addInitialErrors(_lang.files_creating_failed);
     }
-    _fileCreationStateSubject.sink
-        .add(res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
+    _fileCreationStateSubject.sink.add(res.success ? FileCreationState.DONE_SUCCESS : FileCreationState.DONE_FAILED);
   }
 
   void _initializeFilesOperation() {
-    Observable.combineLatest2(fileAllocationState, fileCreationState,
-        (FileCreationState allocationState, FileCreationState fileState) {
-      if ((allocationState == FileCreationState.DONE_SUCCESS ||
-              allocationState == FileCreationState.DONE_FAILED) &&
-          (fileState == FileCreationState.DONE_SUCCESS ||
-              fileState == FileCreationState.DONE_FAILED)) {
+    Observable.combineLatest2(fileAllocationState, fileCreationState, (FileCreationState allocationState, FileCreationState fileState) {
+      if ((allocationState == FileCreationState.DONE_SUCCESS || allocationState == FileCreationState.DONE_FAILED) &&
+          (fileState == FileCreationState.DONE_SUCCESS || fileState == FileCreationState.DONE_FAILED)) {
         _initFiles.sink.add(true);
       }
     }).listen(null);
@@ -136,8 +130,7 @@ class WelcomeActivityManager extends ManagerBase {
     return errors.toString();
   }
 
-  _connectivityStatusHandler(ConnectivityResult result) =>
-      _internetExists.sink.add(result != ConnectivityResult.none);
+  _connectivityStatusHandler(ConnectivityResult result) => _internetExists.sink.add(result != ConnectivityResult.none);
 
   addInitialErrors(String err) {
     var currentList = _initErrorsSubject.value;
@@ -152,9 +145,17 @@ class WelcomeActivityManager extends ManagerBase {
   }
 
   initConnectivityListener() {
-    sl<SystemStateManager>()
-        .inetConnectionStateStream
-        .listen((result) => _connectivityStatusHandler(result));
+    sl<SystemStateManager>().inetConnectionStateStream.listen((result) => _connectivityStatusHandler(result));
+  }
+
+  checkForOutdatedSession() {
+    final int prevSession = PrefsProvider.loadPreviousSessionTime();
+    final int currentTime = DateTime.now().millisecondsSinceEpoch;
+    if (prevSession != null && currentTime - prevSession > MAX_TIME_GAP_BETWEEN_RUNS_HOURS * 60 * 60 * 1000) {
+      Log.info(TAG, "Found outdated session, clearing device from memmory");
+      PrefsProvider.clearDeviceName();
+    }
+    PrefsProvider.savePreviousSessionTime(currentTime);
   }
 
   @override

@@ -23,12 +23,9 @@ class PrefsNames {
   static const String TEST_REAL_START_TIME_KEY = DefaultSettings.appName + ".testrealtime";
   static const String TEST_PACKET_TIME_KEY = DefaultSettings.appName + ".testpackettime";
   static const String PACKET_IDENTIFIER_KEY = DefaultSettings.appName + ".packetidentifier";
-  static const String PACKET_REMOTE_IDENTIFIER_KEY =
-      DefaultSettings.appName + ".packetremoteidentifier";
-  static const String IS_FIRST_SFTP_CONNECTION_KEY =
-      DefaultSettings.appName + ".isfirstsftpconnection";
-  static const String IS_IGNORE_DEVICE_ERRORS_KEY =
-      DefaultSettings.appName + ".isignoredeviceerrors";
+  static const String PACKET_REMOTE_IDENTIFIER_KEY = DefaultSettings.appName + ".packetremoteidentifier";
+  static const String IS_FIRST_SFTP_CONNECTION_KEY = DefaultSettings.appName + ".isfirstsftpconnection";
+  static const String IS_IGNORE_DEVICE_ERRORS_KEY = DefaultSettings.appName + ".isignoredeviceerrors";
   static const String SFTP_HOST_KEY = DefaultSettings.appName + ".sftphost";
   static const String SFTP_PORT_KEY = DefaultSettings.appName + ".sftpport";
   static const String SFTP_USERNAME_KEY = DefaultSettings.appName + ".sftpusername";
@@ -42,6 +39,7 @@ class PrefsNames {
   static const String PACKET_ID_COUNTER_KEY = "packet.counter.key";
   static const String TEST_START_TIME_KEY = "test.start.time.key";
   static const String BLUETOOTH_DEVICE_ID_KEY = "bluetooth.device.id.key";
+  static const String PREVIOUS_SESSION_TIME = "previous.session.time";
 }
 
 class PrefsService {
@@ -350,5 +348,14 @@ class PrefsProvider {
 
   static String loadBluetoothDeviceID() {
     return PrefsService.prefs.getString(PrefsNames.BLUETOOTH_DEVICE_ID_KEY) ?? null;
+  }
+
+  // Previous session time
+  static Future<void> savePreviousSessionTime(int time) async {
+    return PrefsService.prefs.setInt(PrefsNames.PREVIOUS_SESSION_TIME, time);
+  }
+
+  static int loadPreviousSessionTime() {
+    return PrefsService.prefs.getInt(PrefsNames.PREVIOUS_SESSION_TIME) ?? null;
   }
 }

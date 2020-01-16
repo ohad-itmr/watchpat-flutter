@@ -25,6 +25,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   void initState() {
+    welcomeManager.checkForOutdatedSession();
     super.initState();
   }
 
@@ -44,8 +45,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
       _showErrorDialog(sl<SystemStateManager>().deviceErrors);
-    } else if (state == ScanResultStates.NOT_LOCATED ||
-        state == ScanResultStates.LOCATED_MULTIPLE) {
+    } else if (state == ScanResultStates.NOT_LOCATED || state == ScanResultStates.LOCATED_MULTIPLE) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else {
       Navigator.of(context).pushNamed(PreparationScreen.PATH);

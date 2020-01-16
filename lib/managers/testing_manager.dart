@@ -56,12 +56,15 @@ class TestingManager extends ManagerBase {
     IncomingPacketHandlerService.startAcquisitionCmdId = cmd.packetIdentifier;
     sl<CommandTaskerManager>().addCommandWithNoCb(cmd);
     sl<DispatcherService>().sendTestStart();
+
+    sl<DeviceConfigManager>().deviceConfig.updateStartTime(DateTime.now().millisecondsSinceEpoch);
+    sl<DataWritingService>().writeToLocalFile(DataPacket(data: sl<DeviceConfigManager>().deviceConfig.payloadBytes, id: -1));
+
     _startElapsedTimer();
   }
 
   void _restartTimers() {
-    if (_systemStateManager.testState == TestStates.INTERRUPTED ||
-        _systemStateManager.testState == TestStates.STOPPED) {
+    if (_systemStateManager.testState == TestStates.INTERRUPTED || _systemStateManager.testState == TestStates.STOPPED) {
       _startElapsedTimer();
     }
   }
@@ -83,8 +86,7 @@ class TestingManager extends ManagerBase {
   void _startSftpTimer() {
     _sftpIncompleteTimer = Timer(Duration(seconds: 10), () {
       final AppLifecycleState state = WidgetsBinding.instance.lifecycleState;
-      if (_systemStateManager.sftpUploadingState != SftpUploadingState.ALL_UPLOADED &&
-          state != AppLifecycleState.resumed) {
+      if (_systemStateManager.sftpUploadingState != SftpUploadingState.ALL_UPLOADED && state != AppLifecycleState.resumed) {
         sl<NotificationsService>().showLocalNotification(
             "Data from WatchPAT ONE device finished transferring. Please open the application to upload data to your doctor.");
         _sftpIncompleteTimer = null;
@@ -93,8 +95,7 @@ class TestingManager extends ManagerBase {
   }
 
   bool checkForSessionTimeout() {
-    final bool sessionTimedOut =
-        TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
+    final bool sessionTimedOut = TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
     if (sessionTimedOut) {
       Log.info(TAG, "Session timeout triggered. Stopping test.");
       if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
@@ -150,8 +151,7 @@ class TestingManager extends ManagerBase {
   }
 
   int _getPacketTimeDiffFromStopTest() {
-    return (_testStoppedTimeMS - PrefsProvider.loadTestStartTimeMS()) ~/ 1000 -
-        PrefsProvider.loadTestPacketCount();
+    return (_testStoppedTimeMS - PrefsProvider.loadTestStartTimeMS()) ~/ 1000 - PrefsProvider.loadTestPacketCount();
   }
 
   void updateProgressBar(int changeDelta) {

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:core' as prefix0;
+import 'dart:core';
 
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/convert_formats.dart';
@@ -139,8 +141,7 @@ class DeviceConfigPayload {
     config._setFWVersion(bytesData);
     _setDeviceSerial(bytesData);
 
-    Log.info(TAG,
-        "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
+    Log.info(TAG, "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
     return config;
   }
 
@@ -159,8 +160,7 @@ class DeviceConfigPayload {
 //        [bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1], bytesConfig[OFFSET_FW_COMPILATION_NUMBER]]);
 
     final int compilation = ConvertFormats.twoBytesToInt(
-        byte1: bytesConfig[OFFSET_FW_COMPILATION_NUMBER],
-        byte2: bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1]);
+        byte1: bytesConfig[OFFSET_FW_COMPILATION_NUMBER], byte2: bytesConfig[OFFSET_FW_COMPILATION_NUMBER + 1]);
 
     _deviceFWVersion = new Version(
       bytesConfig[OFFSET_FW_VERSION_MAJOR],
@@ -171,8 +171,7 @@ class DeviceConfigPayload {
   }
 
   void _setDeviceSerial(final List<int> bytesConfig) {
-    final List<int> serialBytes =
-        bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
+    final List<int> serialBytes = bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
 
 //    _deviceSerial =
 //        ConvertFormats.byteArrayToHex(serialBytes.reversed.toList());
@@ -211,8 +210,7 @@ class DeviceConfigPayload {
     // updating phone model
     final List<int> phoneModel = Utf8Encoder().convert(iosInfo.utsname.machine);
     final int modelValueSize = min(phoneModel.length, 16);
-    bytes.replaceRange(
-        OFFSET_SMARTPHONE_MODEL, OFFSET_SMARTPHONE_MODEL + modelValueSize, phoneModel);
+    bytes.replaceRange(OFFSET_SMARTPHONE_MODEL, OFFSET_SMARTPHONE_MODEL + modelValueSize, phoneModel);
   }
 
   void updatePin(String pinString) {
@@ -221,6 +219,17 @@ class DeviceConfigPayload {
     for (int i = 0; i < bytes.length; i++) {
       payloadBytes[OFFSET_PIN_CODE_NUMBER + i] = bytes[i];
     }
+  }
+
+  void updateStartTime(int timestamp) {
+    final DateTime time = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    payloadBytes[OFFSET_START_TIME_YEAR] = time.year % 2000;
+    payloadBytes[OFFSET_START_TIME_MONTH] = time.month;
+    payloadBytes[OFFSET_START_TIME_DAY] = time.day;
+    payloadBytes[OFFSET_START_TIME_WEEKDAY] = time.weekday;
+    payloadBytes[OFFSET_START_TIME_INIT_EVENT_HOUR] = time.hour;
+    payloadBytes[OFFSET_START_TIME_INIT_EVENT_MINUTE] = time.minute;
+    payloadBytes[OFFSET_START_TIME_INIT_EVENT_SECOND] = time.second;
   }
 }
 
@@ -239,8 +248,7 @@ class Version {
   String get versionString => '$_major.$_minor${_compilation > 0 ? '.$_compilation' : ''}';
 
   CompareResults compareTo(final Version versionToCmp) {
-    Log.info(TAG,
-        'comparing versions:\n $_name: $versionString <--> ${versionToCmp._name}: ${versionToCmp.versionString}');
+    Log.info(TAG, 'comparing versions:\n $_name: $versionString <--> ${versionToCmp._name}: ${versionToCmp.versionString}');
 
     if (versionToCmp._major > _major) {
       Log.info(TAG, '${versionToCmp._name} is higher');

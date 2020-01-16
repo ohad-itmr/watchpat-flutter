@@ -50,17 +50,6 @@ class _PreparationScreenState extends State<PreparationScreen> {
       _nextIsPressed = false;
       Navigator.pushNamed(context, PinScreen.PATH);
     }
-
-//    if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
-//      await sl<SystemStateManager>().startSessionStateStream.firstWhere((StartSessionState st) => st == StartSessionState.CONFIRMED);
-//      _nextIsPressed = false;
-//      Navigator.pushNamed(context, PinScreen.PATH);
-//    } else {
-//      _showDisconnectedWarning(context, S.of(context).device_not_found, S.of(context).device_not_located);
-//      setState(() {
-//        _nextIsPressed = false;
-//      });
-//    }
   }
 
   @override

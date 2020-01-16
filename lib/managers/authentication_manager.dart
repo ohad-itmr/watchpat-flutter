@@ -114,7 +114,6 @@ class AuthenticationManager extends ManagerBase {
       config.updatePin(pin);
 
       await sl<DataWritingService>().resetLocalFile();
-      sl<DataWritingService>().writeToLocalFile(DataPacket(data: config.payloadBytes, id: -1));
     }
   }
 

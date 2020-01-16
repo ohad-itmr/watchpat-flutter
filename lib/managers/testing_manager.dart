@@ -60,16 +60,17 @@ class TestingManager extends ManagerBase {
     sl<DeviceConfigManager>().deviceConfig.updateStartTime(DateTime.now().millisecondsSinceEpoch);
     sl<DataWritingService>().writeToLocalFile(DataPacket(data: sl<DeviceConfigManager>().deviceConfig.payloadBytes, id: -1));
 
-    _startElapsedTimer();
+    _startTestTimers();
   }
 
   void _restartTimers() {
     if (_systemStateManager.testState == TestStates.INTERRUPTED || _systemStateManager.testState == TestStates.STOPPED) {
-      _startElapsedTimer();
+      _startTestTimers();
     }
   }
 
-  void _startElapsedTimer() {
+  void _startTestTimers() {
+    TimeUtils.enableTestTicker();
     _elapsedTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       final int val = TimeUtils.getTimeFromTestStartSec();
       _elapsedTimerState.sink.add(val);

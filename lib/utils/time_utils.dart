@@ -20,15 +20,14 @@ class TimeUtils {
   static const int TIME_DIFF_TEST_START_FIRST_DATA_SEC = 9;
   static int lastPacketTime = 0;
 
-  static void packetCounterTick() async {
-    PrefsProvider.incTestPacketCount();
+  static Timer _tickerTimer;
+
+  static void _packetCounterTick() async {
     final int testPacketCount = PrefsProvider.loadTestPacketCount();
-    if (testPacketCount >
-        GlobalSettings.minTestLengthSeconds * (GlobalSettings.dataTransferRate / 60)) {
+    if (getTimeFromTestStartSec() > GlobalSettings.minTestLengthSeconds) {
       sl<SystemStateManager>().setTestDataAmountState(TestDataAmountState.MINIMUM_PASSED);
     }
-    if (testPacketCount >
-            GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60) &&
+    if (testPacketCount > GlobalSettings.maxTestLengthSeconds * (GlobalSettings.dataTransferRate / 60) &&
         !PrefsProvider.getTestStoppedByUser()) {
       Log.info(TAG, "Maximum test length triggered. Stopping test.");
       sl<TestingManager>().stopTesting();
@@ -65,6 +64,18 @@ class TimeUtils {
 
   static int getTimeFromTestStartSec() {
     return (DateTime.now().millisecondsSinceEpoch - PrefsProvider.loadTestStartTimeMS()) ~/ 1000;
+  }
+
+  static void enableTestTicker() {
+    disableTestTicker();
+    _tickerTimer = Timer.periodic(Duration(seconds: 1), (_) => _packetCounterTick());
+  }
+
+  static void disableTestTicker() {
+    if (_tickerTimer != null && _tickerTimer.isActive) {
+      _tickerTimer.cancel();
+    }
+    _tickerTimer = null;
   }
 }
 //

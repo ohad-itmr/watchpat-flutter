@@ -3,6 +3,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:my_pat/utils/time_utils.dart';
 
 // Class responsible for performing various actions in response to system state changes
 class TransactionManager extends ManagerBase {
@@ -33,6 +34,7 @@ class TransactionManager extends ManagerBase {
           {
             PrefsProvider.setTestStarted(false);
             PrefsProvider.setTestStoppedByUser(value: false);
+            TimeUtils.disableTestTicker();
             break;
           }
         case TestStates.STOPPED:
@@ -60,9 +62,7 @@ class TransactionManager extends ManagerBase {
   }
 
   _initStartingScanOnDeviceDisconnect() {
-    _sysState.deviceCommStateStream
-        .where((DeviceStates deviceState) => deviceState == DeviceStates.DISCONNECTED)
-        .listen((_) {
+    _sysState.deviceCommStateStream.where((DeviceStates deviceState) => deviceState == DeviceStates.DISCONNECTED).listen((_) {
       if (sl<SystemStateManager>().dataTransferState != DataTransferState.ENDED) {
         Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
         sl<BleManager>().connect(reconnect: true);

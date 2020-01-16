@@ -186,7 +186,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 //            Log.info(
 //                TAG, ">>> remote id: ${receivedPacket.identifier}, size: ${receivedPacket.size}");
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
-            TimeUtils.packetCounterTick();
+            PrefsProvider.incTestPacketCount();
 
             sl<DataWritingService>().writeToLocalFile(
                 DataPacket(data: List.from(receivedPacket.bytes), id: receivedPacket.identifier));

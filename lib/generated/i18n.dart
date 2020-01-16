@@ -35,6 +35,7 @@ class S implements WidgetsLocalizations {
   String get all_data_transmitted_successfully => "All data transmitted successfully";
   String get app_log_file_text => "Are you sure you want to send application log file to";
   String get app_log_file_title => "Application log file";
+  String get attention => "ATTENTION";
   String get auth_fail => "Authentication failed";
   String get batteryContent_1 => "Open the battery compartment's cover, located on the back of the WatchPAT\u2122ONE, and insert the battery. \nThe flat side of the battery faces the MINUS sign.";
   String get batteryContent_2 => "The flat side of the battery faces the MINUS sign.";
@@ -231,6 +232,7 @@ class S implements WidgetsLocalizations {
   String get upgrade => "Upgrade";
   String get upgrade_file_ver_name => "UpgradeFileVersion";
   String get uploadingContent => "Please do not close the application while the data is being uploaded.\nThe data transmission will be over in several minutes.";
+  String get uploadingDeviceDisconnected => "The WatchPAT™ device cannot be communicated. Please bring it closer to the Application.";
   String get uploadingTitle => "GOOD MORNING";
   String get used_device_please_replace => "This device is already used, please replace it and relaunch application";
   String get user_mode => "User mode";
@@ -488,6 +490,8 @@ class fr extends S {
   @override
   String get startRecordingContent => "Once the device has been properly put on, the WatchPAT\u2122 is ready to start recording. Have a good night sleep.\nIf you need to get up during the night, do not remove the device or sensors.\nDo leave the phone behind, connected to the charger.";
   @override
+  String get uploadingDeviceDisconnected => "The WatchPAT™ device cannot be communicated. Please bring it closer to the Application.";
+  @override
   String get btnNext => "Next";
   @override
   String get loading => "Loading";
@@ -679,6 +683,8 @@ class fr extends S {
   String get red_led_status => "Red LED status: ";
   @override
   String get err_sbp => "SBP";
+  @override
+  String get attention => "ATTENTION";
   @override
   String get pat_led_status => "PAT LED status: ";
   @override

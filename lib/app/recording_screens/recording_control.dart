@@ -5,22 +5,7 @@ import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
-class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
-  RecordingControl() {
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-//      Log.info("RecordingControl", ">>>>>>>>>> App changed lifecyce: ${state.toString()}");
-//    if ((sl<SystemStateManager>().testState == TestStates.STARTED ||
-//            sl<SystemStateManager>().testState == TestStates.RESUMED) &&
-//        state == AppLifecycleState.paused) {
-//      sl<NotificationsService>().showLocalNotification("Test in progress");
-//    }
-    super.didChangeAppLifecycleState(state);
-  }
-
+class RecordingControl extends StatelessWidget {
   _confirmEndTest(BuildContext context) {
     showDialog(
         context: context,
@@ -34,7 +19,10 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
                 ),
                 FlatButton(
                   child: Text(S.of(context).ok),
-                  onPressed: () => sl<TestingManager>().stopButtonPressed(),
+                  onPressed: () {
+                    sl<TestingManager>().stopButtonPressed();
+                    Navigator.pushNamed(context, UploadingScreen.PATH);
+                  },
                 )
               ],
             ));
@@ -82,9 +70,7 @@ class RecordingControl extends StatelessWidget with WidgetsBindingObserver {
             return ButtonsBlock(
               moreActionButton: null,
               nextActionButton: ButtonModel(
-                action: snapshot.data == TestDataAmountState.MINIMUM_PASSED
-                    ? () => _confirmEndTest(context)
-                    : null,
+                action: snapshot.data == TestDataAmountState.MINIMUM_PASSED ? () => _confirmEndTest(context) : null,
                 text: S.of(context).btnEndRecording,
               ),
             );

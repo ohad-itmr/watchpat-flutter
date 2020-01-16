@@ -15,7 +15,7 @@ class RecordingScreen extends StatefulWidget {
 class _RecordingScreenState extends State<RecordingScreen> {
   @override
   void initState() {
-    _subscribeToTestState();
+//    _subscribeToTestState();
     internetWarningSub.cancel();
     super.initState();
   }
@@ -23,8 +23,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
   _subscribeToTestState() {
     sl<SystemStateManager>()
         .testStateStream
-        .firstWhere((TestStates st) =>
-            st == TestStates.STOPPED || st == TestStates.ENDED)
+        .firstWhere((TestStates st) => st == TestStates.STOPPED || st == TestStates.ENDED)
         .then((TestStates state) {
       if (state == TestStates.STOPPED) {
         Navigator.pushNamed(context, UploadingScreen.PATH);
@@ -58,8 +57,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
             Flexible(
               flex: 3,
               child: Container(
-                decoration:
-                    BoxDecoration(color: Color.fromARGB(255, 35, 35, 35)),
+                decoration: BoxDecoration(color: Color.fromARGB(255, 35, 35, 35)),
                 child: RecordingControl(),
               ),
             )

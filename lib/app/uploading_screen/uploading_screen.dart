@@ -21,8 +21,7 @@ class UploadingScreen extends StatefulWidget with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused &&
-        sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
+    if (state == AppLifecycleState.paused && sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none) {
       TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
     }
     super.didChangeAppLifecycleState(state);
@@ -34,15 +33,15 @@ class UploadingScreen extends StatefulWidget with WidgetsBindingObserver {
 
 class _UploadingScreenState extends State<UploadingScreen> {
   final _systemState = sl<SystemStateManager>();
+  bool _deviceConnected = true;
 
   @override
   void initState() {
-    _systemState.testStateStream
-        .firstWhere((TestStates s) => s == TestStates.ENDED)
-        .then((_) async {
+    _systemState.testStateStream.firstWhere((TestStates s) => s == TestStates.ENDED).then((_) async {
       await Future.delayed(Duration(seconds: 3));
       Navigator.of(context).pushNamed(EndScreen.PATH);
     });
+    _subscribeToDeviceConnectionState();
     super.initState();
   }
 
@@ -50,6 +49,10 @@ class _UploadingScreenState extends State<UploadingScreen> {
   void deactivate() {
     WidgetsBinding.instance.removeObserver(widget);
     super.deactivate();
+  }
+
+  _subscribeToDeviceConnectionState() {
+    _systemState.deviceCommStateStream.listen((state) => setState(() => _deviceConnected = state == DeviceStates.CONNECTED));
   }
 
   @override
@@ -67,31 +70,33 @@ class _UploadingScreenState extends State<UploadingScreen> {
           children: <Widget>[
             BlockTemplate(
               type: BlockType.text,
-              title: S.of(context).uploadingTitle,
-              content: [S.of(context).uploadingContent],
+              title: _deviceConnected ? S.of(context).uploadingTitle : S.of(context).attention,
+              content: _deviceConnected ? [S.of(context).uploadingContent] : [S.of(context).uploadingDeviceDisconnected],
             ),
             Padding(
               padding: EdgeInsets.only(left: width / 6, right: width / 6, top: width / 10),
-              child: MyPatProgressIndicator(),
+              child: _deviceConnected ? MyPatProgressIndicator() : Container(),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
-              child: Text("Please wait"),
+              child: _deviceConnected ? Text("Please wait") : Container(),
             ),
           ],
         ),
         buttons: Padding(
           padding: const EdgeInsets.only(top: 15.0),
-          child: StreamBuilder(
-            stream: sl<TestingManager>().remainingDataSecondsStream,
-            initialData: 0,
-            builder: (_, AsyncSnapshot<int> snapshot) {
-              return Text(
-                '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
-                style: Theme.of(context).textTheme.title,
-              );
-            },
-          ),
+          child: _deviceConnected
+              ? StreamBuilder(
+                  stream: sl<TestingManager>().remainingDataSecondsStream,
+                  initialData: 0,
+                  builder: (_, AsyncSnapshot<int> snapshot) {
+                    return Text(
+                      '${TimeUtils.convertSecondsToHMmSs(snapshot.data)}',
+                      style: Theme.of(context).textTheme.title,
+                    );
+                  },
+                )
+              : Container(),
         ),
         showSteps: false,
       ),

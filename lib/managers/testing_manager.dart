@@ -84,16 +84,16 @@ class TestingManager extends ManagerBase {
     }
   }
 
-  void _startSftpTimer() {
-    _sftpIncompleteTimer = Timer(Duration(seconds: 10), () {
-      final AppLifecycleState state = WidgetsBinding.instance.lifecycleState;
-      if (_systemStateManager.sftpUploadingState != SftpUploadingState.ALL_UPLOADED && state != AppLifecycleState.resumed) {
-        sl<NotificationsService>().showLocalNotification(
-            "Data from WatchPAT ONE device finished transferring. Please open the application to upload data to your doctor.");
-        _sftpIncompleteTimer = null;
-      }
-    });
-  }
+//  void _startSftpTimer() {
+//    _sftpIncompleteTimer = Timer(Duration(seconds: 10), () {
+//      final AppLifecycleState state = WidgetsBinding.instance.lifecycleState;
+//      if (_systemStateManager.sftpUploadingState != SftpUploadingState.ALL_UPLOADED && state != AppLifecycleState.resumed) {
+//        sl<NotificationsService>().showLocalNotification(
+//            "Data from WatchPAT ONE device finished transferring. Please open the application to upload data to your doctor.");
+//        _sftpIncompleteTimer = null;
+//      }
+//    });
+//  }
 
   bool checkForSessionTimeout() {
     final bool sessionTimedOut = TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
@@ -112,8 +112,15 @@ class TestingManager extends ManagerBase {
     if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
       stopTesting();
     } else {
-      forceEndTesting();
+//      forceEndTesting();
+      _waitForDeviceConnectionToEndTest();
     }
+  }
+
+  void _waitForDeviceConnectionToEndTest() {
+    _systemStateManager.deviceCommStateStream
+        .firstWhere((st) => st == DeviceStates.CONNECTED)
+        .then((_) => Future.delayed(Duration(seconds: 1)).then((_) => stopTesting()));
   }
 
   void stopTesting() {
@@ -123,7 +130,7 @@ class TestingManager extends ManagerBase {
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _initDataProgress();
     _stopElapsedTimer();
-    _startSftpTimer();
+//    _startSftpTimer();
   }
 
   void forceEndTesting() {
@@ -133,7 +140,7 @@ class TestingManager extends ManagerBase {
     sl<SystemStateManager>().setScanCycleEnabled = false;
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _stopElapsedTimer();
-    _startSftpTimer();
+//    _startSftpTimer();
   }
 
   void _initDataProgress() {

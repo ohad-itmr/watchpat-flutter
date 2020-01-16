@@ -20,8 +20,7 @@ class DioLogger {
       Log.info(tag,
           'Error Path : [${error.response.request.method}] ${error.response.request.baseUrl}${error.response.request.path} Request Data : ${error.response.request.data.toString()}');
       Log.info(tag, 'Error statusCode : ${error.response.statusCode}');
-      Log.info(
-          tag, 'Error data : ${null != error.response.data ? error.response.data.toString() : ''}');
+      Log.info(tag, 'Error data : ${null != error.response.data ? error.response.data.toString() : ''}');
     }
     Log.info(tag, 'Error Message : ${error.message}');
   }

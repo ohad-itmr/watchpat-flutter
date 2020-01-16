@@ -214,6 +214,7 @@ class S implements WidgetsLocalizations {
   String get stop_test => "STOP TEST";
   String get strapWristContent => "Attach the WatchPAT\u2122ONE on your non-dominant hand. \nSecure the WatchPAT\u2122ONE to your wrist ensuring it is snug but not too tight.";
   String get strapWristTitle => "ATTACH WRIST DEVICE";
+  String get system_encountered_problem => "The system encountered a problem. Try downloading again the Application. If the problem resumes, call customer support, and report error";
   String get technician_mode => "Technician mode";
   String get test_data_from_previous_session_still_uploading => "Test data from previous session still uploading to server";
   String get test_data_still_transmitting_close_anyway => "Test data still transmitting Please don't close WatchPAT\u2122 application  Close anyway?";
@@ -566,6 +567,8 @@ class fr extends S {
   String get acc_registers_get_fail => "ACC registers retrieve failed";
   @override
   String get writing_param_file => "Writing parameter file";
+  @override
+  String get system_encountered_problem => "The system encountered a problem. Try downloading again the Application. If the problem resumes, call customer support, and report error";
   @override
   String get afe_registers_written_successfully => "AFE registers written successfully";
   @override

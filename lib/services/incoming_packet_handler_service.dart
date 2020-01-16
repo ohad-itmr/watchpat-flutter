@@ -133,8 +133,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     if (_packetState == PacketState.PACKET_COMPLETE) {
       // packet is fully received
-      ReceivedPacket receivedPacket =
-          ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
+      ReceivedPacket receivedPacket = ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 
@@ -169,8 +168,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           }
 
           // send data packet ACK
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
@@ -188,8 +186,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             PrefsProvider.saveRemotePacketIdentifier(receivedPacket.identifier);
             PrefsProvider.incTestPacketCount();
 
-            sl<DataWritingService>().writeToLocalFile(
-                DataPacket(data: List.from(receivedPacket.bytes), id: receivedPacket.identifier));
+            sl<DataWritingService>().writeToLocalFile(DataPacket(data: List.from(receivedPacket.bytes), id: receivedPacket.identifier));
           } else {
             Log.warning(TAG,
                 "retransmission of same packet is detected. prevRemoteID: $prevRemoteIdentifier | receivedID: ${receivedPacket.identifier}");
@@ -202,8 +199,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (START_SESSION_CONFIRM)");
 
           // Send ACK
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           // set start session state to confirmed
           sl<SystemStateManager>().setStartSessionState(StartSessionState.CONFIRMED);
@@ -227,8 +223,7 @@ class IncomingPacketHandlerService extends ManagerBase {
               Log.info(TAG, "first connection to device");
               Log.info(TAG, "### start session confirm: device FW version check START");
 
-              final bool isUpToDate =
-                  await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
+              final bool isUpToDate = await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
 
               if (isUpToDate) {
                 Log.info(TAG, "### start session confirm: device FW version check END");
@@ -243,8 +238,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           }
 
           if (deviceHasNoErrors) {
-            final String deviceName =
-                "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
+            final String deviceName = "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
             Log.info(TAG, "device new name: $deviceName");
             PrefsProvider.saveDeviceName(deviceName);
           }
@@ -279,8 +273,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           );
           break;
         case DeviceCommands.CMD_OPCODE_BIT_RES:
-          Log.info(
-              TAG, "packet received (BIT_RES): ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
+          Log.info(TAG, "packet received (BIT_RES): ${ConvertFormats.bytesToHex(receivedPacket.bytes)}");
           _bitResponse.sink.add(receivedPacket.extractBitResponse());
 
           // send bit-response packet ACK
@@ -295,8 +288,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         case DeviceCommands.CMD_OPCODE_ERROR_STATUS:
           Log.info(TAG, "packet received (ERROR_STATUS)");
           _manageError(receivedPacket.extractSingleBytePayload());
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
 
         case DeviceCommands.CMD_OPCODE_END_OF_TEST_DATA:
@@ -304,8 +296,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           sl<TestingManager>().forceEndTesting();
 
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           // disconnect from device
 //          await Future.delayed(Duration(seconds: 2));
@@ -316,8 +307,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (FW_UPGRADE_RES)");
 
           // fw-response packet received
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           await Future.delayed(Duration(milliseconds: 100));
           sl<FirmwareUpgrader>().responseReceived();
@@ -331,8 +321,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           f.createSync();
           f.writeAsBytesSync(receivedPacket.bytes, mode: FileMode.write);
 
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_ACTIGRAPH_REGISTERS_VALUES:
           Log.info(TAG, "packet received (ACTIGRAPH_REGISTERS_VALUES)");
@@ -342,20 +331,15 @@ class IncomingPacketHandlerService extends ManagerBase {
           f.createSync();
           f.writeAsBytesSync(receivedPacket.bytes, mode: FileMode.write);
 
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
 
         case DeviceCommands.CMD_OPCODE_GET_LOG_FILE_RESPONSE:
-          Log.info(
-              TAG,
-              "packet received (LOG_FILE_RESPONSE): " +
-                  ConvertFormats.bytesToHex(receivedPacket.bytes));
+          Log.info(TAG, "packet received (LOG_FILE_RESPONSE): " + ConvertFormats.bytesToHex(receivedPacket.bytes));
           final int payloadSize = receivedPacket.extractLogFileSize();
           print(">> log file chunk size: $payloadSize");
           File f = await sl<FileSystemService>().deviceLogFile;
-          f.writeAsBytesSync(receivedPacket.extractParameterFilePayload(),
-              mode: FileMode.append, flush: true);
+          f.writeAsBytesSync(receivedPacket.extractParameterFilePayload(), mode: FileMode.append, flush: true);
 
           if (payloadSize < ParameterFileHandler.LOG_FILE_DATA_CHUNK) {
             Log.info(TAG, ">> log EOF!");
@@ -363,8 +347,7 @@ class IncomingPacketHandlerService extends ManagerBase {
           } else {
             sl<ParameterFileHandler>().getLogFileResponse(true);
           }
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_PARAMETERS_FILE:
           Log.info(TAG, "packet received (PARAMETERS_FILE)");
@@ -381,14 +364,12 @@ class IncomingPacketHandlerService extends ManagerBase {
           } else {
             sl<ParameterFileHandler>().getParamFileResponse(true);
           }
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_UPAT_EEPROM_VALUES:
           Log.info(TAG, "packet received (UPAT_EEPROM_VALUES)");
 
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
           break;
         case DeviceCommands.CMD_OPCODE_IS_DEVICE_PAIRED_RES:
           Log.info(TAG, "packet received (IS_DEVICE_PAIRED)");
@@ -436,8 +417,7 @@ class IncomingPacketHandlerService extends ManagerBase {
             }
           }
 
-          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(
-              packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
+          sl<CommandTaskerManager>().addAck(DeviceCommands.getAckCmd(packetType, DeviceCommands.ACK_STATUS_OK, receivedPacket.identifier));
 
           _isPairedResponse.sink.add(isPaired);
 
@@ -472,10 +452,8 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   bool _isValidSignature() {
-    final int signature = ConvertFormats.byteArrayToHex([
-      _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE + 1],
-      _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE]
-    ]);
+    final int signature = ConvertFormats.byteArrayToHex(
+        [_incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE + 1], _incomingData[ReceivedPacket.PACKET_SIGNATURE_STARTING_BYTE]]);
     return signature == DeviceCommands.CMD_SIGNATURE_PACKET;
   }
 
@@ -559,22 +537,19 @@ class IncomingPacketHandlerService extends ManagerBase {
     Log.info(TAG, "### Checking for session errors");
     String errors = "Session errors:\n\n";
     await sl<WelcomeActivityManager>().configFinished.firstWhere((done) => done);
-    GeneralResponse res =
-        await sl<DispatcherService>().getPatientPolicy(PrefsProvider.loadDeviceSerial());
+    GeneralResponse res = await sl<DispatcherService>().getPatientPolicy(PrefsProvider.loadDeviceSerial());
     if (res.error) {
       if (res.message == DispatcherService.DISPATCHER_ERROR_STATUS) {
         errors += "- Connection to dispatcher failed";
-        sl<SystemStateManager>()
-            .setSessionErrorState(SessionErrorState.NO_DISPATCHER, errors: errors);
+        sl<SystemStateManager>().setSessionErrorState(SessionErrorState.NO_DISPATCHER, errors: errors);
       } else if (res.message == DispatcherService.NO_PIN_RETRIES) {
-        errors += "- Number of PIN retries exceeded";
+        errors += "Number of PIN retries exceeded";
         sl<SystemStateManager>().setSessionErrorState(SessionErrorState.PIN_ERROR, errors: errors);
       } else if (res.message == DispatcherService.SN_NOT_REGISTERED_ERROR_STATUS) {
-        errors += "- Serial number of your device is not registered";
-        sl<SystemStateManager>()
-            .setSessionErrorState(SessionErrorState.SN_NOT_REGISTERED, errors: errors);
+        errors += "Serial number of your device is not registered";
+        sl<SystemStateManager>().setSessionErrorState(SessionErrorState.SN_NOT_REGISTERED, errors: errors);
       } else {
-        errors += "- Internal policy error: ${res.message}";
+        errors += "${lang.system_encountered_problem}: ${res.message}";
         sl<SystemStateManager>().setSessionErrorState(SessionErrorState.UNDEFINED, errors: errors);
       }
       return false;

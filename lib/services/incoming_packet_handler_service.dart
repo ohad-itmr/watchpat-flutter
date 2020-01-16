@@ -216,6 +216,9 @@ class IncomingPacketHandlerService extends ManagerBase {
           PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
           Log.info(TAG, "### start session confirm: device serial saved");
 
+          // Send start session to dispatcher
+          sl<DispatcherService>().sendStartSession(receivedPacket.opCodeDependent.toString());
+
           final bool sessionHasNoErrors = await _checkSessionErrors();
           final bool deviceHasNoErrors = _checkDeviceErrors(receivedPacket.opCodeDependent);
 

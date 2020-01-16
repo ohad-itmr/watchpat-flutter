@@ -50,11 +50,12 @@ class TestingManager extends ManagerBase {
   }
 
   void startTesting() {
-    Log.info(TAG, "### Sending START aquisition command");
+    Log.info(TAG, "### Starting test");
     PrefsProvider.saveTestStartTime(DateTime.now().millisecondsSinceEpoch);
     final CommandTask cmd = DeviceCommands.getStartAcquisitionCmd();
     IncomingPacketHandlerService.startAcquisitionCmdId = cmd.packetIdentifier;
     sl<CommandTaskerManager>().addCommandWithNoCb(cmd);
+    sl<DispatcherService>().sendTestStart();
     _startElapsedTimer();
   }
 

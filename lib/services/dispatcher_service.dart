@@ -36,6 +36,8 @@ class DispatcherService {
   final String _checkExternalConfigEndpoint = '/watchpat/isConfigEnabled';
   final String _getDefaultConfigEndpoint = '/watchpat/getDefaultConfig';
   final String _getPatientPolicy = '/watchpat/policy';
+  final String _startSessionEndpoint = '/device/startSession';
+  final String _testStartEndpoint = '/test/start';
   final String _authenticationEndPoint = '/watchpat/authenticate';
   final String _testCompleteEndpoint = '/test/done';
 
@@ -89,6 +91,14 @@ class DispatcherService {
     return GeneralResponse.fromJson(response.data);
   }
 
+  Future<DispatcherResponse> sendStartSession(String bitResult) async {
+    Response response = await _sendRequest(
+        urlSuffix: '$_startSessionEndpoint/${PrefsProvider.loadDeviceSerial()}',
+        method: RequestMethod.post,
+        data: {"sn": PrefsProvider.loadDeviceSerial(), "bitResult": bitResult});
+    return GeneralResponse.fromJson(response.data);
+  }
+
   Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
       String serialNumber, String pin) async {
     Response response = await _sendRequest(
@@ -98,9 +108,19 @@ class DispatcherService {
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 
+  Future<DispatcherResponse> sendTestStart() async {
+    Response response = await _sendRequest(
+        urlSuffix: '$_testStartEndpoint/${PrefsProvider.loadDeviceSerial()}',
+        method: RequestMethod.post,
+        data: {"sn": PrefsProvider.loadDeviceSerial(), "pin": PrefsProvider.loadUserPin()});
+    return GeneralResponse.fromJson(response.data);
+  }
+
   Future<void> sendTestComplete(String serialNumber) async {
     await _sendRequest(
-        urlSuffix: '$_testCompleteEndpoint/$serialNumber', method: RequestMethod.get);
+        urlSuffix: '$_testCompleteEndpoint/$serialNumber',
+        method: RequestMethod.post,
+        data: {"sn": PrefsProvider.loadDeviceSerial(), "pin": PrefsProvider.loadUserPin()});
   }
 
   static BaseOptions options =

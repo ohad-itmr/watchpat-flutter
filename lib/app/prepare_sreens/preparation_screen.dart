@@ -1,5 +1,5 @@
+import 'package:battery/battery.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
@@ -21,28 +21,46 @@ class _PreparationScreenState extends State<PreparationScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _showDisconnectedWarning(context, null, S.of(context).patient_msg1));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!await _chargerConnected()) {
+        _showDisconnectedWarning(context, null, S.of(context).patient_msg1);
+      }
+    });
+  }
+
+  Future<bool> _chargerConnected() async {
+    final BatteryState state = await sl<BatteryManager>().getBatteryState();
+    return state != BatteryState.discharging;
   }
 
   _handleNext() async {
-    await sl<SystemStateManager>()
-        .bleScanStateStream
-        .firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
+    await sl<SystemStateManager>().bleScanStateStream.firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
 
-    if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
-      await sl<SystemStateManager>()
-          .startSessionStateStream
-          .firstWhere((StartSessionState st) => st == StartSessionState.CONFIRMED);
+    final deviceConnected = sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED;
+    final chargerConnected = await _chargerConnected();
+
+    if (!deviceConnected) {
+      _showDisconnectedWarning(context, S.of(context).device_not_found, S.of(context).device_not_located);
+      setState(() => _nextIsPressed = false);
+    } else if (!chargerConnected) {
+      _showDisconnectedWarning(context, null, S.of(context).patient_msg1);
+      setState(() => _nextIsPressed = false);
+    } else {
+      await sl<SystemStateManager>().startSessionStateStream.firstWhere((StartSessionState st) => st == StartSessionState.CONFIRMED);
       _nextIsPressed = false;
       Navigator.pushNamed(context, PinScreen.PATH);
-    } else {
-      _showDisconnectedWarning(
-          context, S.of(context).device_not_found, S.of(context).device_not_located);
-      setState(() {
-        _nextIsPressed = false;
-      });
     }
+
+//    if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
+//      await sl<SystemStateManager>().startSessionStateStream.firstWhere((StartSessionState st) => st == StartSessionState.CONFIRMED);
+//      _nextIsPressed = false;
+//      Navigator.pushNamed(context, PinScreen.PATH);
+//    } else {
+//      _showDisconnectedWarning(context, S.of(context).device_not_found, S.of(context).device_not_located);
+//      setState(() {
+//        _nextIsPressed = false;
+//      });
+//    }
   }
 
   @override
@@ -72,8 +90,7 @@ class _PreparationScreenState extends State<PreparationScreen> {
                   },
                 ),
                 moreActionButton: ButtonModel(
-                  action: () => Navigator.of(context)
-                      .pushNamed("${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
+                  action: () => Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
                 ),
               ),
         showSteps: true,

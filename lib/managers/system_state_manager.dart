@@ -14,16 +14,7 @@ enum SessionErrorState { UNKNOWN, NO_ERROR, PIN_ERROR, SN_NOT_REGISTERED, NO_DIS
 
 enum ServerStates { DISCONNECTED, CONNECTING, CONNECTED }
 
-enum TestStates {
-  NOT_STARTED,
-  STARTED,
-  INTERRUPTED,
-  RESUMED,
-  MINIMUM_PASSED,
-  STOPPED,
-  ENDED,
-  SFTP_UPLOAD_INCOMPLETE
-}
+enum TestStates { NOT_STARTED, STARTED, INTERRUPTED, RESUMED, MINIMUM_PASSED, STOPPED, ENDED, SFTP_UPLOAD_INCOMPLETE }
 
 enum DataTransferState { NOT_STARTED, TRANSFERRING, ENDED }
 
@@ -33,15 +24,7 @@ enum SftpUploadingState { NOT_STARTED, UPLOADING, WAITING_FOR_DATA, ALL_UPLOADED
 
 enum AppModes { USER, CS, TECH, BACKGROUND }
 enum FirmwareUpgradeState { UNKNOWN, UPGRADING, UP_TO_DATE, UPGRADE_FAILED }
-enum DispatcherStates {
-  DISCONNECTED,
-  CONFIG_RECEIVED,
-  CONFIG_ERROR,
-  AUTHENTICATING,
-  AUTHENTICATED,
-  AUTHENTICATION_FAILURE,
-  FAILURE
-}
+enum DispatcherStates { DISCONNECTED, CONFIG_RECEIVED, CONFIG_ERROR, AUTHENTICATING, AUTHENTICATED, AUTHENTICATION_FAILURE, FAILURE }
 
 enum StateChangeActions {
   BT_STATE_CHANGED,
@@ -69,23 +52,12 @@ class SystemStateManager extends ManagerBase {
   static const String TAG = 'SystemStateManager';
 
   // BT STATES
-  static List<String> _btStates = [
-    "None",
-    "Not available",
-    "BLE not supported",
-    "Disabled",
-    "Enabled"
-  ];
+  static List<String> _btStates = ["None", "Not available", "BLE not supported", "Disabled", "Enabled"];
 
   static String getBTStateName(int state) => _btStates[state];
 
   // SCAN RESULT STATES
-  static List<String> _scanResults = [
-    "Not started",
-    "Not located",
-    "Located single",
-    "Located multiple"
-  ];
+  static List<String> _scanResults = ["Not started", "Not located", "Located single", "Located multiple"];
 
   static String getScanResultStateName(int state) => _scanResults[state];
 
@@ -95,12 +67,7 @@ class SystemStateManager extends ManagerBase {
   static String getScanStateName(int state) => _scanStates[state];
 
   // DEVICE STATES
-  static List<String> _deviceStates = [
-    "Not Initialized",
-    "Disconnected",
-    "Connecting",
-    "Connected"
-  ];
+  static List<String> _deviceStates = ["Not Initialized", "Disconnected", "Connecting", "Connected"];
 
   static String getDeviceStateName(int state) => _deviceStates[state];
 
@@ -163,15 +130,14 @@ class SystemStateManager extends ManagerBase {
   BehaviorSubject<ServerStates> _serverCommState = BehaviorSubject<ServerStates>();
   BehaviorSubject<TestStates> _testState = BehaviorSubject<TestStates>();
   BehaviorSubject<DataTransferState> _dataTransferState = BehaviorSubject<DataTransferState>();
-  BehaviorSubject<TestDataAmountState> _testDataAmountState =
-      BehaviorSubject<TestDataAmountState>();
+  BehaviorSubject<TestDataAmountState> _testDataAmountState = BehaviorSubject<TestDataAmountState>();
   BehaviorSubject<AppModes> _appMode = BehaviorSubject<AppModes>();
   BehaviorSubject<FirmwareUpgradeState> _firmwareState = BehaviorSubject<FirmwareUpgradeState>();
   BehaviorSubject<DispatcherStates> _dispatcherState = BehaviorSubject<DispatcherStates>();
   BehaviorSubject<ConnectivityResult> _inetConnectionState = BehaviorSubject<ConnectivityResult>();
-  BehaviorSubject<GlobalProcedureState> _globalProcedureState =
-      BehaviorSubject<GlobalProcedureState>();
+  BehaviorSubject<GlobalProcedureState> _globalProcedureState = BehaviorSubject<GlobalProcedureState>();
   BehaviorSubject<int> _sftpUploadingProgress = BehaviorSubject<int>();
+  PublishSubject<String> _toastMessages = PublishSubject<String>();
 
   PublishSubject<StateChangeActions> _stateChangeSubject = PublishSubject<StateChangeActions>();
 
@@ -216,6 +182,8 @@ class SystemStateManager extends ManagerBase {
   Observable<GlobalProcedureState> get globalProcedureStateStream => _globalProcedureState.stream;
 
   Observable<int> get sftpUploadingProgress => _sftpUploadingProgress.stream;
+
+  Observable<String> get toastMessagesStream => _toastMessages.stream;
 
   bool _isScanCycleEnabled = true;
 
@@ -409,6 +377,10 @@ class SystemStateManager extends ManagerBase {
     _globalProcedureState.sink.add(state);
   }
 
+  void sendToastMessage(String msg) {
+    _toastMessages.sink.add(msg);
+  }
+
   Sink<StateChangeActions> get changeState => _stateChangeSubject.sink;
 
   set setScanCycleEnabled(bool value) => _isScanCycleEnabled = value;
@@ -456,11 +428,9 @@ class SystemStateManager extends ManagerBase {
 
   bool get isBTEnabled => btState == BtStates.ENABLED;
 
-  bool get isConnectionToDevice =>
-      deviceCommState == DeviceStates.CONNECTED || deviceCommState == DeviceStates.CONNECTING;
+  bool get isConnectionToDevice => deviceCommState == DeviceStates.CONNECTED || deviceCommState == DeviceStates.CONNECTING;
 
-  bool get isConnectionToServer =>
-      serverCommState == ServerStates.CONNECTED || serverCommState == ServerStates.CONNECTING;
+  bool get isConnectionToServer => serverCommState == ServerStates.CONNECTED || serverCommState == ServerStates.CONNECTING;
 
   bool get isTestActive => testState != TestStates.NOT_STARTED && testState != TestStates.ENDED;
 
@@ -490,19 +460,14 @@ class SystemStateManager extends ManagerBase {
     if (PrefsProvider.getIgnoreDeviceErrors() ||
         bleScanResult == ScanResultStates.NOT_LOCATED ||
         bleScanResult == ScanResultStates.LOCATED_MULTIPLE) return Future.value(false);
-    return Observable.combineLatest2<DeviceStates, DeviceErrorStates, Tuple2>(
-            deviceCommStateStream,
-            deviceErrorStateStream,
-            (DeviceStates deviceState, DeviceErrorStates errorState) =>
-                Tuple2(deviceState, errorState))
-        .firstWhere((Tuple2 values) =>
-            values.item1 == DeviceStates.CONNECTED && values.item2 != DeviceErrorStates.UNKNOWN)
+    return Observable.combineLatest2<DeviceStates, DeviceErrorStates, Tuple2>(deviceCommStateStream, deviceErrorStateStream,
+            (DeviceStates deviceState, DeviceErrorStates errorState) => Tuple2(deviceState, errorState))
+        .firstWhere((Tuple2 values) => values.item1 == DeviceStates.CONNECTED && values.item2 != DeviceErrorStates.UNKNOWN)
         .then((Tuple2 values) => values.item2 != DeviceErrorStates.NO_ERROR);
   }
 
   Future<bool> get sessionHasErrors {
-    if (bleScanResult == ScanResultStates.NOT_LOCATED ||
-        bleScanResult == ScanResultStates.LOCATED_MULTIPLE) return Future.value(false);
+    if (bleScanResult == ScanResultStates.NOT_LOCATED || bleScanResult == ScanResultStates.LOCATED_MULTIPLE) return Future.value(false);
     return sessionErrorStateStream
         .firstWhere((SessionErrorState st) => st != SessionErrorState.UNKNOWN)
         .then((SessionErrorState state) => state != SessionErrorState.NO_ERROR);

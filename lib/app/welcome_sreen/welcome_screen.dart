@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/widgets/mypat_toast.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -22,11 +24,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final S loc = sl<S>();
   final WelcomeActivityManager welcomeManager = sl<WelcomeActivityManager>();
   final SystemStateManager _systemStateManager = sl<SystemStateManager>();
+  StreamSubscription _toastSub;
 
   @override
   void initState() {
     welcomeManager.checkForOutdatedSession();
+    _subscribeToToasts();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _toastSub.cancel();
+    super.dispose();
+  }
+
+  _subscribeToToasts() {
+    _toastSub = _systemStateManager.toastMessagesStream.listen((msg) => MyPatToast.show(msg, context));
   }
 
   void _handleNext() async {

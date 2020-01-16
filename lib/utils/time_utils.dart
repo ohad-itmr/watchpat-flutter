@@ -35,7 +35,7 @@ class TimeUtils {
   }
 
   static String getFullDateStringFromTimeStamp(DateTime timeStamp) {
-    final String pattern = "yyyy.MM.dd_HH:mm:ss";
+    final String pattern = "yyyy.MM.dd_HH-mm-ss";
     return DateFormat(pattern).format(timeStamp);
   }
 

@@ -161,7 +161,10 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
     sl<SftpService>().cancelUpload();
   }
 
-  void _sendLogs() {
-    sl<EmailSenderService>().sendLogsArchive();
+  void _sendLogs() async {
+    sl<SystemStateManager>().sendToastMessage("Sending logs...");
+    final bool success = await sl<EmailSenderService>().sendLogsArchive();
+    final String msg = success ? 'Sending logs success' : 'Sending logs failed';
+    sl<SystemStateManager>().sendToastMessage(msg);
   }
 }

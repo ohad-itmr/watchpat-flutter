@@ -22,8 +22,7 @@ class BleManager extends ManagerBase {
   String _deviceAdvName;
   static BluetoothDevice _device;
 
-  BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject =
-      BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
+  BehaviorSubject<Map<DeviceIdentifier, ScanResult>> _scanResultsSubject = BehaviorSubject<Map<DeviceIdentifier, ScanResult>>();
 
   Observable<Map<DeviceIdentifier, ScanResult>> get scanResults => _scanResultsSubject.stream;
 
@@ -37,8 +36,7 @@ class BleManager extends ManagerBase {
 
   //#region Device
   StreamSubscription _deviceConnection;
-  BehaviorSubject<BluetoothDeviceState> _deviceStateSubject =
-      BehaviorSubject<BluetoothDeviceState>();
+  BehaviorSubject<BluetoothDeviceState> _deviceStateSubject = BehaviorSubject<BluetoothDeviceState>();
 
   Observable<BluetoothDeviceState> get deviceState => _deviceStateSubject.stream;
 
@@ -77,8 +75,7 @@ class BleManager extends ManagerBase {
         _deviceStateSubscription.cancel();
         _deviceStateSubscription = null;
       }
-      _deviceStateSubscription =
-          sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+      _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
     }
   }
 
@@ -99,8 +96,7 @@ class BleManager extends ManagerBase {
       await sl<BleService>().setServicesAndChars();
       await sl<BleService>().setNotification();
 
-      if (sysStateManager.testState == TestStates.INTERRUPTED ||
-          sysStateManager.testState == TestStates.STOPPED) {
+      if (sysStateManager.testState == TestStates.INTERRUPTED || sysStateManager.testState == TestStates.STOPPED) {
         Log.info(TAG, "### reconnected to device after test started");
         _testInterruptedTimer = Timer(Duration(seconds: 2), () {
           if (sysStateManager.testState != TestStates.RESUMED) {
@@ -114,8 +110,7 @@ class BleManager extends ManagerBase {
 
       Log.info(TAG, "Device name: $_deviceAdvName");
       if (_isFirstConnection || !_isFirstConnection && _deviceAdvName.endsWith("N")) {
-        Log.info(TAG,
-            "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device $_deviceAdvName, checking 'paired' flag");
+        Log.info(TAG, "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device $_deviceAdvName, checking 'paired' flag");
         sl<CommandTaskerManager>().sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
         return;
       }
@@ -132,8 +127,6 @@ class BleManager extends ManagerBase {
       if (sl<SystemStateManager>().dataTransferState == DataTransferState.ENDED) return;
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
-//      disconnection();
-
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.UNKNOWN);
       sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);
       sl<SystemStateManager>().clearDeviceErrors();
@@ -162,8 +155,7 @@ class BleManager extends ManagerBase {
 
   void _initTasker() {
     sl<SystemStateManager>().stateChangeStream.listen(_systemStateHandler);
-    sl<CommandTaskerManager>().setDelays(
-        BleService.SEND_COMMANDS_DELAY, BleService.SEND_ACK_DELAY, BleService.MAX_COMMAND_TIMEOUT);
+    sl<CommandTaskerManager>().setDelays(BleService.SEND_COMMANDS_DELAY, BleService.SEND_ACK_DELAY, BleService.MAX_COMMAND_TIMEOUT);
     sl<CommandTaskerManager>().ackOpCode = DeviceCommands.CMD_OPCODE_ACK;
     sl<CommandTaskerManager>().sendCmdCallback = _sendCallback;
     sl<CommandTaskerManager>().timeoutCallback = _sendTimeoutCallback;
@@ -243,8 +235,15 @@ class BleManager extends ManagerBase {
   void _sendStartSession(int useType) {
     //todo add real SW id
     Log.info(TAG, "### sending start session ");
-    sl<CommandTaskerManager>().addCommandWithNoCb(
-        DeviceCommands.getStartSessionCmd(808598064, useType, [55, 46, 49, 46, 50]));
+    sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartSessionCmd(808598064, useType, [55, 46, 49, 46, 50]));
+  }
+
+  void restartSession() {
+    sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.UNKNOWN);
+    sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);
+    sl<SystemStateManager>().clearDeviceErrors();
+    sl<IncomingPacketHandlerService>().resetPacket();
+    _sendStartSession(DeviceCommands.SESSION_START_USE_TYPE_PATIENT);
   }
 
   void startScan({int time, @required bool connectToFirstDevice, String deviceName}) {
@@ -281,8 +280,7 @@ class BleManager extends ManagerBase {
 
     } else {
       if (localName.contains('ITAMAR')) {
-        Log.info(
-            TAG, ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
+        Log.info(TAG, ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
 
         if ((_isFirstConnection && localName.endsWith("N")) ||
             (!_isFirstConnection && localName.contains(PrefsProvider.loadDeviceName()))) {
@@ -321,8 +319,7 @@ class BleManager extends ManagerBase {
 
       // restore connection if device already connected
       if (PrefsProvider.loadBluetoothDeviceID() != null) {
-        final BluetoothDevice d =
-            await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
+        final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
         if (d != null) {
           _device = d;
           connect(reconnect: true);
@@ -365,8 +362,8 @@ class BleManager extends ManagerBase {
             Future.delayed(Duration(milliseconds: 2000), () {
               if (sl<SystemStateManager>().appMode != AppModes.TECH) {
                 // todo add real SW ID
-                sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStartSessionCmd(
-                    0x0000, DeviceCommands.SESSION_START_USE_TYPE_SERVICE, [0, 0, 0, 1]));
+                sl<CommandTaskerManager>().addCommandWithNoCb(
+                    DeviceCommands.getStartSessionCmd(0x0000, DeviceCommands.SESSION_START_USE_TYPE_SERVICE, [0, 0, 0, 1]));
               }
             });
             break;

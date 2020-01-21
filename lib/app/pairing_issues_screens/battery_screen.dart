@@ -36,9 +36,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
 
   _handleNext() async {
     sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
-    await sl<SystemStateManager>()
-        .bleScanStateStream
-        .firstWhere((ScanStates s) => s == ScanStates.COMPLETE);
+    await sl<SystemStateManager>().bleScanStateStream.firstWhere((ScanStates s) => s == ScanStates.COMPLETE);
     final bool deviceConnected = await sl<SystemStateManager>()
         .deviceCommStateStream
         .firstWhere((DeviceStates s) => s != DeviceStates.CONNECTING)
@@ -52,7 +50,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
       } else if (sl<SystemStateManager>().deviceErrorState == DeviceErrorStates.CHANGE_BATTERY) {
         _showErrorDialog(S.of(context).battery_depleted);
       } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
-        _showErrorDialog(sl<SystemStateManager>().deviceErrors);
+        _showErrorDialog(sl<SystemStateManager>().deviceErrors, callback: sl<BleManager>().restartSession);
       } else {
         Navigator.pushNamed(context, PreparationScreen.PATH);
       }
@@ -76,8 +74,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
           },
         ),
         moreActionButton: ButtonModel(
-          action: () =>
-              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
+          action: () => Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${BatteryScreen.TAG}"),
         ),
       );
     }
@@ -115,10 +112,8 @@ class _BatteryScreenState extends State<BatteryScreen> {
             builder: (BuildContext context, AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
                   type: BlockType.text,
-                  title: _buildHeaderText(
-                      snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED),
-                  content:
-                      _buildText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED));
+                  title: _buildHeaderText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED),
+                  content: _buildText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED));
             }),
         buttons: _buildButtonsBlock(),
         showSteps: false,
@@ -126,7 +121,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
     );
   }
 
-  _showErrorDialog(String msg) {
+  _showErrorDialog(String msg, {Function callback}) {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -135,7 +130,12 @@ class _BatteryScreenState extends State<BatteryScreen> {
               actions: <Widget>[
                 FlatButton(
                   child: Text(S.of(context).ok.toUpperCase()),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    if (callback != null) {
+                      callback();
+                    }
+                    Navigator.pop(context);
+                  },
                 )
               ],
             ));

@@ -15,7 +15,7 @@ class RecordingScreen extends StatefulWidget {
 class _RecordingScreenState extends State<RecordingScreen> {
   @override
   void initState() {
-//    _subscribeToTestState();
+    _subscribeToTestState();
     internetWarningSub.cancel();
     super.initState();
   }

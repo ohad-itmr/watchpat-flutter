@@ -112,7 +112,7 @@ class TestingManager extends ManagerBase {
     if (sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED) {
       stopTesting();
     } else {
-//      forceEndTesting();
+      sl<SystemStateManager>().setTestState(TestStates.STOPPED);
       _waitForDeviceConnectionToEndTest();
     }
   }

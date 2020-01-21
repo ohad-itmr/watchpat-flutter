@@ -21,7 +21,7 @@ class RecordingControl extends StatelessWidget {
                   child: Text(S.of(context).ok),
                   onPressed: () {
                     sl<TestingManager>().stopButtonPressed();
-                    Navigator.pushNamed(context, UploadingScreen.PATH);
+//                    Navigator.pushNamed(context, UploadingScreen.PATH);
                   },
                 )
               ],

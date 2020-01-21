@@ -18,15 +18,6 @@ class PinScreen extends StatelessWidget {
 
   PinScreen({Key key}) : super(key: key);
 
-  final Map<String, String Function(BuildContext context)> _localizedPinDefinitions = {
-    "PN": (BuildContext context) => S.of(context).pin_type_pn,
-    "SS": (BuildContext context) => S.of(context).pin_type_ss,
-    "CC": (BuildContext context) => S.of(context).pin_type_cc,
-    "MN": (BuildContext context) => S.of(context).pin_type_mn,
-    "HIC": (BuildContext context) => S.of(context).pin_type_hic,
-    "PLAIN": (BuildContext context) => S.of(context).pin_type_plain,
-  };
-
   _checkPin() {
     print('PIN is ${pinManager.pin}');
     pinManager.authStateStream.listen((state) {
@@ -56,7 +47,7 @@ class PinScreen extends StatelessWidget {
       switch (snapshot.data) {
         case PatientAuthState.FailedTryAgain:
           return Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(top: 15.0),
             child: Text(
               S.of(context).incorrect_pin,
               style: TextStyle(
@@ -141,23 +132,6 @@ class PinScreen extends StatelessWidget {
     );
   }
 
-  _showPinHint(BuildContext context) {
-    String pinType = sl<UserAuthenticationService>().pinType.toUpperCase();
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Text(S.of(context).pin_number_assigned_to_you(_getHintText(pinType, context))),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(S.of(context).ok.toUpperCase()),
-                onPressed: () => Navigator.pop(context),
-              )
-            ],
-          );
-        });
-  }
-
   String _getHintText(String text, BuildContext ctx) {
     switch (text) {
       case "PN":
@@ -175,13 +149,13 @@ class PinScreen extends StatelessWidget {
       case "DOB":
         return S.of(ctx).pin_type_dob;
       default:
-        return "anything";
+        return "";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
+    final String pinType = sl<UserAuthenticationService>().pinType.toUpperCase();
     return MainTemplate(
       showBack: true,
       showMenu: false,
@@ -204,31 +178,22 @@ class PinScreen extends StatelessWidget {
                       child: _authStateErrorsBuilder(context, snapshot),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: 4,
                       child: PinInputs(),
                     ),
                     Expanded(
-                      flex: 2,
-                      child: Stack(
-                        children: <Widget>[
-                          TextBlock(
-                            title: loc.pinTitle,
-                            contentTextAlign: TextAlign.center,
-                            content: [loc.pinContent],
-                          ),
-                          Positioned(
-                            right: size / 3.7,
-                            top: -size / 35,
-                            child: IconButton(
-                              icon: Icon(Icons.help_outline, color: Theme.of(context).accentColor),
-                              onPressed: () => _showPinHint(context),
-                            ),
-                          ),
-                        ],
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextBlock(
+                          title: S.of(context).pinTitle,
+                          contentTextAlign: TextAlign.center,
+                          content: [S.of(context).pinContent(_getHintText(pinType, context))],
+                        ),
                       ),
                     ),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: _enterBtnBuilder(context, snapshot),
                     )
                   ],

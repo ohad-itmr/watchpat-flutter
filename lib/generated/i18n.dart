@@ -159,15 +159,14 @@ class S implements WidgetsLocalizations {
   String get pat_led_status => "PAT LED status: ";
   String get patient_msg1 => "Please plug your phone into a charger. Leave the charger plugged in during the entire test procedure. Close unused phone applications before starting test procedure. \n\nPlease don't close the WatchPAT™ONE application during the test procedure.";
   String get patient_msg2 => "Please don't close WatchPAT\u2122 application during test procedure";
-  String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   String get pinTitle => "Enter PIN";
-  String get pin_type_cc => "the last four digits of your credit card";
-  String get pin_type_dob => "four digits of your date of birth - MMYY (two digits for month followed by two digits for year)";
-  String get pin_type_hic => "the last four digits of your health insurer card";
-  String get pin_type_mn => "the last four digits of your mobile phone number";
-  String get pin_type_plain => "four digits that were provided to you by the doctor’s staff";
-  String get pin_type_pn => "four digits that were provided to you by the doctor’s staff";
-  String get pin_type_ss => "the last four digits of your Social Security number";
+  String get pin_type_cc => "last digits of your credit card";
+  String get pin_type_dob => "your date of birth in the form MMYY";
+  String get pin_type_hic => "last digits of your health insurer card";
+  String get pin_type_mn => "last digits of your mobile phone number";
+  String get pin_type_plain => "that was provided to you by the doctor’s staff";
+  String get pin_type_pn => "that was provided to you by the doctor’s staff";
+  String get pin_type_ss => "last digits of your Social Security number";
   String get pleaseWait => "Please Wait";
   String get please_insert_finger => "Please insert the finger and press OK";
   String get please_plug_charger => "Please plug in a charger";
@@ -242,6 +241,7 @@ class S implements WidgetsLocalizations {
   String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";
   String device_sn(String sn) => "Device serial number $sn";
+  String pinContent(String pin) => "Enter your assigned four digits PIN ($pin) and tap ENTER and do something else yomayo";
   String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
   String status(String status) => "Status: $status";
   String stepper(String step, String total) => "Step $step of $total";
@@ -266,7 +266,7 @@ class fr extends S {
   @override
   String get device_not_located => "Device is not located. Please check if WatchPAT\u2122 ONE LED blinks. If it does: take your phone closer to the device. If not: verify you use a new battery and check its polarity carefully during insertion.";
   @override
-  String get pin_type_plain => "four digits that were provided to you by the doctor’s staff";
+  String get pin_type_plain => "that was provided to you by the doctor’s staff";
   @override
   String get connection_to_main_device_lost => "Connection to Main Device is lost";
   @override
@@ -290,7 +290,7 @@ class fr extends S {
   @override
   String get select_dispatcher_title => "Choose dispatcher URL";
   @override
-  String get pin_type_dob => "four digits of your date of birth - MMYY (two digits for month followed by two digits for year)";
+  String get pin_type_dob => "your date of birth in the form MMYY";
   @override
   String get connecting_to_device => "Connecting to a device";
   @override
@@ -318,7 +318,7 @@ class fr extends S {
   @override
   String get btnReady => "Ready";
   @override
-  String get pin_type_hic => "the last four digits of your health insurer card";
+  String get pin_type_hic => "last digits of your health insurer card";
   @override
   String get unknown_error => "Unknown error occurred during authentication, please contact support";
   @override
@@ -498,7 +498,7 @@ class fr extends S {
   @override
   String get test_data_transmit_in_progress => "Test data transmit in progress";
   @override
-  String get pin_type_pn => "four digits that were provided to you by the doctor’s staff";
+  String get pin_type_pn => "that was provided to you by the doctor’s staff";
   @override
   String get batteryContent_success => "WatchPAT™ONE connected successfully. Press 'NEXT' to continue.";
   @override
@@ -536,7 +536,7 @@ class fr extends S {
   @override
   String get please_replace_battery => "Please replace the battery in the device";
   @override
-  String get pin_type_mn => "the last four digits of your mobile phone number";
+  String get pin_type_mn => "last digits of your mobile phone number";
   @override
   String get welcomeContent => "Welcome to WatchPAT\u2122ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly. \n\nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup.";
   @override
@@ -588,9 +588,9 @@ class fr extends S {
   @override
   String get device_not_found => "Device is not found";
   @override
-  String get pin_type_ss => "the last four digits of your Social Security number";
+  String get pin_type_ss => "last digits of your Social Security number";
   @override
-  String get pin_type_cc => "the last four digits of your credit card";
+  String get pin_type_cc => "last digits of your credit card";
   @override
   String get enter_new_serial => "Enter main device new serial number";
   @override
@@ -637,8 +637,6 @@ class fr extends S {
   String get flash_full => "Device flash is full";
   @override
   String get send => "Send";
-  @override
-  String get pinContent => "Enter your assigned four digits PIN \n(personal identification number) and tap enter";
   @override
   String get thankYouContent => "The data has been successfully uploaded and the test is over.\nPlease dispose the product by your local guidance's.";
   @override
@@ -699,6 +697,8 @@ class fr extends S {
   String device_sn(String sn) => "Main Device serial number $sn";
   @override
   String test_status(String status) => "Test Status: $status";
+  @override
+  String pinContent(String pin) => "Enter your assigned four digits PIN ($pin) and tap ENTER";
   @override
   String test_length(String time) => "Test Time: $time";
   @override

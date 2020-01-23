@@ -11,7 +11,7 @@ import 'package:package_info/package_info.dart';
 class EmailSenderService {
   static const String SMTP_HOST = "smtp.gmail.com";
   static const String SMTP_USERNAME = "itamar.medical.development@gmail.com";
-  static const String SMTP_PASSWORD = "itamar1234";
+  static const String SMTP_PASSWORD = "Itamar1234";
 
   static const String TAG = "EmailSenderSerivce";
 
@@ -19,7 +19,6 @@ class EmailSenderService {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add(PrefsProvider.loadServiceEmail())
-//      ..recipients.add("m.derzhavets@emg-soft.com")
       ..recipients.add("wp1@itamar-medical.com")
       ..subject = 'SFTP server connection failed'
       ..text = 'Connection to SFTP server was failed.\n\n' +
@@ -51,7 +50,6 @@ class EmailSenderService {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add("wp1@itamar-medical.com")
-//      ..recipients.add("m.derzhavets@emg-soft.com")
       ..subject = 'Study log files'
       ..text = 'Received log files exported from WatchPAT application.\n\n' +
           'Time: ${DateTime.now().toIso8601String()}\n' +
@@ -67,6 +65,7 @@ class EmailSenderService {
     final message = Message()
       ..from = Address(SMTP_USERNAME, 'Itamar Medical')
       ..recipients.add("itamar.medical.development@gmail.com")
+      ..recipients.add("wp1@itamar-medical.com")
       ..subject =
           'Manual logs sending ${PrefsProvider.loadDeviceSerial() != null ? PrefsProvider.loadDeviceSerial() : ''}'
       ..text = 'S/N: ${PrefsProvider.loadDeviceSerial()}\n' +

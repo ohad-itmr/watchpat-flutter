@@ -58,7 +58,7 @@ class PinScreen extends StatelessWidget {
           );
         case PatientAuthState.FailedClose:
           return Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(top: 15.0),
             child: Text(
               S.of(context).auth_fail,
               style: TextStyle(
@@ -69,7 +69,7 @@ class PinScreen extends StatelessWidget {
           );
         case PatientAuthState.FailedNoInternet:
           return Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.only(top: 15.0),
             child: Text(
               S.of(context).inet_unavailable,
               style: TextStyle(

@@ -241,7 +241,7 @@ class S implements WidgetsLocalizations {
   String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";
   String device_sn(String sn) => "Device serial number $sn";
-  String pinContent(String pin) => "Enter your assigned four digits PIN ($pin) and tap ENTER and do something else yomayo";
+  String pinContent(String pin) => "Enter your assigned four digits PIN ($pin) and tap ENTER";
   String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
   String status(String status) => "Status: $status";
   String stepper(String step, String total) => "Step $step of $total";

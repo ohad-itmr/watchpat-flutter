@@ -1,3 +1,5 @@
+import 'package:battery/battery.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
@@ -49,19 +51,20 @@ class StartRecordingScreen extends StatelessWidget {
         buttons: ButtonsBlock(
           nextActionButton: ButtonModel(
             action: () async {
-              final bool canStart = await _testingManager.canStartTesting;
-              if (canStart) {
-                _testingManager.startTesting();
-                Navigator.pushNamed(context, RecordingScreen.PATH);
-              } else {
+              final BatteryState bState = await sl<BatteryManager>().getBatteryState();
+              final iState = sl<SystemStateManager>().inetConnectionState;
+              if (bState == BatteryState.discharging) {
                 _showErrorDialog(S.of(context).battery_level_error, context);
+              } else if (iState == ConnectivityResult.none) {
+                _showErrorDialog(S.of(context).no_inet_connection, context);
+              } else {
+                Navigator.pushNamed(context, RecordingScreen.PATH);
               }
             },
             text: S.of(context).btnStartRecording,
           ),
           moreActionButton: ButtonModel(
-              action: () => Navigator.of(context)
-                  .pushNamed("${CarouselScreen.PATH}/${StartRecordingScreen.TAG}"),
+              action: () => Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${StartRecordingScreen.TAG}"),
               text: S.of(context).btnMore),
         ),
         showSteps: true,

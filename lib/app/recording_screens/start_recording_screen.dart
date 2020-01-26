@@ -53,11 +53,15 @@ class StartRecordingScreen extends StatelessWidget {
             action: () async {
               final BatteryState bState = await sl<BatteryManager>().getBatteryState();
               final iState = sl<SystemStateManager>().inetConnectionState;
-              if (bState == BatteryState.discharging) {
+              final dState = sl<SystemStateManager>().deviceCommState;
+              if (dState != DeviceStates.CONNECTED) {
+                _showErrorDialog(S.of(context).device_disconnected, context);
+              } else if (bState == BatteryState.discharging) {
                 _showErrorDialog(S.of(context).battery_level_error, context);
               } else if (iState == ConnectivityResult.none) {
                 _showErrorDialog(S.of(context).no_inet_connection, context);
               } else {
+                _testingManager.startTesting();
                 Navigator.pushNamed(context, RecordingScreen.PATH);
               }
             },

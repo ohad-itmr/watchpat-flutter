@@ -76,6 +76,7 @@ class S implements WidgetsLocalizations {
   String get critical_hw_failure => "Critical hardware failure";
   String get customer_service_mode => "Customer service mode";
   String get device_connection_failed => "Connection with the device failed. \\n\\nPlease contact Itamar Medical support for assistance.";
+  String get device_disconnected => "The WatchPAT™ device is disconnected. Can't start testing";
   String get device_is_not_paired_error => "Main device pairing error. Please reset device and try again.";
   String get device_is_paired_error => "Device was already paired, please reset device and start the process again";
   String get device_log_file_description => "Device log file";
@@ -333,6 +334,8 @@ class fr extends S {
   String get welcome_to_mypat => "Welcome to myPAT";
   @override
   String get set => "set";
+  @override
+  String get device_disconnected => "The WatchPAT™ device is disconnected. Can't start testing";
   @override
   String get select_language => "Choisir la langue";
   @override

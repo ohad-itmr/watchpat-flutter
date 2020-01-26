@@ -224,5 +224,6 @@
   "pin_type_hic": "last digits of your health insurer card",
   "pin_type_plain": "that was provided to you by the doctor’s staff",
   "pin_type_dob": "your date of birth in the form MMYY",
-  "system_encountered_problem": "The system encountered a problem. Try downloading again the Application. If the problem resumes, call customer support, and report error"
+  "system_encountered_problem": "The system encountered a problem. Try downloading again the Application. If the problem resumes, call customer support, and report error",
+  "device_disconnected": "The WatchPAT™ device is disconnected. Can't start testing"
 }

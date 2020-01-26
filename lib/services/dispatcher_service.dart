@@ -30,8 +30,7 @@ class DispatcherService {
     }));
   }
 
-  static String get _dispatcherUrl =>
-      GlobalSettings.getDispatcherLink(PrefsProvider.loadDispatcherUrlIndex());
+  static String get _dispatcherUrl => GlobalSettings.getDispatcherLink(PrefsProvider.loadDispatcherUrlIndex());
 
   final String _checkExternalConfigEndpoint = '/watchpat/isConfigEnabled';
   final String _getDefaultConfigEndpoint = '/watchpat/getDefaultConfig';
@@ -43,9 +42,7 @@ class DispatcherService {
 
   // Generic method to send http request and try different dispatchers in case of failure
   Future<Response> _sendRequest(
-      {@required String urlSuffix,
-      @required RequestMethod method,
-      Map<String, String> data}) async {
+      {@required String urlSuffix, @required RequestMethod method, Map<String, String> data, final int connectionAttempt = 1}) async {
     try {
       if (method == RequestMethod.post) {
         PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -58,35 +55,35 @@ class DispatcherService {
         return null;
       }
     } catch (e) {
-      Log.shout(TAG, "Failed to connect to dispatcher $_dispatcherUrl, ${e.toString()}");
+      Log.shout(TAG, "Failed to execute request $_dispatcherUrl$urlSuffix, ${e.toString()}, attempt: $connectionAttempt");
       if (_moreDispatchersAvailable) {
         await PrefsProvider.incrementDispatcherUrlIndex();
         Log.info(TAG, "Reconnecting to another dispatcher $_dispatcherUrl");
-        return await _sendRequest(urlSuffix: urlSuffix, method: method, data: data);
+        return await _sendRequest(urlSuffix: urlSuffix, method: method, data: data, connectionAttempt: connectionAttempt);
+      } else if (connectionAttempt < 3) {
+        await PrefsProvider.resetDispatcherUrlIndex();
+        Log.info(TAG, "All dispatchers failed, trying again");
+        return await _sendRequest(urlSuffix: urlSuffix, method: method, data: data, connectionAttempt: connectionAttempt + 1);
       } else {
         return _dio.resolve({"error": true, "message": DISPATCHER_ERROR_STATUS});
       }
     }
   }
 
-  bool get _moreDispatchersAvailable =>
-      PrefsProvider.loadDispatcherUrlIndex() < (GlobalSettings.dispatcherUrlsAmount - 1);
+  bool get _moreDispatchersAvailable => PrefsProvider.loadDispatcherUrlIndex() < (GlobalSettings.dispatcherUrlsAmount - 1);
 
   Future<Map<String, dynamic>> checkExternalConfig() async {
-    Response response = await _sendRequest(
-        method: RequestMethod.post, urlSuffix: _checkExternalConfigEndpoint, data: {});
+    Response response = await _sendRequest(method: RequestMethod.post, urlSuffix: _checkExternalConfigEndpoint, data: {});
     return response.data;
   }
 
   Future<Map<String, dynamic>> getExternalConfig() async {
-    Response response = await _sendRequest(
-        method: RequestMethod.post, urlSuffix: _getDefaultConfigEndpoint, data: {});
+    Response response = await _sendRequest(method: RequestMethod.post, urlSuffix: _getDefaultConfigEndpoint, data: {});
     return response.data;
   }
 
   Future<DispatcherResponse> getPatientPolicy(String serialNumber) async {
-    Response response = await _sendRequest(
-        urlSuffix: '$_getPatientPolicy/$serialNumber', method: RequestMethod.post, data: {});
+    Response response = await _sendRequest(urlSuffix: '$_getPatientPolicy/$serialNumber', method: RequestMethod.post, data: {});
     sl<UserAuthenticationService>().setPatientPolicy(response.data);
     return GeneralResponse.fromJson(response.data);
   }
@@ -99,12 +96,9 @@ class DispatcherService {
     return GeneralResponse.fromJson(response.data);
   }
 
-  Future<AuthenticateUserResponseModel> sendAuthenticatePatient(
-      String serialNumber, String pin) async {
-    Response response = await _sendRequest(
-        urlSuffix: "$_authenticationEndPoint/$serialNumber",
-        method: RequestMethod.post,
-        data: {"pin": pin});
+  Future<AuthenticateUserResponseModel> sendAuthenticatePatient(String serialNumber, String pin) async {
+    Response response =
+        await _sendRequest(urlSuffix: "$_authenticationEndPoint/$serialNumber", method: RequestMethod.post, data: {"pin": pin});
     return AuthenticateUserResponseModel.fromJson(response.data);
   }
 
@@ -123,8 +117,7 @@ class DispatcherService {
         data: {"sn": PrefsProvider.loadDeviceSerial(), "pin": PrefsProvider.loadUserPin()});
   }
 
-  static BaseOptions options =
-      new BaseOptions(connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);
+  static BaseOptions options = new BaseOptions(connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);
 }
 
 enum RequestMethod { get, post }

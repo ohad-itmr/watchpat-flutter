@@ -67,7 +67,7 @@ class WelcomeActivityManager extends ManagerBase {
         // set config
         if (response["error"]) {
           Log.shout(TAG, "Failed to receive config from dispatcher: ${response["message"]}");
-          addInitialErrors("Connection to dispatchers failed");
+//          addInitialErrors("Connection to dispatchers failed");
         } else {
           Log.info(TAG, "External config received from dispatcher, configuring application");
           GlobalSettings.setExternalConfiguration(response["config"]);

@@ -162,9 +162,12 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   }
 
   void _sendLogs() async {
+    if (SystemStateManager.emailSending) return;
+    SystemStateManager.emailSending = true;
     sl<SystemStateManager>().sendToastMessage("Sending logs...");
     final bool success = await sl<EmailSenderService>().sendLogsArchive();
     final String msg = success ? 'Sending logs success' : 'Sending logs failed';
     sl<SystemStateManager>().sendToastMessage(msg);
+    SystemStateManager.emailSending = false;
   }
 }

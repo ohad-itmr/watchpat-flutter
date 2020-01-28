@@ -111,6 +111,8 @@ class SystemStateManager extends ManagerBase {
 
   static String getDispatcherStateName(int state) => _dispatcherStates[state];
 
+  static bool emailSending = false;
+
   Connectivity _connectivity = Connectivity();
 
   SystemStateManager() {

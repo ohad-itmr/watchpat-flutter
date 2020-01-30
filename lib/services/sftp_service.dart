@@ -227,6 +227,7 @@ class SftpService {
   }
 
   Future<void> _uploadAllData({bool complete = false}) async {
+    _systemState.setSftpUploadingState(SftpUploadingState.UPLOADING);
     try {
       Log.info(TAG, "Starting uploading");
       final File localFile = await sl<FileSystemService>().localDataFile;
@@ -238,6 +239,8 @@ class SftpService {
             sl<SystemStateManager>().setSftpUploadingProgress(progress as int);
             Log.info(TAG, "Uploading progress: $progress");
           });
+
+      _systemState.setSftpUploadingState(SftpUploadingState.NOT_UPLOADING);
 
       if (result == SftpService.UPLOADING_SUCCESS) {
         Log.info(TAG, "Uploading successful");

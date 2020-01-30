@@ -20,7 +20,7 @@ enum DataTransferState { NOT_STARTED, TRANSFERRING, ENDED }
 
 enum TestDataAmountState { MINIMUM_NOT_PASSED, MINIMUM_PASSED }
 
-enum SftpUploadingState { NOT_STARTED, UPLOADING, WAITING_FOR_DATA, ALL_UPLOADED }
+enum SftpUploadingState { NOT_UPLOADING, UPLOADING, ALL_UPLOADED }
 
 enum AppModes { USER, CS, TECH, BACKGROUND }
 enum FirmwareUpgradeState { UNKNOWN, UPGRADING, UP_TO_DATE, UPGRADE_FAILED }
@@ -244,7 +244,7 @@ class SystemStateManager extends ManagerBase {
     setFirmwareState(FirmwareUpgradeState.UNKNOWN);
     setDispatcherState(DispatcherStates.DISCONNECTED);
     setStartSessionState(StartSessionState.UNCONFIRMED);
-    setSftpUploadingState(SftpUploadingState.NOT_STARTED);
+    setSftpUploadingState(SftpUploadingState.NOT_UPLOADING);
     setGlobalProcedureState(GlobalProcedureState.INCOMPLETE);
     _initTestState();
   }

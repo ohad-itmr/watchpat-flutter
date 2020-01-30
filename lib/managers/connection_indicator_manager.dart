@@ -54,8 +54,7 @@ class ConnectionIndicatorManager extends ManagerBase {
 
   _setSftpLedBlinking() {
     if (_sftpLedTimer == null) {
-      _sftpLedTimer =
-          Timer.periodic(Duration(milliseconds: 250), (Timer timer) {
+      _sftpLedTimer = Timer.periodic(Duration(milliseconds: 250), (Timer timer) {
         _sftpLit = !_sftpLit;
         _sftpLitState.sink.add(_sftpLit);
       });
@@ -71,8 +70,7 @@ class ConnectionIndicatorManager extends ManagerBase {
   }
 
   _handleBTState(DeviceStates btState, DataTransferState dataTransferState) {
-    if (btState == DeviceStates.CONNECTED &&
-        (dataTransferState == DataTransferState.TRANSFERRING)) {
+    if (btState == DeviceStates.CONNECTED && (dataTransferState == DataTransferState.TRANSFERRING)) {
       _setBtLedBlinking();
     } else if (btState == DeviceStates.CONNECTED) {
       _setBtLedLit(true);
@@ -81,22 +79,16 @@ class ConnectionIndicatorManager extends ManagerBase {
     }
   }
 
-  _handleSftpTransferState(ConnectivityResult inetState,
-      SftpConnectionState sftpState, SftpUploadingState uploadingState) {
-    if (inetState != ConnectivityResult.none &&
-        sftpState == SftpConnectionState.CONNECTED &&
-        uploadingState == SftpUploadingState.UPLOADING) {
-      _setSftpLedBlinking();
-    } else if (inetState != ConnectivityResult.none &&
-        sftpState == SftpConnectionState.CONNECTED &&
-        uploadingState == SftpUploadingState.WAITING_FOR_DATA) {
-      _setSftpLedLit(true);
-      _sftpLitState.sink.add(true);
-    } else if (inetState != ConnectivityResult.none &&
-        sftpState == SftpConnectionState.CONNECTED) {
+  _handleSftpTransferState(ConnectivityResult inetState, SftpConnectionState sftpState, SftpUploadingState uploadingState) {
+    final bool inetActive = inetState != ConnectivityResult.none;
+    final bool uploading = uploadingState == SftpUploadingState.UPLOADING;
+
+    if (!inetActive) {
+      _setSftpLedLit(false);
+    } else if (!uploading) {
       _setSftpLedLit(true);
     } else {
-      _setSftpLedLit(false);
+      _setSftpLedBlinking();
     }
   }
 

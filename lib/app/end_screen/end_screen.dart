@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/widgets/widgets.dart';
@@ -35,8 +34,6 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
         _cycleAlreadyFired = false;
       } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {
         await BackgroundFetch.stop();
-        await Future.delayed(Duration(seconds: 2));
-        exit(0);
       }
     } else if (state == AppLifecycleState.resumed &&
         sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none &&
@@ -52,8 +49,7 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
           sl<SystemStateManager>().globalProcedureStateStream,
           sl<SystemStateManager>().sftpUploadingProgress,
           sl<SystemStateManager>().inetConnectionStateStream,
-          (GlobalProcedureState state, int progress, ConnectivityResult inet) =>
-              [state, progress, inet]),
+          (GlobalProcedureState state, int progress, ConnectivityResult inet) => [state, progress, inet]),
       initialData: [GlobalProcedureState.INCOMPLETE, 0, ConnectivityResult.none],
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         String msg = "";
@@ -64,11 +60,7 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
         } else {
           msg = '${S.of(context).thankYouStillUploading} ${snapshot.data[1]}%';
         }
-        return BlockTemplate(
-            type: BlockType.text,
-            title: S.of(context).thankYouTitle,
-            content: [msg],
-            textTopPadding: true);
+        return BlockTemplate(type: BlockType.text, title: S.of(context).thankYouTitle, content: [msg], textTopPadding: true);
       },
     );
   }

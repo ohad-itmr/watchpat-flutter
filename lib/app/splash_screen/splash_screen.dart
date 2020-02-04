@@ -140,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 onPressed: () {
 //                  sl<ServiceScreenManager>().resetApplication(clearConfig: false);
 //                  exit(0);
-                  PrefsProvider.clearDeviceName();
+//                  PrefsProvider.clearDeviceName();
                   Navigator.pop(context);
                 },
               )

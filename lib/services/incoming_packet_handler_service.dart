@@ -149,12 +149,18 @@ class IncomingPacketHandlerService extends ManagerBase {
           Log.info(TAG, "packet received (ACK)");
           // ACK received - notify cmdTasker
 
-          if (startAcquisitionCmdId != null && startAcquisitionCmdId == receivedPacket.identifier) {
-            _setTestStarted();
-            startAcquisitionCmdId = null;
+          final int ackStatus = receivedPacket.bytes[ReceivedPacket.ACK_STATUS_STARTING_BYTE];
+
+          if (ackStatus == 0 || ackStatus == 3) {
+            if (startAcquisitionCmdId != null && startAcquisitionCmdId == receivedPacket.identifier) {
+              _setTestStarted();
+              startAcquisitionCmdId = null;
+            }
+            sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
+          } else {
+            Log.shout(TAG, "Received failure ACK, status: $ackStatus");
           }
 
-          sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
           break;
         case DeviceCommands.CMD_OPCODE_DATA_PACKET:
 //          Log.info(TAG, "packet received (DATA_PACKET)");

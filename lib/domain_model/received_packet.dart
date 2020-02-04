@@ -17,6 +17,9 @@ class ReceivedPacket {
   static const int PACKET_SIZE_STARTING_BYTE = 16;
   static const int PACKET_DEPENDENT_STARTING_BYTE = 18;
   static const int PACKET_CRC_STARTING_BYTE = 22;
+  static const int ACK_STATUS_STARTING_BYTE = 26;
+
+
 
   List<int> bytes;
   int _signature;

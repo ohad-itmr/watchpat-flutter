@@ -64,19 +64,25 @@ class BleManager extends ManagerBase {
     }
   }
 
-  void connect({bool reconnect = false}) {
-    if (_device != null) {
-      if (reconnect) {
+  void connect({bool reconnect = false}) async {
+    if (reconnect) {
+      final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
+      if (d != null) {
+        Log.info(TAG, "Restored previously connected device, NAME: ${d.name}, ID: ${d.id}");
+        _device = d;
         _deviceAdvName = _device.name;
       }
-
-      Log.info(TAG, "Device is present, trying to connect");
-      if (_deviceStateSubscription != null) {
-        _deviceStateSubscription.cancel();
-        _deviceStateSubscription = null;
-      }
-      _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
     }
+
+    if (_deviceStateSubscription != null) {
+      _deviceStateSubscription.cancel();
+      _deviceStateSubscription = null;
+    }
+//
+//    if (_device != null) {
+//      if (reconnect) {}
+
+    _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
   }
 
   BluetoothDevice get device => _device;
@@ -319,12 +325,15 @@ class BleManager extends ManagerBase {
 
       // restore connection if device already connected
       if (PrefsProvider.loadBluetoothDeviceID() != null) {
-        final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
-        if (d != null) {
-          _device = d;
-          connect(reconnect: true);
-          return;
-        }
+        connect(reconnect: true);
+        return;
+//        final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
+//        if (d != null) {
+//          Log.info(TAG, "Restored previously connected device, NAME: ${d.name}, ID: ${d.id}");
+//          _device = d;
+//          connect(reconnect: true);
+//          return;
+//        }
       }
 
       if (sl<SystemStateManager>().isScanCycleEnabled) {

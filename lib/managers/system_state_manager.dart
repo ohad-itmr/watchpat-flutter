@@ -201,6 +201,11 @@ class SystemStateManager extends ManagerBase {
     _connectivity.checkConnectivity().then((res) => _inetConnectionState.sink.add(res));
   }
 
+  resetApplicationState() {
+    _initPersistentState();
+    sl<FileSystemService>().deleteSleepFile();
+  }
+
   //
   // Reset all the application persistent properties in case the app started
   // normally, not restored after started test

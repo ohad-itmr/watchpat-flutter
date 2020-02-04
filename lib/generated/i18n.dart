@@ -172,6 +172,7 @@ class S implements WidgetsLocalizations {
   String get please_insert_finger => "Please insert the finger and press OK";
   String get please_plug_charger => "Please plug in a charger";
   String get please_replace_battery => "Please replace the battery in the device";
+  String get preparing_test => "Preparing test. Please wait...";
   String get product_reuse => "Product reuse attempt";
   String get ready => "READY";
   String get recordingTitle => "GOOD NIGHT";
@@ -185,6 +186,7 @@ class S implements WidgetsLocalizations {
   String get reset_application_prompt => "Are you sure you want to delete all application stored preferences and files? You will need to launch application again.";
   String get reset_application_title => "Reset application";
   String get reset_main_device => "Resetting main device";
+  String get restart_test => "A problem has occurred. Please restart application, remove the battery from the device, reinsert it and start from the beginning.";
   String get retrieve_stored_data => "Retrieve stored data";
   String get retrieve_stored_data_from_device => "Retrieve stored data from the device?";
   String get retrieve_stored_test_data_failed => "Retrieve stored test data failed";
@@ -533,6 +535,8 @@ class fr extends S {
   @override
   String get getting_param_file_success => "Getting parameter file: success";
   @override
+  String get restart_test => "A problem has occurred. Pleas remove the battery from the device, reinsert it, and start from the beginning.";
+  @override
   String get connected_to_used_device => "Connected to a used device";
   @override
   String get get => "get";
@@ -606,6 +610,8 @@ class fr extends S {
   String get stepperOf => "of";
   @override
   String get uploadingTitle => "Good Morning";
+  @override
+  String get preparing_test => "Preparing test. Please wait...";
   @override
   String get firmware_upgrading => "Upgrading main device firmware, please don't close the application";
   @override

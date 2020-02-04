@@ -25,16 +25,11 @@ class CommandTaskerManager extends ManagerBase {
     int maxCommandTimeout,
     int ackOpCode,
   }) {
-    _sendCommandsDelay = sendCommandsDelay != null
-        ? sendCommandsDelay
-        : BleService.SEND_COMMANDS_DELAY;
+    _sendCommandsDelay = sendCommandsDelay != null ? sendCommandsDelay : BleService.SEND_COMMANDS_DELAY;
 
-    _sendAckDelay =
-        sendAckDelay != null ? sendAckDelay : BleService.SEND_ACK_DELAY;
+    _sendAckDelay = sendAckDelay != null ? sendAckDelay : BleService.SEND_ACK_DELAY;
 
-    _maxCommandTimeout = maxCommandTimeout != null
-        ? maxCommandTimeout
-        : BleService.MAX_COMMAND_TIMEOUT;
+    _maxCommandTimeout = maxCommandTimeout != null ? maxCommandTimeout : BleService.MAX_COMMAND_TIMEOUT;
     _ackOpCode = ackOpCode;
 
     _initItemsHandler();
@@ -53,8 +48,7 @@ class CommandTaskerManager extends ManagerBase {
   Function _timeoutCallback;
   Map<int, OnAckListener> _mapAckListeners = HashMap();
 
-  static BehaviorSubject<CommandTaskerItem> _taskerItems =
-      BehaviorSubject<CommandTaskerItem>();
+  static BehaviorSubject<CommandTaskerItem> _taskerItems = BehaviorSubject<CommandTaskerItem>();
 
   static Observable<CommandTaskerItem> get taskerItemStream => _taskerItems.stream;
 
@@ -80,8 +74,7 @@ class CommandTaskerManager extends ManagerBase {
     _lstAckQueue = [];
   }
 
-  void setDelays(
-      int afterCommandDelay, int stdAckDelay, int maxCommandTimeout) {
+  void setDelays(int afterCommandDelay, int stdAckDelay, int maxCommandTimeout) {
     _sendCommandsDelay = afterCommandDelay;
     _sendAckDelay = stdAckDelay;
     _maxCommandTimeout = maxCommandTimeout;
@@ -92,8 +85,7 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   bool addCommandWithCb(CommandTask commandTask, {OnAckListener listener}) {
-    bool result = _addCommand(commandTask.packetIdentifier, commandTask.opCode,
-        commandTask.byteList, commandTask.name);
+    bool result = _addCommand(commandTask.packetIdentifier, commandTask.opCode, commandTask.byteList, commandTask.name);
     if (listener != null) {
       _addOnAckListener(commandTask.packetIdentifier, listener);
     }
@@ -109,8 +101,7 @@ class CommandTaskerManager extends ManagerBase {
       return false;
     }
 
-    CommandTaskerItem newCommand =
-        new CommandTaskerItem(id, opCode, data, name);
+    CommandTaskerItem newCommand = new CommandTaskerItem(id, opCode, data, name);
     _lstCommandQueue.insert(0, newCommand);
     _taskerItems.sink.add(newCommand);
     return true;
@@ -125,16 +116,14 @@ class CommandTaskerManager extends ManagerBase {
       throw new Exception("Send command callback equals null.");
     }
 
-    CommandTaskerItem newCommand =
-        new CommandTaskerItem(id, _ackOpCode, data, "Ack");
+    CommandTaskerItem newCommand = new CommandTaskerItem(id, _ackOpCode, data, "Ack");
     _lstAckQueue.insert(0, newCommand);
     _taskerItems.sink.add(newCommand);
   }
 
   void sendDirectCommand(CommandTask commandTask) {
     Log.info(TAG, "sending DIRECT command");
-    CommandTaskerItem item = CommandTaskerItem(commandTask.packetIdentifier,
-        commandTask.opCode, commandTask.byteList, commandTask.name);
+    CommandTaskerItem item = CommandTaskerItem(commandTask.packetIdentifier, commandTask.opCode, commandTask.byteList, commandTask.name);
     _taskerItems.sink.add(item);
   }
 
@@ -151,14 +140,12 @@ class CommandTaskerManager extends ManagerBase {
   }
 
   CommandTaskerItem _getCommandByID(final int id) {
-    return _lstCommandQueue.firstWhere(
-        (CommandTaskerItem item) => item._id == id,
-        orElse: () => null);
+    return _lstCommandQueue.firstWhere((CommandTaskerItem item) => item._id == id, orElse: () => null);
   }
 
   void ackCommandReceived(int id) {
     _lstReceivedAcks.add(id);
-
+    _lstCommandQueue.removeWhere((CommandTaskerItem item) => item.id == id);
     if (_mapAckListeners[id] != null) {
       _mapAckListeners[id].onAckReceived();
       _mapAckListeners.remove(id);
@@ -176,10 +163,7 @@ class CommandTaskerManager extends ManagerBase {
     if (lstTmpAcks.length == 0) {
       // check how long commands wait for ACK
       for (CommandTaskerItem item in _lstCommandQueue) {
-        if ((item.firstSendTime > 0) &&
-            (DateTime.now().millisecondsSinceEpoch -
-                    item.lastAttemptToSendTime >
-                _maxCommandTimeout)) {
+        if ((item.firstSendTime > 0) && (DateTime.now().millisecondsSinceEpoch - item.lastAttemptToSendTime > _maxCommandTimeout)) {
           _timeoutCallback();
         }
       }

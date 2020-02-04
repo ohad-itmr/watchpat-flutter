@@ -51,8 +51,7 @@ class FileSystemService {
   Future<List<File>> getAllLogFiles() async {
     Directory dir = await getApplicationDocumentsDirectory();
     List<File> files = [];
-    StreamSubscription sub =
-        dir.list(recursive: true, followLinks: false).listen((FileSystemEntity entity) async {
+    StreamSubscription sub = dir.list(recursive: true, followLinks: false).listen((FileSystemEntity entity) async {
       if (entity.path.contains("ioslog")) {
         files.add(File(entity.path));
       }
@@ -77,8 +76,7 @@ class FileSystemService {
 
   String get logMainFileName {
     if (_logFileName == null) {
-      _logFileName =
-          '${DefaultSettings.logMainFileName}_${TimeUtils.getFullDateStringFromTimeStamp(DateTime.now())}.txt';
+      _logFileName = '${DefaultSettings.logMainFileName}_${TimeUtils.getFullDateStringFromTimeStamp(DateTime.now())}.txt';
     }
     return _logFileName;
   }
@@ -112,16 +110,14 @@ class FileSystemService {
     final path = await localPath;
     final ByteData bytes = await rootBundle.load('assets/raw/$parametersFileName');
     final buffer = bytes.buffer;
-    return File('$path/$resourceParameterFileName')
-        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+    return File('$path/$resourceParameterFileName').writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 
   Future<File> get resourceFWFile async {
     final path = await localPath;
     final ByteData bytes = await rootBundle.load('assets/raw/$resourceFWFileName');
     final buffer = bytes.buffer;
-    return File('$path/$resourceFWFileName')
-        .writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
+    return File('$path/$resourceFWFileName').writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
   }
 
   Future<File> get watchpatDirFWFile async {
@@ -154,8 +150,7 @@ class FileSystemService {
     final ByteData bytes = await rootBundle.load('assets/raw/$resourceDirAFEFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirAFEFileName').create();
-    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
-        flush: true);
+    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
   }
 
   Future<File> get watchpatDirACCFile async {
@@ -168,8 +163,7 @@ class FileSystemService {
     final ByteData bytes = await rootBundle.load('assets/raw/$resourceDirACCFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirACCFileName').create();
-    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
-        flush: true);
+    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
   }
 
   Future<File> get watchpatDirEEPROMFile async {
@@ -182,8 +176,7 @@ class FileSystemService {
     final ByteData bytes = await rootBundle.load('assets/raw/$resourceDirEEPROMFileName');
     final buffer = bytes.buffer;
     File f = await File('$path/$resourceDirEEPROMFileName').create();
-    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
-        flush: true);
+    return f.writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
   }
 
   Future<File> get deviceLogFile async {
@@ -213,8 +206,7 @@ class FileSystemService {
       try {
         final int spaceToAllocate = GlobalSettings.minStorageSpaceMB;
         final int freeSpace = await TransactionManager.platformChannel.invokeMethod('getFreeSpace');
-        Log.info(TAG,
-            'Checking available free space, required: $spaceToAllocate MB, have: $freeSpace MB');
+        Log.info(TAG, 'Checking available free space, required: $spaceToAllocate MB, have: $freeSpace MB');
         if (freeSpace > spaceToAllocate) {
           return Response(success: true);
         } else {
@@ -315,6 +307,16 @@ class FileSystemService {
     File file = await configFile;
     if (await file.exists()) {
       await file.delete();
+    }
+  }
+
+  Future<void> deleteSleepFile() async {
+    File file = await localDataFile;
+    if (await file.exists()) {
+      await file.delete();
+      Log.info(TAG, "Deleted local data file");
+    } else {
+      Log.info(TAG, "Local data file not found");
     }
   }
 }

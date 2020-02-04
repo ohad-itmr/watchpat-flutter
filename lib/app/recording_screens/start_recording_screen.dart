@@ -11,7 +11,6 @@ class StartRecordingScreen extends StatelessWidget {
 
   StartRecordingScreen({Key key}) : super(key: key);
   final S loc = sl<S>();
-  final _testingManager = sl<TestingManager>();
 
   _showErrorDialog(String msg, BuildContext context) {
     showDialog(
@@ -27,6 +26,40 @@ class StartRecordingScreen extends StatelessWidget {
                 onPressed: () => Navigator.pop(context),
               )
             ],
+          );
+        });
+  }
+
+  _showLoaderDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(S.of(context).preparing_test),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.all(20.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      )),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _showRestartDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(S.of(context).error),
+            content: Text(S.of(context).restart_test),
           );
         });
   }
@@ -61,8 +94,20 @@ class StartRecordingScreen extends StatelessWidget {
               } else if (iState == ConnectivityResult.none) {
                 _showErrorDialog(S.of(context).no_inet_connection, context);
               } else {
-                _testingManager.startTesting();
-                Navigator.pushNamed(context, RecordingScreen.PATH);
+                sl<TestingManager>().startTesting();
+                _showLoaderDialog(context);
+                await sl<SystemStateManager>()
+                    .dataTransferStateStream
+                    .firstWhere((DataTransferState state) => state == DataTransferState.TRANSFERRING)
+                    .then((_) {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, RecordingScreen.PATH);
+                }).timeout(Duration(seconds: 60), onTimeout: () {
+                  Navigator.pop(context);
+                  sl<ServiceScreenManager>().resetApplication(clearConfig: true);
+                  _showRestartDialog(context);
+                  return null;
+                });
               }
             },
             text: S.of(context).btnStartRecording,

@@ -63,7 +63,11 @@ class TimeUtils {
   }
 
   static int getTimeFromTestStartSec() {
-    return (DateTime.now().millisecondsSinceEpoch - PrefsProvider.loadTestStartTimeMS()) ~/ 1000;
+    if (PrefsProvider.loadTestStartTimeMS() != 0) {
+      return (DateTime.now().millisecondsSinceEpoch - PrefsProvider.loadTestStartTimeMS()) ~/ 1000;
+    } else {
+      return 0;
+    }
   }
 
   static void enableTestTicker() {

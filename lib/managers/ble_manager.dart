@@ -66,6 +66,9 @@ class BleManager extends ManagerBase {
 
   void connect({bool reconnect = false}) async {
     if (reconnect) {
+      if (_deviceAdvName != null && _deviceAdvName.endsWith('N')) {
+        _deviceAdvName = _deviceAdvName.substring(0, _deviceAdvName.length - 1);
+      }
 
       final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
       if (d != null) {
@@ -81,6 +84,12 @@ class BleManager extends ManagerBase {
     }
 
     _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+  }
+
+  void disconnectDevice() {
+    if (_device != null) {
+      sl<BleService>().disconnect(_device);
+    }
   }
 
   BluetoothDevice get device => _device;
@@ -128,16 +137,15 @@ class BleManager extends ManagerBase {
       }
     } else if (state == BluetoothDeviceState.disconnected) {
       Log.info(TAG, "disconnected from device");
-      if (sl<SystemStateManager>().dataTransferState == DataTransferState.ENDED) return;
       sl<SystemStateManager>().setBleScanResult(ScanResultStates.NOT_LOCATED);
       sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
       sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.UNKNOWN);
       sl<SystemStateManager>().setStartSessionState(StartSessionState.UNCONFIRMED);
       sl<SystemStateManager>().clearDeviceErrors();
+      sl<IncomingPacketHandlerService>().resetPacket();
+      if (sl<SystemStateManager>().dataTransferState == DataTransferState.ENDED) return;
       sl<SystemStateManager>().setDataTransferState(DataTransferState.NOT_STARTED);
       sl<SftpService>().resetSFTPService();
-      sysStateManager.setDeviceCommState(DeviceStates.DISCONNECTED);
-      sl<IncomingPacketHandlerService>().resetPacket();
     }
   }
 

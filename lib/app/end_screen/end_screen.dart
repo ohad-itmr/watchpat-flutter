@@ -14,7 +14,8 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
 
   EndScreen() {
     sl<SystemStateManager>().setScanCycleEnabled = false;
-    sl<SystemStateManager>().setDeviceCommState(DeviceStates.DISCONNECTED);
+    sl<SystemStateManager>().setTestState(TestStates.ENDED);
+    sl<BleManager>().disconnectDevice();
     sl<SystemStateManager>().setSftpUploadingProgress(0);
     WidgetsBinding.instance.addObserver(this);
   }

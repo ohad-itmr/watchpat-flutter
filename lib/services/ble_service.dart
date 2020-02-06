@@ -43,6 +43,10 @@ class BleService {
     return _device.onStateChanged();
   }
 
+  void disconnect(BluetoothDevice device) {
+    _flutterBlue.disconnect(device.id.id);
+  }
+
   Future<BluetoothDevice> restoreConnectedDevice(String deviceId) async {
     try {
       final BluetoothDevice d = await _flutterBlue.restoreConnectedDevice(deviceId);
@@ -104,12 +108,9 @@ class BleService {
           .writeCharacteristic(
             _charForWrite,
             data,
-            type: ensureSuccess
-                ? CharacteristicWriteType.withResponse
-                : CharacteristicWriteType.withoutResponse,
+            type: ensureSuccess ? CharacteristicWriteType.withResponse : CharacteristicWriteType.withoutResponse,
           )
-          .timeout(Duration(milliseconds: 1000),
-              onTimeout: () => throw Exception('Characteristic writing timeout'));
+          .timeout(Duration(milliseconds: 1000), onTimeout: () => throw Exception('Characteristic writing timeout'));
       await Future.delayed(Duration(milliseconds: 2));
     } catch (e) {
       status = 'failure ${e.toString()}';

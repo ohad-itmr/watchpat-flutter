@@ -382,7 +382,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           bool isPaired;
 
-          //
           if (!sl<SystemStateManager>().isTestActive) {
             if (PrefsProvider.loadDeviceName() == null) {
               // fresh pairing - no saved device serial

@@ -73,10 +73,6 @@ class BleManager extends ManagerBase {
         _device = d;
         _deviceAdvName = _device.name;
       }
-
-//      if (_deviceAdvName != null && _deviceAdvName.endsWith('N')) {
-//        _deviceAdvName = _deviceAdvName.substring(0, _deviceAdvName.length - 1);
-//      }
     }
 
     if (_deviceStateSubscription != null) {
@@ -117,7 +113,7 @@ class BleManager extends ManagerBase {
       _isFirstConnection = PrefsProvider.loadDeviceName() == null;
 
       Log.info(TAG, "Device name: $_deviceAdvName");
-      if (_isFirstConnection || !_isFirstConnection && _deviceAdvName.endsWith("N")) {
+      if (!_isFirstConnection && _deviceAdvName.endsWith("N")) {
         Log.info(TAG, "Connected to ${_isFirstConnection ? 'new' : 'previously paired'} device $_deviceAdvName, checking 'paired' flag");
         sl<CommandTaskerManager>().sendDirectCommand(DeviceCommands.getIsDevicePairedCmd());
         return;
@@ -329,13 +325,6 @@ class BleManager extends ManagerBase {
       if (PrefsProvider.loadBluetoothDeviceID() != null) {
         connect(reconnect: true);
         return;
-//        final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
-//        if (d != null) {
-//          Log.info(TAG, "Restored previously connected device, NAME: ${d.name}, ID: ${d.id}");
-//          _device = d;
-//          connect(reconnect: true);
-//          return;
-//        }
       }
 
       if (sl<SystemStateManager>().isScanCycleEnabled) {

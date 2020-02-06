@@ -55,7 +55,6 @@ class TestingManager extends ManagerBase {
     final CommandTask cmd = DeviceCommands.getStartAcquisitionCmd();
     IncomingPacketHandlerService.startAcquisitionCmdId = cmd.packetIdentifier;
     sl<CommandTaskerManager>().addCommandWithNoCb(cmd);
-    sl<DispatcherService>().sendTestStart();
 
     sl<DeviceConfigManager>().deviceConfig.updateStartTime(DateTime.now().millisecondsSinceEpoch);
     sl<DataWritingService>().writeToLocalFile(DataPacket(data: sl<DeviceConfigManager>().deviceConfig.payloadBytes, id: -1));

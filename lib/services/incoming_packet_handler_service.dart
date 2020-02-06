@@ -10,7 +10,6 @@ import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/utils/FirmwareUpgrader.dart';
 import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
-import 'package:my_pat/utils/time_utils.dart';
 import 'package:my_pat/utils/convert_formats.dart';
 import 'package:my_pat/services/prefs_service.dart';
 import 'package:my_pat/domain_model/received_packet.dart';
@@ -153,7 +152,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           if (ackStatus == 0 || ackStatus == 3) {
             if (startAcquisitionCmdId != null && startAcquisitionCmdId == receivedPacket.identifier) {
-              _setTestStarted();
+//              _setTestStarted();
               startAcquisitionCmdId = null;
             }
             sl<CommandTaskerManager>().ackCommandReceived(receivedPacket.identifier);
@@ -178,7 +177,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
-
+            sl<DispatcherService>().sendTestStart();
             _setTestStarted();
           }
 

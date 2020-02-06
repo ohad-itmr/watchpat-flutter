@@ -66,9 +66,6 @@ class BleManager extends ManagerBase {
 
   void connect({bool reconnect = false}) async {
     if (reconnect) {
-      if (_deviceAdvName != null && _deviceAdvName.endsWith('N')) {
-        _deviceAdvName = _deviceAdvName.substring(0, _deviceAdvName.length - 1);
-      }
 
       final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
       if (d != null) {
@@ -76,6 +73,10 @@ class BleManager extends ManagerBase {
         _device = d;
         _deviceAdvName = _device.name;
       }
+
+//      if (_deviceAdvName != null && _deviceAdvName.endsWith('N')) {
+//        _deviceAdvName = _deviceAdvName.substring(0, _deviceAdvName.length - 1);
+//      }
     }
 
     if (_deviceStateSubscription != null) {

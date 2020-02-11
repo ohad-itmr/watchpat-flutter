@@ -33,11 +33,6 @@ class TestingManager extends ManagerBase {
   Observable<double> get remainingDataProgressStream => _remainingDataProgress.stream;
 
   Timer _elapsedTimer;
-  Timer _sftpIncompleteTimer;
-  int _numberOfSecondsToDownloadAllPackets;
-
-//  int _maxProgress;
-//  int _testStoppedTimeMS;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
@@ -84,17 +79,6 @@ class TestingManager extends ManagerBase {
     }
   }
 
-//  void _startSftpTimer() {
-//    _sftpIncompleteTimer = Timer(Duration(seconds: 10), () {
-//      final AppLifecycleState state = WidgetsBinding.instance.lifecycleState;
-//      if (_systemStateManager.sftpUploadingState != SftpUploadingState.ALL_UPLOADED && state != AppLifecycleState.resumed) {
-//        sl<NotificationsService>().showLocalNotification(
-//            "Data from WatchPAT ONE device finished transferring. Please open the application to upload data to your doctor.");
-//        _sftpIncompleteTimer = null;
-//      }
-//    });
-//  }
-
   bool checkForSessionTimeout() {
     final bool sessionTimedOut = TimeUtils.getTimeFromTestStartSec() > GlobalSettings.sessionTimeoutTimeSec;
     if (sessionTimedOut) {
@@ -128,9 +112,7 @@ class TestingManager extends ManagerBase {
     _systemStateManager.setTestState(TestStates.STOPPED);
     sl<CommandTaskerManager>().addCommandWithCb(DeviceCommands.getStopAcquisitionCmd(), listener: TestStopCallback());
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
-    _initDataProgress();
     _stopElapsedTimer();
-//    _startSftpTimer();
   }
 
   void forceEndTesting() {
@@ -140,37 +122,40 @@ class TestingManager extends ManagerBase {
     sl<SystemStateManager>().setScanCycleEnabled = false;
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _stopElapsedTimer();
-//    _startSftpTimer();
   }
 
-  void _initDataProgress() {
-//    _testStoppedTimeMS = DateTime.now().millisecondsSinceEpoch;
+  bool _dataProgressInitialized = false;
+
+  void initDataProgress() {
+    if (_dataProgressInitialized) {
+      return;
+    } else {
+      _dataProgressInitialized = true;
+    }
     PrefsProvider.saveTestStopTime(DateTime.now().millisecondsSinceEpoch);
-//    _maxProgress = _getPacketTimeDiffFromStopTest();
     _startDataProgress();
   }
 
   void _startDataProgress() async {
     do {
-      _numberOfSecondsToDownloadAllPackets = _getPacketTimeDiffFromStopTest();
-      updateProgressBar(0);
-      updateProgressTime();
+      final int maxProgress = TimeUtils.getFullTestTimeSec() - PrefsProvider.loadPacketsCountOnStop();
+      final int currentProgress = maxProgress - (TimeUtils.getFullTestTimeSec() - PrefsProvider.loadTestPacketCount());
+      print("PROGRESS: $currentProgress / $maxProgress");
+
+      updateProgressBar(currentProgress, maxProgress);
+      updateProgressTime(currentProgress, maxProgress);
+
       await Future.delayed(Duration(milliseconds: PROGRESS_BAR_UPDATE_PERIOD));
     } while (sl<SystemStateManager>().testState != TestStates.ENDED);
   }
 
-  int _getPacketTimeDiffFromStopTest() {
-    return (PrefsProvider.loadTestStopTimeMS() - PrefsProvider.loadTestStartTimeMS()) ~/ 1000 - PrefsProvider.loadTestPacketCount();
-  }
-
-  void updateProgressBar(int changeDelta) {
-    final int maxProgress = _getPacketTimeDiffFromStopTest();
-    final double newProgress = (maxProgress - _numberOfSecondsToDownloadAllPackets) / maxProgress;
+  void updateProgressBar(int progress, int maxProgress) {
+    final double newProgress = progress / maxProgress;
     _remainingDataProgress.sink.add(newProgress);
   }
 
-  void updateProgressTime() {
-    final int secs = _numberOfSecondsToDownloadAllPackets ~/ 2;
+  void updateProgressTime(int progress, int maxProgress) {
+    final int secs = (maxProgress - progress) ~/ 5;
     _remainingDataSeconds.sink.add(secs > 0 ? secs : 0);
   }
 
@@ -189,6 +174,8 @@ class TestStopCallback implements OnAckListener {
     Log.info("TestStopCallback",
         "Acquisition stopped, saving time: ${TimeUtils.getFullDateStringFromTimeStamp(DateTime.fromMicrosecondsSinceEpoch(time))}");
     PrefsProvider.saveTestStopTime(time);
+    PrefsProvider.savePacketsCountOnStop(PrefsProvider.loadTestPacketCount());
+    sl<TestingManager>().initDataProgress();
     sl<SystemStateManager>().setTestState(TestStates.STOPPED);
   }
 }

@@ -70,6 +70,10 @@ class TimeUtils {
     }
   }
 
+  static int getFullTestTimeSec() {
+    return (PrefsProvider.loadTestStopTimeMS() - PrefsProvider.loadTestStartTimeMS()) ~/ 1000;
+  }
+
   static void enableTestTicker() {
     disableTestTicker();
     _tickerTimer = Timer.periodic(Duration(seconds: 1), (_) => _packetCounterTick());

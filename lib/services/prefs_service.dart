@@ -42,6 +42,8 @@ class PrefsNames {
   static const String BLUETOOTH_DEVICE_ID_KEY = "bluetooth.device.id.key";
 
   static const String PREVIOUS_SESSION_TIME = "previous.session.time";
+
+  static const String PACKETS_COUNT_ON_TEST_STOP_KEY = "packets.count.on.test.stop";
 }
 
 class PrefsService {
@@ -354,6 +356,15 @@ class PrefsProvider {
 
   static int loadTestStopTimeMS() {
     return PrefsService.prefs.getInt(PrefsNames.TEST_STOP_TIME_KEY) ?? 0;
+  }
+
+  // Remaining packets on test stop
+  static Future<void> savePacketsCountOnStop(int count) async {
+    return PrefsService.prefs.setInt(PrefsNames.PACKETS_COUNT_ON_TEST_STOP_KEY, count);
+  }
+
+  static int loadPacketsCountOnStop() {
+    return PrefsService.prefs.getInt(PrefsNames.PACKETS_COUNT_ON_TEST_STOP_KEY) ?? 0;
   }
 
   // Bluetooth device ID

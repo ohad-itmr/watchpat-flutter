@@ -40,16 +40,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     sl<SystemStateManager>().updateInternetState();
 
-    internetWarningSub = _systemStateManager.inetConnectionStateStream
-        .where((_) => this.mounted)
-        .listen(_handleInternetState);
+    internetWarningSub = _systemStateManager.inetConnectionStateStream.where((_) => this.mounted).listen(_handleInternetState);
 
     _serviceManager.serviceModesStream.listen((mode) {
       if (mode == ServiceMode.customer) {
         sl<SystemStateManager>().setAppMode(AppModes.CS);
         sl<SystemStateManager>().changeState.add(StateChangeActions.APP_MODE_CHANGED);
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ServiceScreen(mode: mode)));
       } else if (mode == ServiceMode.technician) {
         _showServicePasswordPrompt();
       }
@@ -61,11 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
         _systemStateManager.btStateStream,
         _systemStateManager.testStateStream,
         _systemStateManager.inetConnectionStateStream,
-        (BtStates btState, TestStates testState, ConnectivityResult inetState) => {
-              _BT_MAP_KEY: btState,
-              _TEST_MAP_KEY: testState,
-              _INET_MAP_KEY: inetState
-            }).listen((Map<String, dynamic> data) async {
+        (BtStates btState, TestStates testState, ConnectivityResult inetState) =>
+            {_BT_MAP_KEY: btState, _TEST_MAP_KEY: testState, _INET_MAP_KEY: inetState}).listen((Map<String, dynamic> data) async {
       _handleBtState(data[_BT_MAP_KEY]);
       _handleInternetState(data[_INET_MAP_KEY]);
 
@@ -86,6 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else if (data[_INET_MAP_KEY] == ConnectivityResult.none &&
           PrefsProvider.getDataUploadingIncomplete() &&
           data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+        GlobalSettings.replaceSettingsFromXML();
         Navigator.of(context).pushNamed(RecordingScreen.PATH);
         _navigationSub.cancel();
         return;
@@ -101,18 +96,14 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     if (!PrefsProvider.getDataUploadingIncomplete()) {
-      _systemStateManager.btStateStream
-          .where((BtStates state) => state != BtStates.NONE)
-          .listen(_handleBtState);
+      _systemStateManager.btStateStream.where((BtStates state) => state != BtStates.NONE).listen(_handleBtState);
     }
 
     _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
 
     sl<IncomingPacketHandlerService>().isPairedResponseStream.listen(_handleIsPaired);
 
-    _systemStateManager.inetConnectionStateStream
-        .firstWhere((ConnectivityResult state) => state != ConnectivityResult.none)
-        .then((_) {
+    _systemStateManager.inetConnectionStateStream.firstWhere((ConnectivityResult state) => state != ConnectivityResult.none).then((_) {
       sl<WelcomeActivityManager>().configureApplication();
       sl<WelcomeActivityManager>().allocateSpace();
     });
@@ -122,18 +113,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _handleIsPaired(bool isPaired) {
     final bool isFirstConnection = PrefsProvider.loadDeviceName() == null;
-    if (isFirstConnection && !isPaired ||
-        !isFirstConnection && !isPaired ||
-        sl<SystemStateManager>().isTestActive) return;
+    if (isFirstConnection && !isPaired || !isFirstConnection && !isPaired || sl<SystemStateManager>().isTestActive) return;
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (_) {
           return AlertDialog(
             title: Text(S.of(context).error),
-            content: Text(isFirstConnection
-                ? S.of(context).device_is_paired_error
-                : S.of(context).device_is_not_paired_error),
+            content: Text(isFirstConnection ? S.of(context).device_is_paired_error : S.of(context).device_is_not_paired_error),
             actions: <Widget>[
               FlatButton(
                 child: Text(S.of(context).ok),
@@ -151,8 +138,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _handleUpgradeProgress(FirmwareUpgradeState state) {
     if (state == FirmwareUpgradeState.UPGRADING && !_fwUpgradeShow) {
-      showDialog(
-          barrierDismissible: false, context: context, builder: (_) => FirmwareUpgradeDialog());
+      showDialog(barrierDismissible: false, context: context, builder: (_) => FirmwareUpgradeDialog());
       _fwUpgradeShow = true;
     } else if (_fwUpgradeShow) {
       Navigator.of(context).pop();
@@ -167,8 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _showServicePasswordPrompt() {
-    showDialog(
-        context: context, barrierDismissible: false, builder: (_) => ServicePasswordPrompt());
+    showDialog(context: context, barrierDismissible: false, builder: (_) => ServicePasswordPrompt());
   }
 
   void _showAlertDialog(String msg) {

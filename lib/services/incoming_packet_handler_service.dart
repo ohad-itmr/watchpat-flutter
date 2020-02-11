@@ -177,7 +177,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           if (!_isFirstPacketOfDataReceived) {
             _isFirstPacketOfDataReceived = true;
-            sl<DispatcherService>().sendTestStart();
             _setTestStarted();
           }
 
@@ -584,10 +583,12 @@ class IncomingPacketHandlerService extends ManagerBase {
   void _setTestStarted() {
     if (sl<SystemStateManager>().testState == TestStates.NOT_STARTED) {
       sl<SystemStateManager>().setTestState(TestStates.STARTED);
+      sl<DispatcherService>().sendTestStart();
     } else if (sl<SystemStateManager>().testState == TestStates.INTERRUPTED) {
       sl<SystemStateManager>().setTestState(TestStates.RESUMED);
     }
     Log.info(TAG, "TEST STARTED / RESUMED");
+    PrefsProvider.setDataUploadingIncomplete(value: true);
   }
 
   @override
@@ -599,7 +600,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   void _setPacketState(PacketState state) {
     if (_packetState != state) {
-//      print("Setting packet state to: ${state.toString()}");
       _packetState = state;
     }
   }

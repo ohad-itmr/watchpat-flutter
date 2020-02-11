@@ -58,9 +58,9 @@ class SftpService {
     _currentDataTransferState = state;
     if (state == DataTransferState.TRANSFERRING && !_serviceInitialized) {
       initService();
-      PrefsProvider.setDataUploadingIncomplete(value: true);
+//      PrefsProvider.setDataUploadingIncomplete(value: true);
     } else if (state == DataTransferState.ENDED && !_serviceInitialized) {
-      PrefsProvider.setDataUploadingIncomplete(value: true);
+//      PrefsProvider.setDataUploadingIncomplete(value: true);
       initService();
     }
   }

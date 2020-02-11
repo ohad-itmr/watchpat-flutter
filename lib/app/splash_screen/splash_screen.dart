@@ -7,6 +7,7 @@ import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/app/service_screen/firmware_upgrade_dialog.dart';
 import 'package:my_pat/app/service_screen/service_password_prompt.dart';
 import 'package:my_pat/app/service_screen/service_screen.dart';
+import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -68,6 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
           GlobalSettings.replaceSettingsFromXML();
           Navigator.of(context).pushNamed(RecordingScreen.PATH);
         } else if (data[_TEST_MAP_KEY] == TestStates.STOPPED) {
+          _stopAcquisitionOnDeviceConnect();
           Navigator.of(context).pushNamed(UploadingScreen.PATH);
         } else if (data[_TEST_MAP_KEY] == TestStates.SFTP_UPLOAD_INCOMPLETE) {
           _systemStateManager.setDataTransferState(DataTransferState.ENDED);
@@ -76,6 +78,10 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);
         }
         _navigationSub.cancel();
+        return;
+      } else if (data[_INET_MAP_KEY] == ConnectivityResult.none && data[_TEST_MAP_KEY] == TestStates.STOPPED) {
+        _stopAcquisitionOnDeviceConnect();
+        Navigator.of(context).pushNamed(UploadingScreen.PATH);
         return;
       } else if (data[_INET_MAP_KEY] == ConnectivityResult.none &&
           PrefsProvider.getDataUploadingIncomplete() &&
@@ -109,6 +115,13 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     super.initState();
+  }
+
+  void _stopAcquisitionOnDeviceConnect() {
+    sl<SystemStateManager>().deviceCommStateStream.firstWhere((state) => state == DeviceStates.CONNECTED).then((_) async {
+      await Future.delayed(Duration(seconds: 2));
+      sl<CommandTaskerManager>().addCommandWithCb(DeviceCommands.getStopAcquisitionCmd(), listener: TestStopCallback());
+    });
   }
 
   void _handleIsPaired(bool isPaired) {

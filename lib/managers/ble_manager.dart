@@ -83,7 +83,11 @@ class BleManager extends ManagerBase {
       _deviceStateSubscription = null;
     }
 
-    _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+    if (_device != null) {
+      _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
+    } else {
+      startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+    }
   }
 
   void disconnectDevice() {

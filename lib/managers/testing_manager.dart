@@ -35,8 +35,9 @@ class TestingManager extends ManagerBase {
   Timer _elapsedTimer;
   Timer _sftpIncompleteTimer;
   int _numberOfSecondsToDownloadAllPackets;
-  int _maxProgress;
-  int _testStoppedTimeMS;
+
+//  int _maxProgress;
+//  int _testStoppedTimeMS;
 
   TestingManager() {
     _batteryManager = sl<BatteryManager>();
@@ -125,7 +126,7 @@ class TestingManager extends ManagerBase {
   void stopTesting() {
     Log.info(TAG, "### STOPPING TEST");
     _systemStateManager.setTestState(TestStates.STOPPED);
-    sl<CommandTaskerManager>().addCommandWithNoCb(DeviceCommands.getStopAcquisitionCmd());
+    sl<CommandTaskerManager>().addCommandWithCb(DeviceCommands.getStopAcquisitionCmd(), listener: TestStopCallback());
     TransactionManager.platformChannel.invokeMethod("disableAutoSleep");
     _initDataProgress();
     _stopElapsedTimer();
@@ -143,8 +144,9 @@ class TestingManager extends ManagerBase {
   }
 
   void _initDataProgress() {
-    _testStoppedTimeMS = DateTime.now().millisecondsSinceEpoch;
-    _maxProgress = _getPacketTimeDiffFromStopTest();
+//    _testStoppedTimeMS = DateTime.now().millisecondsSinceEpoch;
+    PrefsProvider.saveTestStopTime(DateTime.now().millisecondsSinceEpoch);
+//    _maxProgress = _getPacketTimeDiffFromStopTest();
     _startDataProgress();
   }
 
@@ -158,11 +160,12 @@ class TestingManager extends ManagerBase {
   }
 
   int _getPacketTimeDiffFromStopTest() {
-    return (_testStoppedTimeMS - PrefsProvider.loadTestStartTimeMS()) ~/ 1000 - PrefsProvider.loadTestPacketCount();
+    return (PrefsProvider.loadTestStopTimeMS() - PrefsProvider.loadTestStartTimeMS()) ~/ 1000 - PrefsProvider.loadTestPacketCount();
   }
 
   void updateProgressBar(int changeDelta) {
-    final double newProgress = (_maxProgress - _numberOfSecondsToDownloadAllPackets) / _maxProgress;
+    final int maxProgress = _getPacketTimeDiffFromStopTest();
+    final double newProgress = (maxProgress - _numberOfSecondsToDownloadAllPackets) / maxProgress;
     _remainingDataProgress.sink.add(newProgress);
   }
 
@@ -176,5 +179,16 @@ class TestingManager extends ManagerBase {
     _elapsedTimerState.close();
     _remainingDataSeconds.close();
     _remainingDataProgress.close();
+  }
+}
+
+class TestStopCallback implements OnAckListener {
+  @override
+  void onAckReceived() {
+    final int time = DateTime.now().millisecondsSinceEpoch;
+    Log.info("TestStopCallback",
+        "Acquisition stopped, saving time: ${TimeUtils.getFullDateStringFromTimeStamp(DateTime.fromMicrosecondsSinceEpoch(time))}");
+    PrefsProvider.saveTestStopTime(time);
+    sl<SystemStateManager>().setTestState(TestStates.STOPPED);
   }
 }

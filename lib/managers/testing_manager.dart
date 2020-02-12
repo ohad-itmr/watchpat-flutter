@@ -132,7 +132,6 @@ class TestingManager extends ManagerBase {
     } else {
       _dataProgressInitialized = true;
     }
-    PrefsProvider.saveTestStopTime(DateTime.now().millisecondsSinceEpoch);
     _startDataProgress();
   }
 

@@ -145,10 +145,9 @@ class IncomingPacketHandlerService extends ManagerBase {
       // system reaction to the packet
       switch (packetType) {
         case DeviceCommands.CMD_OPCODE_ACK:
-          Log.info(TAG, "packet received (ACK)");
-          // ACK received - notify cmdTasker
-
           final int ackStatus = receivedPacket.bytes[ReceivedPacket.ACK_STATUS_STARTING_BYTE];
+
+          Log.info(TAG, "packet received (ACK), id: ${receivedPacket.identifier}, status: $ackStatus");
 
           if (ackStatus == 0 || ackStatus == 3) {
             if (startAcquisitionCmdId != null && startAcquisitionCmdId == receivedPacket.identifier) {

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
@@ -74,6 +76,10 @@ class TransactionManager extends ManagerBase {
     platformChannel.setMethodCallHandler((MethodCall call) async {
       if (call.method == "nativeLogEvent") {
         Log.info("[iOS]", call.arguments);
+      } else if (call.method == "applicationDidEnterBackground") {
+        sl<SystemStateManager>().setAppLifecycleState(AppLifecycleState.paused);
+      } else if (call.method == "applicationWillEnterForeground") {
+        sl<SystemStateManager>().setAppLifecycleState(AppLifecycleState.resumed);
       } else if (call.method == "startSftpUploading") {
         sl<SftpService>().initService();
       } else if (call.method == "stopSftpUploading") {
@@ -91,7 +97,7 @@ class TransactionManager extends ManagerBase {
     sl<SystemStateManager>().inetConnectionStateStream.listen((ConnectivityResult state) {
       if (state != ConnectivityResult.none) {
         if (PrefsProvider.getDataUploadingIncomplete()) {
-          Log.info(TAG, "Internet became available during test, initializing SFTP service");
+          Log.info(TAG, "Internet became available while data uploading incomplete, initializing SFTP service");
           sl<SftpService>().initService();
         }
       } else {

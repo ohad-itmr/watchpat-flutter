@@ -1,10 +1,6 @@
-import 'dart:io';
-
-import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,26 +16,14 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
   }
 
-  static bool _cycleAlreadyFired = false;
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.paused) {
-      if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE &&
-          sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none &&
-          !_cycleAlreadyFired) {
-        _cycleAlreadyFired = true;
-        Log.info(TAG, "Data was not fully uploaded to sftp server, starting background uploading");
-        TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
-        await Future.delayed(Duration(milliseconds: 500));
-        _cycleAlreadyFired = false;
-      } else if (sl<SystemStateManager>().globalProcedureState == GlobalProcedureState.COMPLETE) {
-        await BackgroundFetch.stop();
+    if (sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE) {
+      if (state == AppLifecycleState.paused) {
+        sl<NotificationsService>().showLocalNotification("Please open the WatchPAT application to finish uploading data to your doctor.");
+      } else if (state == AppLifecycleState.resumed) {
+        sl<SftpService>().initService();
       }
-    } else if (state == AppLifecycleState.resumed &&
-        sl<SystemStateManager>().inetConnectionState != ConnectivityResult.none &&
-        sl<SystemStateManager>().globalProcedureState != GlobalProcedureState.COMPLETE) {
-      sl<SftpService>().initService();
     }
     super.didChangeAppLifecycleState(state);
   }

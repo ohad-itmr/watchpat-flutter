@@ -80,7 +80,7 @@ class _AppComponentState extends State<AppComponent> {
     if (PrefsProvider.getTestStarted()) {
       Log.info("[BACKGROUND FETCH]", "Test in progress, checking session timeout");
       if (sl<TestingManager>().checkForSessionTimeout()) {
-        TransactionManager.platformChannel.invokeMethod("startBackgroundSftpUploading");
+        BackgroundFetch.finish();
       } else {
         Log.info("[BACKGROUND FETCH]", "Session is still active, finishing task");
         BackgroundFetch.finish();
@@ -93,6 +93,7 @@ class _AppComponentState extends State<AppComponent> {
         if (res != ConnectivityResult.none) {
           sl<NotificationsService>().showLocalNotification(
               "Data from WatchPAT device finished transferring. Please open the application to upload data to your doctor.");
+          BackgroundFetch.finish();
         } else {
           Log.info("[BACKGROUND FETCH]", "Internet connection unavailable, finishing task");
           BackgroundFetch.finish();

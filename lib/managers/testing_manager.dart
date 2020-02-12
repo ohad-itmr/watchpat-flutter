@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:battery/battery.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/domain_model/command_task.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
@@ -12,7 +13,7 @@ import 'package:my_pat/utils/log/log.dart';
 import 'package:my_pat/utils/time_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
-class TestingManager extends ManagerBase {
+class TestingManager extends ManagerBase with WidgetsBindingObserver {
   static const String TAG = 'RecordingManager';
   static const int PROGRESS_BAR_UPDATE_PERIOD = 100;
   BatteryManager _batteryManager;
@@ -116,7 +117,13 @@ class TestingManager extends ManagerBase {
   }
 
   void forceEndTesting() {
-    Log.info(TAG, "### FORCING TEST TO STOP");
+    Log.info(TAG, "### FORCING TEST END");
+
+    if (sl<SystemStateManager>().appLifecycleState == AppLifecycleState.paused) {
+      sl<NotificationsService>().showLocalNotification(
+          "Data from WatchPAT device finished transferring. Please open the application to upload data to your doctor.");
+    }
+
     sl<SystemStateManager>().setTestState(TestStates.ENDED);
     sl<SystemStateManager>().setDataTransferState(DataTransferState.ENDED);
     sl<SystemStateManager>().setScanCycleEnabled = false;

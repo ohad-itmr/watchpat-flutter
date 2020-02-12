@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
@@ -479,4 +482,13 @@ class SystemStateManager extends ManagerBase {
         .firstWhere((SessionErrorState st) => st != SessionErrorState.UNKNOWN)
         .then((SessionErrorState state) => state != SessionErrorState.NO_ERROR);
   }
+
+  AppLifecycleState _appLifecycleState = AppLifecycleState.resumed;
+
+  void setAppLifecycleState(AppLifecycleState state) {
+    Log.info(TAG, "App lifecycle state changed to $state");
+    _appLifecycleState = state;
+  }
+
+  get appLifecycleState => _appLifecycleState;
 }

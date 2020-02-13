@@ -96,6 +96,10 @@ static BOOL backgroundTimeAlmostExpired = false;
     [channel invokeMethod:@"applicationDidEnterBackground" arguments:nil];
 }
 
+- (void) applicationWillResignActive:(UIApplication *)application {
+    [channel invokeMethod:@"applicationWillResignActive" arguments:nil];
+}
+
 - (void) applicationWillEnterForeground:(UIApplication *)application {
     [AppDelegate writeLogToFile:@"Application entered foreground"];
     [channel invokeMethod:@"applicationWillEnterForeground" arguments:nil];

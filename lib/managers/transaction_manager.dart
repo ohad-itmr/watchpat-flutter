@@ -80,14 +80,10 @@ class TransactionManager extends ManagerBase {
         sl<SystemStateManager>().setAppLifecycleState(AppLifecycleState.paused);
       } else if (call.method == "applicationWillEnterForeground") {
         sl<SystemStateManager>().setAppLifecycleState(AppLifecycleState.resumed);
-      } else if (call.method == "startSftpUploading") {
-        sl<SftpService>().initService();
-      } else if (call.method == "stopSftpUploading") {
-        sl<SftpService>().resetSFTPService();
-        await Future.delayed(Duration(seconds: 4));
-        BackgroundFetch.finish();
-      } else if (call.method == 'stopBackgroundFetch') {
-        BackgroundFetch.finish();
+      } else if (call.method == "applicationWillResignActive") {
+        if (sl<SystemStateManager>().isTestActive) {
+          sl<NotificationsService>().showLocalNotification("WatchPAT ONE test in progress");
+        }
       }
       return;
     });

@@ -1,7 +1,7 @@
 name: my_pat
 description: A new Flutter project.
 
-version: 1.0.18+9
+version: 1.0.18+10
 
 environment:
   sdk: ">=2.2.2 <3.0.0"

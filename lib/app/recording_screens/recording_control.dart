@@ -64,20 +64,49 @@ class RecordingControl extends StatelessWidget {
               },
             )),
         Spacer(),
-        StreamBuilder(
-          stream: sl<SystemStateManager>().testDataAmountState,
-          builder: (BuildContext context, AsyncSnapshot<TestDataAmountState> snapshot) {
-            return ButtonsBlock(
-              moreActionButton: null,
-              nextActionButton: ButtonModel(
-                action: snapshot.data == TestDataAmountState.MINIMUM_PASSED ? () => _confirmEndTest(context) : null,
-                text: S.of(context).btnEndRecording,
-              ),
-            );
-          },
+        ButtonsBlock(
+          moreActionButton: null,
+          nextActionButton: ButtonModel(
+            action: () {
+              if (sl<SystemStateManager>().testDataAmountState == TestDataAmountState.MINIMUM_PASSED) {
+                _confirmEndTest(context);
+              } else {
+                _showTestTimerDialog(context);
+              }
+            },
+            text: S.of(context).btnEndRecording,
+          ),
         ),
         Spacer(flex: 2)
       ],
     );
+  }
+
+  void _showTestTimerDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              content: StreamBuilder(
+                  stream: sl<TestingManager>().elapsedTimeStream,
+                  initialData: 0,
+                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                    int secToEnabled = GlobalSettings.minTestLengthSeconds - snapshot.data;
+                    secToEnabled = secToEnabled > 0 ? secToEnabled : 0;
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(S.of(context).you_can_end_recording + "\n"),
+                        Text("${TimeUtils.convertSecondsToHMmSs(secToEnabled)}",
+                            style: TextStyle(fontSize: Theme.of(context).textTheme.title.fontSize))
+                      ],
+                    );
+                  }),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(S.of(context).ok),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            ));
   }
 }

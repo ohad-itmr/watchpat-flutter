@@ -222,6 +222,7 @@
   "pin_type_dob": "your date of birth in the form MMYY",
   "system_encountered_problem": "The system encountered a problem. Try downloading again the Application. If the problem resumes, call customer support, and report error",
   "device_disconnected": "The WatchPAT™ device is disconnected. Can't start testing",
-    "preparing_test": "Preparing test. Please wait...",
-    "restart_test": "A problem has occurred. Pleas remove the battery from the device, reinsert it, and start from the beginning."
+  "preparing_test": "Preparing test. Please wait...",
+  "restart_test": "A problem has occurred. Pleas remove the battery from the device, reinsert it, and start from the beginning.",
+  "you_can_end_recording": "You can end recording only in"
 }

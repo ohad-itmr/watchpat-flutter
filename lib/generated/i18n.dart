@@ -243,6 +243,7 @@ class S implements WidgetsLocalizations {
   String get welcomeTitle => "WELCOME";
   String get welcome_to_mypat => "Welcome to WatchPAT\u2122";
   String get writing_param_file => "Writing parameter file";
+  String get you_can_end_recording => "You can end recording only in";
   String device_sn(String sn) => "Device serial number $sn";
   String pinContent(String pin) => "Enter your assigned four digits PIN ($pin) and tap ENTER";
   String pin_number_assigned_to_you(String pin) => "The PIN number assigned to you can be $pin. If you are not sure, you will have to call doctor's office.";
@@ -454,6 +455,8 @@ class fr extends S {
   String get firmware_upgrade_failed => "Firmware update failed";
   @override
   String get instructions_video => "Instruction video";
+  @override
+  String get you_can_end_recording => "You can end recording only in";
   @override
   String get acc_registers_description => "ACC registers";
   @override

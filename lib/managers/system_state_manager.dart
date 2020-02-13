@@ -168,8 +168,6 @@ class SystemStateManager extends ManagerBase {
 
   Observable<DataTransferState> get dataTransferStateStream => _dataTransferState.stream;
 
-  Observable<TestDataAmountState> get testDataAmountState => _testDataAmountState.stream;
-
   Observable<AppModes> get appModeStream => _appMode.stream;
 
   Observable<FirmwareUpgradeState> get firmwareStateStream => _firmwareState.stream;
@@ -189,6 +187,8 @@ class SystemStateManager extends ManagerBase {
   Observable<int> get sftpUploadingProgress => _sftpUploadingProgress.stream;
 
   Observable<String> get toastMessagesStream => _toastMessages.stream;
+
+  TestDataAmountState get testDataAmountState => _testDataAmountState.value;
 
   bool _isScanCycleEnabled = true;
 

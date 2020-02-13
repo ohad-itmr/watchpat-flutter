@@ -206,7 +206,7 @@ class SystemStateManager extends ManagerBase {
 
   resetApplicationState() {
     _initPersistentState();
-    sl<FileSystemService>().deleteSleepFile();
+    sl<FileSystemService>().archiveOldSleepFile();
   }
 
   //

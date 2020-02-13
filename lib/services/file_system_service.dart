@@ -190,17 +190,9 @@ class FileSystemService {
   }
 
   Future<Response> allocateSpace() async {
-    File localFile = await localDataFile;
-
     if (sl<SystemStateManager>().testState == TestStates.NOT_STARTED) {
-      if (await localFile.exists()) {
-        Log.info(TAG, "data file from previous session is found, deleting...");
-        try {
-          await localFile.delete();
-        } catch (e) {
-          Log.shout(TAG, 'data file delete failed $e');
-        }
-      }
+      archiveOldSleepFile();
+
       Log.info(TAG, 'checking sufficient local storage space...,');
 
       try {
@@ -228,16 +220,7 @@ class FileSystemService {
       await createMainLogFile();
       // create new data files in case of first app launch
       if (testState == TestStates.NOT_STARTED) {
-        Log.info(TAG, 'Attempt to prepare initial files...');
-        File localFile = await localDataFile;
-        await localFile.create();
-        Log.info(TAG, 'LOCAL_DATA_FILE CREATED');
-//        File logInFile = await logInputFile;
-//        await logInFile.create();
-//        Log.info(TAG, 'LOG_INBOUND_FILE CREATED');
-//        File logOutFile = await logInputFile;
-//        await logOutFile.create();
-//        Log.info(TAG, 'LOG_OUTBOUND_FILE CREATED');
+        _createSleepFile();
       }
 
       // delete files previously received from device
@@ -256,6 +239,15 @@ class FileSystemService {
       Log.warning(TAG, 'FILES PREPARATION ERROR: ${e.toString()}');
       return Response(success: false, error: e.toString());
     }
+  }
+
+  Future<void> _createSleepFile() async {
+    File file = await localDataFile;
+    if (await file.exists()) {
+      await archiveOldSleepFile();
+    }
+    await file.create();
+    Log.info(TAG, 'LOCAL_DATA_FILE CREATED');
   }
 
   void initParameterFile() async {
@@ -284,18 +276,11 @@ class FileSystemService {
 
   Future<Response> clear() async {
     try {
-//      File localFile = await localDataFile;
-//      if (localFile.existsSync()) localFile.deleteSync();
-
       File logInFile = await logInputFile;
       if (logInFile.existsSync()) logInFile.deleteSync();
       File logOutFile = await logInputFile;
       if (logOutFile.existsSync()) logOutFile.deleteSync();
-
-//      File mainLogFile = await logMainFile;
-//      if (mainLogFile.existsSync()) mainLogFile.deleteSync();
-
-      Log.info(TAG, 'FILES CLEARED');
+      Log.info(TAG, 'LOG FILES CLEARED');
       return Response(success: true);
     } catch (e) {
       Log.warning(TAG, 'FILES CLEAR ERROR: ${e.toString()}');
@@ -310,13 +295,20 @@ class FileSystemService {
     }
   }
 
-  Future<void> deleteSleepFile() async {
+  Future<void> archiveOldSleepFile() async {
     File file = await localDataFile;
     if (await file.exists()) {
-      await file.delete();
-      Log.info(TAG, "Deleted local data file");
+      Log.info(TAG, "Found local data file from previous session");
+      if (await file.length() > 0) {
+        final String path = await localPath;
+        await file.rename('$path/${localDataFileName}_${TimeUtils.getFullDateStringFromTimeStamp(DateTime.now())}');
+        Log.info(TAG, "Local data file renamed");
+      } else {
+        await file.delete();
+        Log.info(TAG, "Local data file deleted");
+      }
     } else {
-      Log.info(TAG, "Local data file not found");
+      Log.info(TAG, "Local data file does not exist");
     }
   }
 }

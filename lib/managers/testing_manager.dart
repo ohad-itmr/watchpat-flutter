@@ -98,14 +98,22 @@ class TestingManager extends ManagerBase with WidgetsBindingObserver {
       stopTesting();
     } else {
       sl<SystemStateManager>().setTestState(TestStates.STOPPED);
-      _waitForDeviceConnectionToEndTest();
+      stopAcquisitionOnDeviceConnect();
     }
   }
 
-  void _waitForDeviceConnectionToEndTest() {
-    _systemStateManager.deviceCommStateStream
-        .firstWhere((st) => st == DeviceStates.CONNECTED)
-        .then((_) => Future.delayed(Duration(seconds: 1)).then((_) => stopTesting()));
+  StreamSubscription _stopAcquisitionSub;
+
+  void stopAcquisitionOnDeviceConnect() {
+    _stopAcquisitionSub =
+        sl<SystemStateManager>().deviceCommStateStream.where((state) => state == DeviceStates.CONNECTED).listen((_) async {
+      if (!sl<SystemStateManager>().stopAcquisitionConfirmed) {
+        await Future.delayed(Duration(seconds: 2));
+        sl<CommandTaskerManager>().addCommandWithCb(DeviceCommands.getStopAcquisitionCmd(), listener: TestStopCallback());
+      } else {
+        _stopAcquisitionSub.cancel();
+      }
+    });
   }
 
   void stopTesting() {
@@ -146,7 +154,6 @@ class TestingManager extends ManagerBase with WidgetsBindingObserver {
     do {
       final int maxProgress = TimeUtils.getFullTestTimeSec() - PrefsProvider.loadPacketsCountOnStop();
       final int currentProgress = maxProgress - (TimeUtils.getFullTestTimeSec() - PrefsProvider.loadTestPacketCount());
-      print("PROGRESS: $currentProgress / $maxProgress");
 
       updateProgressBar(currentProgress, maxProgress);
       updateProgressTime(currentProgress, maxProgress);
@@ -183,5 +190,6 @@ class TestStopCallback implements OnAckListener {
     PrefsProvider.savePacketsCountOnStop(PrefsProvider.loadTestPacketCount());
     sl<TestingManager>().initDataProgress();
     sl<SystemStateManager>().setTestState(TestStates.STOPPED);
+    sl<SystemStateManager>().setStopAcquisitionConfirmed();
   }
 }

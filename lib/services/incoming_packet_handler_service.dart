@@ -482,7 +482,7 @@ class IncomingPacketHandlerService extends ManagerBase {
       return true;
     }
 
-    DeviceErrorStates errorState;
+    DeviceErrorStates errorState = DeviceErrorStates.UNKNOWN;
 
     if ((opcodeDependant & _PATIENT_ERROR_DEVICE_USED) != 0) {
       Log.info(TAG, ">>> Used device");
@@ -521,11 +521,11 @@ class IncomingPacketHandlerService extends ManagerBase {
 //    }
     if ((opcodeDependant & _PATIENT_ERROR_SBP_TEST) != 0) {
       if (errorState == DeviceErrorStates.UNKNOWN) {
-        Log.info(TAG, "Device errors: only SPB error - ignoring");
+        Log.info(TAG, "Device errors: only SBP error - ignoring");
         sl<SystemStateManager>().setDeviceErrorState(DeviceErrorStates.NO_ERROR);
         return true;
       } else {
-        _errorString += '- ${lang.err_probe_photo}\n';
+        _errorString += '- ${lang.err_sbp}\n';
       }
     }
 

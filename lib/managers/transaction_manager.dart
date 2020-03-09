@@ -98,6 +98,7 @@ class TransactionManager extends ManagerBase {
         }
       } else {
         Log.shout(TAG, "Internet connection became unavailable");
+        sl<SftpService>().deInitializeService();
       }
     });
   }

@@ -12,7 +12,7 @@ class DispatcherService {
   static const String DISPATCHER_ERROR_STATUS = "666";
   static const String SN_NOT_REGISTERED_ERROR_STATUS = "99";
   static const String NO_PIN_RETRIES = "2";
-  static const int DIO_CONNECT_TIMEOUT = 30000;
+  static const int DIO_CONNECT_TIMEOUT = 10000;
   static const int DIO_RECEIVE_TIMEOUT = 5000;
 
   Dio _dio = new Dio(options);
@@ -110,11 +110,12 @@ class DispatcherService {
     return GeneralResponse.fromJson(response.data);
   }
 
-  Future<void> sendTestComplete(String serialNumber) async {
-    await _sendRequest(
+  Future<DispatcherResponse> sendTestComplete(String serialNumber) async {
+    Response response = await _sendRequest(
         urlSuffix: '$_testCompleteEndpoint/$serialNumber',
         method: RequestMethod.post,
         data: {"sn": PrefsProvider.loadDeviceSerial(), "pin": PrefsProvider.loadUserPin()});
+    return GeneralResponse.fromJson(response.data);
   }
 
   static BaseOptions options = new BaseOptions(connectTimeout: DIO_CONNECT_TIMEOUT, receiveTimeout: DIO_RECEIVE_TIMEOUT);

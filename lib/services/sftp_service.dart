@@ -5,6 +5,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_pat/config/default_settings.dart';
+import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/services/services.dart';
@@ -44,7 +45,7 @@ class SftpService {
   }
 
   void resetSFTPService() async {
-    _serviceInitialized = false;
+    deInitializeService();
     Log.info(TAG, "Stopping SFTP service");
     if (_client != null) {
       _client.sftpCancelUpload();
@@ -103,7 +104,7 @@ class SftpService {
       await Future.delayed(Duration(seconds: 5));
       if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
         Log.shout(TAG, "No internet connection, SFTP service could not be initalized");
-        _serviceInitialized = false;
+        deInitializeService();
         return;
       }
     }
@@ -141,6 +142,11 @@ class SftpService {
       _connectionInProgress = false;
       _tryToReconnect(error: e.toString());
     }
+  }
+
+  deInitializeService() {
+    Log.info(TAG, "SFTP service deinitialized");
+    _serviceInitialized = false;
   }
 
   Future<void> _writeTestInformationFile() async {
@@ -222,7 +228,7 @@ class SftpService {
 
   void _startReconnectionTimer() {
     Log.shout(TAG, "Starting SFTP reconnection timer, the next attemps will be made in 1 hour");
-    _serviceInitialized = false;
+    deInitializeService();
     _reconnectionTimer = Timer(Duration(hours: 1), () => _initSftpConnection());
   }
 
@@ -291,7 +297,12 @@ class SftpService {
   }
 
   Future<void> _informDispatcher() async {
-    await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
+    final DispatcherResponse res = await sl<DispatcherService>().sendTestComplete(PrefsProvider.loadDeviceSerial());
+    if (!res.error) {
+      Log.info(TAG, "Test complete successfully sent");
+    } else {
+      Log.shout(TAG, "Failed to send test complete: ${res.message}");
+    }
   }
 
   static const String APPENDING_SUCCESS = "appending_success";

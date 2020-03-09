@@ -482,7 +482,7 @@ class IncomingPacketHandlerService extends ManagerBase {
       return true;
     }
 
-    DeviceErrorStates errorState;
+    DeviceErrorStates errorState = DeviceErrorStates.UNKNOWN;
 
     if ((opcodeDependant & _PATIENT_ERROR_DEVICE_USED) != 0) {
       Log.info(TAG, ">>> Used device");

@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/managers/managers.dart';
+import 'package:my_pat/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CarouselManager extends ManagerBase {
@@ -18,6 +19,7 @@ class CarouselManager extends ManagerBase {
   }
 
   loadCarouselData(String screenTAG) {
+    _checkWCPLessMode();
     final bool hasNext = screenTAG == WelcomeScreen.TAG || _scopedSlides[screenTAG].length != 1;
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][0],
@@ -52,6 +54,15 @@ class CarouselManager extends ManagerBase {
             hasNext ? (_) => switchUnlimitedSlide(currentIndex + 1) : (ctx) => Navigator.pop(ctx),
         lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
+  }
+
+  void _checkWCPLessMode() {
+    if (GlobalSettings.wcpLessMode) {
+      _scopedSlides.remove(ChestSensorScreen.TAG);
+      _scopedSlides["END"].removeAt(0);
+
+      _allSlides.removeWhere((CarouselData data) => data.image.contains("chest"));
+    }
   }
 
   @override
@@ -101,18 +112,18 @@ class CarouselManager extends ManagerBase {
       ],
       ChestSensorScreen.TAG: [
         CarouselData(
-            text: "Thread the sensor through your sleeve …",
+            text: "Thread the sensor through your sleeve …\n\n* For specific device configurations only.",
             image: "assets/carousel/carousel_chest_1.jpg"),
         CarouselData(
-            text: "… up to the neck opening.", image: "assets/carousel/carousel_chest_2.jpg"),
+            text: "… up to the neck opening.\n\n* For specific device configurations only.", image: "assets/carousel/carousel_chest_2.jpg"),
         CarouselData(
-            text: "Peel the sticker off the back end of the sensor.",
+            text: "Peel the sticker off the back end of the sensor.\n\n* For specific device configurations only.",
             image: "assets/carousel/carousel_chest_3.jpg"),
         CarouselData(
-            text: "Attach the sensor just below the sternum notch. Trim or shave here if needed.",
+            text: "Attach the sensor just below the sternum notch. Trim or shave here if needed.\n\n* For specific device configurations only.",
             image: "assets/carousel/carousel_chest_4.jpg"),
         CarouselData(
-            text: "You may also secure the sensor with a medical tape.",
+            text: "You may also secure the sensor with a medical tape.\n\n* For specific device configurations only.",
             image: "assets/carousel/carousel_chest_5.jpg"),
       ],
       FingerProbeScreen.TAG: [
@@ -146,8 +157,8 @@ class CarouselManager extends ManagerBase {
       ],
       "END": [
         CarouselData(
-            text: "In the morning remove the Chest sensor.",
-            image: "assets/carousel/carousel_end_1.jpg"),
+            text: "In the morning remove the Chest sensor.\n\n* For specific device configurations only.",
+            image: "assets/carousel/carousel_end_1_chest.jpg"),
         CarouselData(
             text: "Remove the device from your hand.", image: "assets/carousel/carousel_end_2.jpg"),
         CarouselData(

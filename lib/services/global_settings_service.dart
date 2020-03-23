@@ -12,8 +12,13 @@ class GlobalSettings {
   static const int INVALID_STATE = 2147483647;
   static const int INVALID_L_STATE = 9223372036854775807;
 
+  static bool _isWCPLessMode = false;
+
   static Map<String, dynamic> _configurationResource = DefaultSettings.settingsToMap();
 
+  static setWCPLessMode(bool active) {
+    _isWCPLessMode = active;
+  }
   static setExternalConfiguration(Map<String, dynamic> resource) {
     _configurationResource = resource;
   }
@@ -125,4 +130,6 @@ class GlobalSettings {
   static int get btScanTimeout => _globalSettings.btScanTimeout;
 
   static List<String> get dispatchersUrls => _globalSettings.dispatchersUrls;
+
+  static bool get wcpLessMode => _isWCPLessMode;
 }

@@ -128,7 +128,7 @@ class DeviceConfigPayload {
   Version _deviceFWVersion;
   int _deviceSerial;
 
-  static DeviceConfigPayload _singleton;
+  static final DeviceConfigPayload _singleton = new DeviceConfigPayload._internal();
 
   factory DeviceConfigPayload() {
     return _singleton;
@@ -136,23 +136,18 @@ class DeviceConfigPayload {
 
   DeviceConfigPayload._internal();
 
-  static DeviceConfigPayload getInstance(List<int> bytesData) {
-    if (_singleton == null) {
-      _singleton = DeviceConfigPayload._internal();
-    } else {
-      Log.info(TAG, "Config block already initialized");
-      return _singleton;
-    }
+  DeviceConfigPayload getNewInstance(List<int> bytesData) {
+    DeviceConfigPayload config = _singleton;
 
-    _updateSmartPhoneInfo(bytesData);
-    _singleton._setFWVersion(bytesData);
-    _singleton._setDeviceSerial(bytesData);
+    updateSmartPhoneInfo(bytesData);
+
+    config._configPayloadBytes = bytesData;
+    config._setFWVersion(bytesData);
+    _setDeviceSerial(bytesData);
     _updateWCPLessMode(bytesData);
 
-    _singleton._configPayloadBytes = bytesData;
-
-    Log.info(TAG, "Config values >> FW version: ${_singleton.fWVersionString} | device S/N: ${_singleton._deviceSerial}");
-    return _singleton;
+    Log.info(TAG, "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
+    return config;
   }
 
   String get fWVersionString => _deviceFWVersion.versionString;
@@ -195,7 +190,7 @@ class DeviceConfigPayload {
     GlobalSettings.setWCPLessMode(active);
   }
 
-  static void _updateSmartPhoneInfo(List<int> bytes) async {
+  static void updateSmartPhoneInfo(List<int> bytes) async {
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT] = 0x0F;
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT + 1] = 0xF0;
 
@@ -231,7 +226,6 @@ class DeviceConfigPayload {
   }
 
   void updatePin(String pinString) {
-    Log.info(TAG, 'Updating pin number in config block: $pinString');
     final int pin = int.parse(pinString);
     final List<int> bytes = ConvertFormats.longToByteList(pin, size: 4, reversed: false);
     for (int i = 0; i < bytes.length; i++) {

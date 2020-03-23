@@ -74,6 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.of(context).pushNamed(UploadingScreen.PATH);
         } else if (data[_TEST_MAP_KEY] == TestStates.SFTP_UPLOAD_INCOMPLETE) {
           _systemStateManager.setDataTransferState(DataTransferState.ENDED);
+          sl<SystemStateManager>().setScanCycleEnabled = false;
           Navigator.of(context).pushNamed(EndScreen.PATH);
         } else {
           Navigator.of(context).pushNamed(WelcomeScreen.PATH);

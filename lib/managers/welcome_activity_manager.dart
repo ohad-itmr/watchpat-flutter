@@ -74,8 +74,6 @@ class WelcomeActivityManager extends ManagerBase {
           GlobalSettings.persistConfiguration(response["config"]);
         }
       }
-    } else {
-      addInitialErrors("Connection to dispatchers failed");
     }
 
     // todo testing only

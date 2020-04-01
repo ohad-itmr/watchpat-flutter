@@ -70,7 +70,7 @@ class SftpService {
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
       await _informDispatcher();
-      await _checkRemoteFileSize();
+//      await _checkRemoteFileSize();
       resetSFTPService();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
@@ -235,7 +235,7 @@ class SftpService {
         } else {
           final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
           final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
-          if ((currentRecordingOffset - currentUploadingOffset) < 20000) {
+          if ((currentRecordingOffset - currentUploadingOffset) < 100000) {
             Log.info(
                 TAG, 'Accumulating data to 100k, recording offset: $currentRecordingOffset, uploading offset: $currentUploadingOffset');
             await Future.delayed(Duration(seconds: 10));
@@ -263,10 +263,6 @@ class SftpService {
       Log.info(TAG, "Starting uploading");
       final File localFile = await sl<FileSystemService>().localDataFile;
 
-      int remoteFileSize = await getRemoteOffset();
-      if (remoteFileSize < 0) {
-        throw Exception("Remote file size is $remoteFileSize");
-      }
 //      final String result = await _client.sftpResumeFile(
 //          path: localFile.path,
 //          toPath: '$_sftpFilePath/$_sftpFileName',
@@ -298,7 +294,6 @@ class SftpService {
       }
     } catch (e) {
       Log.info(TAG, "Resuming upload to SFTP Failed with status: $e");
-      _systemState.setSftpUploadingState(SftpUploadingState.NOT_UPLOADING);
       sftpConnectionStateStream.sink.add(SftpConnectionState.DISCONNECTED);
       await Future.delayed(Duration(seconds: 3));
       if (_serviceInitialized) {

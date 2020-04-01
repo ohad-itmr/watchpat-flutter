@@ -12,6 +12,7 @@ import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:ssh/ssh.dart';
+import 'package:synchronized/synchronized.dart';
 
 enum SftpConnectionState { CONNECTED, DISCONNECTED }
 
@@ -58,11 +59,9 @@ class SftpService {
   _handleDataTransferState(DataTransferState state) {
     _currentDataTransferState = state;
     if (state == DataTransferState.TRANSFERRING && !_serviceInitialized) {
-      initService();
-//      PrefsProvider.setDataUploadingIncomplete(value: true);
+      initializeService();
     } else if (state == DataTransferState.ENDED && !_serviceInitialized) {
-//      PrefsProvider.setDataUploadingIncomplete(value: true);
-      initService();
+      initializeService();
     }
   }
 
@@ -70,9 +69,9 @@ class SftpService {
     _currentUploadingState = state;
     if (state == SftpUploadingState.ALL_UPLOADED) {
       Log.info(TAG, "SFTP uploading complete, closing sftp connection and informing dispatcher");
-      await _checkRemoteFileSize();
-      resetSFTPService();
       await _informDispatcher();
+//      await _checkRemoteFileSize();
+      resetSFTPService();
       await sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
       sl<SystemStateManager>().setGlobalProcedureState(GlobalProcedureState.COMPLETE);
       PrefsProvider.setDataUploadingIncomplete(value: false);
@@ -83,11 +82,24 @@ class SftpService {
     }
   }
 
-  Future<void> initService() async {
-    if (_serviceInitialized) {
+  Lock _lock = new Lock();
+
+  initializeService() async {
+    if (_lock.locked || _serviceInitialized) {
       Log.info(TAG, "SFTP service already initialized");
       return;
     }
+
+    await _lock.synchronized(() async {
+      await _initService();
+    });
+  }
+
+  Future<void> _initService() async {
+//    if (_serviceInitialized) {
+//      Log.info(TAG, "SFTP service already initialized");
+//      return;
+//    }
     _serviceInitialized = true;
     Log.info(TAG, "Initializing SFTP service");
 
@@ -189,41 +201,51 @@ class SftpService {
     }
   }
 
+  Lock _dataLock = new Lock();
+
   void _awaitForData() async {
-    do {
-      if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
-        Log.info(TAG, "Internet connection not available, cannot upload");
-        resetSFTPService();
-        return;
-      }
+    if (_dataLock.locked) {
+      Log.info(TAG, "Data waiting loop already running");
+      return;
+    }
 
-      if (!_serviceInitialized) {
-        Log.info(TAG, "SFTP service not initialized, cannot upload");
-        return;
-      }
-
-      if (sftpConnectionStateStream.value == SftpConnectionState.DISCONNECTED) {
-        Log.info(TAG, "SFTP disconnected, waiting for connection");
-        await Future.delayed(Duration(seconds: 5));
-        continue;
-      }
-
-      if (_currentDataTransferState == DataTransferState.ENDED) {
-        await _uploadAllData(complete: true);
-      } else {
-        final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
-        final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
-        if ((currentRecordingOffset - currentUploadingOffset) < 100000) {
-          Log.info(TAG, 'Accumulating data to 100k, recording offset: $currentRecordingOffset, uploading offset: $currentUploadingOffset');
-          await Future.delayed(Duration(seconds: 10));
-          continue;
-        } else {
-          await _uploadAllData();
-          await _uploadLogFile();
+    await _dataLock.synchronized(() async {
+      do {
+        if (sl<SystemStateManager>().inetConnectionState == ConnectivityResult.none) {
+          Log.info(TAG, "Internet connection not available, cannot upload");
+          resetSFTPService();
+          return;
         }
-      }
-    } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
-    Log.info(TAG, "Data waiting loop finished");
+
+        if (!_serviceInitialized) {
+          Log.info(TAG, "SFTP service not initialized, cannot upload");
+          return;
+        }
+
+        if (sftpConnectionStateStream.value == SftpConnectionState.DISCONNECTED) {
+          Log.info(TAG, "SFTP disconnected, waiting for connection");
+          await Future.delayed(Duration(seconds: 5));
+          continue;
+        }
+
+        if (_currentDataTransferState == DataTransferState.ENDED) {
+          await _uploadAllData(complete: true);
+        } else {
+          final int currentRecordingOffset = PrefsProvider.loadTestDataRecordingOffset();
+          final int currentUploadingOffset = PrefsProvider.loadTestDataUploadingOffset();
+          if ((currentRecordingOffset - currentUploadingOffset) < 100000) {
+            Log.info(
+                TAG, 'Accumulating data to 100k, recording offset: $currentRecordingOffset, uploading offset: $currentUploadingOffset');
+            await Future.delayed(Duration(seconds: 10));
+            continue;
+          } else {
+            await _uploadAllData();
+            await _uploadLogFile();
+          }
+        }
+      } while (_currentUploadingState != SftpUploadingState.ALL_UPLOADED);
+      Log.info(TAG, "Data waiting loop finished");
+    });
   }
 
   void _startReconnectionTimer() {

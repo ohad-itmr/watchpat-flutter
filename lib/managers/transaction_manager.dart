@@ -94,7 +94,7 @@ class TransactionManager extends ManagerBase {
       if (state != ConnectivityResult.none) {
         if (PrefsProvider.getDataUploadingIncomplete()) {
           Log.info(TAG, "Internet became available while data uploading incomplete, initializing SFTP service");
-          sl<SftpService>().initService();
+          sl<SftpService>().initializeService();
         }
       } else {
         Log.shout(TAG, "Internet connection became unavailable");

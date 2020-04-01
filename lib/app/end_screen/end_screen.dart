@@ -23,7 +23,7 @@ class EndScreen extends StatelessWidget with WidgetsBindingObserver {
         sl<SftpService>().resetSFTPService();
         sl<NotificationsService>().showLocalNotification("Please open the WatchPAT application to finish uploading data to your doctor.");
       } else if (state == AppLifecycleState.resumed) {
-        sl<SftpService>().initService();
+        sl<SftpService>().initializeService();
       }
     }
     super.didChangeAppLifecycleState(state);

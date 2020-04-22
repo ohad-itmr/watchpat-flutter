@@ -66,15 +66,17 @@ class BleManager extends ManagerBase {
 
   void connect({bool reconnect = false}) async {
     if (reconnect) {
-      if (_deviceAdvName != null && _deviceAdvName.endsWith('N')) {
-        _deviceAdvName = _deviceAdvName.substring(0, _deviceAdvName.length - 1);
-      }
 
       final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
       if (d != null) {
         Log.info(TAG, "Restored previously connected device, NAME: ${d.name}, ID: ${d.id}");
         _device = d;
         _deviceAdvName = _device.name;
+      }
+
+      // most probably iOS saved device with old name ending with 'N', which is already untrue
+      if (_deviceAdvName != null && _deviceAdvName.endsWith('N')) {
+        _deviceAdvName = _deviceAdvName.substring(0, _deviceAdvName.length - 1);
       }
     }
 

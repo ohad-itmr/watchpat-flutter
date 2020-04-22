@@ -91,6 +91,10 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context).pushNamed(RecordingScreen.PATH);
         _navigationSub.cancel();
         return;
+      } else if (data[_BT_MAP_KEY] != BtStates.ENABLED && data[_TEST_MAP_KEY] == TestStates.INTERRUPTED) {
+        GlobalSettings.replaceSettingsFromXML();
+        Navigator.of(context).pushNamed(RecordingScreen.PATH);
+        return;
       }
 
       if (PrefsProvider.getDataUploadingIncomplete()) {
@@ -102,9 +106,9 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
 
-    if (!PrefsProvider.getDataUploadingIncomplete()) {
+//    if (!PrefsProvider.getDataUploadingIncomplete()) {
       _systemStateManager.btStateStream.where((BtStates state) => state != BtStates.NONE).listen(_handleBtState);
-    }
+//    }
 
     _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
 

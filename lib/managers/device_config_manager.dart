@@ -15,13 +15,13 @@ class DeviceConfigManager extends ManagerBase {
 
   void setDeviceConfiguration(DeviceConfigPayload config, {bool force = false}) {
     if (force) {
+      Log.info(TAG, 'Setting config block');
       _deviceConfig = config;
-      Log.info(TAG, 'SETTING');
     } else if (_deviceConfig == null) {
+      Log.info(TAG, 'Setting config block');
       _deviceConfig = config;
-      Log.info(TAG, 'SETTING');
     } else {
-      Log.info(TAG, 'NOT SETTING');
+      Log.info(TAG, 'Config block already exist');
     }
   }
 

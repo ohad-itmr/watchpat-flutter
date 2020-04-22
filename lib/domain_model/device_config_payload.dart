@@ -231,6 +231,7 @@ class DeviceConfigPayload {
   }
 
   void updatePin(String pinString) {
+    Log.info(TAG, 'Updating pin number in config block: $pinString');
     final int pin = int.parse(pinString);
     final List<int> bytes = ConvertFormats.longToByteList(pin, size: 4, reversed: false);
     for (int i = 0; i < bytes.length; i++) {

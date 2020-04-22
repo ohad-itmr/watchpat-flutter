@@ -36,17 +36,18 @@ class StartRecordingScreen extends StatelessWidget {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(S.of(context).preparing_test),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.all(20.0),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      )),
-                ],
-              ),
+            title: Text(S.of(context).preparing_test), //            content: SingleChildScrollView(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('For a successful completion of the test please make sure the App is open in the morning.'),
+                Container(height: 10, width: 10),
+                Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    )),
+              ],
             ),
           );
         });

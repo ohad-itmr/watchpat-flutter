@@ -149,7 +149,7 @@ class BleManager extends ManagerBase {
       sl<IncomingPacketHandlerService>().resetPacket();
       if (sl<SystemStateManager>().dataTransferState == DataTransferState.ENDED) return;
       sl<SystemStateManager>().setDataTransferState(DataTransferState.NOT_STARTED);
-      sl<SftpService>().resetSFTPService();
+//      sl<SftpService>().resetSFTPService();
     }
   }
 

@@ -57,6 +57,8 @@ class TestingManager extends ManagerBase with WidgetsBindingObserver {
     sl<DataWritingService>().writeToLocalFile(DataPacket(data: sl<DeviceConfigManager>().deviceConfig.payloadBytes, id: -1));
 
     _startTestTimers();
+
+    sl<SftpService>().uploadLogFile();
   }
 
   void _restartTimers() {

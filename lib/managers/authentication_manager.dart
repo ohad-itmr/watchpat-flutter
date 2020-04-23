@@ -105,6 +105,10 @@ class AuthenticationManager extends ManagerBase {
       _authStateSubject.add(PatientAuthState.Authenticated);
       sl<SystemStateManager>().setDispatcherState(DispatcherStates.AUTHENTICATED);
 
+      // initialize sftp service and try to upload logs
+      sl<SftpService>().initializeService();
+      Future.delayed(Duration(seconds: 10)).then((_) => sl<SftpService>().uploadLogFile());
+
       // disable internet warning
       internetWarningSub.cancel();
 

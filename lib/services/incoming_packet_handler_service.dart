@@ -209,7 +209,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // set start session state to confirmed
           sl<SystemStateManager>().setStartSessionState(StartSessionState.CONFIRMED);
-          PrefsProvider.setStartSessionSent();
 
           // start-session-confirm packet received
           sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
@@ -221,6 +220,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // Send start session to dispatcher
           if (!PrefsProvider.getStartSessionSent()) {
+            PrefsProvider.setStartSessionSent();
             sl<DispatcherService>().sendStartSession(receivedPacket.opCodeDependent.toString());
           }
 
@@ -536,6 +536,7 @@ class IncomingPacketHandlerService extends ManagerBase {
     }
 
     sl<SystemStateManager>().setDeviceErrorState(errorState, errors: _errorString.toString());
+    PrefsProvider.setStartSessionSent(value: false);
     return false;
   }
 
@@ -558,6 +559,7 @@ class IncomingPacketHandlerService extends ManagerBase {
         errors += "${lang.system_encountered_problem}: ${res.message}";
         sl<SystemStateManager>().setSessionErrorState(SessionErrorState.UNDEFINED, errors: errors);
       }
+      PrefsProvider.setStartSessionSent(value: false);
       return false;
     }
     sl<SystemStateManager>().setSessionErrorState(SessionErrorState.NO_ERROR);

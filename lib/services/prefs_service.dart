@@ -45,7 +45,7 @@ class PrefsNames {
 
   static const String PACKETS_COUNT_ON_TEST_STOP_KEY = "packets.count.on.test.stop";
 
-  static const String START_SESSION_ALREADY_SENT = 'session.already.confirmed';
+  static const String START_SESSION_ALREADY_SENT = 'start.session.already.sent';
 }
 
 class PrefsService {

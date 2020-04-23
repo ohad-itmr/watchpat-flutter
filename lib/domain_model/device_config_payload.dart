@@ -128,7 +128,7 @@ class DeviceConfigPayload {
   Version _deviceFWVersion;
   int _deviceSerial;
 
-  static final DeviceConfigPayload _singleton = new DeviceConfigPayload._internal();
+  static DeviceConfigPayload _singleton;
 
   factory DeviceConfigPayload() {
     return _singleton;
@@ -136,18 +136,23 @@ class DeviceConfigPayload {
 
   DeviceConfigPayload._internal();
 
-  DeviceConfigPayload getNewInstance(List<int> bytesData) {
-    DeviceConfigPayload config = _singleton;
+  static DeviceConfigPayload getInstance(List<int> bytesData) {
+    if (_singleton == null) {
+      _singleton = DeviceConfigPayload._internal();
+    } else {
+      Log.info(TAG, "Config block already initialized");
+      return _singleton;
+    }
 
-    updateSmartPhoneInfo(bytesData);
-
-    config._configPayloadBytes = bytesData;
-    config._setFWVersion(bytesData);
-    _setDeviceSerial(bytesData);
+    _updateSmartPhoneInfo(bytesData);
+    _singleton._setFWVersion(bytesData);
+    _singleton._setDeviceSerial(bytesData);
     _updateWCPLessMode(bytesData);
 
-    Log.info(TAG, "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
-    return config;
+    _singleton._configPayloadBytes = bytesData;
+
+    Log.info(TAG, "Config values >> FW version: ${_singleton.fWVersionString} | device S/N: ${_singleton._deviceSerial}");
+    return _singleton;
   }
 
   String get fWVersionString => _deviceFWVersion.versionString;
@@ -190,7 +195,7 @@ class DeviceConfigPayload {
     GlobalSettings.setWCPLessMode(active);
   }
 
-  static void updateSmartPhoneInfo(List<int> bytes) async {
+  static void _updateSmartPhoneInfo(List<int> bytes) async {
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT] = 0x0F;
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT + 1] = 0xF0;
 

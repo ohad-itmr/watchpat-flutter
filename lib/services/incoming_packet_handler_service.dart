@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:hex/hex.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
@@ -82,14 +83,14 @@ class IncomingPacketHandlerService extends ManagerBase {
   PublishSubject<int> _bitResponse = PublishSubject<int>();
   PublishSubject<TechStatusPayload> _techStatusResponse = PublishSubject<TechStatusPayload>();
 
-  Observable<int> get bitResponse => _bitResponse.stream;
+  Stream<int> get bitResponse => _bitResponse.stream;
 
-  Observable<TechStatusPayload> get techStatusResponse => _techStatusResponse.stream;
+  Stream<TechStatusPayload> get techStatusResponse => _techStatusResponse.stream;
 
   // Is paired response stream to show warning
   PublishSubject<bool> _isPairedResponse = PublishSubject<bool>();
 
-  Observable<bool> get isPairedResponseStream => _isPairedResponse.stream;
+  Stream<bool> get isPairedResponseStream => _isPairedResponse.stream;
 
   static int startAcquisitionCmdId;
 
@@ -107,6 +108,8 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   void acceptAndHandleData(List<int> data) async {
     _incomingData = data;
+
+//    print('RECEIVED NEW PACKET (length: ${data.length}): ${HEX.encode(data)}');
 
     if (_packetState == PacketState.WAITING_FOR_NEW) {
       // starting to receive a new packet
@@ -206,6 +209,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // set start session state to confirmed
           sl<SystemStateManager>().setStartSessionState(StartSessionState.CONFIRMED);
+          PrefsProvider.setStartSessionSent();
 
           // start-session-confirm packet received
           sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
@@ -217,7 +221,6 @@ class IncomingPacketHandlerService extends ManagerBase {
 
           // Send start session to dispatcher
           if (!PrefsProvider.getStartSessionSent()) {
-            PrefsProvider.setStartSessionSent();
             sl<DispatcherService>().sendStartSession(receivedPacket.opCodeDependent.toString());
           }
 
@@ -254,7 +257,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
         case DeviceCommands.CMD_OPCODE_CONFIG_RESPONSE:
           Log.info(TAG, "packet received (CONFIG_RESPONSE)");
-          sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
+          sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock(), force: true);
 
           PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
 
@@ -533,7 +536,6 @@ class IncomingPacketHandlerService extends ManagerBase {
     }
 
     sl<SystemStateManager>().setDeviceErrorState(errorState, errors: _errorString.toString());
-    PrefsProvider.setStartSessionSent(value: false);
     return false;
   }
 
@@ -556,7 +558,6 @@ class IncomingPacketHandlerService extends ManagerBase {
         errors += "${lang.system_encountered_problem}: ${res.message}";
         sl<SystemStateManager>().setSessionErrorState(SessionErrorState.UNDEFINED, errors: errors);
       }
-      PrefsProvider.setStartSessionSent(value: false);
       return false;
     }
     sl<SystemStateManager>().setSessionErrorState(SessionErrorState.NO_ERROR);

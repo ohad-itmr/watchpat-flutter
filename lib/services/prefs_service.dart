@@ -44,7 +44,8 @@ class PrefsNames {
   static const String PREVIOUS_SESSION_TIME = "previous.session.time";
 
   static const String PACKETS_COUNT_ON_TEST_STOP_KEY = "packets.count.on.test.stop";
-  static const String START_SESSION_ALREADY_SENT = 'start.session.already.sent';
+
+  static const String START_SESSION_ALREADY_SENT = 'session.already.confirmed';
 }
 
 class PrefsService {
@@ -385,4 +386,14 @@ class PrefsProvider {
   static int loadPreviousSessionTime() {
     return PrefsService.prefs.getInt(PrefsNames.PREVIOUS_SESSION_TIME) ?? null;
   }
+
+  // Session already confirmed flag
+  static bool getStartSessionSent() {
+    return PrefsService.prefs.getBool(PrefsNames.START_SESSION_ALREADY_SENT) ?? false;
+  }
+
+  static Future<void> setStartSessionSent({bool value = true}) {
+    return PrefsService.prefs.setBool(PrefsNames.START_SESSION_ALREADY_SENT, value);
+  }
+
 }

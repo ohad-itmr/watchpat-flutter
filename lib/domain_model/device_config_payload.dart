@@ -119,12 +119,16 @@ class DeviceConfigPayload {
 
   static const int OFFSET_RESERVED_2 = 225;
 
+  // WCP LESS MODE
+  static const int OFFSET_WCP_LESS = 235;
+  static const int WCP_LESS_SIGNATURE = 0x55;
+
   List<int> _configPayloadBytes;
 
   Version _deviceFWVersion;
   int _deviceSerial;
 
-  static final DeviceConfigPayload _singleton = new DeviceConfigPayload._internal();
+  static DeviceConfigPayload _singleton;
 
   factory DeviceConfigPayload() {
     return _singleton;
@@ -132,17 +136,23 @@ class DeviceConfigPayload {
 
   DeviceConfigPayload._internal();
 
-  DeviceConfigPayload getNewInstance(List<int> bytesData) {
-    DeviceConfigPayload config = _singleton;
+  static DeviceConfigPayload getInstance(List<int> bytesData) {
+    if (_singleton == null) {
+      _singleton = DeviceConfigPayload._internal();
+    } else {
+      Log.info(TAG, "Config block already initialized");
+      return _singleton;
+    }
 
-    updateSmartPhoneInfo(bytesData);
+    _updateSmartPhoneInfo(bytesData);
+    _singleton._setFWVersion(bytesData);
+    _singleton._setDeviceSerial(bytesData);
+    _updateWCPLessMode(bytesData);
 
-    config._configPayloadBytes = bytesData;
-    config._setFWVersion(bytesData);
-    _setDeviceSerial(bytesData);
+    _singleton._configPayloadBytes = bytesData;
 
-    Log.info(TAG, "Config values >> FW version: ${config.fWVersionString} | device S/N: ${config._deviceSerial}");
-    return config;
+    Log.info(TAG, "Config values >> FW version: ${_singleton.fWVersionString} | device S/N: ${_singleton._deviceSerial}");
+    return _singleton;
   }
 
   String get fWVersionString => _deviceFWVersion.versionString;
@@ -178,7 +188,14 @@ class DeviceConfigPayload {
     _deviceSerial = ConvertFormats.fourBytesToInt(serialBytes.toList());
   }
 
-  static void updateSmartPhoneInfo(List<int> bytes) async {
+  static void _updateWCPLessMode(List<int> bytes) {
+    final int wcpByte = bytes[DeviceConfigPayload.OFFSET_WCP_LESS];
+    final bool active = wcpByte == DeviceConfigPayload.WCP_LESS_SIGNATURE;
+    Log.info(TAG, "WCP-less mode set to: $active");
+    GlobalSettings.setWCPLessMode(active);
+  }
+
+  static void _updateSmartPhoneInfo(List<int> bytes) async {
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT] = 0x0F;
     bytes[OFFSET_SMARTPHONE_INFO_INIT_EVENT + 1] = 0xF0;
 
@@ -214,6 +231,7 @@ class DeviceConfigPayload {
   }
 
   void updatePin(String pinString) {
+    Log.info(TAG, 'Updating pin number in config block: $pinString');
     final int pin = int.parse(pinString);
     final List<int> bytes = ConvertFormats.longToByteList(pin, size: 4, reversed: false);
     for (int i = 0; i < bytes.length; i++) {

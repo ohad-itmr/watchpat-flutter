@@ -181,7 +181,7 @@ class ReceivedPacket {
   }
 
   DeviceConfigPayload extractConfigBlock() {
-    return DeviceConfigPayload().getNewInstance(extractPayload());
+    return DeviceConfigPayload.getInstance(extractPayload());
   }
 
   TechStatusPayload extractTechStatusPayload() {

@@ -28,7 +28,7 @@ class DefaultSettings {
   static final minStorageSpaceMb = 35;
   static final double minTestLengthHours = 6;
   static final double maxTestLengthHours = 10;
-  static final double sessionTimeoutHours = 12;
+  static final double sessionTimeoutHours = 15;
   static final minBatteryRequiredLevel = 100;
   static final dispatcherLink1 = "https://dispatcher.watchpat-one.com";
   static final dispatcherLink2 = "https://dispatcher2.watchpat-one.com";

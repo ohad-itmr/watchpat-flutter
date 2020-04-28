@@ -299,7 +299,7 @@ class BleManager extends ManagerBase {
         Log.info(TAG, ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
 
         if ((_isFirstConnection && localName.endsWith("N")) ||
-            (!_isFirstConnection && localName.contains(PrefsProvider.loadDeviceName()))) {
+            (!_isFirstConnection && localName.contains(PrefsProvider.loadDeviceName() == null ? "unmatchablestring" : PrefsProvider.loadDeviceName()))) {
           Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
           var currentResults = _scanResultsSubject.value;
           currentResults[scanResult.device.id] = scanResult;

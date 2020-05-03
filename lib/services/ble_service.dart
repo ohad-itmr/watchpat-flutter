@@ -44,12 +44,12 @@ class BleService {
   }
 
   void disconnect(BluetoothDevice device) {
-    _flutterBlue.disconnect(device.id.id);
+//    _flutterBlue.disconnect(device.id.id);
   }
 
   Future<BluetoothDevice> restoreConnectedDevice(String deviceId) async {
     try {
-      final BluetoothDevice d = await _flutterBlue.restoreConnectedDevice(deviceId);
+      final BluetoothDevice d = await _flutterBlue.getConnectedDevice();
       return d;
     } catch (e) {
       Log.shout(TAG, "Previously connected device is not present");

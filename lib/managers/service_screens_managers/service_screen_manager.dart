@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
@@ -169,8 +168,8 @@ class ServiceScreenManager extends ManagerBase {
   }
 
   _shareFile(File file) async {
-    await Share.file(
-        'Device log file', DefaultSettings.deviceLogFileName, file.readAsBytesSync(), 'text/plain');
+//    await Share.file(
+//        'Device log file', DefaultSettings.deviceLogFileName, file.readAsBytesSync(), 'text/plain');
   }
 
   // Handle AFE registers

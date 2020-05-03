@@ -17,7 +17,6 @@ dependencies:
   logging: 0.11.3+2
   path_provider: ^1.1.0
   connectivity: ^0.4.2
-  flutter_blue: 0.5.0
   date_format: ^1.0.6
   shared_preferences: ^0.5.1+1
   stack_trace: ^1.9.3
@@ -30,7 +29,7 @@ dependencies:
   url_launcher: ^5.0.2
   tuple: ^1.0.2
   background_fetch: ^0.1.0
-  esys_flutter_share: ^1.0.2
+  #  esys_flutter_share: ^1.0.2
   xml: ^3.5.0
   hex: ^0.1.2
   package_info: ^0.4.0+6
@@ -38,15 +37,20 @@ dependencies:
   pref_dessert: ^0.3.0
   archive: ^2.0.10
 
+  #flutter_blue_sucks
+#  flutter_blue: 0.5.0
+  flutter_blue:
+    path: ../../../../derzhavets/projects/flutter_blue-0.5.0-custom
+
   #  battery:
-#    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/
+  #    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/
   battery:
     git:
       url: https://github.com/derzhavets/plugins
       path: packages/battery
 
-#  ssh:
-#    path: ../../../../derzhavets/projects/flutter_ssh/
+  #  ssh:
+  #    path: ../../../../derzhavets/projects/flutter_ssh/
   ssh:
     git:
       url: https://github.com/derzhavets/flutter_ssh
@@ -61,7 +65,7 @@ dev_dependencies:
 
   ## Generating launcher images
   ## 1. Install this plugin
-#  flutter_launcher_icons: "^0.7.0"
+  #  flutter_launcher_icons: "^0.7.0"
   ## 2. Incomment this block
 #flutter_icons:
 #  android: false

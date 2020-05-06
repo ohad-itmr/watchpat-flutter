@@ -88,11 +88,11 @@ class DispatcherService {
     return GeneralResponse.fromJson(response.data);
   }
 
-  Future<DispatcherResponse> sendStartSession(String bitResult) async {
+  Future<DispatcherResponse> sendStartSession(String serial, String bitResult) async {
     Response response = await _sendRequest(
-        urlSuffix: '$_startSessionEndpoint/${PrefsProvider.loadDeviceSerial()}',
+        urlSuffix: '$_startSessionEndpoint/$serial',
         method: RequestMethod.post,
-        data: {"sn": PrefsProvider.loadDeviceSerial(), "bitResult": bitResult});
+        data: {"sn": serial, "bitResult": bitResult});
     return GeneralResponse.fromJson(response.data);
   }
 

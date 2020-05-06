@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:hex/hex.dart';
 import 'package:my_pat/domain_model/device_commands.dart';
+import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
 import 'package:my_pat/generated/i18n.dart';
@@ -210,47 +211,68 @@ class IncomingPacketHandlerService extends ManagerBase {
           // set start session state to confirmed
           sl<SystemStateManager>().setStartSessionState(StartSessionState.CONFIRMED);
 
-          // start-session-confirm packet received
-          sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
+          // get device serial
+          final int deviceSerial = DeviceConfigPayload.getDeviceSerial(receivedPacket.extractPayload());
+          print("RECEIVED DEVICE SERIAL $deviceSerial");
 
-          Log.info(TAG, "### start session confirm: device configuration set");
+//          // save device configuration in sleep data file
+//          sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
 
-          PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
-          Log.info(TAG, "### start session confirm: device serial saved");
+//          PrefsProvider.saveDeviceSerial(sl<DeviceConfigManager>().deviceConfig.deviceSerial);
+//          Log.info(TAG, "### start session confirm: device serial saved");
 
           // Send start session to dispatcher
           if (!PrefsProvider.getStartSessionSent()) {
             PrefsProvider.setStartSessionSent();
-            sl<DispatcherService>().sendStartSession(receivedPacket.opCodeDependent.toString());
+            sl<DispatcherService>().sendStartSession(deviceSerial.toString(), receivedPacket.opCodeDependent.toString());
           }
 
-          final bool sessionHasNoErrors = await _checkSessionErrors();
+          final bool sessionHasNoErrors = await _checkSessionErrors(deviceSerial);
           final bool deviceHasNoErrors = _checkDeviceErrors(receivedPacket.opCodeDependent);
 
-          if (sessionHasNoErrors && deviceHasNoErrors) {
-            if (PrefsProvider.loadDeviceName() == null) {
-              Log.info(TAG, "first connection to device");
-              Log.info(TAG, "### start session confirm: device FW version check START");
-
-              final bool isUpToDate = await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
-
-              if (isUpToDate) {
-                Log.info(TAG, "### start session confirm: device FW version check END");
-                Log.info(TAG, "device FW up to date");
-                sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UP_TO_DATE);
-              } else {
-                await Future.delayed(Duration(seconds: 1));
-                Log.info(TAG, "device FW outdated");
-                sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
-              }
-            }
-          }
-
-          if (deviceHasNoErrors) {
-            final String deviceName = "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
-            Log.info(TAG, "device new name: $deviceName");
+          // if no session errors - save device in memory
+          if (sessionHasNoErrors) {
+            // save device name
+            final String deviceName = "ITAMAR_${deviceSerial.toRadixString(16).padLeft(8, "0").toUpperCase()}";
+            Log.info(TAG, "### Saving device name: $deviceName");
             PrefsProvider.saveDeviceName(deviceName);
+
+            // save device serial
+            Log.info(TAG, "### Saving device serial: $deviceSerial");
+            PrefsProvider.saveDeviceSerial(deviceSerial.toString());
+
+            // save BT device ID
+            sl<BleManager>().saveDeviceUUID();
+
+            // save device configuration in sleep data file
+            sl<DeviceConfigManager>().setDeviceConfiguration(receivedPacket.extractConfigBlock());
           }
+
+          // if no session error and device error - check firmware
+          if (sessionHasNoErrors && deviceHasNoErrors) {
+//            if (PrefsProvider.loadDeviceName() == null) {
+            Log.info(TAG, "first connection to device");
+            Log.info(TAG, "### start session confirm: device FW version check START");
+
+            final bool isUpToDate = await sl<FirmwareUpgrader>().isDeviceFirmwareVersionUpToDate();
+
+            if (isUpToDate) {
+              Log.info(TAG, "### start session confirm: device FW version check END");
+              Log.info(TAG, "device FW up to date");
+              sl<SystemStateManager>().setFirmwareState(FirmwareUpgradeState.UP_TO_DATE);
+            } else {
+              await Future.delayed(Duration(seconds: 1));
+              Log.info(TAG, "device FW outdated");
+              sl<FirmwareUpgrader>().upgradeDeviceFirmwareFromResources();
+            }
+//            }
+          }
+
+//          if (deviceHasNoErrors) {
+//            final String deviceName = "ITAMAR_${sl<DeviceConfigManager>().deviceConfig.deviceHexSerial.toUpperCase()}";
+//            Log.info(TAG, "device new name: $deviceName");
+//            PrefsProvider.saveDeviceName(deviceName);
+//          }
 
           Log.info(TAG, "### start session confirm: END");
           break;
@@ -540,11 +562,11 @@ class IncomingPacketHandlerService extends ManagerBase {
     return false;
   }
 
-  Future<bool> _checkSessionErrors() async {
+  Future<bool> _checkSessionErrors(int deviceSerial) async {
     Log.info(TAG, "### Checking for session errors");
     String errors = "Session errors:\n\n";
     await sl<WelcomeActivityManager>().configFinished.firstWhere((done) => done);
-    GeneralResponse res = await sl<DispatcherService>().getPatientPolicy(PrefsProvider.loadDeviceSerial());
+    GeneralResponse res = await sl<DispatcherService>().getPatientPolicy(deviceSerial.toString());
     if (res.error) {
       if (res.message == DispatcherService.DISPATCHER_ERROR_STATUS) {
         errors += "- Connection to dispatcher failed";

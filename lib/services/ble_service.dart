@@ -36,7 +36,7 @@ class BleService {
   }
 
   Stream<BluetoothDeviceState> connect(BluetoothDevice d) {
-    PrefsProvider.saveBluetoothDeviceID(d.id.toString());
+//    PrefsProvider.saveBluetoothDeviceID(d.id.toString());
     Log.info(TAG, '## Connection to device ${d.id}');
     _device = d;
     _flutterBlue.connect(_device).listen(null);
@@ -52,7 +52,7 @@ class BleService {
       final BluetoothDevice d = await _flutterBlue.getConnectedDevice();
       return d;
     } catch (e) {
-      Log.shout(TAG, "Previously connected device is not present");
+      Log.shout(TAG, "Already connected or restored device is not present");
       return null;
     }
   }

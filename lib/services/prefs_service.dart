@@ -175,6 +175,8 @@ class PrefsProvider {
   static void clearDeviceName() {
     PrefsService.prefs.remove(PrefsNames.DEVICE_NAME_KEY);
     PrefsService.prefs.remove(PrefsNames.BLUETOOTH_DEVICE_ID_KEY);
+    PrefsService.prefs.remove(PrefsNames.DEVICE_SERIAL_KEY);
+    PrefsService.prefs.remove(PrefsNames.START_SESSION_ALREADY_SENT);
     Log.info("PrefsProvider", "CONNECTED DEVICE FORGOTTEN");
   }
 

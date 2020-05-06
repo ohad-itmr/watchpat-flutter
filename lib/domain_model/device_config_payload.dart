@@ -180,12 +180,14 @@ class DeviceConfigPayload {
     );
   }
 
-  void _setDeviceSerial(final List<int> bytesConfig) {
+  void _setDeviceSerial(List<int> bytesConfig) {
     final List<int> serialBytes = bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
-
-//    _deviceSerial =
-//        ConvertFormats.byteArrayToHex(serialBytes.reversed.toList());
     _deviceSerial = ConvertFormats.fourBytesToInt(serialBytes.toList());
+  }
+
+  static int getDeviceSerial(List<int> bytesConfig) {
+    final List<int> serialBytes = bytesConfig.sublist(OFFSET_DEVICE_SN, OFFSET_DEVICE_SN + DEVICE_SERIAL_BYTES);
+    return ConvertFormats.fourBytesToInt(serialBytes.toList());
   }
 
   static void _updateWCPLessMode(List<int> bytes) {

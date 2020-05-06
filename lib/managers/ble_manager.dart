@@ -66,7 +66,6 @@ class BleManager extends ManagerBase {
 
   void connect({bool reconnect = false}) async {
     if (reconnect) {
-
       final BluetoothDevice d = await sl<BleService>().restoreConnectedDevice(PrefsProvider.loadBluetoothDeviceID());
       if (d != null) {
         Log.info(TAG, "Restored previously connected device, NAME: ${d.name}, ID: ${d.id}");
@@ -89,6 +88,14 @@ class BleManager extends ManagerBase {
       _deviceStateSubscription = sl<BleService>().connect(_device).listen(_deviceConnectionStateHandler);
     } else {
       startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+    }
+  }
+
+  void saveDeviceUUID() {
+    if (_device != null) {
+      PrefsProvider.saveBluetoothDeviceID(_device.id.toString());
+    } else {
+      Log.shout(TAG, "Cannot save device UUID, device is null");
     }
   }
 
@@ -283,10 +290,10 @@ class BleManager extends ManagerBase {
     sl<SystemStateManager>().setBleScanState(ScanStates.SCANNING);
     _scanSubscription = sl<BleService>().scanForDevices(time).listen(
           (scanResult) => _scanResultHandler(
-                scanResult,
-                connectToFirstDevice,
-                deviceName: deviceName,
-              ),
+            scanResult,
+            connectToFirstDevice,
+            deviceName: deviceName,
+          ),
           onDone: stopScan,
         );
   }
@@ -301,7 +308,8 @@ class BleManager extends ManagerBase {
         Log.info(TAG, ">>> name on scan: $localName | stored name: ${PrefsProvider.loadDeviceName()}");
 
         if ((_isFirstConnection && localName.endsWith("N")) ||
-            (!_isFirstConnection && localName.contains(PrefsProvider.loadDeviceName() == null ? "unmatchablestring" : PrefsProvider.loadDeviceName()))) {
+            (!_isFirstConnection &&
+                localName.contains(PrefsProvider.loadDeviceName() == null ? "unmatchablestring" : PrefsProvider.loadDeviceName()))) {
           Log.info(TAG, '## FOUND DEVICE ${scanResult.device.id}');
           var currentResults = _scanResultsSubject.value;
           currentResults[scanResult.device.id] = scanResult;

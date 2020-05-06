@@ -66,8 +66,13 @@ class TransactionManager extends ManagerBase {
   _initStartingScanOnDeviceDisconnect() {
     _sysState.deviceCommStateStream.where((DeviceStates deviceState) => deviceState == DeviceStates.DISCONNECTED).listen((_) {
       if (sl<SystemStateManager>().dataTransferState != DataTransferState.ENDED) {
-        Log.info(TAG, "Connection to earlier connected device was lost, reconnecting");
-        sl<BleManager>().connect(reconnect: true);
+        if (PrefsProvider.loadDeviceSerial() != null) {
+          Log.info(TAG, "Saved device disconnected, reconnecting");
+          sl<BleManager>().connect(reconnect: true);
+        } else {
+          Log.info(TAG, "Not saved device disconnected, starting scan");
+          sl<BleManager>().startScan(time: GlobalSettings.btScanTimeout, connectToFirstDevice: false);
+        }
       }
     });
   }

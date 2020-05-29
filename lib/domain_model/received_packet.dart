@@ -32,17 +32,18 @@ class ReceivedPacket {
 
   int packetType;
 
-  ReceivedPacket(this.bytes, this._commandTasker)
-      : _signature = ConvertFormats.twoBytesToInt(byte1: bytes[0], byte2: bytes[1]),
+  ReceivedPacket(final dataBytes, this._commandTasker)
+      : _signature = ConvertFormats.twoBytesToInt(byte1: dataBytes[0], byte2: dataBytes[1]),
+        bytes = List.from(dataBytes),
         opCode = ConvertFormats.twoBytesToInt(
-            byte1: bytes[PACKET_OPCODE_STARTING_BYTE],
-            byte2: bytes[PACKET_OPCODE_STARTING_BYTE + 1]),
-        identifier = ConvertFormats.fourBytesToInt(bytes
+            byte1: dataBytes[PACKET_OPCODE_STARTING_BYTE],
+            byte2: dataBytes[PACKET_OPCODE_STARTING_BYTE + 1]),
+        identifier = ConvertFormats.fourBytesToInt(dataBytes
             .sublist(PACKET_IDENTIFIER_STARTING_BYTE, PACKET_IDENTIFIER_STARTING_BYTE + 4)
             .toList()),
         _len = ConvertFormats.twoBytesToInt(
-            byte1: bytes[PACKET_SIZE_STARTING_BYTE], byte2: bytes[PACKET_SIZE_STARTING_BYTE + 1]),
-        opCodeDependent = ConvertFormats.fourBytesToInt(bytes
+            byte1: dataBytes[PACKET_SIZE_STARTING_BYTE], byte2: dataBytes[PACKET_SIZE_STARTING_BYTE + 1]),
+        opCodeDependent = ConvertFormats.fourBytesToInt(dataBytes
             .sublist(PACKET_DEPENDENT_STARTING_BYTE, PACKET_DEPENDENT_STARTING_BYTE + 4)
             .toList()) {
     packetType = _extractPacketType();

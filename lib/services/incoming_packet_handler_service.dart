@@ -136,7 +136,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
     if (_packetState == PacketState.PACKET_COMPLETE) {
       // packet is fully received
-      ReceivedPacket receivedPacket = ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
+      final ReceivedPacket receivedPacket = ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       ReceivedPacket(_receivedByteStream, sl<CommandTaskerManager>());
       final int packetType = receivedPacket.packetType;
 

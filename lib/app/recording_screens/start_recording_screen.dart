@@ -41,7 +41,7 @@ class StartRecordingScreen extends StatelessWidget {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text('For a successful completion of the test please make sure the App is open in the morning.'),
+                Text(S.of(context).open_at_morning),
                 Container(height: 10, width: 10),
                 Container(
                     padding: EdgeInsets.all(20.0),

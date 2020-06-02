@@ -19,9 +19,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'fr';
 
-  static m0(pin) => "Entrez votre code PIN (\$pin) à quatre chiffres et appuyez sur ENTRER";
+  static m0(pin) => "Entrez votre code PIN (${pin}) à quatre chiffres et appuyez sur ENTRER";
 
-  static m1(step, total) => "Step \$step of \$total";
+  static m1(step, total) => "Étape ${step} de ${total}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {

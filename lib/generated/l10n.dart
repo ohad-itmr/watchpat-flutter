@@ -992,7 +992,7 @@ class S {
 
   String pinContent(Object pin) {
     return Intl.message(
-      'Enter your assigned four digits PIN $pin and tap ENTER',
+      'Enter your assigned four digits PIN ($pin) and tap ENTER',
       name: 'pinContent',
       desc: '',
       args: [pin],

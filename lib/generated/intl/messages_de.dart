@@ -19,9 +19,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
-  static m0(pin) => " Geben Sie die Ihnen zugewiesene vierstellige PIN(\$pin) ein und drücken Sie auf ENTER";
+  static m0(pin) => " Geben Sie die Ihnen zugewiesene vierstellige PIN (${pin}) ein und drücken Sie auf ENTER";
 
-  static m1(step, total) => "Step \$step of \$total";
+  static m1(step, total) => "Schritt ${step} von ${total}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -255,7 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stepper" : m1,
     "stepperOf" : MessageLookupByLibrary.simpleMessage(" von"),
     "stepperStep" : MessageLookupByLibrary.simpleMessage(" Schritt"),
-    "stop_test" : MessageLookupByLibrary.simpleMessage(" TEST ANHALTEN"),
+    "stop_test" : MessageLookupByLibrary.simpleMessage("TEST ANHALTEN"),
     "strapWristContent" : MessageLookupByLibrary.simpleMessage(" Befestigen Sie das WatchPAT™ONE an Ihrer nicht-dominanten Hand. \nZiehen Sie dabei das Armband nun so fest, dass es nicht zu locker aber auch nicht zu stramm ist."),
     "strapWristTitle" : MessageLookupByLibrary.simpleMessage(" ARMBAND-GERÄT ANLEGEN"),
     "system_encountered_problem" : MessageLookupByLibrary.simpleMessage("Ein Problem im System ist aufgetreten. Versuchen Sie erneut, die Anwendung herunterzuladen. Falls das Problem erneut auftritt, rufen Sie den Kunden-Service an und melden den Fehler."),

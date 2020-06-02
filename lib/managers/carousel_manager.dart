@@ -37,9 +37,7 @@ class CarouselManager extends ManagerBase {
     final CarouselSnapshot s = CarouselSnapshot(
         content: _scopedSlides[screenTAG][currentIndex],
         actionPrev: hasPrev ? () => switchLimitedSlide(screenTAG, currentIndex - 1) : null,
-        actionNext: hasNext
-            ? (_) => switchLimitedSlide(screenTAG, currentIndex + 1)
-            : (ctx) => Navigator.pop(ctx),
+        actionNext: hasNext ? (_) => switchLimitedSlide(screenTAG, currentIndex + 1) : (ctx) => Navigator.pop(ctx),
         lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
@@ -50,8 +48,7 @@ class CarouselManager extends ManagerBase {
     final CarouselSnapshot s = CarouselSnapshot(
         content: _allSlides[currentIndex],
         actionPrev: hasPrev ? () => switchUnlimitedSlide(currentIndex - 1) : null,
-        actionNext:
-            hasNext ? (_) => switchUnlimitedSlide(currentIndex + 1) : (ctx) => Navigator.pop(ctx),
+        actionNext: hasNext ? (_) => switchUnlimitedSlide(currentIndex + 1) : (ctx) => Navigator.pop(ctx),
         lastSlide: !hasNext);
     _carouselDataState.sink.add(s);
   }
@@ -73,104 +70,49 @@ class CarouselManager extends ManagerBase {
   _prepareCarouselContent() {
     _scopedSlides = LinkedHashMap.from({
       WelcomeScreen.TAG: [
-        CarouselData(
-            text:
-                "Open the package, making sure you have a AAA battery along with the device and its sensors",
-            image: "assets/carousel/carousel_welcome.jpg"),
+        CarouselData(text: "carousel_welcome", image: "assets/carousel/carousel_welcome.jpg"),
       ],
       BatteryScreen.TAG: [
-        CarouselData(
-            text: "Insert the battery into the device",
-            image: "assets/carousel/carousel_battery_1.jpg"),
-        CarouselData(
-            text: "Make sure you follow the + and - marking, and with flat side against the spring",
-            image: "assets/carousel/carousel_battery_2.jpg"),
+        CarouselData(text: "carousel_battery_1", image: "assets/carousel/carousel_battery_1.jpg"),
+        CarouselData(text: "carousel_battery_2", image: "assets/carousel/carousel_battery_2.jpg"),
       ],
       PreparationScreen.TAG: [
-        CarouselData(
-            text: "Remove all jewelry and hand cream. Make sure the fingernails are trimmed.",
-            image: "assets/carousel/carousel_prepare_1.jpg"),
-        CarouselData(
-            text: "Take off the watch. Do not apply any hand cream.",
-            image: "assets/carousel/carousel_prepare_2.jpg"),
+        CarouselData(text: "carousel_prepare_1", image: "assets/carousel/carousel_prepare_1.jpg"),
+        CarouselData(text: "carousel_prepare_2", image: "assets/carousel/carousel_prepare_2.jpg"),
       ],
       "IDENTITY": [
-        CarouselData(
-            text: "Enter your assigned four digits PIN (personal identification number).",
-            image: "assets/carousel/carousel_identfy.jpg"),
+        CarouselData(text: "carousel_identfy", image: "assets/carousel/carousel_identfy.jpg"),
       ],
       StrapWristScreen.TAG: [
-        CarouselData(
-            text: "You will be putting the WatchPAT on your non-dominant hand.",
-            image: "assets/carousel/carousel_strap_1.jpg"),
-        CarouselData(
-            text: "Place the WatchPAT on a flat surface.",
-            image: "assets/carousel/carousel_strap_2.jpg"),
-        CarouselData(
-            text: "Insert your hand and close the strap, making sure it's snug but not too tight.",
-            image: "assets/carousel/carousel_strap_3.jpg"),
+        CarouselData(text: "carousel_strap_1", image: "assets/carousel/carousel_strap_1.jpg"),
+        CarouselData(text: "carousel_strap_2", image: "assets/carousel/carousel_strap_2.jpg"),
+        CarouselData(text: "carousel_strap_3", image: "assets/carousel/carousel_strap_3.jpg"),
       ],
       ChestSensorScreen.TAG: [
-        CarouselData(
-            text: "Thread the sensor through your sleeve …\n\n* For specific device configurations only.",
-            image: "assets/carousel/carousel_chest_1.jpg"),
-        CarouselData(
-            text: "… up to the neck opening.\n\n* For specific device configurations only.", image: "assets/carousel/carousel_chest_2.jpg"),
-        CarouselData(
-            text: "Peel the sticker off the back end of the sensor.\n\n* For specific device configurations only.",
-            image: "assets/carousel/carousel_chest_3.jpg"),
-        CarouselData(
-            text: "Attach the sensor just below the sternum notch. Trim or shave here if needed.\n\n* For specific device configurations only.",
-            image: "assets/carousel/carousel_chest_4.jpg"),
-        CarouselData(
-            text: "You may also secure the sensor with a medical tape.\n\n* For specific device configurations only.",
-            image: "assets/carousel/carousel_chest_5.jpg"),
+        CarouselData(text: "carousel_chest_1", image: "assets/carousel/carousel_chest_1.jpg"),
+        CarouselData(text: "carousel_chest_2", image: "assets/carousel/carousel_chest_2.jpg"),
+        CarouselData(text: "carousel_chest_3", image: "assets/carousel/carousel_chest_3.jpg"),
+        CarouselData(text: "carousel_chest_4", image: "assets/carousel/carousel_chest_4.jpg"),
+        CarouselData(text: "carousel_chest_5", image: "assets/carousel/carousel_chest_5.jpg"),
       ],
       FingerProbeScreen.TAG: [
-        CarouselData(
-            text:
-                "Place the finger probe on your index finger. Once placed, the probe can not be removed and put on another finger.",
-            image: "assets/carousel/carousel_finger_1.jpg"),
-        CarouselData(
-            text:
-                "If your index finger is too large for the probe, choose another finger that fits better.",
-            image: "assets/carousel/carousel_finger_2.jpg"),
-        CarouselData(
-            text: "Insert your index finger all the way into the probe.",
-            image: "assets/carousel/carousel_finger_3.jpg"),
-        CarouselData(
-            text: "The tab on top of the probe should be situated on the top side of your finger.",
-            image: "assets/carousel/carousel_finger_4.jpg"),
-        CarouselData(
-            text: "While pushing against the surface …",
-            image: "assets/carousel/carousel_finger_5.jpg"),
-        CarouselData(
-            text: "Gently but firmly remove the tab by pulling upward its tip …",
-            image: "assets/carousel/carousel_finger_6.jpg"),
-        CarouselData(
-            text: "… until fully removed.", image: "assets/carousel/carousel_finger_7.jpg"),
+        CarouselData(text: "carousel_finger_1", image: "assets/carousel/carousel_finger_1.jpg"),
+        CarouselData(text: "carousel_finger_2", image: "assets/carousel/carousel_finger_2.jpg"),
+        CarouselData(text: "carousel_finger_3", image: "assets/carousel/carousel_finger_3.jpg"),
+        CarouselData(text: "carousel_finger_4", image: "assets/carousel/carousel_finger_4.jpg"),
+        CarouselData(text: "carousel_finger_5", image: "assets/carousel/carousel_finger_5.jpg"),
+        CarouselData(text: "carousel_finger_6", image: "assets/carousel/carousel_finger_6.jpg"),
+        CarouselData(text: "carousel_finger_7", image: "assets/carousel/carousel_finger_7.jpg"),
       ],
       StartRecordingScreen.TAG: [
-        CarouselData(
-            text: "WatchPAT is working properly and it is time to go to sleep.",
-            image: "assets/carousel/carousel_sleep.jpg"),
+        CarouselData(text: "carousel_sleep", image: "assets/carousel/carousel_sleep.jpg"),
       ],
       "END": [
-        CarouselData(
-            text: "In the morning remove the Chest sensor.\n\n* For specific device configurations only.",
-            image: "assets/carousel/carousel_end_1_chest.jpg"),
-        CarouselData(
-            text: "Remove the device from your hand.", image: "assets/carousel/carousel_end_2.jpg"),
-        CarouselData(
-            text: "Remove the probe from your finger.",
-            image: "assets/carousel/carousel_end_3.jpg"),
-        CarouselData(
-            text: "Remove the battery from device and keep for other uses.",
-            image: "assets/carousel/carousel_end_4.jpg"),
-        CarouselData(
-            text:
-                "Follow the local recycling instructions regarding disposal or recycling of the device and device components.",
-            image: "assets/carousel/carousel_end_5.jpg"),
+        CarouselData(text: "carousel_end_1_chest", image: "assets/carousel/carousel_end_1_chest.jpg"),
+        CarouselData(text: "carousel_end_2", image: "assets/carousel/carousel_end_2.jpg"),
+        CarouselData(text: "carousel_end_3", image: "assets/carousel/carousel_end_3.jpg"),
+        CarouselData(text: "carousel_end_4", image: "assets/carousel/carousel_end_4.jpg"),
+        CarouselData(text: "carousel_end_5", image: "assets/carousel/carousel_end_5.jpg"),
       ]
     });
     _scopedSlides.values.forEach((list) => _allSlides.addAll(list));

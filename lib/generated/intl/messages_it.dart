@@ -19,9 +19,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it';
 
-  static m0(pin) => " Inserire il PIN a quattro cifre assegnato (\$pin) e premere INVIO";
+  static m0(pin) => " Inserire il PIN a quattro cifre assegnato (${pin}) e premere INVIO";
 
-  static m1(step, total) => "Step \$step of \$total";
+  static m1(step, total) => "Step ${step} di ${total}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -255,7 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "stepper" : m1,
     "stepperOf" : MessageLookupByLibrary.simpleMessage(" di"),
     "stepperStep" : MessageLookupByLibrary.simpleMessage(" Step"),
-    "stop_test" : MessageLookupByLibrary.simpleMessage(" FINE ESAME"),
+    "stop_test" : MessageLookupByLibrary.simpleMessage("FINE ESAME"),
     "strapWristContent" : MessageLookupByLibrary.simpleMessage("Allacciare il WatchPAT™ONE sulla mano non dominante. \nAssicurarsi che il WatchPAT ™ONE  sia aderente ma non troppo stretto."),
     "strapWristTitle" : MessageLookupByLibrary.simpleMessage(" ALLACCIARE IL DISPOSITIVO DA POLSO"),
     "system_encountered_problem" : MessageLookupByLibrary.simpleMessage(" Il sistema ha riscontrato un problema. Provare a scaricare di nuovo l\'applicazione. Se il problema si ripresenta, chiamare l\'assistenza clienti e segnalare l\'errore"),

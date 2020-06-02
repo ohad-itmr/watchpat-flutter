@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static m0(pin) => "Enter your assigned four digits PIN ${pin} and tap ENTER";
+  static m0(pin) => "Enter your assigned four digits PIN (${pin}) and tap ENTER";
 
   static m1(step, total) => "Step ${step} of ${total}";
 

@@ -24,22 +24,39 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   initItems() async {
     sl<WelcomeActivityManager>().configFinished.firstWhere((done) => done).then((_) {
       _popupOptions = [
-//    PopupMenuItem(
-//      value: PopupOption.language,
-//      child: Text("Select language"),
-//    ),
+        PopupMenuItem(
+          value: PopupOption.language,
+          child: Text(S.of(context).select_language),
+        ),
         PopupMenuItem(
           value: PopupOption.send_logs,
-          child: Text("Send logs"),
+          child: Text(S.of(context).send_logs),
         ),
         PopupMenuItem(
           value: PopupOption.forget,
-          child: Text("Forget device"),
-        ),
-//        _killAppOption(),
+          child: Text(S.of(context).forget_device),
+        ), //        _killAppOption(),
 //        _sftpOption()
       ];
     });
+  }
+
+  _getPopupOptions() {
+    return [
+      PopupMenuItem(
+        value: PopupOption.language,
+        child: Text(S.of(context).select_language),
+      ),
+      PopupMenuItem(
+        value: PopupOption.send_logs,
+        child: Text(S.of(context).send_logs),
+      ),
+      PopupMenuItem(
+        value: PopupOption.forget,
+        child: Text(S.of(context).forget_device),
+      ), //        _killAppOption(),
+//        _sftpOption()
+    ];
   }
 
   static Widget _killAppOption() {
@@ -82,7 +99,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
       tooltip: 'Main Menu',
       onSelected: _handlePopupOption,
       itemBuilder: (BuildContext context) {
-        return _popupOptions;
+        return _getPopupOptions();
       },
     );
   }
@@ -127,6 +144,22 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
                       setState(() => _selectedLanguage = "fr_");
                     },
                     title: Text(S.of(context).french),
+                  ),
+                  RadioListTile(
+                    value: _selectedLanguage == "de_",
+                    groupValue: true,
+                    onChanged: (_) {
+                      setState(() => _selectedLanguage = "de_");
+                    },
+                    title: Text(S.of(context).german),
+                  ),
+                  RadioListTile(
+                    value: _selectedLanguage == "it_",
+                    groupValue: true,
+                    onChanged: (_) {
+                      setState(() => _selectedLanguage = "it_");
+                    },
+                    title: Text(S.of(context).italian),
                   )
                 ],
               ),

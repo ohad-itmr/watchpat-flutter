@@ -189,6 +189,24 @@ class S {
     );
   }
 
+  String get german {
+    return Intl.message(
+      'German',
+      name: 'german',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get italian {
+    return Intl.message(
+      'Italian',
+      name: 'italian',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get cancel {
     return Intl.message(
       'CANCEL',
@@ -2348,6 +2366,24 @@ class S {
       args: [],
     );
   }
+
+  String get send_logs {
+    return Intl.message(
+      'Send logs',
+      name: 'send_logs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get forget_device {
+    return Intl.message(
+      'Forget device',
+      name: 'forget_device',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -2356,6 +2392,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'de'),
+      Locale.fromSubtags(languageCode: 'fr'),
+      Locale.fromSubtags(languageCode: 'it'),
     ];
   }
 

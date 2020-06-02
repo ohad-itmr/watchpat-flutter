@@ -101,9 +101,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         bottomBlock: BlockTemplate(
           type: BlockType.text,
           title: S.of(context).welcomeTitle,
-          content: [
-            "Welcome to WatchPAT™ONE. This application sends your sleep data to your doctor. First we need to do a few things to ensure everything is set up properly.\nPlease turn off all other electronic devices in the room (i.e. smart watch, smart phones, headphones), as it may interfere with the test.\nIf you wish to start the setup right away, hit the READY button. The PREVIEW button will take you on a quick tour through the setup."
-          ],
+          content: [S.of(context).welcomeContent],
         ),
         buttons: _buildButtonsBlock(),
         showSteps: false,

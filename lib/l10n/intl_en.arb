@@ -17,6 +17,8 @@
   "select_language": "Select language",
   "english": "English",
   "french": "French",
+  "german": "German",
+  "italian": "Italian",
   "cancel": "CANCEL",
   "btnEnter": "ENTER",
   "btnMore": "MORE",
@@ -257,5 +259,8 @@
   "carousel_end_2": "Remove the device from your hand.",
   "carousel_end_3": "Remove the probe from your finger.",
   "carousel_end_4": "Remove the battery from device and keep for other uses.",
-  "carousel_end_5": "Follow the local recycling instructions regarding disposal or recycling of the device and device components."
+  "carousel_end_5": "Follow the local recycling instructions regarding disposal or recycling of the device and device components.",
+
+  "send_logs": "Send logs",
+  "forget_device": "Forget device"
 }

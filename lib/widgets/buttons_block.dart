@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
 import 'button.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class ButtonModel {
   final String text;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class EndScreen extends StatelessWidget with WidgetsBindingObserver {
   static const String TAG = 'EndScreen';

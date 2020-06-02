@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:my_pat/app/authentication_screen/pin_inputs.dart';
 import 'package:my_pat/app/authentication_screen/pin_keyboard.dart';
 import 'package:my_pat/app/screens.dart';
+import 'package:my_pat/generated/l10n.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 

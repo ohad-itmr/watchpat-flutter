@@ -1,6 +1,5 @@
 import 'package:my_pat/domain_model/patient_credentials_model.dart';
 import 'package:my_pat/domain_model/patient_policy_model.dart';
-import 'package:my_pat/generated/i18n.dart';
 
 abstract class DispatcherResponse {
   bool error;

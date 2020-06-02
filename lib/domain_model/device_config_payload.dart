@@ -8,6 +8,7 @@ import 'package:my_pat/utils/log/log.dart';
 import 'package:package_info/package_info.dart';
 import 'package:device_info/device_info.dart';
 import 'dart:math';
+import 'package:my_pat/generated/l10n.dart';
 
 class DeviceConfigPayload {
   static const String TAG = 'DeviceConfigPayload';

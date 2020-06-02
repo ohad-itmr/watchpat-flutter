@@ -11,6 +11,7 @@ import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String PATH = '/';

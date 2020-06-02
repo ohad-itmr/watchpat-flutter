@@ -10,6 +10,7 @@ import 'package:my_pat/config/default_settings.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();

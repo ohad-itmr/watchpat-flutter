@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class ErrorScreen extends StatelessWidget {
   static const String TAG = 'ErrorScreen';

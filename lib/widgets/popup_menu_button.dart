@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/main.dart';
-
 import '../service_locator.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 enum PopupOption { language, email, forget, kill, log, cancel_sftp, send_logs }
 

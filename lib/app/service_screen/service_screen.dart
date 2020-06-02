@@ -10,6 +10,7 @@ import 'package:my_pat/app/welcome_sreen/welcome_screen.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/appbar_decoration.dart';
 import 'package:my_pat/widgets/mypat_toast.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class ServiceScreen extends StatefulWidget {
   static const String TAG = 'ServiceScreen';

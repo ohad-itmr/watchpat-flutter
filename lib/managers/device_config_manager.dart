@@ -1,8 +1,8 @@
-import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/manager_base.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/utils/log/log.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class DeviceConfigManager extends ManagerBase {
   static const String TAG = 'DeviceConfigManager';

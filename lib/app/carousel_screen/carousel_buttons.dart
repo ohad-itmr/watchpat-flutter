@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_pat/generated/l10n.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 

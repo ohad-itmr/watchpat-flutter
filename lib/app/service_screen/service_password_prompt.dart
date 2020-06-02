@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_pat/app/service_screen/service_screen.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class ServicePasswordPrompt extends StatefulWidget {
   @override

@@ -7,6 +7,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:stack_trace/stack_trace.dart';
 import 'package:my_pat/service_locator.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class BleManager extends ManagerBase {
   static const String TAG = 'BleManager';

@@ -5,7 +5,6 @@ import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/domain_model/device_config_payload.dart';
 import 'package:my_pat/domain_model/dispatcher_response_models.dart';
 import 'package:my_pat/domain_model/tech_status_payload.dart';
-import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/managers/manager_base.dart';
@@ -17,6 +16,7 @@ import 'package:my_pat/services/prefs_service.dart';
 import 'package:my_pat/domain_model/received_packet.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stack_trace/stack_trace.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 enum PacketState { WAITING_FOR_NEW, HANDLING_PACKET, PACKET_COMPLETE }
 

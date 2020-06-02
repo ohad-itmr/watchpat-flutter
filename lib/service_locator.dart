@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
-import 'package:my_pat/generated/i18n.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/services/services.dart';
 import 'package:my_pat/utils/FirmwareUpgrader.dart';
@@ -10,7 +9,7 @@ import 'package:my_pat/utils/ParameterFileHandler.dart';
 import 'package:my_pat/utils/log/log.dart';
 export 'package:my_pat/managers/managers.dart';
 export 'package:my_pat/services/services.dart';
-export 'package:my_pat/generated/i18n.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 GetIt sl = new GetIt();
 

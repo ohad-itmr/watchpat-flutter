@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:connectivity/connectivity.dart';
 import 'package:my_pat/domain_model/response_model.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:my_pat/service_locator.dart';
-import 'package:rxdart/rxdart.dart' as prefix0;
+import 'package:my_pat/generated/l10n.dart';
 
 enum WelcomeActivityState { NOT_STARTED, WORKING, DONE_FAILED, DONE_SUCCESS }
 enum FileCreationState { NOT_STARTED, STARTED, DONE_SUCCESS, DONE_FAILED }

@@ -10,7 +10,7 @@ import 'package:my_pat/widgets/mypat_progress_indicator.dart';
 import 'package:my_pat/widgets/widgets.dart';
 
 import '../screens.dart';
-
+import 'package:my_pat/generated/l10n.dart';
 class UploadingScreen extends StatefulWidget {
   static const String PATH = '/uploading';
   static const String TAG = 'UploadingScreen';

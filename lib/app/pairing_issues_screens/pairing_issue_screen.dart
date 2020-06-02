@@ -2,15 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/buttons_block.dart';
 import 'package:my_pat/widgets/main_template/block_template.dart';
 import 'package:my_pat/widgets/main_template/body_template.dart';
 import 'package:my_pat/widgets/main_template/main_template.dart';
-
 import '../screens.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class PairingIssueScreen extends StatefulWidget {
   static const String TAG = 'PairingIssueScreen';

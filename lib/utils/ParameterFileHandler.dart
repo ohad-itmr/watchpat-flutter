@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:my_pat/domain_model/device_commands.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:rxdart/rxdart.dart';
-
 import 'log/log.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class ParameterFileHandler extends ManagerBase {
   static const String TAG = "ParametersFileHandler";

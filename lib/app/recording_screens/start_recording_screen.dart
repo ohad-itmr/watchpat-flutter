@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
+import 'package:my_pat/generated/l10n.dart';
 
 class StartRecordingScreen extends StatelessWidget {
   static const String PATH = '/start';

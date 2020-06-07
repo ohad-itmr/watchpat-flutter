@@ -11,7 +11,7 @@ import 'package:package_info/package_info.dart';
 class EmailSenderService {
   static const String SMTP_HOST = "smtp.gmail.com";
   static const String SMTP_USERNAME = "itamar.medical.development@gmail.com";
-  static const String SMTP_PASSWORD = "Itamar1234";
+  static const String SMTP_PASSWORD = "Itamar12345";
 
   static const String TAG = "EmailSenderSerivce";
 

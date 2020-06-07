@@ -207,6 +207,15 @@ class S {
     );
   }
 
+  String get dutch {
+    return Intl.message(
+      'Dutch',
+      name: 'dutch',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get cancel {
     return Intl.message(
       'CANCEL',
@@ -2395,6 +2404,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'de'),
       Locale.fromSubtags(languageCode: 'fr'),
       Locale.fromSubtags(languageCode: 'it'),
+      Locale.fromSubtags(languageCode: 'nl'),
     ];
   }
 

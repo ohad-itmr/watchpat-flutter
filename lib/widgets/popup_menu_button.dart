@@ -160,6 +160,14 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
                       setState(() => _selectedLanguage = "it_");
                     },
                     title: Text(S.of(context).italian),
+                  ),
+                  RadioListTile(
+                    value: _selectedLanguage == "nl_",
+                    groupValue: true,
+                    onChanged: (_) {
+                      setState(() => _selectedLanguage = "nl_");
+                    },
+                    title: Text(S.of(context).dutch),
                   )
                 ],
               ),

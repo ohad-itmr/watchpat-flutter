@@ -118,6 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "digits" : MessageLookupByLibrary.simpleMessage("digits"),
     "disconnect_all_irr_devices" : MessageLookupByLibrary.simpleMessage("Disconnect all irrelevant devices"),
     "disconnected" : MessageLookupByLibrary.simpleMessage("Disconnected"),
+    "dutch" : MessageLookupByLibrary.simpleMessage("Dutch"),
     "eeprom_get_fail" : MessageLookupByLibrary.simpleMessage("EEPROM data retrieve failed"),
     "eeprom_get_success" : MessageLookupByLibrary.simpleMessage("EEPROM data retrieved successfully"),
     "eeprom_write_failed" : MessageLookupByLibrary.simpleMessage("Device EEPROM write failed"),

@@ -16,6 +16,7 @@ void main() async {
   PrefsService.prefs = await SharedPreferences.getInstance();
 
   await setupServices();
+  await PrefsProvider.setupSmartphoneLocale();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(AppComponent());
 }
@@ -26,8 +27,8 @@ class AppComponent extends StatefulWidget {
   @override
   State createState() => _AppComponentState();
 
-  static void setLocale(BuildContext context, Locale newLocale) async {
-    await PrefsProvider.saveLocale(newLocale);
+  static void setLocale(BuildContext context, String code) async {
+    await PrefsProvider.saveLocaleCode(code);
     _AppComponentState state = context.ancestorStateOfType(TypeMatcher<_AppComponentState>());
     state.changeLocale();
   }

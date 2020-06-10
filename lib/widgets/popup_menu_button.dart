@@ -130,42 +130,42 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   RadioListTile(
-                    value: _selectedLanguage == "en_",
+                    value: _selectedLanguage == "en",
                     groupValue: true,
                     onChanged: (_) {
-                      setState(() => _selectedLanguage = "en_");
+                      setState(() => _selectedLanguage = "en");
                     },
                     title: Text(S.of(context).english),
                   ),
                   RadioListTile(
-                    value: _selectedLanguage == "fr_",
+                    value: _selectedLanguage == "fr",
                     groupValue: true,
                     onChanged: (_) {
-                      setState(() => _selectedLanguage = "fr_");
+                      setState(() => _selectedLanguage = "fr");
                     },
                     title: Text(S.of(context).french),
                   ),
                   RadioListTile(
-                    value: _selectedLanguage == "de_",
+                    value: _selectedLanguage == "de",
                     groupValue: true,
                     onChanged: (_) {
-                      setState(() => _selectedLanguage = "de_");
+                      setState(() => _selectedLanguage = "de");
                     },
                     title: Text(S.of(context).german),
                   ),
                   RadioListTile(
-                    value: _selectedLanguage == "it_",
+                    value: _selectedLanguage == "it",
                     groupValue: true,
                     onChanged: (_) {
-                      setState(() => _selectedLanguage = "it_");
+                      setState(() => _selectedLanguage = "it");
                     },
                     title: Text(S.of(context).italian),
                   ),
                   RadioListTile(
-                    value: _selectedLanguage == "nl_",
+                    value: _selectedLanguage == "nl",
                     groupValue: true,
                     onChanged: (_) {
-                      setState(() => _selectedLanguage = "nl_");
+                      setState(() => _selectedLanguage = "nl");
                     },
                     title: Text(S.of(context).dutch),
                   )
@@ -178,7 +178,7 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    AppComponent.setLocale(context, Locale(_selectedLanguage.replaceAll("_", "")));
+                    AppComponent.setLocale(context, _selectedLanguage);
                     Navigator.of(context).pop();
                   },
                   child: Text(S.of(context).ok),

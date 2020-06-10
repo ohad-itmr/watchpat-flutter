@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:my_pat/utils/log/log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_pat/config/default_settings.dart';
+import 'package:devicelocale/devicelocale.dart';
 
 class PrefsNames {
   static const String READING_KEY = DefaultSettings.appName + ".reading";
@@ -32,6 +34,7 @@ class PrefsNames {
   static const String SFTP_PASSWORD_KEY = DefaultSettings.appName + ".sftppassword";
   static const String SFTP_PATH_KEY = DefaultSettings.appName + ".sftppath";
   static const String LOCALE_CODE = "locale.code";
+  static const String SMARTPHONE_LOCALE_CODE = "smartphone.locale.code";
   static const String SERVICE_EMAIL_CODE = "service.email";
   static const String DISPATCHER_URL_INDEX = "dispatcher.url.index";
   static const String DATA_UPLOADING_NOT_FINISHED = "test.data.uploaded";
@@ -271,14 +274,23 @@ class PrefsProvider {
   //
   // Locale
   //
-  static Future<void> saveLocale(Locale newLocale) async {
-    final String localeCode = newLocale.toString().replaceAll("_", "");
-    await PrefsService.prefs.setString(PrefsNames.LOCALE_CODE, localeCode);
+  static Future<void> saveLocaleCode(String code) async {
+    await PrefsService.prefs.setString(PrefsNames.LOCALE_CODE, code);
+  }
+
+  static Future<void> setupSmartphoneLocale() async {
+    final locale = await Devicelocale.currentLocale;
+    final code = locale.toString().substring(0,2);
+    await PrefsService.prefs.setString(PrefsNames.SMARTPHONE_LOCALE_CODE, code);
   }
 
   static Locale loadLocale() {
-    final String code = PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? 'en';
+    final String code = PrefsService.prefs.getString(PrefsNames.LOCALE_CODE) ?? _loadSmartphoneLocaleCode();
     return Locale(code, "");
+  }
+
+  static String _loadSmartphoneLocaleCode() {
+    return PrefsService.prefs.getString(PrefsNames.SMARTPHONE_LOCALE_CODE) ?? 'en';
   }
 
   //
@@ -397,5 +409,4 @@ class PrefsProvider {
   static Future<void> setStartSessionSent({bool value = true}) {
     return PrefsService.prefs.setBool(PrefsNames.START_SESSION_ALREADY_SENT, value);
   }
-
 }

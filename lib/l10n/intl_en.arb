@@ -263,5 +263,9 @@
   "carousel_end_5": "Follow the local recycling instructions regarding disposal or recycling of the device and device components.",
 
   "send_logs": "Send logs",
-  "forget_device": "Forget device"
+  "forget_device": "Forget device",
+
+  "sn_not_registered" : "Serial number of your device is not registered",
+  "pin_retries_exceeded": "You have reached the maximum number of PIN retries",
+  "dispatcher_connection_failed": "Connection to dispatcher failed"
 }

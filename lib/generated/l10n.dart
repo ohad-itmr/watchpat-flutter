@@ -2393,6 +2393,33 @@ class S {
       args: [],
     );
   }
+
+  String get sn_not_registered {
+    return Intl.message(
+      'Serial number of your device is not registered',
+      name: 'sn_not_registered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get pin_retries_exceeded {
+    return Intl.message(
+      'You have reached the maximum number of PIN retries',
+      name: 'pin_retries_exceeded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get dispatcher_connection_failed {
+    return Intl.message(
+      'Connection to dispatcher failed',
+      name: 'dispatcher_connection_failed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

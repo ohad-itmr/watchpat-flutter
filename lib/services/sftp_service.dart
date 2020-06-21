@@ -85,7 +85,14 @@ class SftpService {
 
   Lock _lock = new Lock();
 
-  initializeService() async {
+  initializeService({bool forceRestart = false}) async {
+    if (forceRestart) {
+      await _lock.synchronized(() async {
+        resetSFTPService();
+        await Future.delayed(Duration(seconds: 1));
+      });
+    }
+
     if (_lock.locked || _serviceInitialized) {
       Log.info(TAG, "SFTP service already initialized");
       return;

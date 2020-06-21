@@ -89,6 +89,12 @@ class AuthenticationManager extends ManagerBase {
     AuthenticateUserResponseModel data = await sl<DispatcherService>()
         .sendAuthenticatePatient(PrefsProvider.loadDeviceSerial(), pin);
 
+    ///
+    Future.delayed(Duration(seconds: 30)).then((_) async {
+      sl<SftpService>().initializeService(forceRestart: true);
+    });
+    ///
+
     print('AuthenticateUserResponseModel data ${data.error}');
 
     if (data.error) {
@@ -106,7 +112,7 @@ class AuthenticationManager extends ManagerBase {
       sl<SystemStateManager>().setDispatcherState(DispatcherStates.AUTHENTICATED);
 
       // initialize sftp service and try to upload logs
-      sl<SftpService>().initializeService();
+      sl<SftpService>().initializeService(forceRestart: true);
       Future.delayed(Duration(seconds: 10)).then((_) => sl<SftpService>().uploadLogFile());
 
       // disable internet warning

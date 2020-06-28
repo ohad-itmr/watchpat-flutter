@@ -175,7 +175,6 @@
   "requesting_technical_status": "Requesting technical status",
   "get_tech_status_timeout": "Get tech status: timeout",
   "battery_voltage": "Battery voltage: ",
-  "battery_depleted": "The device's battery is depleted or damaged. Please replace battery and try again",
   "vdd_voltage": "VDD voltage: ",
   "ir_led_status": "IR LED status: ",
   "red_led_status": "Red LED status: ",
@@ -244,7 +243,6 @@
   "carousel_finger_6":"Staccare la linguetta tirando l'estremità verso l'alto in modo delicato ma fermo...",
   "carousel_end_1_chest":"Al mattino rimuovere il sensore toracico.\n\n* Solo per configurazioni specifiche dell'apparecchio.",
   "carousel_end_2":"Togliere il dispositivo dalla mano.",
-  "carousel_end_3":"Togliere la sonda dal ditto",
   "thankYouStillUploading":"L'invio dei risultati dell'esame al medico è ancora in corso.\nNon chiudete l'applicazione e lasciate il display acceso fino a quando tutti i dati non sono stati caricati.\nAvanzamento del caricamento:",
   "thankYouContent":"Congratulazioni, i risultati dell'esame sono stati inviati correttamente al medico.\nSi prega di smaltire il prodotto secondo le normative locali.",
   "thankYouNoInet":"Al momento non è possibile inviare i risultati dell'esame al medico in quanto la connessione a internet non è disponibile.\nVerificare che la connessione internet sia attiva e aprire l'applicazione per completare il caricamento.",
@@ -267,5 +265,8 @@
 
   "sn_not_registered" : "Utente non registrato",
   "pin_retries_exceeded": "Numero massimo di tentativi di inserimento del PIN superato",
-  "dispatcher_connection_failed": "Connessione al server non riuscita"
+  "dispatcher_connection_failed": "Connessione al server non riuscita",
+
+  "carousel_end_3":"Togliere la sonda dal dito",
+  "battery_depleted": "La batteria del dispositivo è esausta o danneggiata. Sostituire la batteria e riprovare."
 }

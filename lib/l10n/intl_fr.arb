@@ -102,7 +102,6 @@
   "getting_param_file_success": "Getting parameter file: success",
   "getting_param_file_fail": "Getting parameter file: failed",
   "not_enough_test_data": "L’application n’a pas collecté suffisamment de données de l’examen. Vous pouvez arrêter l’examen dans :",
-  "patient_msg1": "Veuillez brancher votre téléphone à un chargeur. Laissez le chargeur branché pendant toute la procédure de test. Fermez les applications non utilisées avant de commencer la procédure de test. \n\nNe fermez pas l’application WatchPATג„¢ONE pendant l’examen.",
   "patient_msg2": "Merci de ne pas fermer l’application WatchPAT\u2122 pendant l’examen",
   "pinTitle": "Entrez le code PIN",
   "pinContent": "Entrez votre code PIN ({pin}) à quatre chiffres et appuyez sur ENTRER",
@@ -181,7 +180,6 @@
   "requesting_technical_status": "Requesting technical status",
   "get_tech_status_timeout": "Get tech status: timeout",
   "battery_voltage": "Battery voltage: ",
-  "battery_depleted": "The device's battery is depleted or damaged. Please replace battery and try again",
   "vdd_voltage": "VDD voltage: ",
   "ir_led_status": "IR LED status: ",
   "red_led_status": "Red LED status: ",
@@ -217,7 +215,6 @@
   "preparing_test": "Préparation de l’examen. Veuillez patienter...",
   "restart_test": "Un problème s’est produit. Veuillez redémarrer l’application, retirez la pile de l’appareil, réinsérez-la et recommencez depuis le début.",
   "welcomeContent": "Bienvenue sur WatchPAT\u2122ONE. Cette application envoie vos données de sommeil à votre médecin. \nVeuillez éteindre tous les autres appareils émetteurs de la pièce, (comme les montres connectées, smartphones, écouteurs), car cela pourrait interférer avec le test. Si vous souhaitez démarrer la configuration immédiatement, appuyez sur le bouton PRET. Le bouton APERCU vous permet de prévisualiser la procédure de configuration.",
-  "device_disconnected": "L’appareil WatchPAT ג„¢ est déconnecté. L’examen ne peut pas démarrer.",
   "you_can_end_recording": "Vous ne pourrez terminer l’enregistrement que dans",
   "carousel_welcome": "Ouvrez la boite et assurez-vous d’avoir une pile AAA ainsi que l’appareil et ses capteurs",
   "carousel_battery_1": "Insérez la pile dans l’appareil",
@@ -244,13 +241,11 @@
   "send_logs": "Envoyer les journaux",
   "forget_device": "Oubliez l'appareil",
 
-  "device_not_located":"L'appareil n'est pas localisé. Veuillez vérifiez si le voyant lumineux de WatchPAT. S'il clignote, rapprochez votre téléphone de l'appareil. S'il ne clignote pas, vérifiez si la pile n'est pas épuisée et si elle est bien placée.",
   "system_encountered_problem":"Le système a rencontré un problème. Essayez de télécharger à nouveau l’application. Si le problème persiste, appelez le service d'assistance technique (comme indiqué sur la boîte).",
   "disconnect_all_irr_devices":"DÉBRANCHEZ TOUS LES APPAREILS NON UTILISÉS",
   "carousel_prepare_1":"Enlevez tous vos bijoux et la crème pour les mains. Vos ongles doivent être coupés.",
   "carousel_prepare_2":"Retirez votre montre. Ne mettez pas de crème sur les mains.",
   "carousel_strap_1":"Mettez le WatchPAT au poignet de votre main non dominante.",
-  "carousel_chest_1":"Faites passer le capteur sour votre manche...\n\n* Uniquement pour des configurations d’appareils spécifiques.",
   "carousel_chest_2":"...jusqu'au col.\n\n* Uniquement pour des configurations d’appareils spécifiques.",
   "carousel_end_5":"Suivez les instructions de recyclage locales concernant la mise au rebut ou le recyclage de l'appareil et de ses composants.",
   "thankYouStillUploading":"Votre examen est en cours de téléchargement.\nVeuillez ne pas fermer l’application et laisser l’écran allumé jusqu’au téléchargement de toutes les données.\n\nAvancée du téléchargement:",
@@ -267,5 +262,11 @@
 
   "sn_not_registered" : "Utilisateur non enregistré",
   "pin_retries_exceeded": "Vous avez atteint le nombre maximum de tentatives de code PIN",
-  "dispatcher_connection_failed": "La connexion au serveur a échoué"
+  "dispatcher_connection_failed": "La connexion au serveur a échoué",
+
+  "carousel_chest_1":"Faites passer le capteur sous votre manche...\n\n* Uniquement pour des configurations d’appareils spécifiques.",
+  "device_not_located":"L'appareil n'est pas localisé. Veuillez vérifiez le voyant lumineux de WatchPAT. S'il clignote, rapprochez votre téléphone de l'appareil. S'il ne clignote pas, vérifiez si la pile n'est pas épuisée et si elle est bien placée.",
+  "battery_depleted": "La pile de l’appareil est épuisée ou endommagée. Veuillez remplacer la pile et réessayer.",
+  "patient_msg1": "Veuillez brancher votre téléphone à un chargeur. Laissez le chargeur branché pendant toute la procédure de test. Fermez les applications non utilisées avant de commencer la procédure de test. \n\nNe fermez pas l’application WatchPAT\u2122 ONE pendant l’examen.",
+  "device_disconnected": "L’appareil WatchPAT est déconnecté. L’examen ne peut pas démarrer."
 }

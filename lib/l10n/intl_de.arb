@@ -100,7 +100,6 @@
   "getting_param_file_success": "Getting parameter file: success",
   "getting_param_file_fail": "Getting parameter file: failed",
   "not_enough_test_data": " Die Anwendung konnte nicht ausreichend Testdaten sammeln. Sie können den Test beenden in:",
-  "patient_msg1": " Schließen Sie Ihr Mobilphone an einem Ladegerät an. Lassen Sie das Ladegerät während des gesamten Testvorgangs eingeschaltet.  Schließen Sie ungenutzte Anwendungen des Mobilphones bevor Sie den Testvorgang starten. \n\nBeenden Sie bitte nicht die WatchPATג„¢ONE Anwendung während des Tests.",
   "patient_msg2": " Bitte schließen Sie nicht die WatchPAT\u2122 Anwendung während des Tests.",
   "pinTitle": " PIN eingeben",
   "pinContent": " Geben Sie die Ihnen zugewiesene vierstellige PIN ({pin}) ein und drücken Sie auf ENTER",
@@ -150,7 +149,6 @@
   "uploadingTitle": " GUTEN MORGEN",
   "attention": " ACHTUNG",
   "uploadingContent": " Schließen Sie bitte die Anwendung während der Datenübertragung nicht.\nDie Übertragung wird in einigen Minuten abgeschlossen sein.",
-  "uploadingDeviceDisconnected": " Das WatchPATג„¢ Gerät kann nicht angesprochen werden. Positionieren Sie es näher an die Anwendung.",
   "used_device_please_replace": " Das Gerät ist bereits benutzt worden. Bitte ersetzen und die Anwendung erneut starten",
   "user_mode": " Anwender Modus",
   "welcomeTitle": " WILLKOMMEN",
@@ -268,5 +266,8 @@
 
   "sn_not_registered" : "Anwender ist nicht registriert.",
   "pin_retries_exceeded": "Sie haben die maximale Anzahl PIN-Eingabeversuche erreicht.",
-  "dispatcher_connection_failed": "Die verbindung zum server ist fehlgeschlagen"
+  "dispatcher_connection_failed": "Die verbindung zum server ist fehlgeschlagen",
+
+  "patient_msg1": "Schließen Sie Ihr Mobilphone an einem Ladegerät an. Lassen Sie das Ladegerät während des gesamten Testvorgangs eingeschaltet.  Schließen Sie ungenutzte Anwendungen des Mobilphones bevor Sie den Testvorgang starten. \n\nBeenden Sie bitte nicht die WatchPAT\u2122 ONE Anwendung während des Tests.",
+  "uploadingDeviceDisconnected": "Das WatchPAT Gerät kann nicht angesprochen werden. Positionieren Sie es näher an die Anwendung."
 }

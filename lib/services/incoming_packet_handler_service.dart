@@ -78,7 +78,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   bool _isFirstPacketOfDataReceived = false;
   bool _isDataReceiving = false;
-  String _errorString = "Device errors:\n\n";
+  String _errorString = "";
 
   // SERVICE OPERATIONS RESULTS STREAM
   PublishSubject<int> _bitResponse = PublishSubject<int>();
@@ -100,7 +100,7 @@ class IncomingPacketHandlerService extends ManagerBase {
   }
 
   void clearDeviceErrors() {
-    _errorString = "Device errors:\n\n";
+    _errorString = "";
   }
 
   bool isDataReceiving() {
@@ -564,7 +564,7 @@ class IncomingPacketHandlerService extends ManagerBase {
 
   Future<bool> _checkSessionErrors(int deviceSerial) async {
     Log.info(TAG, "### Checking for session errors");
-    String errors = "Session errors:\n\n";
+    String errors = "";
     await sl<WelcomeActivityManager>().configFinished.firstWhere((done) => done);
     GeneralResponse res = await sl<DispatcherService>().getPatientPolicy(deviceSerial.toString());
     if (res.error) {

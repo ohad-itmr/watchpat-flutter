@@ -1,7 +1,7 @@
 name: my_pat
 description: A new Flutter project.
 
-version: 1.0.22+8
+version: 1.5.1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -42,7 +42,7 @@ dependencies:
   # flutter blue
 #  flutter_blue: 0.5.0
   flutter_blue:
-    path: ../../../../derzhavets/projects/flutter_blue-0.5.0-custom
+    path: ../../../../mac/Projects/flutter_ios/flutter_blue-0.5.0-custom
 
   #  battery:
   #    path: ../../../../derzhavets/projects/flutter_plugins/packages/battery/
@@ -52,7 +52,7 @@ dependencies:
       path: packages/battery
 
   ssh:
-    path: ../../../../derzhavets/projects/flutter_ssh/
+    path: ../../../../mac/Projects/flutter_ios/flutter_ssh/
 #  ssh:
 #    git:
 #      url: https://github.com/derzhavets/flutter_ssh

@@ -285,9 +285,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "used_device_please_replace" : MessageLookupByLibrary.simpleMessage(" Het apparaat is al gebruikt, vervang het en start de applicatie opnieuw"),
     "user_mode" : MessageLookupByLibrary.simpleMessage(" Gebruikers modus"),
     "vdd_voltage" : MessageLookupByLibrary.simpleMessage("VDD voltage: "),
-    "welcomeContent" : MessageLookupByLibrary.simpleMessage(" Welkom bij WatchPAT™ONE. Deze app stuurt uw slaapgegevens door naar uw arts. Eerst moeten we een paar dingen doen om ervoor te zorgen dat alles op de juiste manier is ingesteld. Schakel alle andere zendapparaten - zoals smart watches, andere mobiele telefoons, koptelefoon – uit omdat deze de test kunnen verstoren.\nAls u gelijk wilt starten met de installatie druk dan op de ‘ KLAAR’ knop. De VOORBEELD knop neemt u mee door de setup."),
+    "welcomeContent" : MessageLookupByLibrary.simpleMessage("Welkom bij WatchPAT™ONE. Deze app stuurt uw slaapgegevens door naar uw arts. Eerst moeten we een paar dingen doen om ervoor te zorgen dat alles op de juiste manier is ingesteld. Schakel alle andere zendapparaten - zoals smart watches, andere mobiele telefoons, koptelefoon – uit omdat deze de test kunnen verstoren.\nAls u gelijk wilt starten met de installatie druk dan op de ‘ KLAAR’ knop. De VOORBEELD knop neemt u mee door de setup."),
     "welcomeTitle" : MessageLookupByLibrary.simpleMessage(" WELKOM "),
-    "welcome_to_mypat" : MessageLookupByLibrary.simpleMessage(" Welkom bij WatchPAT™"),
+    "welcome_to_mypat" : MessageLookupByLibrary.simpleMessage("Welkom bij WatchPAT™"),
     "writing_param_file" : MessageLookupByLibrary.simpleMessage("Parameter bestand schrijven "),
     "you_can_end_recording" : MessageLookupByLibrary.simpleMessage("U kunt de registratie alleen beeindigen in")
   };

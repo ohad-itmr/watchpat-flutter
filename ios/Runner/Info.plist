@@ -18,6 +18,7 @@
 		<string>fr</string>
 		<string>it</string>
 		<string>de</string>
+		<string>nl</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>my_pat_app</string>

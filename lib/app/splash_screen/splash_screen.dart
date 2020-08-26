@@ -109,7 +109,9 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
 //    if (!PrefsProvider.getDataUploadingIncomplete()) {
+    Future.delayed(Duration(seconds: 1), () async {
       _systemStateManager.btStateStream.where((BtStates state) => state != BtStates.NONE).listen(_handleBtState);
+    });
 //    }
 
     _systemStateManager.firmwareStateStream.listen(_handleUpgradeProgress);
@@ -185,6 +187,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _handleBtState(BtStates state) {
+    Log.info("splash_screen", "handle BT state: $state");
     if (state == BtStates.NOT_AVAILABLE && !_btWarningShow) {
       _showBTWarning();
       _btWarningShow = true;
@@ -206,6 +209,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _showBTWarning() {
+    Log.info("splash_screen", "showBTwarning");
     showDialog(
       context: context, barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {

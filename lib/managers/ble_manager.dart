@@ -47,10 +47,13 @@ class BleManager extends ManagerBase {
   BleManager() {
     lang = sl<S>();
     _initTasker();
-    initializeBT();
+    Future.delayed(Duration(seconds: 1), () async {
+      initializeBT();
+    });
   }
 
   void _btStateHandler(BluetoothState s) {
+    Log.info(TAG, "btStateHandler: state = $s");
     switch (s) {
       case BluetoothState.unknown:
       case BluetoothState.unavailable:

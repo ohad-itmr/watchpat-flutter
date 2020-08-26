@@ -203,7 +203,7 @@
   "system_encountered_problem": " Il sistema ha riscontrato un problema. Provare a scaricare di nuovo l'applicazione. Se il problema si ripresenta, chiamare l'assistenza clienti e segnalare l'errore",
   "preparing_test": " Preparazione del test. Si prega di attendere...",
   "restart_test": " Si è verificato un problema. Si prega di riavviare l'applicazione, rimuovere la batteria dal dispositivo, reinserirla e ricominciare dall'inizio.",
-  "device_disconnected": "Il dispositivo WatchPATג'¢ è scollegato. Non è possibile avviare il test",
+  "device_disconnected": "Il dispositivo WatchPAT scollegato. Non è possibile avviare il test",
   "you_can_end_recording": "È possibile terminare la registrazione solo in",
   "carousel_welcome": "Aprire la confezione, assicurandosi di avere a disposizione una batteria AAA insieme al dispositivo e ai suoi sensori",
   "carousel_battery_1": "Inserire la batteria nel dispositivo",

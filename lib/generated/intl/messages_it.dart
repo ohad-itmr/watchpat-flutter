@@ -107,7 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "critical_hw_failure" : MessageLookupByLibrary.simpleMessage(" Errore critico dell\'hardware"),
     "customer_service_mode" : MessageLookupByLibrary.simpleMessage(" Modalità di assistenza clienti"),
     "device_connection_failed" : MessageLookupByLibrary.simpleMessage(" Impossibile connettersi al dispositivo. \\n\\nContattare Itamar Medical per l’assistenza"),
-    "device_disconnected" : MessageLookupByLibrary.simpleMessage("Il dispositivo WatchPATג\'¢ è scollegato. Non è possibile avviare il test"),
+    "device_disconnected" : MessageLookupByLibrary.simpleMessage("Il dispositivo WatchPAT scollegato. Non è possibile avviare il test"),
     "device_is_not_paired_error" : MessageLookupByLibrary.simpleMessage(" Errore di abbinamento del dispositivo principale. Resettare il dispositivo e riprovare."),
     "device_is_paired_error" : MessageLookupByLibrary.simpleMessage(" L\'apparecchio è già stato associato, si prega di resettare l\'apparecchio e di avviare nuovamente il processo"),
     "device_log_file_description" : MessageLookupByLibrary.simpleMessage(" File di log del dispositivo "),

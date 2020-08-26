@@ -87,7 +87,7 @@
   "getting_param_file_success":"Parameter bestand ophalen: geslaagd",
   "getting_param_file_fail":"Parameter bestand ophalen: mislukt ",
   "not_enough_test_data":" De applicatie heeft onvoldoende testgegevens verzameld. U kan de test stoppen in: ",
-  "patient_msg1":" Sluit uw telefoon aan op een oplader. Laat deze tijdens de gehele test aangesloten. Sluit ongebruikte toepassingen op uw telefoon voordat u de testprocedure start. \nU mag de WatchPATג„¢ONE applicatie niet sluiten tijdens de test procedure.",
+  "patient_msg1":" Sluit uw telefoon aan op een oplader. Laat deze tijdens de gehele test aangesloten. Sluit ongebruikte toepassingen op uw telefoon voordat u de testprocedure start. \nU mag de WatchPAT ONE applicatie niet sluiten tijdens de test procedure.",
   "patient_msg2":" U mag de WatchPAT\u2122 applicatie niet sluiten tijdens de test procedure.",
   "pinContent":" Voer uw 4 cijferige pincode ({pin}) in en druk op ENTER ",
   "please_insert_finger":"Steek uw vinger in de probe en druk op OK ",

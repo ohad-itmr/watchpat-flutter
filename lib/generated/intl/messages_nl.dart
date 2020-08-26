@@ -195,7 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "parameters_file_write_failed" : MessageLookupByLibrary.simpleMessage("Schrijven van parameters bestand is mislukt "),
     "parameters_file_written_successfully" : MessageLookupByLibrary.simpleMessage("Parameters bestand succesvol geschreven  "),
     "pat_led_status" : MessageLookupByLibrary.simpleMessage("PAT LED status: "),
-    "patient_msg1" : MessageLookupByLibrary.simpleMessage(" Sluit uw telefoon aan op een oplader. Laat deze tijdens de gehele test aangesloten. Sluit ongebruikte toepassingen op uw telefoon voordat u de testprocedure start. \nU mag de WatchPATג„¢ONE applicatie niet sluiten tijdens de test procedure."),
+    "patient_msg1" : MessageLookupByLibrary.simpleMessage(" Sluit uw telefoon aan op een oplader. Laat deze tijdens de gehele test aangesloten. Sluit ongebruikte toepassingen op uw telefoon voordat u de testprocedure start. \nU mag de WatchPAT ONE applicatie niet sluiten tijdens de test procedure."),
     "patient_msg2" : MessageLookupByLibrary.simpleMessage(" U mag de WatchPAT™ applicatie niet sluiten tijdens de test procedure."),
     "pinContent" : m0,
     "pinTitle" : MessageLookupByLibrary.simpleMessage("VOER DE PINCODE IN"),
@@ -285,9 +285,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "used_device_please_replace" : MessageLookupByLibrary.simpleMessage(" Het apparaat is al gebruikt, vervang het en start de applicatie opnieuw"),
     "user_mode" : MessageLookupByLibrary.simpleMessage(" Gebruikers modus"),
     "vdd_voltage" : MessageLookupByLibrary.simpleMessage("VDD voltage: "),
-    "welcomeContent" : MessageLookupByLibrary.simpleMessage("Welkom bij WatchPAT™ONE. Deze app stuurt uw slaapgegevens door naar uw arts. Eerst moeten we een paar dingen doen om ervoor te zorgen dat alles op de juiste manier is ingesteld. Schakel alle andere zendapparaten - zoals smart watches, andere mobiele telefoons, koptelefoon – uit omdat deze de test kunnen verstoren.\nAls u gelijk wilt starten met de installatie druk dan op de ‘ KLAAR’ knop. De VOORBEELD knop neemt u mee door de setup."),
+    "welcomeContent" : MessageLookupByLibrary.simpleMessage(" Welkom bij WatchPAT™ONE. Deze app stuurt uw slaapgegevens door naar uw arts. Eerst moeten we een paar dingen doen om ervoor te zorgen dat alles op de juiste manier is ingesteld. Schakel alle andere zendapparaten - zoals smart watches, andere mobiele telefoons, koptelefoon – uit omdat deze de test kunnen verstoren.\nAls u gelijk wilt starten met de installatie druk dan op de ‘ KLAAR’ knop. De VOORBEELD knop neemt u mee door de setup."),
     "welcomeTitle" : MessageLookupByLibrary.simpleMessage(" WELKOM "),
-    "welcome_to_mypat" : MessageLookupByLibrary.simpleMessage("Welkom bij WatchPAT™"),
+    "welcome_to_mypat" : MessageLookupByLibrary.simpleMessage(" Welkom bij WatchPAT™"),
     "writing_param_file" : MessageLookupByLibrary.simpleMessage("Parameter bestand schrijven "),
     "you_can_end_recording" : MessageLookupByLibrary.simpleMessage("U kunt de registratie alleen beeindigen in")
   };

@@ -31,8 +31,7 @@ class CarouselDialog extends StatelessWidget {
               Expanded(
                 child: ConstrainedBox(
                   constraints: BoxConstraints.expand(),
-                  child: FadeInImage(
-                    placeholder: MemoryImage(kTransparentImage),
+                  child: Image(
                     image: AssetImage(snapshot.data.content.image),
                     fit: BoxFit.cover,
                   ),

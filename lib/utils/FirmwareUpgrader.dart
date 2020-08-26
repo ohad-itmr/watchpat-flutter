@@ -46,6 +46,7 @@ class FirmwareUpgrader extends ManagerBase {
       Log.shout(TAG, "fw upgrade file loading error");
       return true; // current fw version is up to date because there is no reference for comparison
     }
+    Log.info(TAG, "device fw version: ${config.fwVersion}, app fw version: ${_upgradeFileFWVersion}");
     return (config.fwVersion.compareTo(_upgradeFileFWVersion) != CompareResults.VERSION_HIGHER);
   }
 

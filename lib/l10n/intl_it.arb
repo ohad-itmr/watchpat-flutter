@@ -246,7 +246,7 @@
   "thankYouStillUploading":"L'invio dei risultati dell'esame al medico è ancora in corso.\nNon chiudete l'applicazione e lasciate il display acceso fino a quando tutti i dati non sono stati caricati.\nAvanzamento del caricamento:",
   "thankYouContent":"Congratulazioni, i risultati dell'esame sono stati inviati correttamente al medico.\nSi prega di smaltire il prodotto secondo le normative locali.",
   "thankYouNoInet":"Al momento non è possibile inviare i risultati dell'esame al medico in quanto la connessione a internet non è disponibile.\nVerificare che la connessione internet sia attiva e aprire l'applicazione per completare il caricamento.",
-  "pinContent":"Inserire il PIN a quattro cifre che vi è stato assegnato ($pin) e premere INVIO",
+  "pinContent":"Inserire il PIN a quattro cifre che vi è stato assegnato ({pin}) e premere INVIO",
   "pin_type_pn":"fornito dallo staff medico",
   "pin_type_ss":"ultime cifre della polizza sanitaria",
   "pin_type_cc":"ultime cifre della vostra carta di credito",

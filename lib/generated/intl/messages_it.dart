@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it';
 
-  static m0(pin) => "Inserire il PIN a quattro cifre che vi è stato assegnato (\$pin) e premere INVIO";
+  static m0(pin) => "Inserire il PIN a quattro cifre che vi è stato assegnato (${pin}) e premere INVIO";
 
   static m1(step, total) => "Step ${step} di ${total}";
 

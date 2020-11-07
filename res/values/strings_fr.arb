@@ -103,7 +103,7 @@
   "patient_msg1": "You are advised to leave the charger plugged in during the entire test procedure and close unused applications before starting test procedure",
   "patient_msg2": "Please don't close myPAT application during test procedure",
   "pinTitle": "Enter Pin",
-  "pinContent": "Enter your assigned four digits PIN ($pin) and tap ENTER",
+  "pinContent": "Enter your assigned four digits PIN ({pin}) and tap ENTER",
   "please_insert_finger": "Please insert the finger and press OK",
   "please_plug_charger": "Please plug in a charger",
   "please_replace_battery": "Please replace the battery in the device",

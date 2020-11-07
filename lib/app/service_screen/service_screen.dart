@@ -405,8 +405,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
           title: "Retrieve test data from device and upload it to server",
           action: _showRetrieveStoredDataDialog),
       ServiceOption(title: "Perform BIT", action: _showBitScreen),
-//      ServiceOption(
-//          title: "Upgrade main device firmware", action: _showFWUpgradeDialog),
+      ServiceOption(
+          title: "Upgrade main device firmware", action: _showFWUpgradeDialog),
       ServiceOption(title: "Handle parameters file", action: _showParametersFileDialog),
       ServiceOption(title: "Set dispatcher URL", action: _setDispatcherURL)
     ];

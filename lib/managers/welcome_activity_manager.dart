@@ -149,7 +149,7 @@ class WelcomeActivityManager extends ManagerBase {
     final int prevSession = PrefsProvider.loadPreviousSessionTime();
     final int currentTime = DateTime.now().millisecondsSinceEpoch;
     if (prevSession != null && currentTime - prevSession > MAX_TIME_GAP_BETWEEN_RUNS_HOURS * 60 * 60 * 1000) {
-      Log.info(TAG, "Found outdated session, clearing device from memmory");
+      Log.info(TAG, "Found outdated session, clearing device from memory");
       PrefsProvider.clearDeviceName();
     }
     PrefsProvider.savePreviousSessionTime(currentTime);

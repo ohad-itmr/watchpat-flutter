@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +106,8 @@ class _BatteryScreenState extends State<BatteryScreen> {
           type: BlockType.image,
           imageName: 'insert_battery.png',
         ),
-        bottomBlock: StreamBuilder(
+        bottomBlock: SingleChildScrollView (
+        child: StreamBuilder(
             stream: systemStateManager.bleScanResultStream,
             builder: (BuildContext context, AsyncSnapshot<ScanResultStates> snapshot) {
               return BlockTemplate(
@@ -113,6 +115,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
                   title: _buildHeaderText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED),
                   content: _buildText(snapshot.hasData ? snapshot.data : ScanResultStates.NOT_LOCATED));
             }),
+        ),
         buttons: _buildButtonsBlock(),
         showSteps: false,
       ),

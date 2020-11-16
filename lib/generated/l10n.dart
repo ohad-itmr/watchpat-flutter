@@ -171,132 +171,6 @@ class S {
     );
   }
 
-  String get english {
-    return Intl.message(
-      'English',
-      name: 'english',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get french {
-    return Intl.message(
-      'French',
-      name: 'french',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get german {
-    return Intl.message(
-      'German',
-      name: 'german',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get italian {
-    return Intl.message(
-      'Italian',
-      name: 'italian',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get dutch {
-    return Intl.message(
-      'Dutch',
-      name: 'dutch',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get danish {
-    return Intl.message(
-      'Danish',
-      name: 'danish',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get greek {
-    return Intl.message(
-      'Greek',
-      name: 'greek',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get spanish {
-    return Intl.message(
-      'Spanish',
-      name: 'spanish',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get finnish {
-    return Intl.message(
-      'Finnish',
-      name: 'finnish',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get latvian {
-    return Intl.message(
-      'Latvian',
-      name: 'latvian',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get polish {
-    return Intl.message(
-      'Polish',
-      name: 'polish',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get portuguese {
-    return Intl.message(
-      'Portuguese',
-      name: 'portuguese',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get russian {
-    return Intl.message(
-      'Russian',
-      name: 'russian',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get swedish {
-    return Intl.message(
-      'Swedish',
-      name: 'swedish',
-      desc: '',
-      args: [],
-    );
-  }
-
   String get cancel {
     return Intl.message(
       'CANCEL',
@@ -2486,7 +2360,7 @@ class S {
 
   String get pin_retries_exceeded {
     return Intl.message(
-      'You have reached the maximum number of PIN retries',
+      'Έχετε εξαντλήσει τον μέγιστο αριθμό προσπαθειών εισαγωγής του PIN',
       name: 'pin_retries_exceeded',
       desc: '',
       args: [],
@@ -2497,6 +2371,132 @@ class S {
     return Intl.message(
       'Connection to dispatcher failed',
       name: 'dispatcher_connection_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get english {
+    return Intl.message(
+      'English',
+      name: 'english',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get french {
+    return Intl.message(
+      'French',
+      name: 'french',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get german {
+    return Intl.message(
+      'German',
+      name: 'german',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get italian {
+    return Intl.message(
+      'Italian',
+      name: 'italian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get dutch {
+    return Intl.message(
+      'Dutch',
+      name: 'dutch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get danish {
+    return Intl.message(
+      'Danish',
+      name: 'danish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get greek {
+    return Intl.message(
+      'Greek',
+      name: 'greek',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get spanish {
+    return Intl.message(
+      'Spanish',
+      name: 'spanish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get finnish {
+    return Intl.message(
+      'Finnish',
+      name: 'finnish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get latvian {
+    return Intl.message(
+      'Latvian',
+      name: 'latvian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get polish {
+    return Intl.message(
+      'Polish',
+      name: 'polish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get portuguese {
+    return Intl.message(
+      'Portuguese',
+      name: 'portuguese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get russian {
+    return Intl.message(
+      'Russian',
+      name: 'russian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get swedish {
+    return Intl.message(
+      'Swedish',
+      name: 'swedish',
       desc: '',
       args: [],
     );

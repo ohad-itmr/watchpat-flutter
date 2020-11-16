@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/managers/managers.dart';
 import 'package:my_pat/service_locator.dart';
@@ -39,14 +40,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   _subscribeToToasts() {
-    _toastSub = _systemStateManager.toastMessagesStream.listen((msg) => MyPatToast.show(msg, context));
+    _toastSub = _systemStateManager.toastMessagesStream
+        .listen((msg) => MyPatToast.show(msg, context));
   }
 
   void _handleNext() async {
-    await welcomeManager.initialChecksComplete.firstWhere((bool isComplete) => isComplete);
-    final ScanResultStates state = await _systemStateManager.bleScanResultStream.first;
+    await welcomeManager.initialChecksComplete
+        .firstWhere((bool isComplete) => isComplete);
+    final ScanResultStates state =
+        await _systemStateManager.bleScanResultStream.first;
     final bool deviceHasErrors = await sl<SystemStateManager>().deviceHasErrors;
-    final bool sessionHasErrors = await sl<SystemStateManager>().sessionHasErrors;
+    final bool sessionHasErrors =
+        await sl<SystemStateManager>().sessionHasErrors;
 
     setState(() => _nextIsPressed = false);
 
@@ -54,11 +59,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       _showErrorDialog(welcomeManager.initialErrorsAsString);
     } else if (sessionHasErrors) {
       _showErrorDialog(sl<SystemStateManager>().sessionErrors);
-    } else if (sl<SystemStateManager>().deviceErrorState == DeviceErrorStates.CHANGE_BATTERY) {
+    } else if (sl<SystemStateManager>().deviceErrorState ==
+        DeviceErrorStates.CHANGE_BATTERY) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else if (deviceHasErrors && !PrefsProvider.getIgnoreDeviceErrors()) {
-      _showErrorDialog(sl<SystemStateManager>().deviceErrors, callback: sl<BleManager>().restartSession);
-    } else if (state == ScanResultStates.NOT_LOCATED || state == ScanResultStates.LOCATED_MULTIPLE) {
+      _showErrorDialog(sl<SystemStateManager>().deviceErrors,
+          callback: sl<BleManager>().restartSession);
+    } else if (state == ScanResultStates.NOT_LOCATED ||
+        state == ScanResultStates.LOCATED_MULTIPLE) {
       Navigator.of(context).pushNamed(BatteryScreen.PATH);
     } else {
       Navigator.of(context).pushNamed(PreparationScreen.PATH);
@@ -98,10 +106,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           type: BlockType.image,
           imageName: 'welcome.png',
         ),
-        bottomBlock: BlockTemplate(
-          type: BlockType.text,
-          title: S.of(context).welcomeTitle,
-          content: [S.of(context).welcomeContent],
+        bottomBlock: SingleChildScrollView(
+          child: BlockTemplate(
+            type: BlockType.text,
+            title: S.of(context).welcomeTitle,
+            content: [S.of(context).welcomeContent],
+          ),
         ),
         buttons: _buildButtonsBlock(),
         showSteps: false,
@@ -124,7 +134,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         moreActionButton: ButtonModel(
             text: S.of(context).btnPreview.toUpperCase(),
             action: () {
-              Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
+              Navigator.of(context)
+                  .pushNamed("${CarouselScreen.PATH}/${WelcomeScreen.TAG}");
             }),
       );
     }

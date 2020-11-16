@@ -15,11 +15,6 @@
   "btnEndRecording": "FIN D’ENREGISTREMENT",
   "ok": "OK",
   "select_language": "Sélectionner la langue",
-  "english": "Anglais",
-  "french": "Français",
-  "german": "Allemand",
-  "italian": "Italien",
-  "dutch": "Néerlandais",
   "cancel": "ANNULER",
   "btnEnter": "ENTRER",
   "btnMore": "PLUS",
@@ -132,7 +127,7 @@
   "stepperStep": " Etape",
   "stepper": "Étape {step} de {total}",
   "stop_test": "ARRETEZ L’EXAMEN",
-  "confirm_stop_test": "Etes-vous sur de vouloir arrêter l’enregistrement ?",
+  "confirm_stop_test": "Etes-vous sur de vouloir arrêter l’enregistrement?",
   "technician_mode": "Mode technicien",
   "test_data_transmit_in_progress": "Transmission des données de l’examen en cours",
   "test_data_still_transmitting_close_anyway": "Les données de l’examen sont en cours de transmission. Veuillez ne pas fermer l’application WatchPAT\u2122 Souhaitez-vous la fermer quand même?",
@@ -268,5 +263,21 @@
   "device_not_located":"L'appareil n'est pas localisé. Veuillez vérifiez le voyant lumineux de WatchPAT. S'il clignote, rapprochez votre téléphone de l'appareil. S'il ne clignote pas, vérifiez si la pile n'est pas épuisée et si elle est bien placée.",
   "battery_depleted": "La pile de l’appareil est épuisée ou endommagée. Veuillez remplacer la pile et réessayer.",
   "patient_msg1": "Veuillez brancher votre téléphone à un chargeur. Laissez le chargeur branché pendant toute la procédure de test. Fermez les applications non utilisées avant de commencer la procédure de test. \n\nNe fermez pas l’application WatchPAT\u2122 ONE pendant l’examen.",
-  "device_disconnected": "L’appareil WatchPAT est déconnecté. L’examen ne peut pas démarrer."
+  "device_disconnected": "L’appareil WatchPAT est déconnecté. L’examen ne peut pas démarrer.",
+
+  "english": "anglais",
+  "french": "français",
+  "german": "allemand",
+  "italian": "italien",
+  "dutch": "néerlandais",
+  "danish": "danois",
+  "greek": "grec",
+  "spanish": "espagnol",
+  "finnish": "finnois",
+  "latvian": "letton",
+  "polish": "polonais",
+  "portuguese": "portugais",
+  "russian": "russe",
+  "swedish": "suédois"
+
 }

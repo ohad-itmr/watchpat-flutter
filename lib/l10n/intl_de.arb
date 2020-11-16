@@ -14,11 +14,6 @@
   "btnEndRecording": " AUFZEICHNUNG BEENDEN",
   "ok": " OK",
   "select_language": " Sprache wählen",
-  "english": " Englisch",
-  "french": " Französisch",
-  "german": "Deutsch",
-  "italian": "Italienisch",
-  "dutch": "Niederländisch",
   "cancel": " ABBRECHEN",
   "btnEnter": " ENTER",
   "btnMore": " MEHR",
@@ -132,7 +127,7 @@
   "stepperStep": " Schritt",
   "stepper": "Schritt {step} von {total}",
   "stop_test": "TEST ANHALTEN",
-  "confirm_stop_test": " Sind Sie sicher, dass Sie die Aufzeichnung beenden wollen?",
+  "confirm_stop_test": "Sind Sie sicher, dass Sie die Aufzeichnung beenden wollen?",
   "strapWristTitle": " ARMBAND-GERÄT ANLEGEN",
   "strapWristContent": " Befestigen Sie das WatchPAT\u2122ONE an Ihrer nicht-dominanten Hand. \nZiehen Sie dabei das Armband nun so fest, dass es nicht zu locker aber auch nicht zu stramm ist.",
   "technician_mode": " Techniker Modus",
@@ -269,5 +264,20 @@
   "dispatcher_connection_failed": "Die verbindung zum server ist fehlgeschlagen",
 
   "patient_msg1": "Schließen Sie Ihr Mobilphone an einem Ladegerät an. Lassen Sie das Ladegerät während des gesamten Testvorgangs eingeschaltet.  Schließen Sie ungenutzte Anwendungen des Mobilphones bevor Sie den Testvorgang starten. \n\nBeenden Sie bitte nicht die WatchPAT\u2122 ONE Anwendung während des Tests.",
-  "uploadingDeviceDisconnected": "Das WatchPAT Gerät kann nicht angesprochen werden. Positionieren Sie es näher an die Anwendung."
+  "uploadingDeviceDisconnected": "Das WatchPAT Gerät kann nicht angesprochen werden. Positionieren Sie es näher an die Anwendung.",
+
+  "english": " Englisch",
+  "french": " Französisch",
+  "german": "Deutsch",
+  "italian": "Italienisch",
+  "dutch": "Niederländisch",
+  "danish": "Dänisch",
+  "greek": "Griechisch",
+  "spanish": "Spanisch",
+  "finnish": "Finnisch",
+  "latvian": "Lettisch",
+  "polish": "Polnisch",
+  "portuguese": "Portugiesisch",
+  "russian": "Russisch",
+  "swedish": "Schwedisch"
 }

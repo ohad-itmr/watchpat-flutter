@@ -104,7 +104,7 @@ class StartRecordingScreen extends StatelessWidget {
                     .then((_) {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, RecordingScreen.PATH);
-                }).timeout(Duration(seconds: 60), onTimeout: () {
+                }).timeout(Duration(seconds: 90), onTimeout: () {
                   Navigator.pop(context);
                   sl<ServiceScreenManager>().resetApplication(clearConfig: false, killApp: false);
                   _showRestartDialog(context);

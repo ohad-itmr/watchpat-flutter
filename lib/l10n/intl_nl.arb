@@ -12,11 +12,6 @@
   "btnEndRecording":" EINDE OPNAME",
   "ok":" OK ",
   "select_language":" Selecteer taal ",
-  "english":"Engels",
-  "french":"Frans",
-  "german": "Duitse",
-  "italian": "Italiaans",
-  "dutch": "Nederlands",
   "cancel":" ANNULEREN ",
   "btnEnter":"ENTER ",
   "btnMore":" MEER ",
@@ -113,7 +108,7 @@
   "stepperStep":" Stap ",
   "stepper":"stap {step} of {total}",
   "stop_test":" STOP TEST ",
-  "confirm_stop_test":" Bent u er zeker van dat u de opname wil stoppen? ",
+  "confirm_stop_test":"Bent u er zeker van dat u de opname wil stoppen?",
   "strapWristContent":" Bevestig de WatchPAT\u2122ONE aan uw niet-dominante hand. \nBevestig de  WatchPAT\u2122ONE om uw pols en zorg ervoor dat deze goed aansluit maar niet te strak zit",
   "technician_mode":"Technicus modus  ",
   "test_data_transmit_in_progress":" Testgegevens worden verzonden",
@@ -267,5 +262,20 @@
 
   "sn_not_registered":"Gebruiker staat niet geregistreerd",
   "pin_retries_exceeded":"U heeft het maximale aantal PIN codes geprobeerd",
-  "dispatcher_connection_failed": "Verbinding met de server is mislukt"
+  "dispatcher_connection_failed": "Verbinding met de server is mislukt",
+
+  "english":"Engels",
+  "french":"Frans",
+  "german": "Duitse",
+  "italian": "Italiaans",
+  "dutch": "Nederlands",
+  "danish": "Deens",
+  "greek": "Grieks",
+  "spanish": "Spaans",
+  "finnish": "Fins",
+  "latvian": "Lets",
+  "polish": "Pools",
+  "portuguese": "Portugees",
+  "russian": "Russisch",
+  "swedish": "Zweeds"
 }

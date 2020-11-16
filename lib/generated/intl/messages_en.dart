@@ -205,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pinContent" : m0,
     "pinTitle" : MessageLookupByLibrary.simpleMessage("Enter PIN"),
     "pin_number_assigned_to_you" : MessageLookupByLibrary.simpleMessage("The PIN number assigned to you can be \$pin. If you are not sure, you will have to call doctor\'s office."),
-    "pin_retries_exceeded" : MessageLookupByLibrary.simpleMessage("You have reached the maximum number of PIN retries"),
+    "pin_retries_exceeded" : MessageLookupByLibrary.simpleMessage("Έχετε εξαντλήσει τον μέγιστο αριθμό προσπαθειών εισαγωγής του PIN"),
     "pin_type_cc" : MessageLookupByLibrary.simpleMessage("last digits of your credit card"),
     "pin_type_dob" : MessageLookupByLibrary.simpleMessage("your date of birth in the form MMYY"),
     "pin_type_hic" : MessageLookupByLibrary.simpleMessage("last digits of your health insurer card"),

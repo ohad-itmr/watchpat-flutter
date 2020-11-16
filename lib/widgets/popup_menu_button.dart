@@ -119,129 +119,131 @@ class _MypatPopupMenuButtonState extends State<MypatPopupMenuButton> {
   }
 
   void _showLanguageSelectDialog() {
-    _selectedLanguage = PrefsProvider.loadLocale().toString();
+    _selectedLanguage = PrefsProvider.loadLocale().languageCode;
     showDialog(
         context: context,
         builder: (_) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
               title: Text(S.of(context).select_language),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  RadioListTile(
-                    value: _selectedLanguage == "en",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "en");
-                    },
-                    title: Text(S.of(context).english),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "fr",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "fr");
-                    },
-                    title: Text(S.of(context).french),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "de",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "de");
-                    },
-                    title: Text(S.of(context).german),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "it",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "it");
-                    },
-                    title: Text(S.of(context).italian),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "nl",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "nl");
-                    },
-                    title: Text(S.of(context).dutch),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "da",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "da");
-                    },
-                    title: Text(S.of(context).danish),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "el",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "el");
-                    },
-                    title: Text(S.of(context).greek),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "es",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "es");
-                    },
-                    title: Text(S.of(context).spanish),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "fi",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "fi");
-                    },
-                    title: Text(S.of(context).finnish),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "lv",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "lv");
-                    },
-                    title: Text(S.of(context).latvian),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "pl",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "pl");
-                    },
-                    title: Text(S.of(context).polish),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "pt",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "pt");
-                    },
-                    title: Text(S.of(context).portuguese),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "ru",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "ru");
-                    },
-                    title: Text(S.of(context).russian),
-                  ),
-                  RadioListTile(
-                    value: _selectedLanguage == "sv",
-                    groupValue: true,
-                    onChanged: (_) {
-                      setState(() => _selectedLanguage = "sv");
-                    },
-                    title: Text(S.of(context).swedish),
-                  )
-                ],
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RadioListTile(
+                      value: _selectedLanguage == "en",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "en");
+                      },
+                      title: Text(S.of(context).english),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "fr",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "fr");
+                      },
+                      title: Text(S.of(context).french),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "de",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "de");
+                      },
+                      title: Text(S.of(context).german),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "it",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "it");
+                      },
+                      title: Text(S.of(context).italian),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "nl",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "nl");
+                      },
+                      title: Text(S.of(context).dutch),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "da",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "da");
+                      },
+                      title: Text(S.of(context).danish),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "el",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "el");
+                      },
+                      title: Text(S.of(context).greek),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "es",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "es");
+                      },
+                      title: Text(S.of(context).spanish),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "fi",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "fi");
+                      },
+                      title: Text(S.of(context).finnish),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "lv",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "lv");
+                      },
+                      title: Text(S.of(context).latvian),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "pl",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "pl");
+                      },
+                      title: Text(S.of(context).polish),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "pt",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "pt");
+                      },
+                      title: Text(S.of(context).portuguese),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "ru",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "ru");
+                      },
+                      title: Text(S.of(context).russian),
+                    ),
+                    RadioListTile(
+                      value: _selectedLanguage == "sv",
+                      groupValue: true,
+                      onChanged: (_) {
+                        setState(() => _selectedLanguage = "sv");
+                      },
+                      title: Text(S.of(context).swedish),
+                    )
+                  ],
+                ),
               ),
               actions: <Widget>[
                 FlatButton(

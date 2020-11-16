@@ -1,5 +1,6 @@
 import 'package:battery/battery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:my_pat/app/screens.dart';
 import 'package:my_pat/service_locator.dart';
 import 'package:my_pat/widgets/widgets.dart';
@@ -35,19 +36,24 @@ class _PreparationScreenState extends State<PreparationScreen> {
   }
 
   _handleNext() async {
-    await sl<SystemStateManager>().bleScanStateStream.firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
+    await sl<SystemStateManager>()
+        .bleScanStateStream
+        .firstWhere((ScanStates state) => state == ScanStates.COMPLETE);
 
-    final deviceConnected = sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED;
+    final deviceConnected =
+        sl<SystemStateManager>().deviceCommState == DeviceStates.CONNECTED;
     final chargerConnected = await _chargerConnected();
 
     if (!deviceConnected) {
-      _showDisconnectedWarning(context, S.of(context).device_not_found, S.of(context).device_not_located);
+      _showDisconnectedWarning(context, S.of(context).device_not_found,
+          S.of(context).device_not_located);
       setState(() => _nextIsPressed = false);
     } else if (!chargerConnected) {
       _showDisconnectedWarning(context, null, S.of(context).patient_msg1);
       setState(() => _nextIsPressed = false);
     } else {
-      await sl<SystemStateManager>().startSessionStateStream.firstWhere((StartSessionState st) => st == StartSessionState.CONFIRMED);
+      await sl<SystemStateManager>().startSessionStateStream.firstWhere(
+          (StartSessionState st) => st == StartSessionState.CONFIRMED);
       _nextIsPressed = false;
       Navigator.pushNamed(context, PinScreen.PATH);
     }
@@ -63,12 +69,14 @@ class _PreparationScreenState extends State<PreparationScreen> {
           type: BlockType.image,
           imageName: 'prepare.png',
         ),
-        bottomBlock: BlockTemplate(
-          type: BlockType.text,
-          title: loc.removeJewelryTitle,
-          content: [
-            loc.removeJewelryContent,
-          ],
+        bottomBlock: prefix0.SingleChildScrollView(
+          child: BlockTemplate(
+            type: BlockType.text,
+            title: loc.removeJewelryTitle,
+            content: [
+              loc.removeJewelryContent,
+            ],
+          ),
         ),
         buttons: _nextIsPressed
             ? CircularProgressIndicator()
@@ -80,7 +88,8 @@ class _PreparationScreenState extends State<PreparationScreen> {
                   },
                 ),
                 moreActionButton: ButtonModel(
-                  action: () => Navigator.of(context).pushNamed("${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
+                  action: () => Navigator.of(context).pushNamed(
+                      "${CarouselScreen.PATH}/${PreparationScreen.TAG}"),
                 ),
               ),
         showSteps: true,

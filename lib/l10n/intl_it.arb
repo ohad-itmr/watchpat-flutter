@@ -10,11 +10,6 @@
   "btnChangeAndRestart": " Modifica ed esci dall'applicazione",
   "ok": " OK",
   "select_language": " Seleziona la lingua",
-  "english": " Inglese",
-  "french": " Francese",
-  "german": "Allemand",
-  "italian": "Italia",
-  "dutch": "Olandese",
   "cancel": " ANNULLA",
   "btnEnter": " INVIO",
   "btnMore": " ALTRO",
@@ -124,7 +119,7 @@
   "stepperStep": " Step",
   "stepper": "Step {step} di {total}",
   "stop_test": "FINE ESAME",
-  "confirm_stop_test": "Sei sicuro di voler terminare la registrazione? ",
+  "confirm_stop_test": "Sei sicuro di voler terminare la registrazione?",
   "strapWristTitle": " ALLACCIARE IL DISPOSITIVO DA POLSO",
   "strapWristContent": "Allacciare il WatchPAT\u2122ONE sulla mano non dominante. \nAssicurarsi che il WatchPAT \u2122ONE  sia aderente ma non troppo stretto.",
   "technician_mode": " Modalità tecnico",
@@ -268,5 +263,21 @@
   "dispatcher_connection_failed": "Connessione al server non riuscita",
 
   "carousel_end_3":"Togliere la sonda dal dito",
-  "battery_depleted": "La batteria del dispositivo è esausta o danneggiata. Sostituire la batteria e riprovare."
+  "battery_depleted": "La batteria del dispositivo è esausta o danneggiata. Sostituire la batteria e riprovare.",
+
+  "english": "inglese",
+  "french": "francese",
+  "german": "allemand",
+  "italian":"italia",
+  "dutch": "olandese",
+  "danish": "danese",
+  "greek": "greco",
+  "spanish": "spagnolo",
+  "finnish": "finlandese",
+  "latvian": "lettone",
+  "polish": "polacco",
+  "portuguese": "portoghese",
+  "russian": "russo",
+  "swedish": "svedese"
+
 }

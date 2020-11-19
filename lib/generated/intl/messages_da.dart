@@ -248,7 +248,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "select_led_color" : MessageLookupByLibrary.simpleMessage("Select LED color"),
     "select_reset_type" : MessageLookupByLibrary.simpleMessage("Select reset type"),
     "send" : MessageLookupByLibrary.simpleMessage("Send"),
-    "send_logs" : MessageLookupByLibrary.simpleMessage("end logfiler"),
+    "send_logs" : MessageLookupByLibrary.simpleMessage("Send logfiler"),
     "server_comm_error" : MessageLookupByLibrary.simpleMessage("Serverkommunikationsfejl, kontakt support"),
     "set" : MessageLookupByLibrary.simpleMessage("set"),
     "set_and_close" : MessageLookupByLibrary.simpleMessage("Set and close"),

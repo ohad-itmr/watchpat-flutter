@@ -260,7 +260,7 @@
   "pin_retries_exceeded": "Du har nået det maksimale antal PIN-kodeforsøg",
   "dispatcher_connection_failed": "Forbindelsen til WatchPAT-server mislykkedes.",
   "forget_device":"Glem enheden",
-  "send_logs":"end logfiler",
+  "send_logs":"Send logfiler",
 
   "english": "engelsk",
   "french": "fransk",

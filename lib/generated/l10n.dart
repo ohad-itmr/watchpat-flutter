@@ -2360,7 +2360,7 @@ class S {
 
   String get pin_retries_exceeded {
     return Intl.message(
-      'Έχετε εξαντλήσει τον μέγιστο αριθμό προσπαθειών εισαγωγής του PIN',
+      'You have reached the maximum number of PIN retries',
       name: 'pin_retries_exceeded',
       desc: '',
       args: [],

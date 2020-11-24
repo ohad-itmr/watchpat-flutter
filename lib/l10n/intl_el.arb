@@ -257,7 +257,7 @@
   "carousel_end_5":"Ακολουθήστε τις τοπικές οδηγίες ανακύκλωσης σχετικά με την απόρριψη ή την ανακύκλωση της συσκευής και των εξαρτημάτων της.",
 
   "sn_not_registered" : "Ο χρήστης δεν έχει εγγραφεί",
-  "pin_retries_exceeded": "You have reached the maximum number of PIN retries",
+  "pin_retries_exceeded": "Έχετε εξαντλήσει τον μέγιστο αριθμό προσπαθειών εισαγωγής του PIN",
   "dispatcher_connection_failed": "Η σύνδεση με τον διακομιστή WatchPAT απέτυχε.",
   "forget_device": "Ξεχάστε τη συσκευή",
   "send_logs":"Αποστολή αρχείων καταγραφής",

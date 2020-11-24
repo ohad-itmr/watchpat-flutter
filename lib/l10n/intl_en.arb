@@ -261,7 +261,7 @@
   "forget_device": "Forget device",
 
   "sn_not_registered" : "Serial number of your device is not registered",
-  "pin_retries_exceeded": "Έχετε εξαντλήσει τον μέγιστο αριθμό προσπαθειών εισαγωγής του PIN",
+  "pin_retries_exceeded": "You have reached the maximum number of PIN retries",
   "dispatcher_connection_failed": "Connection to dispatcher failed",
 
   "english": "English",

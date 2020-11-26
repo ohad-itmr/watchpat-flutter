@@ -134,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "err_flash_test" : MessageLookupByLibrary.simpleMessage("Test av flashminnet"),
     "err_probe_leds" : MessageLookupByLibrary.simpleMessage("LED-lampor på proben"),
     "err_probe_photo" : MessageLookupByLibrary.simpleMessage("Foto av prob"),
-    "err_sbp" : MessageLookupByLibrary.simpleMessage("Steg för steg"),
+    "err_sbp" : MessageLookupByLibrary.simpleMessage("SBP"),
     "err_used_device" : MessageLookupByLibrary.simpleMessage("Använd huvudenhet"),
     "error" : MessageLookupByLibrary.simpleMessage("Fel"),
     "error_state" : MessageLookupByLibrary.simpleMessage("FELTILLSTÅND"),

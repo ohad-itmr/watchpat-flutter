@@ -55,7 +55,7 @@
   "err_flash_test":"Flash-test",
   "err_probe_leds":"Sonde-LED'er",
   "err_probe_photo":"Sondefoto",
-  "err_sbp":"Trin for trin",
+  "err_sbp":"SBP",
   "err_used_device":"Brugt hovedenhed",
   "error_state":"FEJLTILSTAND",
   "error":"Fejl",

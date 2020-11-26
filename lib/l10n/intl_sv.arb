@@ -55,7 +55,7 @@
   "err_flash_test":"Test av flashminnet",
   "err_probe_leds":"LED-lampor på proben",
   "err_probe_photo":"Foto av prob",
-  "err_sbp":"Steg för steg",
+  "err_sbp":"SBP",
   "err_used_device":"Använd huvudenhet",
   "error_state":"FELTILLSTÅND",
   "error":"Fel",

@@ -55,7 +55,7 @@
   "err_flash_test":"Flash-muistitesti",
   "err_probe_leds":"Anturin LED-valot",
   "err_probe_photo":"Anturin kuva",
-  "err_sbp":"Vaihe vaiheelta ",
+  "err_sbp":"SBP",
   "err_used_device":"Käytetty päälaite",
   "error_state":"VIRHETILA",
   "error":"Virhe",

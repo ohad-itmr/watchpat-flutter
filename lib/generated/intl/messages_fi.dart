@@ -134,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "err_flash_test" : MessageLookupByLibrary.simpleMessage("Flash-muistitesti"),
     "err_probe_leds" : MessageLookupByLibrary.simpleMessage("Anturin LED-valot"),
     "err_probe_photo" : MessageLookupByLibrary.simpleMessage("Anturin kuva"),
-    "err_sbp" : MessageLookupByLibrary.simpleMessage("Vaihe vaiheelta "),
+    "err_sbp" : MessageLookupByLibrary.simpleMessage("SBP"),
     "err_used_device" : MessageLookupByLibrary.simpleMessage("Käytetty päälaite"),
     "error" : MessageLookupByLibrary.simpleMessage("Virhe"),
     "error_state" : MessageLookupByLibrary.simpleMessage("VIRHETILA"),

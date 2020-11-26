@@ -134,7 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "err_flash_test" : MessageLookupByLibrary.simpleMessage("Test pamięci flash"),
     "err_probe_leds" : MessageLookupByLibrary.simpleMessage("Diody LED sondy"),
     "err_probe_photo" : MessageLookupByLibrary.simpleMessage("Zdjęcie sondy"),
-    "err_sbp" : MessageLookupByLibrary.simpleMessage("Krok po kroku SBP is Snore Body Position I think. So ‘Czujnik chrapania i poztcji ciała’"),
+    "err_sbp" : MessageLookupByLibrary.simpleMessage("SBP"),
     "err_used_device" : MessageLookupByLibrary.simpleMessage("Używane urządzenie główne"),
     "error" : MessageLookupByLibrary.simpleMessage("Błąd"),
     "error_state" : MessageLookupByLibrary.simpleMessage("BŁĄD"),

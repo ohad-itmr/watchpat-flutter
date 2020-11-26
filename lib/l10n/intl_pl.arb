@@ -55,7 +55,7 @@
   "err_flash_test":"Test pamięci flash",
   "err_probe_leds":"Diody LED sondy",
   "err_probe_photo":"Zdjęcie sondy",
-  "err_sbp":"Krok po kroku SBP is Snore Body Position I think. So ‘Czujnik chrapania i poztcji ciała’",
+  "err_sbp":"SBP",
   "err_used_device":"Używane urządzenie główne",
   "error_state":"BŁĄD",
   "error":"Błąd",
